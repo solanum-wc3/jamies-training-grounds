@@ -1,0 +1,17 @@
+# Temporary analysis and generated output from local tools
+/work/
+/outputs/
+/build/
+
+# Warcraft III maps are generated binaries. Reference maps may be committed.
+*.w3x
+*.w3m
+!reference/**/*.w3x
+!reference/**/*.w3m
+
+# Editor and operating-system files
+*.bak
+*.tmp
+*.temp
+Thumbs.db
+.DS_Store
