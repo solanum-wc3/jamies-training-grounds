@@ -1,0 +1,13 @@
+*.lua text eol=lf
+*.md text eol=lf
+*.fdf text eol=lf
+*.toc text eol=lf
+*.w3x binary
+*.w3m binary
+*.blp binary
+*.tga binary
+*.png binary
+*.dds binary
+*.mdx binary
+*.wav binary
+*.mp3 binary

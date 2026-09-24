@@ -4,7 +4,11 @@ Jamie’s Training Grounds is a Warcraft III teaching and practice map. The succ
 
 ## Current status
 
-The project is in its planning and repository-setup phase. Version 0.92 of the inherited map remains the behavioral reference while a smaller, modular successor map is designed.
+The successor map now has an accepted playable foundation based on Twisted Meadows. A reusable northeastern practice district contains two connected empty arenas, while terrain and placed objects outside that district remain preserved. The map uses one player slot with a selectable race, the native Warcraft III interface and Quest window, normal fog of war, and no melee starting army or victory conditions.
+
+The accepted baseline is `v0.0.1-alpha.5`. It has been tested in Warcraft III and successfully opened and saved by World Editor.
+
+Version 0.92 of the inherited map remains the behavioral reference while its shared interface and exercise systems are documented and redesigned for modular migration.
 
 The first planned beginner module is the camera-controls tutorial. Later subjects include unit controls, economy, base construction, heroes, creeping, combat, unit and damage types, and technology.
 
@@ -22,9 +26,9 @@ The first planned beginner module is the camera-controls tutorial. Later subject
 - `docs/` — architecture, project decisions, and contributor guidance
 - `design/` — tutorial scripts, layouts, and specifications
 - `reference/` — preserved historical maps and associated notes
-- `src/` — editable map scripts and source assets once the successor map begins
+- `src/` — editable map scripts
 - `tools/` — reproducible unpacking, validation, and build utilities
-- `build/` — generated playable maps; excluded from version control
+- `outputs/` — generated playable test maps and validation reports; excluded from version control
 
 ## Version history
 

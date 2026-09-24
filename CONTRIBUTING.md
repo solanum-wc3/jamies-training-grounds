@@ -20,3 +20,4 @@ Shared systems and activities should document their ownership and lifecycle. Eve
 ## Playable builds
 
 Generated `.w3x` files belong in `build/` and are not committed during ordinary development. Historical reference maps may be stored under `reference/`. Tested public milestones should be attached to a tagged GitHub release.
+

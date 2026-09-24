@@ -1,0 +1,173 @@
+{
+  "version": "v0.0.1-alpha.5",
+  "sourceSha256": "d4e444bfb6c0063da75fb88b8a57490b5d299f59d0f88344ac9910d1e45ffa3f",
+  "area": {
+    "minX": 2048,
+    "minY": 2048,
+    "maxX": 7808,
+    "maxY": 7552
+  },
+  "output": "C:\\Users\\USERNAME\\Documents\\Codex\\2026-09-20\\referenced-chatgpt-conversation-this-is-an\\outputs\\Jamies-Training-Grounds-v0.0.1-alpha.5.w3x",
+  "preservation": {
+    "war3map.doo": {
+      "outsideRecordsIdentical": 3184
+    },
+    "war3mapUnits.doo": {
+      "outsideRecordsIdentical": 135
+    },
+    "terrain": {
+      "changedVertices": 2024,
+      "textureCounts": {
+        "Lrok": 529,
+        "Ldrt": 188,
+        "Lgrs": 827,
+        "Lgrd": 351,
+        "Ldro": 93,
+        "Ldrg": 36
+      },
+      "outsideVerticesIdentical": true
+    },
+    "pathing": {
+      "changedCells": 30960,
+      "blockedCells": 7872,
+      "outsideCellsIdentical": true
+    }
+  },
+  "removed": {
+    "terrainDoodads": 1,
+    "war3map.doo": {
+      "count": 506,
+      "byType": {
+        "LRrk": 22,
+        "APct": 2,
+        "NWrd": 1,
+        "AWfs": 5,
+        "LPlp": 1,
+        "AObd": 1,
+        "LPrs": 13,
+        "LTlt": 461
+      }
+    },
+    "war3mapUnits.doo": {
+      "count": 24,
+      "byType": {
+        "ngol": 3,
+        "ngad": 1,
+        "sloc": 1,
+        "nshe": 1,
+        "nfsh": 2,
+        "nftk": 1,
+        "ngnw": 1,
+        "nogm": 1,
+        "nftb": 2,
+        "nggr": 1,
+        "nomg": 2,
+        "nftt": 3,
+        "nogr": 1,
+        "ngno": 1,
+        "ngnv": 1,
+        "nrdk": 2
+      }
+    },
+    "runtimeUnits": 23,
+    "w3cBundleBytes": 493339,
+    "minimapMarkers": 25,
+    "archiveFiles": [
+      "loot-indicator\\loot-indicator-tome.dds",
+      "ReplaceableTextures\\CommandButtonsDisabled\\DISBTNRoP+5.dds",
+      "UI\\MiniMap\\MiniMap-Tavern.dds",
+      "loot-indicator\\loot-indicator-generic.mdx",
+      "_teen.w3mod\\ReplaceableTextures\\CommandButtons\\BTNClaw+15.dds",
+      "ReplaceableTextures\\CommandButtonsDisabled\\DISBTNClaw+12.dds",
+      "UI\\MiniMap\\MiniMapIconCreepLoc.dds",
+      "_teen.w3mod\\ReplaceableTextures\\CommandButtons\\BTNClaw+12.dds",
+      "loot-indicator\\loot-indicator-tome.mdx",
+      "ReplaceableTextures\\CommandButtons\\BTNClaw+15.dds",
+      "_teen.w3mod\\ReplaceableTextures\\CommandButtonsDisabled\\DISBTNClaw+15.dds",
+      "ReplaceableTextures\\CommandButtonsDisabled\\DISBTNRoP+3.dds",
+      "_teen.w3mod\\ReplaceableTextures\\CommandButtons\\BTNClaw+9.dds",
+      "conversation.json",
+      "ReplaceableTextures\\CommandButtons\\BTNClaw+9.dds",
+      "_teen.w3mod\\ReplaceableTextures\\CommandButtons\\BTNClaw+4.dds",
+      "_teen.w3mod\\ReplaceableTextures\\CommandButtonsDisabled\\DISBTNClaw+4.dds",
+      "ReplaceableTextures\\CommandButtons\\BTNClaw+12.dds",
+      "ReplaceableTextures\\CommandButtonsDisabled\\DISBTNClaw+15.dds",
+      "ReplaceableTextures\\CommandButtons\\BTNRoP+3.dds",
+      "UI\\MiniMap\\MiniMap-Mercenary.mdx",
+      "loot-indicator\\ui\\ui.toc",
+      "UI\\MiniMap\\MiniMap-Mercenary.dds",
+      "ReplaceableTextures\\CommandButtonsDisabled\\DISBTNClaw+5.dds",
+      "ReplaceableTextures\\CommandButtonsDisabled\\DISBTNClaw+9.dds",
+      "_teen.w3mod\\ReplaceableTextures\\CommandButtons\\BTNClaw+8.dds",
+      "UI\\MiniMap\\MiniMap-Laboratory.dds",
+      "UI\\MiniMap\\MiniMap-Laboratory.mdx",
+      "ReplaceableTextures\\CommandButtons\\BTNClaw+4.dds",
+      "ReplaceableTextures\\CommandButtonsDisabled\\DISBTNClaw+8.dds",
+      "UI\\MiniMap\\MiniMap-Shop.dds",
+      "_teen.w3mod\\ReplaceableTextures\\CommandButtonsDisabled\\DISBTNClaw+8.dds",
+      "UI\\MiniMap\\MiniMap-Tavern.mdx",
+      "ReplaceableTextures\\CommandButtons\\BTNClaw+5.dds",
+      "loot-indicator\\ui\\loot-table-ui.fdf",
+      "ReplaceableTextures\\CommandButtonsDisabled\\DISBTNClaw+4.dds",
+      "_teen.w3mod\\ReplaceableTextures\\CommandButtons\\BTNClaw+5.dds",
+      "UI\\MiniMap\\MiniMap-Shop.mdx",
+      "ReplaceableTextures\\CommandButtons\\BTNRoP+5.dds",
+      "UI\\MiniMap\\MiniMap-NeutralBuilding.dds",
+      "_teen.w3mod\\ReplaceableTextures\\CommandButtonsDisabled\\DISBTNClaw+5.dds",
+      "loot-indicator\\loot-indicator-generic.dds",
+      "_teen.w3mod\\ReplaceableTextures\\CommandButtonsDisabled\\DISBTNClaw+9.dds",
+      "_teen.w3mod\\ReplaceableTextures\\CommandButtonsDisabled\\DISBTNClaw+12.dds",
+      "ReplaceableTextures\\CommandButtons\\BTNClaw+8.dds",
+      "ReplaceableTextures\\CommandButtons\\BTNRoP+4.dds",
+      "ReplaceableTextures\\CommandButtonsDisabled\\DISBTNRoP+4.dds",
+      "UI\\MiniMap\\MiniMapIconCreepLoc2.dds",
+      "UI\\MiniMap\\MiniMap-Gold.dds"
+    ]
+  },
+  "lobby": {
+    "players": 1,
+    "defaultRace": "Human",
+    "raceSelectable": true,
+    "start": [
+      4864,
+      3456
+    ],
+    "customPreview": true
+  },
+  "visibility": {
+    "default": "fully masked unexplored terrain",
+    "activityOverrides": "planned in shared lifecycle"
+  },
+  "loadingScreen": {
+    "model": "LoadingScreen.mdx",
+    "texture": "FullScreen.dds",
+    "source": "legacy map"
+  },
+  "preview": {
+    "browser": "Arthas and Jaina",
+    "menuMarkers": 0,
+    "ingame": "patched terrain minimap",
+    "runtimeSwap": "BlzChangeMinimapTerrainTex"
+  },
+  "outputSha256": "a1ea7789e60b30e77d64f14337759842dff309d129929ef24defb1276cf1ba64",
+  "outputBytes": 1307504,
+  "changedArchiveFiles": [
+    "war3map.doo",
+    "war3mapUnits.doo",
+    "war3map.w3e",
+    "war3map.wpm",
+    "war3map.shd",
+    "war3map.lua",
+    "war3map.wtg",
+    "war3map.wct",
+    "war3map.mmp",
+    "war3map.w3i",
+    "war3map.wts",
+    "LoadingScreen.mdx",
+    "FullScreen.dds",
+    "war3mapMap.blp",
+    "war3mapMap_ingame.blp"
+  ],
+  "luaSyntax": "PASS",
+  "archiveRoundtrip": "PASS"
+}
