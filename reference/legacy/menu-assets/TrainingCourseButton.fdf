@@ -1,0 +1,35 @@
+// Illustrated activity card built on Warcraft III's regular dialog button.
+// Visual children are absent from mouse hit testing; the inherited button
+// alone owns hover, press, click and tooltip.
+Frame "GLUETEXTBUTTON" "JTGIllustratedCardTemplate" INHERITS WITHCHILDREN "ScriptDialogButton" {
+    Width 0.190,
+    Height 0.052,
+
+    Frame "BACKDROP" "JTGIllustratedCardArtwork" {
+        LayerStyle "IGNORETRACKEVENTS",
+        BackdropBackground "UI\\Widgets\\EscMenu\\Human\\human-options-menu-background.blp",
+    }
+
+    Frame "TEXT" "JTGIllustratedCardLabel" {
+        LayerStyle "IGNORETRACKEVENTS",
+        FrameFont "MasterFont", 0.010, "",
+        FrameTextAlignment "LEFT",
+        FontColor 1.0 1.0 1.0 1.0,
+        FontShadowColor 0.0 0.0 0.0 1.0,
+        FontShadowOffset 0.001 -0.001,
+    }
+}
+
+// Uses Warcraft's active race tooltip textures while remaining high enough in
+// the custom frame tree to render above the Training Grounds menu.
+Frame "BACKDROP" "JTGTooltipTemplate" {
+    DecorateFileNames,
+    BackdropTileBackground,
+    BackdropBackground "ToolTipBackground",
+    BackdropCornerFlags "UL|UR|BL|BR|T|L|B|R",
+    BackdropCornerSize 0.008,
+    BackdropBackgroundSize 0.256,
+    BackdropBackgroundInsets 0.0022 0.0022 0.0022 0.0022,
+    BackdropEdgeFile "ToolTipBorder",
+    BackdropBlendAll,
+}

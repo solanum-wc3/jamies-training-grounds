@@ -1,0 +1,17 @@
+{
+  "name": "jamies-training-grounds",
+  "private": true,
+  "packageManager": "pnpm@11.19.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build:foundation": "node tools/build-foundation.cjs",
+    "build:infrastructure": "node tools/build-infrastructure.cjs",
+    "extract:legacy-menu-assets": "node tools/extract-legacy-menu-assets.cjs"
+  },
+  "dependencies": {
+    "@jamiephan/stormlib": "0.2.1",
+    "luaparse": "0.3.1"
+  }
+}

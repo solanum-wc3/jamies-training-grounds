@@ -2,6 +2,10 @@
 
 ## Project state
 
+The accepted playable baseline is `v0.0.1-alpha.5`. The unaccepted `v0.0.2-alpha.31` development candidate implements the first shared-infrastructure slice, revised illustrated menu prototype, scrollable milestone patch notes, and delayed post-action keyboard-focus restoration on that exact baseline. The [legacy analysis](LEGACY-ANALYSIS.md) records verified v0.92 source findings and outstanding inspection. The [infrastructure plan](INFRASTRUCTURE-PLAN.md) defines ownership, lifecycle transitions and staged verification. The authoritative legacy archive remains external to this checkout and unchanged.
+
+The concrete shared-menu scope is defined in the [menu and infrastructure port specification](MENU-AND-INFRASTRUCTURE-PORT.md). That phase ends before any real legacy exercise or tutorial is migrated.
+
 The inherited v0.92 map places exercises in separate areas of one large map and moves the player between them. It provides valuable exercises and interface work, but the successor project will use a smaller, intentionally planned layout and a clearer activity lifecycle.
 
 ## Map layout
@@ -15,7 +19,7 @@ Terrain-dependent activities may retain dedicated areas. Compatible activities m
 
 ## Activity lifecycle
 
-The shared controller will allow only one active activity. Each activity should provide the operations it needs from this common lifecycle:
+The shared controller allows only one active activity. Each activity provides the operations it needs from this common lifecycle:
 
 1. `setup` creates or restores its required state.
 2. `start` positions the player, camera, and interface.
@@ -27,7 +31,7 @@ The menu selects activities but does not contain their gameplay logic.
 
 ## Shared interface
 
-The shared interface is expected to provide:
+The shared interface now provides root/category navigation and capability-driven Restart and Training Menu controls. Training Menu enters a reversible browsing state while the activity continues; Return to Training restores its toolbar and view. Continue, Back, Pause, Objectives, and lesson text remain future capabilities for activities that need them:
 
 - training-path and activity selection;
 - restart and return-to-menu controls;
@@ -36,6 +40,10 @@ The shared interface is expected to provide:
 - optional reference pages and screenshots;
 - reliable release of custom-frame keyboard focus;
 - access to Warcraft III's native Quest window.
+
+The archived design keeps the native lower console untouched and places successor controls in the safe top interface band: a compact toolbar, an Objectives dropdown beneath its button, and a Training Menu control beside the other custom buttons. The native Quest button and F9 path remain available. Custom-frame focus must be released after clicks so native F-keys and command inputs continue to work.
+
+The campaign-style reference establishes three separate text channels: Quest entries for durable objectives and reference material; the Message Log for readable narration history; and temporary colored notifications for new concepts, prompts, or scripted events. A message disappearing must never advance a tutorial. Color changes use Warcraft’s inline text-color formatting, while Continue remains the explicit progression control for player-paced practice.
 
 ## Activity presentation state
 
@@ -47,7 +55,9 @@ Music and other race-flavored presentation should be selected by the active tuto
 
 ## Persistence
 
-The inherited persistence system must be documented before it is migrated. The successor format should be versioned so later releases can add tutorial completion, exercise results, preferences, and other fields without invalidating earlier data.
+Disk persistence is deferred. The infrastructure records attempts and completions in memory behind a small boundary, while Player Stats remains visibly unavailable. It never reads or writes the v0.92 profile path. If persistence later provides enough user value to justify implementation, the successor format should be separately versioned so later releases can add fields without invalidating earlier data.
+
+The camera tutorial is intentionally player-paced: text explains a mechanic, the player practises without a time limit, and Continue controls progression. It is a later implementation step after the shared infrastructure and an initial legacy exercise have proven the lifecycle. Audio is optional and must never be required for completion. This makes tutorial progression separate from exercise scoring and from fragile detection of customized hotkeys.
 
 ## Reference implementation
 

@@ -1,0 +1,47 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      '@jamiephan/stormlib':
+        specifier: 0.2.1
+        version: 0.2.1
+      luaparse:
+        specifier: 0.3.1
+        version: 0.3.1
+
+packages:
+
+  '@jamiephan/stormlib@0.2.1':
+    resolution: {integrity: sha512-ubv3yEA9eax2icWBy86iAn58g1yvw6i8HB++m7McrmrcJiEOPI+/L1pMiQa/1H/RAf/NA8ZmfyyzLiTp0/QgNA==}
+    engines: {node: '>=18.0.0'}
+
+  luaparse@0.3.1:
+    resolution: {integrity: sha512-b21h2bFEbtGXmVqguHogbyrMAA0wOHyp9u/rx+w6Yc9pW1t9YjhGUsp87lYcp7pFRqSWN/PhFkrdIqKEUzRjjQ==}
+    hasBin: true
+
+  node-addon-api@8.9.2:
+    resolution: {integrity: sha512-VijLXbi3UACN69I0JVXJsX4tjACjNoQDgv2gTF6sx2wWEi8tkSg2eX8p5gSIFi8z2+DL3oHmY6OyKce38SDolg==}
+    engines: {node: ^18 || ^20 || >= 21}
+
+  node-gyp-build@4.8.4:
+    resolution: {integrity: sha512-LA4ZjwlnUblHVgq0oBF3Jl/6h/Nvs5fzBLwdEF4nuxnFdsfajde4WfxtJr3CaiH+F6ewcIB/q4jQ4UzPyid+CQ==}
+    hasBin: true
+
+snapshots:
+
+  '@jamiephan/stormlib@0.2.1':
+    dependencies:
+      node-addon-api: 8.9.2
+      node-gyp-build: 4.8.4
+
+  luaparse@0.3.1: {}
+
+  node-addon-api@8.9.2: {}
+
+  node-gyp-build@4.8.4: {}

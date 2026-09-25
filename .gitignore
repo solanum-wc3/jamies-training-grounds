@@ -2,6 +2,8 @@
 /work/
 /outputs/
 /build/
+/node_modules/
+/.pnpm-store/
 
 # Warcraft III maps are generated binaries. Reference maps may be committed.
 *.w3x
@@ -15,4 +17,3 @@
 *.temp
 Thumbs.db
 .DS_Store
-

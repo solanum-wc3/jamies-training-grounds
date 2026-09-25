@@ -4,4 +4,19 @@
 
 `foundation-minimap.py` updates the matching region of the minimap and preserves the remaining pixels. Run it after the build script's `--prepare` step and before the final build.
 
+`build-infrastructure.cjs` creates the current `v0.0.2` infrastructure candidate directly from the accepted alpha.5 foundation. It changes only `war3map.lua`, `war3map.wtg`, `war3map.wct`, and the map-title string table. It verifies the accepted source hash, parses the assembled Lua, round-trips all changed members, and proves all other listed archive members remain byte-identical.
+
+Install the locked dependencies and build with:
+
+```text
+pnpm install --frozen-lockfile
+pnpm run build:infrastructure
+```
+
+The current reproducibility check uses Node.js 24 and pnpm 11. The two direct dependencies and their transitive packages are pinned in `pnpm-lock.yaml`.
+
+`extract-legacy-menu-assets.cjs` reads the authoritative v0.92 map without modifying it and extracts the exact custom textures and frame definitions used by its training-path and course-card menus. It refuses an archive whose SHA-256 differs from the recorded source. The extracted files and their manifest live under `reference/legacy/menu-assets/`.
+
+`prepare-menu-art.py` converts editable transparent successor artwork into power-of-two DXT5 textures while preserving separate background, artwork, border, text, and hover layers. Run it before packaging whenever a source image changes.
+
 Temporary investigation files remain in `work/` and are excluded from version control. Generated maps and validation reports remain in `outputs/`.

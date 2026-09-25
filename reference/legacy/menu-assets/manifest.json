@@ -1,0 +1,237 @@
+{
+  "source": "Jamie's Training Grounds v0.92.w3x",
+  "sourceSha256": "e789410d5dcae58413bcfaa8919905248fa188ea13e01f6cfc7bed47a69681c8",
+  "scope": "Custom DDS graphics referenced by the v0.92 training-path and course-button menu code.",
+  "files": [
+    {
+      "name": "TrainingMenuBackground.dds",
+      "purpose": "menu background",
+      "width": 1280,
+      "height": 512,
+      "bytes": 327808,
+      "sha256": "68ab68a64814cfb816cab8d6f0b9ea6687a5ec78290f973d3297dd3d6f4c58be"
+    },
+    {
+      "name": "UnitBlockActionButton.dds",
+      "purpose": "compact Human-console frame used by upper control buttons",
+      "width": 512,
+      "height": 152,
+      "bytes": 77952,
+      "sha256": "2f8fe8fed47e48dafc2c62fe6a4c032fafc4f383281ea0424b16fe14b7b9631a"
+    },
+    {
+      "name": "TrainingPathCardBorder.dds",
+      "purpose": "training-path yellow border",
+      "width": 512,
+      "height": 512,
+      "bytes": 262272,
+      "sha256": "8117ddbee7954b528344b9e779c72c428cb97d54fd092661c5efe3dc35c2f8f9"
+    },
+    {
+      "name": "TrainingPathWorkers.dds",
+      "purpose": "Learn the Basics path artwork",
+      "width": 512,
+      "height": 512,
+      "bytes": 262272,
+      "sha256": "23184901a96b1fc45716a4b95cf1ed37029507cd74b530f897bbb9a456518ab3"
+    },
+    {
+      "name": "TrainingPathAdvanced.dds",
+      "purpose": "Advanced Techniques path artwork",
+      "width": 512,
+      "height": 512,
+      "bytes": 262272,
+      "sha256": "4d8042a162c90f1bee632da3bc56fca011cf762bda7944a435628b2c42357f55"
+    },
+    {
+      "name": "TrainingCourseButtonBlank.dds",
+      "purpose": "blank course/navigation card",
+      "width": 512,
+      "height": 148,
+      "bytes": 38016,
+      "sha256": "bc58b7d5073ae5905c3a2cba5055abe2ee726acf3fec28c4a3eea2e4919a2a3e"
+    },
+    {
+      "name": "TrainingCourseButtonHover.dds",
+      "purpose": "shared course/path-card mouse-over highlight",
+      "width": 512,
+      "height": 148,
+      "bytes": 75904,
+      "sha256": "ee5403ecba18420e1c02360fd0889ae707e00906b281508d98f4c56f75779169"
+    },
+    {
+      "name": "TrainingCourseButtonKnowledge.dds",
+      "purpose": "Warcraft III Quiz",
+      "width": 512,
+      "height": 148,
+      "bytes": 38016,
+      "sha256": "9821996915732c5d5955dfe1eaa3d841060827872279bc2a352d115c6c343668"
+    },
+    {
+      "name": "TrainingCourseButtonUnitBlock.dds",
+      "purpose": "Body Blocking",
+      "width": 512,
+      "height": 148,
+      "bytes": 38016,
+      "sha256": "79b59386688cd3539eb689444b5bf7a9f3d07004a54cfbc721b069f57c4a4365"
+    },
+    {
+      "name": "TrainingCourseButtonSurround.dds",
+      "purpose": "Surround Training",
+      "width": 512,
+      "height": 148,
+      "bytes": 38016,
+      "sha256": "6588d2a41a79e36ad493e5fe6454dd5fbca0f1ece74acbbab3d613a913c9f705"
+    },
+    {
+      "name": "TrainingCourseButtonMicro.dds",
+      "purpose": "Micro Training",
+      "width": 512,
+      "height": 148,
+      "bytes": 38016,
+      "sha256": "064bfa3c3884b5930d9016c4e8cff913c45b56e81fa76dcecb6c4830f206fee6"
+    },
+    {
+      "name": "TrainingCourseButtonGoblinLab.dds",
+      "purpose": "Goblin Lab Creeping",
+      "width": 512,
+      "height": 148,
+      "bytes": 38016,
+      "sha256": "4b1fae7f2e9a678110fcad4761602292060658418436bf72a3b63fb99be897ad"
+    },
+    {
+      "name": "TrainingCourseButtonGoldMine.dds",
+      "purpose": "Gold Mine Micro",
+      "width": 512,
+      "height": 148,
+      "bytes": 38016,
+      "sha256": "8195083aaeeb7a8afe2623884022f4462df21e2aeb64a205a7b00416ed378166"
+    },
+    {
+      "name": "TrainingCourseButtonMercenary.dds",
+      "purpose": "Merc Camp Creeping",
+      "width": 512,
+      "height": 148,
+      "bytes": 38016,
+      "sha256": "bc429892ab592ffb69fd65fa8523b73ac47818f96bfc3194ebe607ca0e19311b"
+    },
+    {
+      "name": "TrainingCourseButtonDamageCalculator.dds",
+      "purpose": "Demo Mode",
+      "width": 512,
+      "height": 148,
+      "bytes": 38016,
+      "sha256": "b4865c6c96643a54eac7c5f1f7eac8392d4e012d5c5c625c1a5f3a743efea4de"
+    },
+    {
+      "name": "TrainingCourseButtonExpoHarassment.dds",
+      "purpose": "Expo Harassment",
+      "width": 512,
+      "height": 148,
+      "bytes": 38016,
+      "sha256": "d7c40cc9983e7e64b039f922e9b7673add7af8cc5533c64da6026230fcb9f92f"
+    },
+    {
+      "name": "TrainingCourseButtonBatSplitter.dds",
+      "purpose": "Bat Splitter",
+      "width": 512,
+      "height": 148,
+      "bytes": 38016,
+      "sha256": "af050ad994a339b275fcaee6ecf6eb0d4c5a3fb87c45eb8f8ba25a38e986060c"
+    },
+    {
+      "name": "TrainingCourseButtonBaseLayout.dds",
+      "purpose": "Base Layout",
+      "width": 512,
+      "height": 148,
+      "bytes": 38016,
+      "sha256": "5b88c66d7856167e8aa7b9d9dccdb3f43183049c5d3a5672a89b7653f4cfd394"
+    },
+    {
+      "name": "TrainingCourseButtonSpeedBuilder.dds",
+      "purpose": "Speed Builder Comparison",
+      "width": 512,
+      "height": 148,
+      "bytes": 38016,
+      "sha256": "f4f4b67436d9f125b6798a7a172b6d84d23a4fa0f49438f76008788285392144"
+    },
+    {
+      "name": "TrainingCourseButtonReflexes.dds",
+      "purpose": "Reflexes",
+      "width": 512,
+      "height": 148,
+      "bytes": 38016,
+      "sha256": "4d356c1e9b0486f88a53355723f5c940ac43b89a768b1e612c2f0798ece6dfa8"
+    },
+    {
+      "name": "TrainingCourseButton.dds",
+      "purpose": "Unit Comparison",
+      "width": 512,
+      "height": 148,
+      "bytes": 38016,
+      "sha256": "51c8e2087daf6a38fb6efec18d49fda0a22000105a0d55087f58d7f41826fdec"
+    },
+    {
+      "name": "TrainingCourseButtonHotkeyTrainer.dds",
+      "purpose": "Hotkey Trainer",
+      "width": 512,
+      "height": 148,
+      "bytes": 38016,
+      "sha256": "c82c7f96f6356c8c24614cffd2b5312191c1cabde8ef03644760cc4295a98afa"
+    },
+    {
+      "name": "TrainingCourseButtonWindwalkPop.dds",
+      "purpose": "Windwalk Pop",
+      "width": 512,
+      "height": 148,
+      "bytes": 38016,
+      "sha256": "726c7f5a2f269cbb18af75349bf9a96c651e11d167aff2a1929069fcdd04327d"
+    },
+    {
+      "name": "TrainingCourseButtonAowCreeping.dds",
+      "purpose": "AoW Creeping",
+      "width": 512,
+      "height": 148,
+      "bytes": 38016,
+      "sha256": "113afaad4af15cf5fc5330580231982b8ebf79dd7d7a48978a158434e15db879"
+    },
+    {
+      "name": "TrainingCourseButtonStaffingUnits.dds",
+      "purpose": "Staffing Units",
+      "width": 512,
+      "height": 148,
+      "bytes": 38016,
+      "sha256": "b411ca9d95870c2ae8f5700966ca9a66399ae95ea112f643a933710e18ce1cc5"
+    },
+    {
+      "name": "TrainingCourseButtonZeppelinMicro.dds",
+      "purpose": "Zeppelin Micro",
+      "width": 512,
+      "height": 148,
+      "bytes": 38016,
+      "sha256": "078a596f381fd428b480effda3ed834db43682ade78f874808b17da6a0566ac9"
+    },
+    {
+      "name": "TrainingCourseButtonGargoyleSurround.dds",
+      "purpose": "Gargoyle Surround",
+      "width": 512,
+      "height": 148,
+      "bytes": 38016,
+      "sha256": "64fb0eec82bf607fd949a35e325a88f0568f56d7a575513dba7426fccbcbf353"
+    }
+  ],
+  "supportFiles": [
+    {
+      "name": "TrainingCourseUI.toc",
+      "purpose": "loads the custom button frame definition",
+      "bytes": 25,
+      "sha256": "ce78842bc7052fcbe67f11e56c9a1721947b01cf2754fec06683d967a80d8418"
+    },
+    {
+      "name": "TrainingCourseButton.fdf",
+      "purpose": "defines the native tracked hover layer",
+      "bytes": 611,
+      "sha256": "d8143966b3350b479ecf18facbe25f449109e8582c5348adf593f2a740bea19c"
+    }
+  ]
+}

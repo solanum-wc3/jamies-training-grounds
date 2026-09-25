@@ -1,0 +1,4 @@
+allowBuilds:
+  # The pinned package includes a compatible prebuilt binary; its install
+  # script is unnecessary for this project build.
+  '@jamiephan/stormlib': false

@@ -6,9 +6,11 @@ Jamie’s Training Grounds is a Warcraft III teaching and practice map. The succ
 
 The successor map now has an accepted playable foundation based on Twisted Meadows. A reusable northeastern practice district contains two connected empty arenas, while terrain and placed objects outside that district remain preserved. The map uses one player slot with a selectable race, the native Warcraft III interface and Quest window, normal fog of war, and no melee starting army or victory conditions.
 
-The accepted baseline is `v0.0.1-alpha.5`. It has been tested in Warcraft III and successfully opened and saved by World Editor.
+The accepted baseline is `v0.0.1-alpha.5`. It has been tested in Warcraft III and successfully opened and saved by World Editor. The current development candidate is `v0.0.2-alpha.31`, which adds the new shared menu, modular activity lifecycle, elevated active-button tooltips, a translucent masonry-framed menu, illustrated regular-button card prototypes, scrollable milestone patch notes, and delayed post-action keyboard-focus restoration without porting an exercise or tutorial. It requires in-game and World Editor verification before it can replace the accepted baseline.
 
 Version 0.92 of the inherited map remains the behavioral reference while its shared interface and exercise systems are documented and redesigned for modular migration.
+
+Architecture work is recorded in the [legacy source analysis](docs/LEGACY-ANALYSIS.md), [modular infrastructure plan](docs/INFRASTRUCTURE-PLAN.md), and [menu port specification](docs/MENU-AND-INFRASTRUCTURE-PORT.md). The first implementation provides four category catalogues, Patch Notes, Credits, a disabled Player Stats placeholder, per-activity ownership, shared controls, and hidden lifecycle diagnostics. Initial v0.92 traces cover initialization, activity dispatch, Reflexes and persistence; runtime comparison remains pending.
 
 The first planned beginner module is the camera-controls tutorial. Later subjects include unit controls, economy, base construction, heroes, creeping, combat, unit and damage types, and technology.
 
