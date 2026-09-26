@@ -1,48 +1,42 @@
-# Shared infrastructure runtime checklist
+# Body Blocking runtime checklist
 
-Candidate: `v0.0.2-alpha.31`
+Candidate: `v0.0.3-alpha.1`
 
-This candidate is not an accepted milestone until these checks pass in Warcraft III and World Editor.
+This candidate is not a tested milestone until these checks pass in Warcraft III and World Editor.
 
-## Navigation
+## Menu and launch
 
-- The map opens on the Jamie's Training Grounds root menu.
-- Learn to Play, Advanced Play, Skill Training, and Tools & Extras each open their own catalogue.
-- Every listed activity is grey and cannot be launched.
-- Back returns to the root menu.
-- Player Stats is visibly unavailable and cannot be clicked.
-- Patch Notes and Credits open and return correctly.
-- Patch Notes show dated milestone entries in newest-first order and can scroll when their contents exceed the visible area.
-- Active category, illustrated-card, Restart, and Training Menu buttons show readable hover tooltips. Back, Patch Notes, and Credits do not need tooltips.
-- Planned entries without artwork and Player Stats show no tooltip.
-- On release, the cursor and tooltip remain stable while the deferred action opens another panel or restarts the activity.
-- After clicking category, Patch Notes, Credits, Back, Restart, and Training Menu controls, Enter opens chat and F9 opens the native Quest window without first clicking the world.
-- After clicking an illustrated planned card that remains on screen, wait a fraction of a second and verify that Enter opens chat rather than activating the focused card.
-- Body Blocking uses the regular planned-button treatment; Surrounds uses the supplied illustrated card and tooltip.
-- The native Quest button and F9 still open the native Quest window.
-- Clicking custom controls does not leave keyboard focus stuck on a frame.
+- The map opens on Jamie's Training Grounds and the existing category, Patch Notes, Credits and native Quest controls still work.
+- Skill Training shows Body Blocking as an active regular button with a tooltip. Surrounds retains the illustrated planned card.
+- Body Blocking opens a format dialog with Training and Custom, followed by Normal and Hard difficulty.
+- Back buttons have no tooltip. Patch Notes still contain only the two completed milestones.
 
-## Hidden lifecycle diagnostic
+## Training format
 
-1. Type `-diag-start`. One invulnerable Footman should appear in the southern practice arena. Restart and Training Menu should appear.
-2. Type `-diag-status`. State should be `running` and activity should be `dev.lifecycle`.
-   The timer-pulse count should increase while that session remains active. The Footman should retain its normal team coloring without a yellow model tint.
-3. Explore outside the southern arena, then click Restart repeatedly. Each click should replace the Footman rather than accumulating units. The entire playable map should return to masked fog outside the Footman's current vision, and the camera should retain a normal playable angle.
-4. Wait between resets. No expired timer callback should affect a replacement session.
-5. Click Training Menu. The Footman and activity should remain active, Skill Training should open, the toolbar should offer Return to Training, and `-diag-status` should still report `running` with `dev.lifecycle`.
-6. Click Return to Training. The catalogue should close and the activity toolbar should return without creating another Footman.
-7. Type `-diag-exit`. The Footman should disappear, the previous camera should be restored, the full playable map should be remasked, and `-diag-status` should report `idle` with no activity.
-8. Repeat start/reset/exit through `-diag-start`, `-diag-reset`, and `-diag-exit`.
+1. Choose Training, a difficulty and each race roster in turn.
+2. Confirm that a Footman blocker and the roster's first runner appear in the southern arena with START and FINISH markers.
+3. Confirm the 3-2-1-GO countdown, rifleman start cue and quick removal of GO.
+4. Keep the blocker in front of the runner. Confirm streak feedback, finish timing, added-delay score and result panel.
+5. Click Next Runner. The old units, markers, timers and result panel must disappear; the next runner in the roster must start cleanly.
+6. Click Restart during a run. The same matchup must restart without duplicate units or delayed callbacks.
 
-## Foundation regression
+## Custom format and failure
 
-- Lobby still has one trainee slot with selectable race.
-- Loading screen, browser preview, terrain minimap swap, terrain, pathing, fog defaults, and preserved map areas match accepted alpha.5.
-- No melee starting army, melee victory condition, legacy exercise, camera tutorial, custom Info button, or profile load/save appears.
+1. Choose Custom, difficulty, runner race, runner and blocker. Confirm the selected matchup is used.
+2. Let the runner get 300 units ahead. The rifleman should eliminate the blocker and the round should reset after two seconds.
+3. Complete a custom round and click Retry. The selected runner and blocker must be retained.
+4. On Hard, confirm that the runner changes its path and receives more frequent movement orders.
 
-## Editor compatibility
+## Shared lifecycle
 
-- Open the candidate in World Editor without a trigger or data error.
-- Confirm the Shared Infrastructure custom-text trigger is present.
-- Save a separate copy, launch it, and repeat the navigation and diagnostic smoke tests.
-- Record Warcraft III version, World Editor version, graphics mode, artifact SHA-256, and results before accepting the milestone.
+- Training Menu preserves the current round; Return to Training restores it without creating another round.
+- Restart, menu browsing, return, failure reset and exit preserve native F9 and chat behavior apart from the deferred one-frame custom-button release flicker.
+- Leaving the activity removes its units, lightning markers, text tags, dialogs, result/countdown frames, timers and triggers; camera and fog return to shared defaults.
+- Re-entering Body Blocking starts one fresh selection flow. No legacy profile is read or written.
+
+## Foundation and editor regression
+
+- Lobby remains one trainee slot with selectable race; terrain, pathing, minimaps and areas outside the practice district match the accepted foundation.
+- No melee starting army, melee victory condition or unrelated legacy exercise appears.
+- Open the candidate in World Editor without a trigger or data error, save a separate copy, launch it, and repeat the launch/reset/exit smoke test.
+- Record Warcraft III version, World Editor version, graphics mode, artifact SHA-256 and results before accepting the milestone.

@@ -18,25 +18,33 @@ const {
 } = req('@jamiephan/stormlib');
 const luaParser = req('luaparse');
 
-const version = 'v0.0.2-alpha.31';
+const version = 'v0.0.3-alpha.28';
 const sourcePath = path.join(root, 'reference/foundation/Jamies-Training-Grounds-v0.0.1-alpha.5.w3x');
 const outputPath = path.join(root, `outputs/Jamies-Training-Grounds-${version}.w3x`);
 const reportPath = path.join(root, `outputs/Jamies-Training-Grounds-${version}-validation.json`);
 const acceptedHash = 'a1ea7789e60b30e77d64f14337759842dff309d129929ef24defb1276cf1ba64';
 const modulePaths = [
     'src/infrastructure/core.lua',
+    'src/activities/body-blocking.lua',
     'src/infrastructure/catalog.lua',
     'src/infrastructure/ui.lua',
     'src/infrastructure/diagnostics.lua',
     'src/infrastructure/bootstrap.lua',
 ];
 const assetPaths = [
+    ['JTGMenu\\BodyBlocking.dds', 'src/assets/menu/BodyBlocking.dds'],
+    ['JTGMenu\\BodyBlockingBriefing.dds', 'src/assets/menu/BodyBlockingBriefing.dds'],
     ['JTGMenu\\Surrounds.dds', 'src/assets/menu/Surrounds.dds'],
     ['JTGMenu\\AoWCreeping.dds', 'src/assets/menu/AoWCreeping.dds'],
     ['JTGMenu\\BatSplitter.dds', 'src/assets/menu/BatSplitter.dds'],
     ['JTGMenu\\GoldMineMicro.dds', 'src/assets/menu/GoldMineMicro.dds'],
     ['JTGMenu\\UnitComparison.dds', 'src/assets/menu/UnitComparison.dds'],
     ['JTGMenu\\DemoMode.dds', 'src/assets/menu/DemoMode.dds'],
+    ['JTGMenu\\LearnToPlay.dds', 'src/assets/menu/LearnToPlay.dds'],
+    ['JTGMenu\\AdvancedPlay.dds', 'src/assets/menu/AdvancedPlay.dds'],
+    ['JTGMenu\\SkillTraining.dds', 'src/assets/menu/SkillTraining.dds'],
+    ['JTGMenu\\ToolsExtras.dds', 'src/assets/menu/ToolsExtras.dds'],
+    ['JTGMenu\\HotkeyTraining.dds', 'src/assets/menu/HotkeyTraining.dds'],
     ['JTGMenu\\TooltipTL.dds', 'src/assets/menu/TooltipTL.dds'],
     ['JTGMenu\\TooltipTop.dds', 'src/assets/menu/TooltipTop.dds'],
     ['JTGMenu\\TooltipTR.dds', 'src/assets/menu/TooltipTR.dds'],
@@ -46,7 +54,6 @@ const assetPaths = [
     ['JTGMenu\\TooltipBL.dds', 'src/assets/menu/TooltipBL.dds'],
     ['JTGMenu\\TooltipBottom.dds', 'src/assets/menu/TooltipBottom.dds'],
     ['JTGMenu\\TooltipBR.dds', 'src/assets/menu/TooltipBR.dds'],
-    ['JTGMenu\\MenuBackdrop.dds', 'src/assets/menu/MenuBackdrop.dds'],
 ];
 
 const hash = buffer => crypto.createHash('sha256').update(buffer).digest('hex');
@@ -90,6 +97,10 @@ nextLua = nextLua
     .replaceAll('gg_trg_Foundation_Test', 'gg_trg_Infrastructure')
     .replaceAll('InitTrig_Foundation_Test', 'InitTrig_Infrastructure');
 assert(nextLua.includes('function InitTrig_Infrastructure()'));
+assert(nextLua.includes('function JTG.CreateBodyBlockingActivity(session)'),
+    'Body Blocking activity factory is missing from the compiled map');
+assert(nextLua.includes('id = "skills.body_blocking"'),
+    'Body Blocking catalogue registration is missing from the compiled map');
 assert.equal((nextLua.match(/InitTrig_Infrastructure\(\)/g) || []).length, 2,
     'Infrastructure trigger must have one declaration and one initialization call');
 assert(!nextLua.includes('FoundationStart'));
@@ -115,7 +126,7 @@ changes.set('war3map.wtg', Buffer.concat([
     prefix,
     i32(32),
     str('Shared Infrastructure'),
-    str('Map navigation, activity lifecycle and development diagnostics; source maintained in src/infrastructure/.'),
+    str('Map navigation, activity lifecycle and Body Blocking; source maintained in src/.'),
     ...[fields[0], fields[1], 1, 1, fields[4], fields[5], fields[6], fields[7]].map(i32),
 ]));
 
@@ -123,7 +134,7 @@ const wct = source.get('war3map.wct');
 assert(wct.length >= 8, 'Unexpected WCT header');
 changes.set('war3map.wct', Buffer.concat([
     wct.subarray(0, 8),
-    str('Shared infrastructure source is assembled from src/infrastructure in deterministic order.'),
+    str('Map source is assembled from src/ in deterministic order.'),
     i32(0),
     i32(Buffer.byteLength(bundle)),
     Buffer.from(bundle),
@@ -173,7 +184,7 @@ try {
 assert.equal(hash(fs.readFileSync(sourcePath)), acceptedHash, 'Source foundation was modified');
 const report = {
     version,
-    purpose: 'Shared menu and modular activity infrastructure test; no exercise or tutorial content.',
+    purpose: 'First Body Blocking activity migration on the shared menu and lifecycle infrastructure.',
     acceptedFoundation: {
         path: path.relative(root, sourcePath).replaceAll('\\', '/'),
         sha256: acceptedHash,

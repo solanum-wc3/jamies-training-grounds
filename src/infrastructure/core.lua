@@ -119,16 +119,6 @@ function JTG.DisposeScope(scope)
     return ok
 end
 
-JTG.Stats = {attempts = {}, completions = {}}
-
-function JTG.RecordAttempt(id)
-    JTG.Stats.attempts[id] = (JTG.Stats.attempts[id] or 0) + 1
-end
-
-function JTG.RecordCompletion(id)
-    JTG.Stats.completions[id] = (JTG.Stats.completions[id] or 0) + 1
-end
-
 JTG.Controller = {
     state = "idle",
     generation = 0,
@@ -157,6 +147,10 @@ end
 function JTG.StopActivity(reason)
     local controller = JTG.Controller
     local session = controller.session
+    if JTG.UI then
+        JTG.UI.SetGameplayMenuPaused(false)
+        JTG.UI.SetExercisePaused(false)
+    end
     if session == nil then
         controller.state = "idle"
         JTG.ResetWorldFog(Player(0))
@@ -183,7 +177,7 @@ function JTG.StopActivity(reason)
     return ok
 end
 
-function JTG.StartActivity(id, originCategory)
+function JTG.StartActivity(id, originCategory, restartData)
     local controller = JTG.Controller
     local descriptor = JTG.Registry.byId[id]
     if descriptor == nil or descriptor.status ~= "available" or type(descriptor.factory) ~= "function" then
@@ -204,12 +198,11 @@ function JTG.StartActivity(id, originCategory)
         scene = scene,
         generation = controller.generation,
         active = true,
+        restartData = restartData,
         scope = JTG.CreateScope("activity:" .. id),
     }
     controller.session = session
     controller.state = "setting_up"
-    JTG.RecordAttempt(id)
-
     local made, activity = pcall(descriptor.factory, session)
     if not made then
         ControllerFailure(activity)
@@ -231,6 +224,7 @@ function JTG.StartActivity(id, originCategory)
 
     controller.state = "running"
     if JTG.UI then
+        JTG.UI.ReleaseGameplayControl()
         JTG.UI.HideAllPanels()
         JTG.UI.ShowToolbar(descriptor.capabilities)
     end
@@ -250,8 +244,14 @@ function JTG.ResetActivity()
     local session = JTG.Controller.session
     if session == nil then return false end
     local id, category = session.id, JTG.Controller.lastCategory
+    local restartData = nil
+    if session.activity and session.activity.captureResetState then
+        local captured, data = pcall(session.activity.captureResetState, session.activity, session)
+        if captured then restartData = data
+        else print("JTG reset-state warning: " .. tostring(data)) end
+    end
     JTG.StopActivity("reset")
-    return JTG.StartActivity(id, category)
+    return JTG.StartActivity(id, category, restartData)
 end
 
 function JTG.ExitActivity()
@@ -260,13 +260,36 @@ function JTG.ExitActivity()
     if JTG.UI then JTG.UI.ShowCategory(category) end
 end
 
-function JTG.OpenTrainingMenu()
-    local controller = JTG.Controller
-    if controller.session == nil then
-        if JTG.UI then JTG.UI.ShowCategory(controller.lastCategory) end
-        return
+-- End an activity while preserving the menu page the player is currently
+-- browsing. This is separate from the exercise/result Exit action, which
+-- intentionally returns to the originating catalogue.
+function JTG.ExitActivityFromMenu()
+    local restoreBriefing = JTG.UI and JTG.UI.IsActivityBriefingOpen and
+        JTG.UI.IsActivityBriefingOpen()
+    JTG.StopActivity("menu-exit")
+    if JTG.UI and JTG.UI.OnActivityExitedInMenu then
+        JTG.UI.OnActivityExitedInMenu(restoreBriefing)
     end
-    if JTG.UI then JTG.UI.ShowActivityMenu(controller.lastCategory) end
+end
+
+function JTG.OpenActivityMenu(id, originCategory)
+    local controller = JTG.Controller
+    local session = controller.session
+    local targetId = id or (session and session.id)
+    local descriptor = targetId and JTG.Registry.byId[targetId] or nil
+    if descriptor == nil or descriptor.status ~= "available" then return false end
+    local category = originCategory or descriptor.category or controller.lastCategory
+    controller.lastCategory = category
+    if descriptor.menu ~= nil then
+        descriptor.menu(category, session ~= nil)
+    elseif JTG.UI then
+        JTG.UI.ShowCategory(category)
+    end
+    return true
+end
+
+function JTG.OpenTrainingMenu()
+    return JTG.OpenActivityMenu()
 end
 
 function JTG.ResumeActivity()
@@ -276,7 +299,12 @@ function JTG.ResumeActivity()
         return
     end
     if JTG.UI then
+        JTG.UI.SetGameplayMenuPaused(false)
         JTG.UI.HideAllPanels()
-        JTG.UI.ShowToolbar(session.descriptor.capabilities)
+        if session.activity.restorePresentation then
+            session.activity:restorePresentation()
+        else
+            JTG.UI.ShowToolbar(session.descriptor.capabilities)
+        end
     end
 end

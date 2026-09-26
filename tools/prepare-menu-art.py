@@ -6,8 +6,13 @@ ROOT = Path(__file__).resolve().parent.parent
 SOURCE = ROOT / "design" / "menu-art"
 OUTPUT = ROOT / "src" / "assets" / "menu"
 OUTPUT.mkdir(parents=True, exist_ok=True)
+CARD_SIZE = (512, 256)
+ROOT_CARD_SIZE = (256, 128)
 
 CARDS = {
+    # Keep the original card treatment: a centered 2:1 crop at the authored
+    # scale.  The briefing uses the full transparent composition separately.
+    "BodyBlocking": ("body-blocking-source.png", 1.0, 0.50, 0.50, "crop"),
     "Surrounds": ("surrounds-source.png", 1.15, 0.50),
     "AoWCreeping": ("aow-creeping-source.png", 1.05, 0.47),
     "BatSplitter": ("bat-splitter-source.png", 1.05, 0.50),
@@ -16,28 +21,65 @@ CARDS = {
     "DemoMode": ("demo-mode-source.png", 1.25, 0.28),
 }
 
+ROOT_CARDS = {
+    # Root cards retain the complete visible composition. Learn to Play uses
+    # slightly more of its available slot than the other three root cards.
+    "LearnToPlay": ("learn-to-play-source.png", "contain", 1.40, 0.50, 0.50),
+    "AdvancedPlay": ("advanced-play-source.png", "contain", 1.17, 0.50, 0.50),
+    "SkillTraining": ("skill-training-source.png", "contain", 1.17, 0.50, 0.50),
+    "ToolsExtras": ("tools-extras-source.png", "contain", 1.17, 0.50, 0.50),
+    "HotkeyTraining": ("hotkey-training-source.png", "crop", 1.00, 0.48, 0.64),
+}
 
-def card_crop(image, zoom, focal_y):
+
+def card_crop(image, zoom, focal_y, focal_x=0.50, mode="crop"):
     """Crop around the composition without distorting it into the 2:1 card slot."""
+    if mode == "contain":
+        card = Image.new("RGBA", CARD_SIZE, (0, 0, 0, 0))
+        art = image.copy()
+        art.thumbnail(card.size, Image.Resampling.LANCZOS)
+        card.alpha_composite(art, ((card.width - art.width) // 2, (card.height - art.height) // 2))
+        return card
     width = min(image.width, round(image.width / zoom))
     height = min(image.height, round(width / 2))
     width = min(width, height * 2)
-    left = max(0, min(image.width - width, (image.width - width) // 2))
+    centre_x = round(image.width * focal_x)
+    left = max(0, min(image.width - width, centre_x - width // 2))
     centre_y = round(image.height * focal_y)
     top = max(0, min(image.height - height, centre_y - height // 2))
     return image.crop((left, top, left + width, top + height)).resize(
-        (1024, 512), Image.Resampling.LANCZOS
+        CARD_SIZE, Image.Resampling.LANCZOS
     )
 
 
+def contain_visible(image, size, fill):
+    """Fit the complete non-transparent composition with controlled padding."""
+    alpha_box = image.getchannel("A").getbbox()
+    visible = image.crop(alpha_box) if alpha_box is not None else image.copy()
+    target = (
+        max(1, round(size[0] * fill)),
+        max(1, round(size[1] * fill)),
+    )
+    visible.thumbnail(target, Image.Resampling.LANCZOS)
+    card = Image.new("RGBA", size, (0, 0, 0, 0))
+    card.alpha_composite(visible, (
+        (size[0] - visible.width) // 2,
+        (size[1] - visible.height) // 2,
+    ))
+    return card
+
+
 generated = []
-for output_name, (source_name, zoom, focal_y) in CARDS.items():
+for output_name, values in CARDS.items():
+    source_name, zoom, focal_y = values[:3]
+    focal_x = values[3] if len(values) > 3 else 0.50
+    mode = values[4] if len(values) > 4 else "crop"
     source = Image.open(SOURCE / source_name).convert("RGBA")
     assert source.getchannel("A").getextrema()[0] == 0, source_name + " must retain transparency"
-    card = card_crop(source, zoom, focal_y)
+    card = card_crop(source, zoom, focal_y, focal_x, mode)
     card_path = OUTPUT / f"{output_name}.dds"
     card.save(card_path, pixel_format="DXT5")
-    generated.append((card_path, (1024, 512)))
+    generated.append((card_path, CARD_SIZE))
 
     # White with the source artwork's alpha, reduced to a light hover wash.
     alpha = card.getchannel("A").point(lambda value: round(value * 0.25))
@@ -45,18 +87,37 @@ for output_name, (source_name, zoom, focal_y) in CARDS.items():
     hover.putalpha(alpha)
     hover_path = OUTPUT / f"{output_name}Hover.dds"
     hover.save(hover_path, pixel_format="DXT5")
-    generated.append((hover_path, (1024, 512)))
+    generated.append((hover_path, CARD_SIZE))
 
-# The supplied frame already has a transparent opening. Put a nearly opaque
-# black field behind it, then resize the complete frame without rebuilding or
-# stretching individual edges.
-frame = Image.open(SOURCE / "menu-frame-source.png").convert("RGBA")
-menu = Image.new("RGBA", frame.size, (0, 0, 0, 240))
-menu.alpha_composite(frame)
-menu = menu.resize((1024, 752), Image.Resampling.LANCZOS)
-menu_path = OUTPUT / "MenuBackdrop.dds"
-menu.save(menu_path, pixel_format="DXT5")
-generated.append((menu_path, (1024, 752)))
+# Root catalogue and Hotkey Trainer artwork is displayed in comparatively
+# small button slots. A 256x128 DXT5 texture preserves the visible detail while
+# avoiding the map-size cost of the larger exercise-card source resolution.
+for output_name, (source_name, mode, amount, focal_y, focal_x) in ROOT_CARDS.items():
+    source = Image.open(SOURCE / source_name).convert("RGBA")
+    if mode == "contain":
+        card = contain_visible(source, ROOT_CARD_SIZE, amount)
+    else:
+        card = card_crop(source, amount, focal_y, focal_x).resize(
+            ROOT_CARD_SIZE, Image.Resampling.LANCZOS
+        )
+    card_path = OUTPUT / f"{output_name}.dds"
+    card.save(card_path, pixel_format="DXT5")
+    generated.append((card_path, ROOT_CARD_SIZE))
+
+# Briefings preserve the whole transparent composition.  Cards intentionally
+# use their tighter 2:1 crop, so the two UI contexts can be art-directed
+# independently.
+briefing_source = Image.open(SOURCE / "body-blocking-source.png").convert("RGBA")
+briefing = Image.new("RGBA", (512, 256), (0, 0, 0, 0))
+briefing_art = briefing_source.copy()
+briefing_art.thumbnail(briefing.size, Image.Resampling.LANCZOS)
+briefing.alpha_composite(briefing_art, (
+    (briefing.width - briefing_art.width) // 2,
+    (briefing.height - briefing_art.height) // 2,
+))
+briefing_path = OUTPUT / "BodyBlockingBriefing.dds"
+briefing.save(briefing_path, pixel_format="DXT5")
+generated.append((briefing_path, (512, 256)))
 
 # A lighter, more transparent field for delayed descriptive tooltips.
 tooltip = Image.new("RGBA", (64, 64), (38, 38, 38, 145))

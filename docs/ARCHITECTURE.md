@@ -2,7 +2,7 @@
 
 ## Project state
 
-The accepted playable baseline is `v0.0.1-alpha.5`. The unaccepted `v0.0.2-alpha.31` development candidate implements the first shared-infrastructure slice, revised illustrated menu prototype, scrollable milestone patch notes, and delayed post-action keyboard-focus restoration on that exact baseline. The [legacy analysis](LEGACY-ANALYSIS.md) records verified v0.92 source findings and outstanding inspection. The [infrastructure plan](INFRASTRUCTURE-PLAN.md) defines ownership, lifecycle transitions and staged verification. The authoritative legacy archive remains external to this checkout and unchanged.
+The accepted playable foundation is `v0.0.1-alpha.5`, and `v0.0.2-alpha.31` implements the shared menu and activity lifecycle. The unaccepted `v0.0.3-alpha.1` candidate ports Body Blocking as the first real activity on that architecture. The [legacy analysis](LEGACY-ANALYSIS.md) records verified v0.92 source findings, the [infrastructure plan](INFRASTRUCTURE-PLAN.md) defines ownership and lifecycle transitions, and the [migration notes](BODY-BLOCKING-MIGRATION.md) define this port's preserved behavior and intentional omissions. The authoritative legacy archive remains external to this checkout and unchanged.
 
 The concrete shared-menu scope is defined in the [menu and infrastructure port specification](MENU-AND-INFRASTRUCTURE-PORT.md). That phase ends before any real legacy exercise or tutorial is migrated.
 

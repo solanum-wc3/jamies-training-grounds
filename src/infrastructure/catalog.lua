@@ -2,10 +2,10 @@
 JTG = JTG or {}
 
 JTG.Categories = {
-    {id = "learn", title = "Learn to Play", summary = "Warcraft III controls and fundamentals."},
-    {id = "advanced", title = "Advanced Play", summary = "Competitive strategy, planning and decision-making."},
-    {id = "skills", title = "Skill Training", summary = "Focused exercises for mechanical skills."},
-    {id = "tools", title = "Tools & Extras", summary = "Analysis tools, demonstrations, quizzes and games."},
+    {id = "learn", title = "Learn to Play", summary = "Warcraft III controls and fundamentals.", artwork = "JTGMenu\\LearnToPlay.dds"},
+    {id = "advanced", title = "Advanced Play", summary = "Competitive strategy, planning and decision-making.", artwork = "JTGMenu\\AdvancedPlay.dds"},
+    {id = "skills", title = "Skill Training", summary = "Focused exercises for mechanical skills.", artwork = "JTGMenu\\SkillTraining.dds"},
+    {id = "tools", title = "Tools & Extras", summary = "Analysis tools, demonstrations, quizzes and games.", artwork = "JTGMenu\\ToolsExtras.dds"},
 }
 
 JTG.RegisterScene({
@@ -35,7 +35,6 @@ local planned = {
     {"advanced.composition", "advanced", "Army Composition", "Adapt units and upgrades to the opponent."},
     {"advanced.matchups", "advanced", "Matchup Plans", "Develop plans for common race matchups."},
 
-    {"skills.body_blocking", "skills", "Body Blocking", "Restrict enemy movement with precise positioning."},
     {"skills.surround", "skills", "Surrounds", "Trap a target with coordinated movement.", "JTGMenu\\Surrounds.dds"},
     {"skills.bat_splitter", "skills", "Bat Splitter", "Split vulnerable air units under pressure.", "JTGMenu\\BatSplitter.dds"},
     {"skills.micro", "skills", "Micro Training", "Control mixed armies efficiently."},
@@ -50,10 +49,23 @@ local planned = {
     {"skills.windwalk", "skills", "Windwalk Pop", "Use collision timing to displace units."},
 
     {"tools.demo", "tools", "Demo Mode", "Explore units and mechanics freely.", "JTGMenu\\DemoMode.dds"},
-    {"tools.hotkeys", "tools", "Hotkey Trainer", "Learn command-card and inventory hotkeys."},
+    {"tools.hotkeys", "tools", "Hotkey Trainer", "Learn command-card and inventory hotkeys.", "JTGMenu\\HotkeyTraining.dds"},
     {"tools.quiz", "tools", "Warcraft III Quiz", "Test knowledge of units and mechanics."},
     {"tools.compare", "tools", "Unit Comparison", "Compare unit statistics and interactions.", "JTGMenu\\UnitComparison.dds"},
 }
+
+JTG.RegisterActivity({
+    id = "skills.body_blocking",
+    category = "skills",
+    title = "Body Blocking",
+    description = "Stay in front of a runner and use unit collision to delay it.",
+    artwork = "JTGMenu\\BodyBlocking.dds",
+    status = "available",
+    sceneId = "arena.south",
+    capabilities = {restart = true, menu = true},
+    menu = JTG.OpenBodyBlockingMenu,
+    factory = JTG.CreateBodyBlockingActivity,
+})
 
 for _, entry in ipairs(planned) do
     JTG.RegisterActivity({

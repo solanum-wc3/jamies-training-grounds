@@ -1,4 +1,4 @@
--- Map bootstrap. No exercise or tutorial content belongs here.
+-- Map bootstrap. Activity content is registered by the catalogue modules.
 JTG = JTG or {}
 
 local function CreateInfrastructureQuests()
@@ -7,13 +7,13 @@ local function CreateInfrastructureQuests()
     QuestSetDescription(overview,
         "This development build tests the new Training Grounds navigation and activity lifecycle.\n\n" ..
         "Browse the four catalogues, Patch Notes and Credits. Planned content is visible but unavailable. " ..
-        "Player Stats is intentionally deferred. The standard Quest window and F9 remain available.\n\n" ..
+        "The standard Quest window and F9 remain available.\n\n" ..
         "Developer commands:\n" ..
         "-diag-start: launch the hidden lifecycle test\n" ..
         "-diag-reset: rebuild its temporary resources\n" ..
         "-diag-exit: clean up and return to Skill Training\n" ..
         "-diag-status: show controller state\n\n" ..
-        "No legacy profile is loaded or changed, and no exercise or tutorial is included.")
+        "No legacy profile is loaded or changed. Body Blocking is the first playable migrated activity.")
     QuestSetRequired(overview, false)
     QuestSetDiscovered(overview, true)
     QuestSetEnabled(overview, true)
@@ -36,7 +36,7 @@ function JTG.Initialize()
     JTG.UI.Initialize()
     JTG.InitializeDiagnostics()
     DisplayTimedTextToPlayer(Player(0), 0, 0, 12,
-        "|cffffcc00Jamie's Training Grounds v0.0.2-alpha.31|r\nMenu and shared-infrastructure test. Choose a category from the Training Grounds menu.")
+        "|cffffcc00Jamie's Training Grounds v0.0.3-alpha.28|r\nSynchronized waypoint test. Choose Body Blocking from Skill Training.")
 end
 
 function InitTrig_Infrastructure()

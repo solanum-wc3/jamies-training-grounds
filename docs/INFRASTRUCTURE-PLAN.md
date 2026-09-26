@@ -1,6 +1,6 @@
 # Modular infrastructure plan
 
-Status: revised implementation candidate built, 2026-09-25. This plan extends the accepted foundation; `v0.0.2-alpha.31` remains unaccepted until runtime and World Editor checks pass.
+Status: shared infrastructure implemented; first legacy migration candidate built, 2026-09-25. `v0.0.3-alpha.1` ports Body Blocking and awaits runtime and World Editor checks.
 
 ## Boundaries and dependency direction
 
