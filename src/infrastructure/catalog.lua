@@ -62,7 +62,7 @@ JTG.RegisterActivity({
     artwork = "JTGMenu\\BodyBlocking.dds",
     status = "available",
     sceneId = "arena.south",
-    capabilities = {restart = true, menu = true},
+    capabilities = {restart = true, menu = true, lastRunner = true},
     menu = JTG.OpenBodyBlockingMenu,
     factory = JTG.CreateBodyBlockingActivity,
 })

@@ -36,7 +36,7 @@ function JTG.Initialize()
     JTG.UI.Initialize()
     JTG.InitializeDiagnostics()
     DisplayTimedTextToPlayer(Player(0), 0, 0, 12,
-        "|cffffcc00Jamie's Training Grounds v0.0.3-alpha.28|r\nSynchronized waypoint test. Choose Body Blocking from Skill Training.")
+        "|cffffcc00Jamie's Training Grounds v0.0.3-alpha.42|r\nPatch Notes rendering fix.")
 end
 
 function InitTrig_Infrastructure()

@@ -254,6 +254,18 @@ function JTG.ResetActivity()
     return JTG.StartActivity(id, category, restartData)
 end
 
+function JTG.LastRunnerActivity()
+    local session = JTG.Controller.session
+    if session == nil or session.activity == nil or
+        session.activity.captureLastRunnerState == nil then return false end
+    local captured, restartData = pcall(session.activity.captureLastRunnerState,
+        session.activity, session)
+    if not captured or restartData == nil then return false end
+    local id, category = session.id, JTG.Controller.lastCategory
+    JTG.StopActivity("last-runner")
+    return JTG.StartActivity(id, category, restartData)
+end
+
 function JTG.ExitActivity()
     local category = JTG.Controller.lastCategory
     JTG.StopActivity("exit")

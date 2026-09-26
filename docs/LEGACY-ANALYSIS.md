@@ -4,7 +4,7 @@ Status: initial source analysis, 2026-09-24. Baseline: accepted `v0.0.1-alpha.5`
 
 ## Evidence boundary
 
-The user supplied the authoritative archive at `C:/Users/USERNAME/Documents/Warcraft III/Maps/Onboarding Project/Jamie's Training Grounds v0.92.w3x` and an existing extraction at `C:/Users/USERNAME/Documents/Codex/2026-09-20/referenced-chatgpt-conversation-this-is-an/work/extracted/`. Neither gameplay source nor archive is tracked in this repository.
+The user supplied the authoritative legacy map and an existing local extraction. Neither the legacy gameplay source nor its complete archive is tracked in this repository.
 
 Read-only archive inspection with `@jamiephan/stormlib` 0.2.1 established:
 

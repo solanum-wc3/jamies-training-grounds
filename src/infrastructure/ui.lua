@@ -2,7 +2,7 @@
 JTG = JTG or {}
 JTG.UI = {
     panels = {}, categoryButtons = {}, catalogueRows = {}, toolbarButtons = {},
-    clickActions = {}, clickTrigger = nil, browsingActivity = false,
+    clickActions = {}, clickSounds = {}, clickTrigger = nil, browsingActivity = false,
 }
 
 local UI = JTG.UI
@@ -21,6 +21,7 @@ local CATALOGUE_BUTTON_WIDTH = 0.190
 local CATALOGUE_BUTTON_HEIGHT = 0.052
 local FOOTER_BUTTON_WIDTH = 0.17
 local FOOTER_BUTTON_HEIGHT = 0.044
+local footerDividerCount = 0
 
 local function CreateNativePanel(name, parent, width, height)
     local panel = BlzCreateFrameByType("FRAME", name, parent, "", 0)
@@ -35,6 +36,17 @@ local function CreateNativePanel(name, parent, width, height)
 end
 
 UI.CreateNativePanel = CreateNativePanel
+
+local function AddFooterDivider(panel)
+    footerDividerCount = footerDividerCount + 1
+    local divider = BlzCreateFrameByType("BACKDROP",
+        "JTGMenuFooterDivider" .. footerDividerCount, panel, "", 0)
+    BlzFrameSetTexture(divider, "JTGMenu\\TooltipTop.dds", 0, true)
+    BlzFrameSetSize(divider, 0.52, 0.0012)
+    BlzFrameSetPoint(divider, FRAMEPOINT_BOTTOM, panel, FRAMEPOINT_BOTTOM, 0, 0.092)
+    BlzFrameSetEnable(divider, false)
+    return divider
+end
 
 local function CreateText(name, parent, text, width, height, scale)
     local frame = BlzCreateFrameByType("TEXT", name, parent, "", 0)
@@ -52,7 +64,12 @@ local function CreateButton(name, parent, text, width, height)
     return button
 end
 
-local function BriefingChoicePoint(index, count)
+local function BriefingChoicePoint(index, count, compact)
+    if compact then
+        local column = (index - 1) % 3
+        local row = math.floor((index - 1) / 3)
+        return -0.180 + column * 0.180, -0.190 - row * 0.036
+    end
     if count <= 2 then
         return index == 1 and -0.108 or 0.108, -0.305
     end
@@ -61,9 +78,9 @@ local function BriefingChoicePoint(index, count)
         local row = math.floor((index - 1) / 2)
         return column == 0 and -0.108 or 0.108, -0.278 - row * 0.050
     end
-    local column = (index - 1) % 3
-    local row = math.floor((index - 1) / 3)
-    return -0.190 + column * 0.190, -0.278 - row * 0.050
+    local column = (index - 1) % 2
+    local row = math.floor((index - 1) / 2)
+    return column == 0 and -0.108 or 0.108, -0.215 - row * 0.055
 end
 
 local function FindButtonText(button)
@@ -202,8 +219,19 @@ local function ReleaseKeyboardFocus()
     end
 end
 
-local function RegisterClick(frame, action)
+local function PlayButtonSound(kind)
+    local sound = kind == "return" and UI.returnButtonSound or UI.normalButtonSound
+    if sound ~= nil then
+        StopSound(sound, false, false)
+        StartSound(sound)
+    end
+end
+
+UI.PlayButtonSound = PlayButtonSound
+
+local function RegisterClick(frame, action, soundKind)
     UI.clickActions[GetHandleId(frame)] = action
+    UI.clickSounds[GetHandleId(frame)] = soundKind or "normal"
     BlzTriggerRegisterFrameEvent(UI.clickTrigger, frame, FRAMEEVENT_CONTROL_CLICK)
 end
 
@@ -292,7 +320,15 @@ function UI.ShowToolbar(capabilities)
     UI.clickActions[GetHandleId(UI.toolbarButtons.menu)] = JTG.OpenTrainingMenu
     BlzFrameSetVisible(UI.toolbarButtons.restart, caps.restart == true)
     BlzFrameSetVisible(UI.toolbarButtons.menu, caps.menu ~= false)
+    BlzFrameSetVisible(UI.toolbarButtons.lastRunner, caps.lastRunner == true)
+    UI.SetLastRunnerEnabled(false)
     BlzFrameSetVisible(UI.toolbar, true)
+end
+
+function UI.SetLastRunnerEnabled(enabled)
+    if UI.toolbarButtons.lastRunner == nil then return end
+    BlzFrameSetEnable(UI.toolbarButtons.lastRunner, enabled == true)
+    BlzFrameSetAlpha(UI.toolbarButtons.lastRunner, enabled and 255 or 145)
 end
 
 function UI.ShowPausedActivityToolbar()
@@ -324,6 +360,30 @@ function UI.HideActivityBriefing()
     if UI.activityBriefingResume ~= nil then BlzFrameSetVisible(UI.activityBriefingResume, false) end
 end
 
+local function RefreshActivityBriefingChoices()
+    local actions = UI.activityBriefingActions or {}
+    local compact = UI.activityBriefingCompact == true
+    UI.activityBriefingVisibleActions = {}
+    for index, button in ipairs(UI.activityBriefingButtons or {}) do
+        local choice = actions[index]
+        UI.activityBriefingVisibleActions[index] = choice
+        BlzFrameSetVisible(button, choice ~= nil)
+        if choice ~= nil then
+            local x, y = BriefingChoicePoint(index, #actions, compact)
+            BlzFrameClearAllPoints(button)
+            BlzFrameSetPoint(button, FRAMEPOINT_TOP, UI.panels.activityBriefing,
+                FRAMEPOINT_TOP, x, y)
+            BlzFrameSetSize(button, compact and 0.165 or 0.190,
+                compact and 0.033 or 0.042)
+            BlzFrameSetText(button, choice.label)
+            local label = FindButtonText(button)
+            if label ~= nil then BlzFrameSetScale(label, compact and 0.72 or 1.0) end
+            BlzFrameSetTextColor(button, choice.primary and
+                BlzConvertColor(255, 255, 204, 0) or BlzConvertColor(255, 255, 255, 255))
+        end
+    end
+end
+
 function UI.ShowActivityBriefing(spec)
     local panel = UI.panels.activityBriefing
     if panel == nil then return end
@@ -332,28 +392,15 @@ function UI.ShowActivityBriefing(spec)
     UI.HideToolbar()
     BlzFrameSetText(UI.activityBriefingTitle, "|cffffcc00" .. (spec.title or "") .. "|r")
     BlzFrameSetText(UI.activityBriefingBody, spec.body or "")
+    BlzFrameSetSize(UI.activityBriefingBody, 0.53 / PARAGRAPH_SCALE,
+        (spec.compactChoices and 0.060 or 0.205) / PARAGRAPH_SCALE)
     BlzFrameSetVisible(UI.activityBriefingArtwork, spec.headingArtwork ~= nil)
     if spec.headingArtwork ~= nil then
         BlzFrameSetTexture(UI.activityBriefingArtwork, spec.headingArtwork, 0, true)
     end
     UI.activityBriefingActions = spec.choices or {}
-    local choiceCount = #UI.activityBriefingActions
-    for index, button in ipairs(UI.activityBriefingButtons) do
-        local choice = UI.activityBriefingActions[index]
-        BlzFrameSetVisible(button, choice ~= nil)
-        if choice ~= nil then
-            local x, y = BriefingChoicePoint(index, choiceCount)
-            BlzFrameClearAllPoints(button)
-            BlzFrameSetPoint(button, FRAMEPOINT_TOP, panel, FRAMEPOINT_TOP, x, y)
-            BlzFrameSetText(button, choice.label)
-            local color = choice.primary and BlzConvertColor(255, 255, 204, 0) or
-                BlzConvertColor(255, 255, 255, 255)
-            BlzFrameSetTextColor(button, color)
-            if UI.activityBriefingTooltipText[index] ~= nil then
-                BlzFrameSetText(UI.activityBriefingTooltipText[index], choice.tooltip or "")
-            end
-        end
-    end
+    UI.activityBriefingCompact = spec.compactChoices == true
+    RefreshActivityBriefingChoices()
     UI.activityBriefingBackAction = spec.backAction
     BlzFrameSetTextColor(UI.activityBriefingBack, BlzConvertColor(255, 255, 255, 255))
     UI.activityBriefingResumeAction = spec.resumeAction
@@ -402,6 +449,7 @@ end
 local function CreateRootPanel()
     local panel = CreateNativePanel("JTGRootPanel", GAME_UI, MENU_WIDTH, MENU_HEIGHT)
     PositionTop(panel)
+    AddFooterDivider(panel)
     UI.panels.root = panel
 
     local title = CreateText("JTGRootTitle", panel, "|cffffcc00Jamie's Training Grounds|r",
@@ -439,7 +487,7 @@ local function CreateRootPanel()
     local activeBack = CreateButton("JTGRootActivityBack", panel, "Back",
         FOOTER_BUTTON_WIDTH, FOOTER_BUTTON_HEIGHT)
     BlzFrameSetPoint(activeBack, FRAMEPOINT_BOTTOM, panel, FRAMEPOINT_BOTTOM, 0, 0.035)
-    RegisterClick(activeBack, function() UI.ShowCategory(JTG.Controller.lastCategory) end)
+    RegisterClick(activeBack, function() UI.ShowCategory(JTG.Controller.lastCategory) end, "return")
     BlzFrameSetVisible(activeBack, false)
     UI.rootActivityBack = activeBack
 end
@@ -447,6 +495,7 @@ end
 local function CreateCategoryPanel(category, categoryIndex)
     local panel = CreateNativePanel("JTGCategoryPanel" .. categoryIndex, GAME_UI, MENU_WIDTH, MENU_HEIGHT)
     PositionTop(panel)
+    AddFooterDivider(panel)
     UI.panels["category_" .. category.id] = panel
     BlzFrameSetVisible(panel, false)
 
@@ -501,12 +550,13 @@ local function CreateCategoryPanel(category, categoryIndex)
     local back = CreateButton("JTGCategoryBack" .. categoryIndex, panel, "Back",
         FOOTER_BUTTON_WIDTH, FOOTER_BUTTON_HEIGHT)
     BlzFrameSetPoint(back, FRAMEPOINT_BOTTOM, panel, FRAMEPOINT_BOTTOM, 0, 0.035)
-    RegisterClick(back, UI.ShowRoot)
+    RegisterClick(back, UI.ShowRoot, "return")
 end
 
 local function CreateInfoPanel(key, titleText, bodyText, index, scrollable)
     local panel = CreateNativePanel("JTGInfoPanel" .. index, GAME_UI, MENU_WIDTH, MENU_HEIGHT)
     PositionTop(panel)
+    AddFooterDivider(panel)
     UI.panels[key] = panel
     BlzFrameSetVisible(panel, false)
     local title = CreateText("JTGInfoTitle" .. index, panel, "|cffffcc00" .. titleText .. "|r",
@@ -528,12 +578,13 @@ local function CreateInfoPanel(key, titleText, bodyText, index, scrollable)
     local back = CreateButton("JTGInfoBack" .. index, panel, "Back",
         FOOTER_BUTTON_WIDTH, FOOTER_BUTTON_HEIGHT)
     BlzFrameSetPoint(back, FRAMEPOINT_BOTTOM, panel, FRAMEPOINT_BOTTOM, 0, 0.035)
-    RegisterClick(back, UI.ShowRoot)
+    RegisterClick(back, UI.ShowRoot, "return")
 end
 
 local function CreateActivityBriefingPanel()
     local panel = CreateNativePanel("JTGActivityBriefing", GAME_UI, MENU_WIDTH, MENU_HEIGHT)
     PositionTop(panel)
+    AddFooterDivider(panel)
     UI.panels.activityBriefing = panel
     BlzFrameSetVisible(panel, false)
 
@@ -550,15 +601,16 @@ local function CreateActivityBriefingPanel()
         0.53 / PARAGRAPH_SCALE, 0.205 / PARAGRAPH_SCALE, PARAGRAPH_SCALE)
     BlzFrameSetTextAlignment(UI.activityBriefingBody, TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_LEFT)
     BlzFrameSetPoint(UI.activityBriefingBody, FRAMEPOINT_TOP, UI.activityBriefingTitle, FRAMEPOINT_BOTTOM, 0, -0.022)
+    BlzFrameSetEnable(UI.activityBriefingBody, false)
 
     UI.activityBriefingButtons = {}
     UI.activityBriefingTooltipText = {}
-    for index = 1, 6 do
+    for index = 1, 15 do
         local button = CreateButton("JTGActivityBriefingChoice" .. index, panel, "", 0.190, 0.042)
         BlzFrameSetPoint(button, FRAMEPOINT_TOP, panel, FRAMEPOINT_TOP, 0, -0.305)
         UI.activityBriefingButtons[index] = button
         RegisterClick(button, function()
-            local choice = UI.activityBriefingActions and UI.activityBriefingActions[index]
+            local choice = UI.activityBriefingVisibleActions and UI.activityBriefingVisibleActions[index]
             if choice ~= nil and choice.action ~= nil then choice.action() end
         end)
     end
@@ -568,7 +620,7 @@ local function CreateActivityBriefingPanel()
     BlzFrameSetPoint(back, FRAMEPOINT_BOTTOM, panel, FRAMEPOINT_BOTTOM, 0, 0.035)
     RegisterClick(back, function()
         if UI.activityBriefingBackAction ~= nil then UI.activityBriefingBackAction() end
-    end)
+    end, "return")
     UI.activityBriefingBack = back
 
     local exit = CreateButton("JTGActivityBriefingExit", panel, "Exit",
@@ -587,7 +639,7 @@ local function CreateActivityBriefingPanel()
     BlzFrameSetTextColor(resume, BlzConvertColor(255, 255, 255, 255))
     RegisterClick(resume, function()
         if UI.activityBriefingResumeAction ~= nil then UI.activityBriefingResumeAction() end
-    end)
+    end, "return")
     UI.activityBriefingResume = resume
     BlzFrameSetVisible(resume, false)
 end
@@ -631,13 +683,17 @@ local function CreateToolbar()
 
     local lastRunner = toolbarButton("JTGToolbarLastRunner", "Last Runner", 0.078)
     BlzFrameSetPoint(lastRunner, FRAMEPOINT_LEFT, menu, FRAMEPOINT_RIGHT, 0.004, 0)
+    AttachTooltip(lastRunner, "Restart the exercise against the previous runner.", "left")
     BlzFrameSetEnable(lastRunner, false)
     BlzFrameSetAlpha(lastRunner, 145)
+    RegisterClick(lastRunner, JTG.LastRunnerActivity)
     UI.toolbarButtons.lastRunner = lastRunner
 
     local pause = toolbarButton("JTGToolbarPause", "Pause", 0.058)
     BlzFrameSetPoint(pause, FRAMEPOINT_LEFT, lastRunner, FRAMEPOINT_RIGHT, 0.004, 0)
-    RegisterClick(pause, UI.ToggleExercisePause)
+    RegisterClick(pause, UI.ToggleExercisePause, function()
+        return UI.exercisePaused and "return" or "normal"
+    end)
     UI.toolbarButtons.pause = pause
     BlzFrameSetVisible(bar, false)
 end
@@ -655,17 +711,22 @@ local function CreatePausedActivityResume()
         FOOTER_BUTTON_WIDTH, FOOTER_BUTTON_HEIGHT)
     BlzFrameSetAbsPoint(resume, FRAMEPOINT_BOTTOMRIGHT, 0.675, 0.120)
     BlzFrameSetTextColor(resume, BlzConvertColor(255, 255, 255, 255))
-    RegisterClick(resume, JTG.ResumeActivity)
+    RegisterClick(resume, JTG.ResumeActivity, "return")
     BlzFrameSetVisible(resume, false)
     UI.pausedActivityResume = resume
 end
 
 function UI.Initialize()
     GAME_UI = BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0)
+    UI.normalButtonSound = CreateSound("Sound\\Interface\\BigButtonClick.wav", false, false, false, 10, 10, "")
+    UI.returnButtonSound = CreateSound("Sound\\Interface\\GamePause.wav", false, false, false, 10, 10, "")
     UI.clickTrigger = CreateTrigger()
     TriggerAddAction(UI.clickTrigger, function()
         local action = UI.clickActions[GetHandleId(BlzGetTriggerFrame())]
         if action ~= nil then
+            local soundKind = UI.clickSounds[GetHandleId(BlzGetTriggerFrame())]
+            if type(soundKind) == "function" then soundKind = soundKind() end
+            PlayButtonSound(soundKind)
             if UI.gameplayMenuPaused or UI.exercisePaused then
                 action()
                 return
@@ -693,12 +754,15 @@ function UI.Initialize()
     CreateRootPanel()
     for index, category in ipairs(JTG.Categories) do CreateCategoryPanel(category, index) end
     CreateInfoPanel("patch", "Patch Notes",
-        "|cffffcc00v0.0.2-alpha.31|r  |cffb0b0b025 September 2026|r\n" ..
-        "- Added the four-category Training Grounds menu, illustrated cards, tooltips, Patch Notes and Credits.\n" ..
-        "- Added modular activity lifecycle support with shared Restart, Training Menu and complete state cleanup.\n\n" ..
-        "|cffffcc00v0.0.1-alpha.5|r  |cffb0b0b024 September 2026|r\n" ..
-        "- Established the playable Twisted Meadows foundation with two reusable training arenas.\n" ..
-        "- Preserved the native interface, race selection and fog while adding separate preview and loading artwork.", 1, true)
+        "|cffffcc00v0.0.3|r  |cffb0b0b027 September 2026|r\n" ..
+        "- Added Training: Body Blocking.\n" ..
+        "- Reworked menus.\n\n" ..
+        "|cffffcc00v0.0.2|r  |cffb0b0b025 September 2026|r\n" ..
+        "- Implemented menu structure.\n" ..
+        "- Implemented base architecture.\n\n" ..
+        "|cffffcc00v0.0.1|r  |cffb0b0b024 September 2026|r\n" ..
+        "- Cleaned up source map.\n" ..
+        "- Implemented menu-to-game environment transition.", 1)
     CreateInfoPanel("credits", "Credits",
         "Project started by |cffffcc00Jamie|r and currently run by |cffffcc00Solanum|r.\n\n" ..
         "Contributors: AoW, poison, floss2xdaily, Kaccel, MadPad09 and Solstice1221.\n\n" ..

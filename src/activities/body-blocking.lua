@@ -6,24 +6,24 @@ JTG = JTG or {}
 
 local TRAINING_ROSTERS = {
     human = {
-        {FourCC("hpea"), "Peasant"}, {FourCC("hfoo"), "Footman"},
-        {FourCC("hrif"), "Rifleman"}, {FourCC("hmpr"), "Priest"},
+        {FourCC("hpea"), "Peasant"}, {FourCC("hmtm"), "Mortar Team"},
+        {FourCC("hfoo"), "Footman"}, {FourCC("hsor"), "Sorceress"},
         {FourCC("hspt"), "Spell Breaker"}, {FourCC("hkni"), "Knight"},
     },
     orc = {
         {FourCC("opeo"), "Peon"}, {FourCC("okod"), "Kodo Beast"},
-        {FourCC("ogru"), "Grunt"}, {FourCC("ohun"), "Headhunter"},
-        {FourCC("oshm"), "Shaman"}, {FourCC("orai"), "Raider"},
+        {FourCC("ogru"), "Grunt"}, {FourCC("oshm"), "Shaman"},
+        {FourCC("otau"), "Tauren"}, {FourCC("orai"), "Raider"},
     },
     undead = {
         {FourCC("uaco"), "Acolyte"}, {FourCC("uabo"), "Abomination"},
-        {FourCC("ucry"), "Crypt Fiend"}, {FourCC("unec"), "Necromancer"},
-        {FourCC("uban"), "Banshee"}, {FourCC("ugho"), "Ghoul"},
+        {FourCC("ucry"), "Crypt Fiend"}, {FourCC("ugho"), "Ghoul"},
+        {FourCC("uban"), "Banshee"},
     },
     nightelf = {
-        {FourCC("ewsp"), "Wisp"}, {FourCC("earc"), "Archer"},
-        {FourCC("edot"), "Druid of the Talon"}, {FourCC("edoc"), "Druid of the Claw"},
-        {FourCC("edry"), "Dryad"}, {FourCC("esen"), "Huntress"},
+        {FourCC("ewsp"), "Wisp"}, {FourCC("emtg"), "Mountain Giant"},
+        {FourCC("edob"), "Druid of the Claw (Bear Form)"}, {FourCC("earc"), "Archer"},
+        {FourCC("esen"), "Huntress"}, {FourCC("edry"), "Dryad"},
     },
 }
 
@@ -32,15 +32,63 @@ local RACE_CHOICES = {
     {key = "nightelf", label = "Night Elf"}, {key = "undead", label = "Undead"},
 }
 
-local BLOCKER_CHOICES = {
-    {unitId = FourCC("hfoo"), name = "Footman"},
-    {unitId = FourCC("ogru"), name = "Grunt"},
-    {unitId = FourCC("ugho"), name = "Ghoul"},
-    {unitId = FourCC("esen"), name = "Huntress"},
+local CUSTOM_RACE_CHOICES = {
+    {key = "human", label = "Human"}, {key = "orc", label = "Orc"},
+    {key = "nightelf", label = "Night Elf"}, {key = "undead", label = "Undead"},
+    {key = "neutral", label = "Neutral"},
+}
+
+-- Standard ground rosters plus heroes. Flying forms and flying units are
+-- deliberately absent; Neutral is limited to the tavern heroes.
+local CUSTOM_UNITS = {
+    human = {
+        {FourCC("hpea"), "Peasant"}, {FourCC("hmil"), "Militia"},
+        {FourCC("hfoo"), "Footman"}, {FourCC("hrif"), "Rifleman"},
+        {FourCC("hkni"), "Knight"}, {FourCC("hmpr"), "Priest"},
+        {FourCC("hsor"), "Sorceress"}, {FourCC("hspt"), "Spell Breaker"},
+        {FourCC("hmtm"), "Mortar Team"}, {FourCC("hmtt"), "Siege Engine"},
+        {FourCC("Hpal"), "Paladin"}, {FourCC("Hamg"), "Archmage"},
+        {FourCC("Hmkg"), "Mountain King"}, {FourCC("Hblm"), "Blood Mage"},
+    },
+    orc = {
+        {FourCC("opeo"), "Peon"}, {FourCC("ogru"), "Grunt"},
+        {FourCC("ohun"), "Headhunter"}, {FourCC("otbk"), "Berserker"},
+        {FourCC("ocat"), "Demolisher"}, {FourCC("orai"), "Raider"},
+        {FourCC("okod"), "Kodo Beast"}, {FourCC("oshm"), "Shaman"},
+        {FourCC("odoc"), "Witch Doctor"}, {FourCC("ospw"), "Spirit Walker"},
+        {FourCC("otau"), "Tauren"}, {FourCC("Obla"), "Blademaster"},
+        {FourCC("Ofar"), "Far Seer"}, {FourCC("Otch"), "Tauren Chieftain"},
+        {FourCC("Oshd"), "Shadow Hunter"},
+    },
+    undead = {
+        {FourCC("uaco"), "Acolyte"}, {FourCC("ugho"), "Ghoul"},
+        {FourCC("ucry"), "Crypt Fiend"}, {FourCC("uabo"), "Abomination"},
+        {FourCC("umtw"), "Meat Wagon"}, {FourCC("unec"), "Necromancer"},
+        {FourCC("uban"), "Banshee"}, {FourCC("ushd"), "Shade"},
+        {FourCC("uobs"), "Obsidian Statue"}, {FourCC("Udea"), "Death Knight"},
+        {FourCC("Udre"), "Dreadlord"}, {FourCC("Ulic"), "Lich"},
+        {FourCC("Ucrl"), "Crypt Lord"},
+    },
+    nightelf = {
+        {FourCC("ewsp"), "Wisp"}, {FourCC("earc"), "Archer"},
+        {FourCC("esen"), "Huntress"}, {FourCC("ebal"), "Glaive Thrower"},
+        {FourCC("edry"), "Dryad"}, {FourCC("edoc"), "Druid of the Claw"},
+        {FourCC("edob"), "Druid of the Claw (Bear Form)"},
+        {FourCC("edot"), "Druid of the Talon"}, {FourCC("emtg"), "Mountain Giant"},
+        {FourCC("Edem"), "Demon Hunter"}, {FourCC("Ekee"), "Keeper of the Grove"},
+        {FourCC("Emoo"), "Priestess of the Moon"}, {FourCC("Ewar"), "Warden"},
+    },
+    neutral = {
+        {FourCC("Nngs"), "Naga Sea Witch"}, {FourCC("Nbrn"), "Dark Ranger"},
+        {FourCC("Npbm"), "Pandaren Brewmaster"}, {FourCC("Nbst"), "Beastmaster"},
+        {FourCC("Nplh"), "Pit Lord"}, {FourCC("Nfir"), "Firelord"},
+        {FourCC("Ntin"), "Goblin Tinker"}, {FourCC("Nalc"), "Goblin Alchemist"},
+        {FourCC("Npal"), "Forsaken Paladin"},
+    },
 }
 
 -- The reference uses Warcraft III's Ghostly Archmage campaign unit. Locust,
--- disabled pathing and neutral ownership keep it visible without allowing it
+-- disabled pathing and invulnerability keep it visible without allowing it
 -- to receive clicks, collide with either participant or affect the exercise.
 local REFERENCE_RUNNER_ID = FourCC("Hgam")
 local REFERENCE_LANE_OFFSET = 300.0
@@ -74,7 +122,7 @@ local BODY_BLOCKING_INTRO =
 function JTG.OpenBodyBlockingMenu(originCategory, pauseGame)
     local selection = {
         mode = nil, difficulty = 1, race = "human", runnerIndex = 1,
-        runnerId = nil, runnerName = nil,
+        runnerId = nil, runnerName = nil, blockerRace = "human",
         blockerId = FourCC("hfoo"), blockerName = "Footman",
     }
     local function releaseMenuPause()
@@ -97,7 +145,8 @@ function JTG.OpenBodyBlockingMenu(originCategory, pauseGame)
         JTG.StartActivity("skills.body_blocking", originCategory or "skills", selection)
     end
     local showRoot, showTrainingRace, showTrainingDifficulty
-    local showCustomRace, showCustomRunner, showCustomBlocker, showCustomDifficulty
+    local showCustomRace, showCustomRunner, showCustomBlockerRace
+    local showCustomBlocker, showCustomDifficulty
     local function show(spec)
         spec.title = "Body Blocking"
         spec.headingArtwork = "JTGMenu\\BodyBlockingBriefing.dds"
@@ -151,7 +200,7 @@ function JTG.OpenBodyBlockingMenu(originCategory, pauseGame)
     end
     showCustomRace = function()
         local choices = {}
-        for _, race in ipairs(RACE_CHOICES) do
+        for _, race in ipairs(CUSTOM_RACE_CHOICES) do
             local key, label = race.key, race.label
             table.insert(choices, {label = label, tooltip = "Choose a " .. label .. " runner.",
                 action = function() selection.race = key; showCustomRunner() end})
@@ -161,22 +210,33 @@ function JTG.OpenBodyBlockingMenu(originCategory, pauseGame)
     end
     showCustomRunner = function()
         local choices = {}
-        for _, runner in ipairs(TRAINING_ROSTERS[selection.race]) do
+        for _, runner in ipairs(CUSTOM_UNITS[selection.race]) do
             local unitId, unitName = runner[1], runner[2]
             table.insert(choices, {label = unitName, tooltip = "Use " .. unitName .. " as the runner.",
                 action = function()
                     selection.runnerId = unitId
                     selection.runnerName = unitName
-                    showCustomBlocker()
+                    showCustomBlockerRace()
                 end})
         end
         show({body = "Choose the unit you want to block.", choices = choices,
+            compactChoices = true,
             backAction = showCustomRace})
+    end
+    showCustomBlockerRace = function()
+        local choices = {}
+        for _, race in ipairs(CUSTOM_RACE_CHOICES) do
+            local key, label = race.key, race.label
+            table.insert(choices, {label = label,
+                action = function() selection.blockerRace = key; showCustomBlocker() end})
+        end
+        show({body = "Choose the race of the unit you want to control.", choices = choices,
+            backAction = showCustomRunner})
     end
     showCustomBlocker = function()
         local choices = {}
-        for _, blocker in ipairs(BLOCKER_CHOICES) do
-            local unitId, unitName = blocker.unitId, blocker.name
+        for _, blocker in ipairs(CUSTOM_UNITS[selection.blockerRace]) do
+            local unitId, unitName = blocker[1], blocker[2]
             table.insert(choices, {label = unitName, tooltip = "Control a " .. unitName .. ".",
                 action = function()
                     selection.blockerId = unitId
@@ -185,7 +245,8 @@ function JTG.OpenBodyBlockingMenu(originCategory, pauseGame)
                 end})
         end
         show({body = "Choose the unit you want to use for blocking.", choices = choices,
-            backAction = showCustomRunner})
+            compactChoices = true,
+            backAction = showCustomBlockerRace})
     end
     showCustomDifficulty = function()
         show({body = "Choose a difficulty. Hard runners take a less predictable route.", choices = {
@@ -225,6 +286,7 @@ function JTG.CreateBodyBlockingActivity(session)
         bestStreak = 0.0,
         streakLevel = 0,
         raceResults = {},
+        routeTemplate = nil,
     }
 
     local carry = session.restartData
@@ -238,6 +300,7 @@ function JTG.CreateBodyBlockingActivity(session)
         activity.blockerId = carry.blockerId or FourCC("hfoo")
         activity.blockerName = carry.blockerName or "Footman"
         activity.raceResults = carry.raceResults or {}
+        activity.routeTemplate = carry.routeTemplate
     end
 
     function activity:makeTimer(period, repeating, callback)
@@ -278,7 +341,10 @@ function JTG.CreateBodyBlockingActivity(session)
             else
                 local trigger = JTG.ScopeTrackTrigger(session.scope, CreateTrigger())
                 BlzTriggerRegisterFrameEvent(trigger, button, FRAMEEVENT_CONTROL_CLICK)
-                TriggerAddAction(trigger, action)
+                TriggerAddAction(trigger, function()
+                    if JTG.UI and JTG.UI.PlayButtonSound then JTG.UI.PlayButtonSound("normal") end
+                    action()
+                end)
             end
             return button
         end
@@ -329,9 +395,9 @@ function JTG.CreateBodyBlockingActivity(session)
     function activity:createCourseMarkers()
         local y = self.laneY
         self.startLine = TrackLightning(session.scope,
-            AddLightning("DRAL", false, self.startX, y - 390, self.startX, y + 390))
+            AddLightning("DRAL", false, self.startX, self.arenaMinY, self.startX, self.arenaMaxY))
         self.finishLine = TrackLightning(session.scope,
-            AddLightning("DRAL", false, self.finishX, y - 390, self.finishX, y + 390))
+            AddLightning("DRAL", false, self.finishX, self.arenaMinY, self.finishX, self.arenaMaxY))
         if self.startLine ~= nil then SetLightningColor(self.startLine, 0.25, 1.0, 0.25, 0.90) end
         if self.finishLine ~= nil then SetLightningColor(self.finishLine, 1.0, 0.20, 0.20, 0.90) end
         self.startTag = TrackTextTag(session.scope, CreateTextTag())
@@ -355,30 +421,29 @@ function JTG.CreateBodyBlockingActivity(session)
         self.referenceRoute = {}
         self.referenceWaypoint = 1
         if self.difficulty == 2 then
-            local side = 1
-            local previousOffset = 0
-            local x = self.startX + 400
-            while x < self.finishX do
-                local offset = side * 220
-                table.insert(self.referenceRoute, {
-                    x = x,
-                    y = self.laneY + REFERENCE_LANE_OFFSET + offset,
-                    deltaY = offset - previousOffset,
-                })
-                previousOffset = offset
-                side = -side
-                x = x + 400
+            if self.routeTemplate == nil then
+                self.routeTemplate = {}
+                local side = GetRandomInt(0, 1) == 0 and -1 or 1
+                local remainingX = self.finishX + 256 - self.startX
+                while remainingX > 0 do
+                    local forward = math.min(remainingX, GetRandomInt(100, 400))
+                    -- Bias the magnitude upward while retaining occasional
+                    -- nearly straight legs and the full zero-to-220 range.
+                    local vertical = math.sqrt(GetRandomReal(0, 1)) * 220
+                    table.insert(self.routeTemplate, {
+                        deltaX = forward,
+                        deltaY = side * vertical,
+                    })
+                    remainingX = remainingX - forward
+                    side = -side
+                end
             end
-            local offset = side * 220
-            table.insert(self.referenceRoute, {
-                x = self.finishX + 256,
-                y = self.laneY + REFERENCE_LANE_OFFSET + offset,
-                deltaY = offset - previousOffset,
-            })
+            self.referenceRoute = self.routeTemplate
             local first = self.referenceRoute[1]
-            self.referenceTargetX, self.referenceTargetY = first.x, first.y
+            self.referenceTargetX = GetUnitX(self.referenceRunner) + first.deltaX
+            self.referenceTargetY = GetUnitY(self.referenceRunner) + first.deltaY
             self.referenceClosestDistance = math.huge
-            self.runnerTargetX = math.min(self.finishX + 256, GetUnitX(self.runner) + 400)
+            self.runnerTargetX = GetUnitX(self.runner) + first.deltaX
             self.runnerTargetY = GetUnitY(self.runner) + first.deltaY
         else
             self.runnerTargetX = self.finishX + 256
@@ -392,13 +457,13 @@ function JTG.CreateBodyBlockingActivity(session)
         if self.referenceWaypoint >= #self.referenceRoute then return end
         self.referenceWaypoint = self.referenceWaypoint + 1
         local fixedReferenceTarget = self.referenceRoute[self.referenceWaypoint]
-        self.referenceTargetX = fixedReferenceTarget.x
-        self.referenceTargetY = fixedReferenceTarget.y
-        self.runnerTargetX = math.min(self.finishX + 256, GetUnitX(self.runner) + 400)
+        self.referenceTargetX = GetUnitX(self.referenceRunner) + fixedReferenceTarget.deltaX
+        self.referenceTargetY = GetUnitY(self.referenceRunner) + fixedReferenceTarget.deltaY
+        self.runnerTargetX = GetUnitX(self.runner) + fixedReferenceTarget.deltaX
         self.runnerTargetY = GetUnitY(self.runner) + fixedReferenceTarget.deltaY
         self.referenceClosestDistance = math.huge
         self:issueRunnerOrder()
-        IssuePointOrder(self.referenceClock, "move",
+        IssuePointOrder(self.referenceRunner, "move",
             self.referenceTargetX, self.referenceTargetY)
     end
 
@@ -411,6 +476,7 @@ function JTG.CreateBodyBlockingActivity(session)
         if JTG.UI then
             JTG.UI.HideActivityBriefing()
             JTG.UI.ShowToolbar(session.descriptor.capabilities)
+            JTG.UI.SetLastRunnerEnabled(self.mode == "training" and self.runnerIndex > 1)
         end
         self:createCourseMarkers()
 
@@ -428,27 +494,21 @@ function JTG.CreateBodyBlockingActivity(session)
         SetUnitInvulnerable(self.runner, true)
         PauseUnit(self.runner, true)
         self.moveSpeed = math.max(1, GetUnitMoveSpeed(self.runner))
+        -- Antonidas is both the visible reference and the timing source. Giving
+        -- him the runner's owner avoids Neutral Passive guard-return orders;
+        -- Locust, no pathing and invulnerability keep him noninteractive.
         self.referenceRunner = JTG.ScopeTrackUnit(session.scope,
-            BlzCreateUnitWithSkin(Player(PLAYER_NEUTRAL_PASSIVE), REFERENCE_RUNNER_ID,
+            BlzCreateUnitWithSkin(Player(1), REFERENCE_RUNNER_ID,
                 self.startX, self.laneY + REFERENCE_LANE_OFFSET, 0, REFERENCE_RUNNER_ID))
         self.referenceBaseMoveSpeed = math.max(1, GetUnitMoveSpeed(self.referenceRunner))
         SetUnitAcquireRange(self.referenceRunner, 0)
         SetUnitInvulnerable(self.referenceRunner, true)
         SetUnitPathing(self.referenceRunner, false)
         UnitAddAbility(self.referenceRunner, FourCC("Aloc"))
+        SetUnitMoveSpeed(self.referenceRunner, self.moveSpeed)
+        SetUnitTurnSpeed(self.referenceRunner, GetUnitTurnSpeed(self.runner))
+        SetUnitPropWindow(self.referenceRunner, GetUnitPropWindow(self.runner))
         PauseUnit(self.referenceRunner, true)
-        -- Use the same owner as the live runner. Neutral Passive gives ordinary
-        -- units a guard position and eventually orders them back to where they
-        -- were created, which made the reference reverse late in the course.
-        self.referenceClock = JTG.ScopeTrackUnit(session.scope,
-            BlzCreateUnitWithSkin(Player(1), runnerId,
-                self.startX, self.laneY + REFERENCE_LANE_OFFSET, 0, runnerId))
-        SetUnitAcquireRange(self.referenceClock, 0)
-        SetUnitInvulnerable(self.referenceClock, true)
-        UnitAddAbility(self.referenceClock, FourCC("Aloc"))
-        SetUnitVertexColor(self.referenceClock, 255, 255, 255, 0)
-        SetUnitMoveSpeed(self.referenceClock, self.moveSpeed)
-        PauseUnit(self.referenceClock, true)
         self:buildRoute()
         BlzFrameSetText(self.speedFrame, "|cffffcc00" .. runnerName ..
             "|r Movement Speed " .. tostring(math.floor(self.moveSpeed + 0.5)))
@@ -528,16 +588,16 @@ function JTG.CreateBodyBlockingActivity(session)
 
     function activity:issueReferenceOrder()
         if self.referenceFinished then return end
-        IssuePointOrder(self.referenceClock, "move",
+        IssuePointOrder(self.referenceRunner, "move",
             self.referenceTargetX, self.referenceTargetY)
     end
 
     function activity:advanceReferenceRunner()
         if self.referenceFinished or self.difficulty ~= 2 then return end
-        local dx = self.referenceTargetX - GetUnitX(self.referenceClock)
-        local dy = self.referenceTargetY - GetUnitY(self.referenceClock)
+        local dx = self.referenceTargetX - GetUnitX(self.referenceRunner)
+        local dy = self.referenceTargetY - GetUnitY(self.referenceRunner)
         local distance = dx * dx + dy * dy
-        local orderComplete = GetUnitCurrentOrder(self.referenceClock) == 0
+        local orderComplete = GetUnitCurrentOrder(self.referenceRunner) == 0
         local passed = self.referenceClosestDistance <= 4096 and
             distance > self.referenceClosestDistance + 1
         if distance < self.referenceClosestDistance then
@@ -552,20 +612,14 @@ function JTG.CreateBodyBlockingActivity(session)
         end
     end
 
-    function activity:syncReferenceGhost()
-        if self.referenceClock == nil or self.referenceRunner == nil then return end
-        SetUnitX(self.referenceRunner, GetUnitX(self.referenceClock))
-        SetUnitY(self.referenceRunner, GetUnitY(self.referenceClock))
-        BlzSetUnitFacingEx(self.referenceRunner, GetUnitFacing(self.referenceClock))
-    end
-
     function activity:beginRun()
         if self.finished then return end
         PauseUnit(self.runner, false)
         PauseUnit(self.referenceRunner, false)
-        PauseUnit(self.referenceClock, false)
         PauseUnit(self.blocker, false)
-        SetUnitMoveSpeed(self.referenceClock, self.moveSpeed)
+        SetUnitMoveSpeed(self.referenceRunner, self.moveSpeed)
+        SetUnitTurnSpeed(self.referenceRunner, GetUnitTurnSpeed(self.runner))
+        SetUnitPropWindow(self.referenceRunner, GetUnitPropWindow(self.runner))
         SetUnitTimeScale(self.referenceRunner, self.moveSpeed / self.referenceBaseMoveSpeed)
         SetUnitAnimation(self.referenceRunner, "walk")
         self:buildRoute()
@@ -591,10 +645,6 @@ function JTG.CreateBodyBlockingActivity(session)
         self:issueReferenceOrder()
         self.routeTimer = self:makeTimer(0.01, true, function()
             if self.running and not self.referenceFinished then self:advanceReferenceRunner() end
-        end)
-        self:syncReferenceGhost()
-        self.referenceVisualTimer = self:makeTimer(0.025, true, function()
-            if self.running and not self.referenceFinished then self:syncReferenceGhost() end
         end)
         self:captureReplaySample()
         self.runTimer = self:makeTimer(0.05, true, function() self:runTick() end)
@@ -746,15 +796,12 @@ function JTG.CreateBodyBlockingActivity(session)
         self.elapsed = self.elapsed + 0.05
         self:captureReplaySample()
         if not self.referenceFinished then
-            if GetUnitX(self.referenceClock) >= self.finishX then
+            if GetUnitX(self.referenceRunner) >= self.finishX then
                 self.referenceFinished = true
                 self.referenceFinishElapsed = self.elapsed
-                self:syncReferenceGhost()
                 SetUnitAnimation(self.referenceRunner, "stand")
                 PauseUnit(self.referenceRunner, true)
-                PauseUnit(self.referenceClock, true)
                 if self.routeTimer ~= nil then PauseTimer(self.routeTimer) end
-                if self.referenceVisualTimer ~= nil then PauseTimer(self.referenceVisualTimer) end
                 if not self.runnerFinished then
                     self.runnerTargetX = self.finishX + 256
                     self.runnerTargetY = GetUnitY(self.runner)
@@ -793,7 +840,6 @@ function JTG.CreateBodyBlockingActivity(session)
         if self.routeTimer ~= nil then PauseTimer(self.routeTimer) end
         if self.runner ~= nil then PauseUnit(self.runner, true) end
         if self.referenceRunner ~= nil then PauseUnit(self.referenceRunner, true) end
-        if self.referenceClock ~= nil then PauseUnit(self.referenceClock, true) end
         if self.blocker ~= nil then PauseUnit(self.blocker, true) end
         self:clearFeedback()
     end
@@ -857,6 +903,7 @@ function JTG.CreateBodyBlockingActivity(session)
             if JTG.UI then JTG.UI.HideToolbar() end
         elseif JTG.UI then
             JTG.UI.ShowToolbar(session.descriptor.capabilities)
+            JTG.UI.SetLastRunnerEnabled(self.mode == "training" and self.runnerIndex > 1)
         end
     end
 
@@ -882,6 +929,8 @@ function JTG.CreateBodyBlockingActivity(session)
         self.startX = scene.centerX - 1200
         self.finishX = scene.centerX + 1200
         self.laneY = scene.centerY
+        self.arenaMinY = scene.minY
+        self.arenaMaxY = scene.maxY
 
         JTG.BorrowCamera(current.scope, Player(0))
         local oldTime = GetFloatGameState(GAME_STATE_TIME_OF_DAY)
@@ -921,16 +970,30 @@ function JTG.CreateBodyBlockingActivity(session)
 
     function activity:captureResetState()
         local nextIndex = self.runnerIndex
+        local routeTemplate = self.routeTemplate
         if self.mode == "training" and self.advancePending then
             local roster = TRAINING_ROSTERS[self.race]
             nextIndex = nextIndex + 1
             if nextIndex > #roster then nextIndex = 1 end
+            routeTemplate = nil
         end
         return {
             mode = self.mode, difficulty = self.difficulty, race = self.race,
             runnerIndex = nextIndex, runnerId = self.runnerId, runnerName = self.runnerName,
             blockerId = self.blockerId, blockerName = self.blockerName,
             raceResults = self.raceResults,
+            routeTemplate = routeTemplate,
+        }
+    end
+
+    function activity:captureLastRunnerState()
+        if self.mode ~= "training" or self.runnerIndex <= 1 then return nil end
+        return {
+            mode = self.mode, difficulty = self.difficulty, race = self.race,
+            runnerIndex = self.runnerIndex - 1,
+            blockerId = self.blockerId, blockerName = self.blockerName,
+            raceResults = self.raceResults,
+            routeTemplate = nil,
         }
     end
 
@@ -940,7 +1003,6 @@ function JTG.CreateBodyBlockingActivity(session)
         if JTG.UI then JTG.UI.HideActivityBriefing() end
         self.runner = nil
         self.referenceRunner = nil
-        self.referenceClock = nil
         self.blocker = nil
         self.starter = nil
     end
