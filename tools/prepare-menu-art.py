@@ -8,6 +8,7 @@ OUTPUT = ROOT / "src" / "assets" / "menu"
 OUTPUT.mkdir(parents=True, exist_ok=True)
 CARD_SIZE = (512, 256)
 ROOT_CARD_SIZE = (256, 128)
+CATEGORY_CARD_SIZE = (416, 200)
 
 CARDS = {
     # Keep the original card treatment: a centered 2:1 crop at the authored
@@ -21,7 +22,12 @@ CARDS = {
     "DemoMode": ("demo-mode-source.png", 1.25, 0.28),
     # Preserve the complete construction scene; the transparent source is
     # already composed as a wide card and only needs fitting to the slot.
-    "SpeedBuilding": ("speed-building-source.png", 1.0, 0.50, 0.50, "contain"),
+    "PowerBuilding": ("power-building-source.png", 1.0, 0.50, 0.50, "contain"),
+    # Frame the stretching pose around the arms and shoulders; the legs and
+    # most of the torso intentionally fall outside the narrow menu card.
+    "ReflexTraining": ("reflex-training-source.png", 1.24, 0.30, 0.50, "crop"),
+    "PeonMicro": ("peon-micro-source.png", 1.0, 0.50, 0.50, "contain"),
+    "WispMicro": ("wisp-micro-source.png", 1.0, 0.50, 0.50, "contain"),
 }
 
 ROOT_CARDS = {
@@ -97,15 +103,20 @@ for output_name, values in CARDS.items():
 # avoiding the map-size cost of the larger exercise-card source resolution.
 for output_name, (source_name, mode, amount, focal_y, focal_x) in ROOT_CARDS.items():
     source = Image.open(SOURCE / source_name).convert("RGBA")
+    output_size = ROOT_CARD_SIZE if output_name == "HotkeyTraining" else CATEGORY_CARD_SIZE
     if mode == "contain":
-        card = contain_visible(source, ROOT_CARD_SIZE, amount)
+        # Enlarge the four top-level compositions inside the fixed button-sized
+        # texture. The wide canvas preserves their sides; excess height is
+        # clipped evenly at the top and bottom.
+        fill = amount if output_name == "HotkeyTraining" else 1.22
+        card = contain_visible(source, output_size, fill)
     else:
         card = card_crop(source, amount, focal_y, focal_x).resize(
-            ROOT_CARD_SIZE, Image.Resampling.LANCZOS
+            output_size, Image.Resampling.LANCZOS
         )
     card_path = OUTPUT / f"{output_name}.dds"
     card.save(card_path, pixel_format="DXT5")
-    generated.append((card_path, ROOT_CARD_SIZE))
+    generated.append((card_path, output_size))
 
 # Briefings preserve the whole transparent composition.  Cards intentionally
 # use their tighter 2:1 crop, so the two UI contexts can be art-directed

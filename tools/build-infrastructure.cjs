@@ -18,7 +18,7 @@ const {
 } = req('@jamiephan/stormlib');
 const luaParser = req('luaparse');
 
-const version = 'v0.0.4-alpha17';
+const version = 'v0.0.5-alpha22';
 const sourcePath = path.join(root, 'reference/foundation/Jamies-Training-Grounds-v0.0.1-alpha.5.w3x');
 const outputPath = path.join(root, `outputs/Jamies-Training-Grounds-${version}.w3x`);
 const reportPath = path.join(root, `outputs/Jamies-Training-Grounds-${version}-validation.json`);
@@ -26,7 +26,7 @@ const acceptedHash = 'a1ea7789e60b30e77d64f14337759842dff309d129929ef24defb1276c
 const modulePaths = [
     'src/infrastructure/core.lua',
     'src/activities/body-blocking.lua',
-    'src/activities/speed-building.lua',
+    'src/activities/power-building.lua',
     'src/infrastructure/catalog.lua',
     'src/infrastructure/ui.lua',
     'src/infrastructure/diagnostics.lua',
@@ -35,7 +35,10 @@ const modulePaths = [
 const assetPaths = [
     ['JTGMenu\\BodyBlocking.dds', 'src/assets/menu/BodyBlocking.dds'],
     ['JTGMenu\\BodyBlockingBriefing.dds', 'src/assets/menu/BodyBlockingBriefing.dds'],
-    ['JTGMenu\\SpeedBuilding.dds', 'src/assets/menu/SpeedBuilding.dds'],
+    ['JTGMenu\\PowerBuilding.dds', 'src/assets/menu/PowerBuilding.dds'],
+    ['JTGMenu\\ReflexTraining.dds', 'src/assets/menu/ReflexTraining.dds'],
+    ['JTGMenu\\PeonMicro.dds', 'src/assets/menu/PeonMicro.dds'],
+    ['JTGMenu\\WispMicro.dds', 'src/assets/menu/WispMicro.dds'],
     ['JTGMenu\\Surrounds.dds', 'src/assets/menu/Surrounds.dds'],
     ['JTGMenu\\AoWCreeping.dds', 'src/assets/menu/AoWCreeping.dds'],
     ['JTGMenu\\BatSplitter.dds', 'src/assets/menu/BatSplitter.dds'],
@@ -104,10 +107,16 @@ assert(nextLua.includes('function JTG.CreateBodyBlockingActivity(session)'),
     'Body Blocking activity factory is missing from the compiled map');
 assert(nextLua.includes('id = "skills.body_blocking"'),
     'Body Blocking catalogue registration is missing from the compiled map');
-assert(nextLua.includes('function JTG.CreateSpeedBuildingActivity(session)'),
-    'Speed Building activity factory is missing from the compiled map');
-assert(nextLua.includes('id = "tools.speed_building"'),
-    'Speed Building catalogue registration is missing from the compiled map');
+assert(nextLua.includes('function JTG.CreatePowerBuildingActivity(session)'),
+    'Power Building activity factory is missing from the compiled map');
+assert(nextLua.includes('id = "tools.power_building"'),
+    'Power Building catalogue registration is missing from the compiled map');
+assert(nextLua.includes('Skill Training - Race Specific'),
+    'Race-specific Skill Training panels are missing from the compiled map');
+assert(nextLua.includes('id = "nightelf", title = "Night Elf"'),
+    'Race-specific Skill Training catalogue is missing from the compiled map');
+assert(nextLua.includes('skills.peon_micro') && nextLua.includes('skills.wisp_micro'),
+    'New racial micro entries are missing from the compiled map');
 assert.equal((nextLua.match(/InitTrig_Infrastructure\(\)/g) || []).length, 2,
     'Infrastructure trigger must have one declaration and one initialization call');
 assert(!nextLua.includes('FoundationStart'));
@@ -133,7 +142,7 @@ changes.set('war3map.wtg', Buffer.concat([
     prefix,
     i32(32),
     str('Shared Infrastructure'),
-    str('Map navigation, activity lifecycle, Body Blocking and Speed Building; source maintained in src/.'),
+    str('Map navigation, activity lifecycle, Body Blocking and Power Building; source maintained in src/.'),
     ...[fields[0], fields[1], 1, 1, fields[4], fields[5], fields[6], fields[7]].map(i32),
 ]));
 
@@ -191,7 +200,7 @@ try {
 assert.equal(hash(fs.readFileSync(sourcePath)), acceptedHash, 'Source foundation was modified');
 const report = {
     version,
-    purpose: 'Menu-aware exercise overlays and empty default Quest window.',
+    purpose: 'Race-specific Skill Training navigation and new exercise card artwork.',
     acceptedFoundation: {
         path: path.relative(root, sourcePath).replaceAll('\\', '/'),
         sha256: acceptedHash,

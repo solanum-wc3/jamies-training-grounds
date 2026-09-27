@@ -1,4 +1,4 @@
--- Speed Building: compare one through ten Human workers constructing the same
+-- Power Building: compare one through ten Human workers constructing the same
 -- building. Every lane is captured at genuine 1% construction before the
 -- comparison is released, preserving Warcraft III's native power-build rules.
 JTG = JTG or {}
@@ -28,11 +28,10 @@ local BUILD_OFFSETS = {
     {128.0, -128.0}, {-128.0, -128.0},
 }
 
-local SPEED_BUILDING_INTRO =
-    "Human peasants can assist each other in the construction of a building, finishing it sooner at the cost of additional Gold and Lumber.|n|n" ..
-    "Each peasant after the first contributes 60% of the first builder's build speed, decreasing the time it takes to finish the building, but increases both gold and lumber cost of the build by around 15% across its entire build time.|n|n" ..
-    "Using more peasants to build has diminishing returns, but can be worth it. For example, the seconds gained from building a Town Hall at an expansion are always worth it in the long run, because you can start mining gold earlier. You just have to be able to afford the investment.|n|n" ..
-    "You can choose a building to see a demonstration comparing 1 through 10 peasants!"
+local POWER_BUILDING_INTRO =
+    "Human peasants can assist each other when constructing. Each peasant after the first contributes 60% of the first builder's build speed, decreasing the time it takes to finish the building, but increases its gold and lumber cost by around 15% across its entire build time.|n|n" ..
+    "Power building has diminishing returns, but it can be worth it. For example, the seconds gained from building a Town Hall at an expansion are always worth it in the long run, because you can start mining gold earlier. You just have to be able to afford the investment.|n|n" ..
+    "Here you can choose a building to see a demonstration comparing 1 through 10 peasants!"
 
 local function TrackFrame(scope, frame)
     JTG.ScopeAdd(scope, function()
@@ -55,7 +54,7 @@ local function FormatTime(seconds)
     return tostring(secondsPart) .. "." .. tostring(decimal)
 end
 
-function JTG.OpenSpeedBuildingMenu(originCategory, pauseGame)
+function JTG.OpenPowerBuildingMenu(originCategory, pauseGame)
     local selection = {buildingId = FourCC("htow"), buildingName = "Town Hall"}
     local function releaseMenuPause()
         if JTG.UI then JTG.UI.SetGameplayMenuPaused(false) end
@@ -66,12 +65,12 @@ function JTG.OpenSpeedBuildingMenu(originCategory, pauseGame)
     end
     local function launch()
         releaseMenuPause()
-        JTG.StartActivity("tools.speed_building", originCategory or "tools", selection)
+        JTG.StartActivity("tools.power_building", originCategory or "tools", selection)
     end
     local showRoot
     local function show(spec)
-        spec.title = "Speed Building"
-        spec.headingArtwork = "JTGMenu\\SpeedBuilding.dds"
+        spec.title = "Power Building"
+        spec.headingArtwork = "JTGMenu\\PowerBuilding.dds"
         spec.headingArtworkWidth = 0.150
         spec.headingArtworkHeight = 0.0735
         spec.pauseGame = pauseGame == true
@@ -105,9 +104,10 @@ function JTG.OpenSpeedBuildingMenu(originCategory, pauseGame)
             })
         end
         show({
-            body = SPEED_BUILDING_INTRO,
+            body = POWER_BUILDING_INTRO,
             choices = choices,
             compactChoices = true,
+            compactColumns = 4,
             backAction = function()
                 if pauseGame then JTG.UI.ShowCategory(originCategory or "tools")
                 else releaseMenuPause(); JTG.UI.ShowCategory(originCategory or "tools") end
@@ -117,7 +117,7 @@ function JTG.OpenSpeedBuildingMenu(originCategory, pauseGame)
     showRoot()
 end
 
-function JTG.CreateSpeedBuildingActivity(session)
+function JTG.CreatePowerBuildingActivity(session)
     local selection = session.restartData or {}
     local activity = {
         buildingId = selection.buildingId or FourCC("htow"),

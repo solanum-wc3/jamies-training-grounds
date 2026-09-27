@@ -8,6 +8,13 @@ JTG.Categories = {
     {id = "tools", title = "Tools & Extras", summary = "Analysis tools, demonstrations, quizzes and games.", artwork = "JTGMenu\\ToolsExtras.dds"},
 }
 
+JTG.SkillRaces = {
+    {id = "human", title = "Human", artwork = "UI\\Glues\\Loading\\Backgrounds\\Campaigns\\HumanSymbol.dds"},
+    {id = "orc", title = "Orc", artwork = "UI\\Glues\\Loading\\Backgrounds\\Campaigns\\OrcSymbol.dds"},
+    {id = "undead", title = "Undead", artwork = "UI\\Glues\\Loading\\Backgrounds\\Campaigns\\UndeadSymbol.dds"},
+    {id = "nightelf", title = "Night Elf", artwork = "UI\\Glues\\Loading\\Backgrounds\\Campaigns\\NightElfSymbol.dds"},
+}
+
 JTG.RegisterScene({
     id = "arena.south", centerX = 4864, centerY = 3456,
     minX = 2048, minY = 2048, maxX = 7808, maxY = 4864,
@@ -38,15 +45,17 @@ local planned = {
     {"skills.surround", "skills", "Surrounds", "Trap a target with coordinated movement.", "JTGMenu\\Surrounds.dds"},
     {"skills.bat_splitter", "skills", "Bat Splitter", "Split vulnerable air units under pressure.", "JTGMenu\\BatSplitter.dds"},
     {"skills.micro", "skills", "Micro Training", "Control mixed armies efficiently."},
-    {"skills.gold_mine", "skills", "Gold Mine Micro", "Optimize workers around a contested mine.", "JTGMenu\\GoldMineMicro.dds"},
-    {"skills.staffing", "skills", "Staffing Units", "Save and reposition units with a Staff."},
+    {"skills.staffing", "skills", "Staffing Units", "Save and reposition units with a Staff.", nil, {"human", "nightelf"}},
+    {"skills.gold_mine", "skills", "Gold Mine Micro", "Optimize workers around a contested mine.", "JTGMenu\\GoldMineMicro.dds", {"human", "orc"}},
+    {"skills.merc_creep", "skills", "Merc Camp Creeping", "Practice a Mercenary Camp creep route.", nil, {"human"}},
+    {"skills.lab_creep", "skills", "Goblin Lab Creeping", "Practice a Goblin Laboratory creep route.", nil, {"human"}},
+    {"skills.windwalk", "skills", "Windwalk Pop", "Use collision timing to displace units.", nil, {"orc"}},
+    {"skills.gargoyle", "skills", "Gargoyle Surround", "Surround targets with flying units.", nil, {"undead"}},
+    {"skills.aow_creep", "skills", "AoW Creeping", "Practice Ancient of War creeping.", "JTGMenu\\AoWCreeping.dds", {"nightelf"}},
+    {"skills.peon_micro", "skills", "Peon Micro", "Practice Peon movement and survival under pressure.", "JTGMenu\\PeonMicro.dds", {"orc"}},
+    {"skills.wisp_micro", "skills", "Wisp Micro", "Practice Wisp movement and survival under pressure.", "JTGMenu\\WispMicro.dds", {"nightelf"}},
     {"skills.zeppelin", "skills", "Zeppelin Micro", "Load, unload and protect transported units."},
-    {"skills.reflex", "skills", "Reflex Training", "React quickly and accurately to visual targets."},
-    {"skills.lab_creep", "skills", "Goblin Lab Creeping", "Practice a Goblin Laboratory creep route."},
-    {"skills.aow_creep", "skills", "AoW Creeping", "Practice Ancient of War creeping.", "JTGMenu\\AoWCreeping.dds"},
-    {"skills.gargoyle", "skills", "Gargoyle Surround", "Surround targets with flying units."},
-    {"skills.merc_creep", "skills", "Merc Camp Creeping", "Practice a Mercenary Camp creep route."},
-    {"skills.windwalk", "skills", "Windwalk Pop", "Use collision timing to displace units."},
+    {"skills.reflex", "skills", "Reflex Training", "React quickly and accurately to visual targets.", "JTGMenu\\ReflexTraining.dds"},
 
     {"tools.demo", "tools", "Demo Mode", "Explore units and mechanics freely.", "JTGMenu\\DemoMode.dds"},
     {"tools.hotkeys", "tools", "Hotkey Trainer", "Learn command-card and inventory hotkeys.", "JTGMenu\\HotkeyTraining.dds"},
@@ -68,21 +77,21 @@ JTG.RegisterActivity({
 })
 
 JTG.RegisterActivity({
-    id = "tools.speed_building",
+    id = "tools.power_building",
     category = "tools",
-    title = "Speed Building",
+    title = "Power Building",
     description = "Compare how additional Peasants affect construction time and resource cost.",
-    artwork = "JTGMenu\\SpeedBuilding.dds",
+    artwork = "JTGMenu\\PowerBuilding.dds",
     status = "available",
     sceneId = "arena.south",
     capabilities = {menu = true, pause = true},
-    menu = JTG.OpenSpeedBuildingMenu,
-    factory = JTG.CreateSpeedBuildingActivity,
+    menu = JTG.OpenPowerBuildingMenu,
+    factory = JTG.CreatePowerBuildingActivity,
 })
 
 for _, entry in ipairs(planned) do
     JTG.RegisterActivity({
         id = entry[1], category = entry[2], title = entry[3], description = entry[4],
-        artwork = entry[5], status = "planned", capabilities = {},
+        artwork = entry[5], skillRaces = entry[6], status = "planned", capabilities = {},
     })
 end

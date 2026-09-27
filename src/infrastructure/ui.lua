@@ -89,11 +89,15 @@ local function CreateButton(name, parent, text, width, height)
     return button
 end
 
-local function BriefingChoicePoint(index, count, compact)
+local function BriefingChoicePoint(index, count, compact, compactColumns)
     if compact then
-        local column = (index - 1) % 3
-        local row = math.floor((index - 1) / 3)
-        return -0.180 + column * 0.180, -0.225 - row * 0.036
+        local columns = compactColumns or 3
+        local spacing = columns == 4 and 0.137 or 0.180
+        local column = (index - 1) % columns
+        local row = math.floor((index - 1) / columns)
+        local firstRowY = columns == 4 and -0.261 or -0.225
+        return -0.5 * (columns - 1) * spacing + column * spacing,
+            firstRowY - row * 0.036
     end
     if count <= 2 then
         return index == 1 and -0.108 or 0.108, -0.305
@@ -140,13 +144,13 @@ local function CreateIllustratedCard(name, parent, descriptor, width, height, ar
         BlzFrameSetPoint(label, FRAMEPOINT_LEFT, button, FRAMEPOINT_LEFT, leftInset, 0)
     end
 
-    return button, button
+    return button, button, art
 end
 
 local function CreateIllustratedActivityCard(name, parent, descriptor)
     return CreateIllustratedCard(name, parent, descriptor,
         CATALOGUE_BUTTON_WIDTH, CATALOGUE_BUTTON_HEIGHT,
-        0.098, 0.048, 0.082, 0.72, 0.012)
+        0.098, 0.048, 0.120, 0.84, 0.020)
 end
 
 local function CreateIllustratedCategoryCard(name, parent, category)
@@ -155,8 +159,12 @@ local function CreateIllustratedCategoryCard(name, parent, category)
         artwork = category.artwork,
         status = "available",
     }
-    return CreateIllustratedCard(name, parent, descriptor,
-        0.25, 0.055, 0.125, 0.051, 0.104, 0.88, 0.020)
+    local frame, button, art = CreateIllustratedCard(name, parent, descriptor,
+        0.25, 0.088, 0.169, 0.082, 0.120, 0.84, 0.020)
+    BlzFrameClearAllPoints(art)
+    BlzFrameSetPoint(art, FRAMEPOINT_CENTER, button, FRAMEPOINT_CENTER,
+        0.0585, 0)
+    return frame, button, art
 end
 
 local function TooltipHeight(description)
@@ -420,6 +428,18 @@ function UI.ShowCategory(categoryId)
     else UI.ShowRoot() end
 end
 
+function UI.ShowSkillRace(raceId)
+    UI.HideAllPanels()
+    if UI.gameplayMenuPaused then UI.ShowPausedActivityToolbar()
+    elseif not UI.browsingActivity then UI.HideToolbar() end
+    local panel = UI.panels["skill_race_" .. raceId]
+    if panel then
+        BlzFrameSetVisible(panel, true)
+        UI.menuVisible = true
+        UI.currentBackAction = function() UI.ShowCategory("skills") end
+    else UI.ShowCategory("skills") end
+end
+
 function UI.ShowInfo(which)
     UI.HideAllPanels()
     if UI.gameplayMenuPaused then UI.ShowPausedActivityToolbar()
@@ -487,17 +507,19 @@ end
 local function RefreshActivityBriefingChoices()
     local actions = UI.activityBriefingActions or {}
     local compact = UI.activityBriefingCompact == true
+    local compactColumns = UI.activityBriefingCompactColumns
     UI.activityBriefingVisibleActions = {}
     for index, button in ipairs(UI.activityBriefingButtons or {}) do
         local choice = actions[index]
         UI.activityBriefingVisibleActions[index] = choice
         BlzFrameSetVisible(button, choice ~= nil)
         if choice ~= nil then
-            local x, y = BriefingChoicePoint(index, #actions, compact)
+            local x, y = BriefingChoicePoint(index, #actions, compact, compactColumns)
             BlzFrameClearAllPoints(button)
             BlzFrameSetPoint(button, FRAMEPOINT_TOP, UI.panels.activityBriefing,
                 FRAMEPOINT_TOP, x, y)
-            BlzFrameSetSize(button, compact and 0.165 or 0.190,
+            BlzFrameSetSize(button,
+                compact and (compactColumns == 4 and 0.125 or 0.165) or 0.190,
                 compact and 0.033 or 0.042)
             BlzFrameSetText(button, choice.label)
             local label = FindButtonText(button)
@@ -513,7 +535,9 @@ function UI.ShowActivityBriefing(spec)
     if panel == nil then return end
     local actions = spec.choices or {}
     local compact = spec.compactChoices == true
-    local _, firstChoiceY = BriefingChoicePoint(1, math.max(1, #actions), compact)
+    local compactColumns = spec.compactColumns
+    local _, firstChoiceY = BriefingChoicePoint(1, math.max(1, #actions),
+        compact, compactColumns)
     UI.SetGameplayMenuPaused(spec.pauseGame == true)
     SetActivityOverlayVisible(false)
     UI.HideAllPanels()
@@ -540,6 +564,7 @@ function UI.ShowActivityBriefing(spec)
     end
     UI.activityBriefingActions = actions
     UI.activityBriefingCompact = compact
+    UI.activityBriefingCompactColumns = compactColumns
     RefreshActivityBriefingChoices()
     UI.activityBriefingBackAction = spec.backAction
     BlzFrameSetTextColor(UI.activityBriefingBack, BlzConvertColor(255, 255, 255, 255))
@@ -600,7 +625,10 @@ local function CreateRootPanel()
         "Choose what you want to learn or practice.",
         0.54 / PARAGRAPH_SCALE, 0.028 / PARAGRAPH_SCALE, PARAGRAPH_SCALE)
 
-    local positions = {{-0.145, -0.125}, {0.145, -0.125}, {-0.145, -0.205}, {0.145, -0.205}}
+    local positions = {
+        {-0.145, -0.1424}, {0.145, -0.1424},
+        {-0.145, -0.2596}, {0.145, -0.2596},
+    }
     local firstCategoryButton = nil
     for index, category in ipairs(JTG.Categories) do
         local _, button = CreateIllustratedCategoryCard("JTGCategory" .. index, panel, category)
@@ -638,6 +666,7 @@ local function CreateCategoryPanel(category, categoryIndex)
     PositionTop(panel)
     AddFooterDivider(panel)
     local contentDivider = AddContentDivider(panel, -0.087)
+    if category.id == "skills" then BlzFrameSetVisible(contentDivider, false) end
     UI.panels["category_" .. category.id] = panel
     BlzFrameSetVisible(panel, false)
 
@@ -650,9 +679,15 @@ local function CreateCategoryPanel(category, categoryIndex)
     local activities = JTG.GetActivities(category.id)
     local maxRows = 5
     local firstActivityFrame = nil
+    local skillGeneralLeft = nil
+    local skillGeneralRight = nil
     for index, descriptor in ipairs(activities) do
         local column = math.floor((index - 1) / maxRows)
         local row = (index - 1) % maxRows
+        if category.id == "skills" then
+            column = (index - 1) % 2
+            row = math.floor((index - 1) / 2)
+        end
         local name = "JTGActivity" .. categoryIndex .. "x" .. index
         local frame
         local button
@@ -668,7 +703,13 @@ local function CreateCategoryPanel(category, categoryIndex)
             frame = button
         end
         BlzFrameSetPoint(frame, FRAMEPOINT_TOP, panel, FRAMEPOINT_TOP,
-            -0.192 + column * 0.192, -0.100 - row * 0.055)
+            -0.192 + column * 0.192,
+            (category.id == "skills" and -0.1522 or -0.100) -
+                row * (category.id == "skills" and 0.0562 or 0.055))
+        if category.id == "skills" and row == 0 then
+            if column == 0 then skillGeneralLeft = frame
+            else skillGeneralRight = frame end
+        end
         if firstActivityFrame == nil then firstActivityFrame = frame end
         if descriptor.status ~= "available" then
             BlzFrameSetEnable(button, false)
@@ -683,6 +724,58 @@ local function CreateCategoryPanel(category, categoryIndex)
         end
         UI.catalogueRows[descriptor.id] = button
     end
+    if category.id == "skills" then
+        local generalHeading = CreateText("JTGSkillGeneralHeading", panel,
+            "|cffffcc00General|r", 0.382, CATALOGUE_BUTTON_HEIGHT, 1.0)
+        BlzFrameSetTextAlignment(generalHeading, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+        BlzFrameSetFont(generalHeading, "Fonts\\FRIZQT__.TTF", 0.024, 0)
+        BlzFrameSetPoint(generalHeading, FRAMEPOINT_CENTER, panel, FRAMEPOINT_TOP,
+            -0.096, -0.122)
+        local generalDivider = BlzCreateFrameByType("BACKDROP",
+            "JTGSkillGeneralDivider", panel, "", 0)
+        BlzFrameSetTexture(generalDivider, "JTGMenu\\MenuDivider.dds", 0, true)
+        BlzFrameSetSize(generalDivider, 0.001, 0.0012)
+        BlzFrameSetPoint(generalDivider, FRAMEPOINT_BOTTOMLEFT,
+            skillGeneralLeft, FRAMEPOINT_TOPLEFT, 0.004, 0.0042)
+        BlzFrameSetPoint(generalDivider, FRAMEPOINT_BOTTOMRIGHT,
+            skillGeneralRight, FRAMEPOINT_TOPRIGHT, -0.004, 0.0042)
+        BlzFrameSetLevel(generalDivider, 8)
+        BlzFrameSetEnable(generalDivider, false)
+
+        local raceHeading = CreateText("JTGSkillRaceHeading", panel,
+            "|cffffcc00Race Specific|r", 0.176, CATALOGUE_BUTTON_HEIGHT, 1.0)
+        BlzFrameSetTextAlignment(raceHeading, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
+        BlzFrameSetFont(raceHeading, "Fonts\\FRIZQT__.TTF", 0.024, 0)
+        BlzFrameSetPoint(raceHeading, FRAMEPOINT_CENTER, panel, FRAMEPOINT_TOP,
+            0.192, -0.122)
+        local firstRaceFrame = nil
+        for raceIndex, race in ipairs(JTG.SkillRaces) do
+            local descriptor = {
+                title = race.title, artwork = race.artwork, status = "available",
+            }
+            local frame, button, art = CreateIllustratedCard(
+                "JTGSkillRaceButton" .. raceIndex, panel, descriptor,
+                CATALOGUE_BUTTON_WIDTH, CATALOGUE_BUTTON_HEIGHT,
+                0.048, 0.048, 0.110, 0.84, 0.020)
+            BlzFrameClearAllPoints(art)
+            BlzFrameSetPoint(art, FRAMEPOINT_RIGHT, button, FRAMEPOINT_RIGHT,
+                -0.014, 0)
+            BlzFrameSetPoint(frame, FRAMEPOINT_TOP, panel, FRAMEPOINT_TOP,
+                0.192, -0.1522 - (raceIndex - 1) * 0.0562)
+            if firstRaceFrame == nil then firstRaceFrame = frame end
+            RegisterClick(button, function() UI.ShowSkillRace(race.id) end)
+        end
+        local raceDivider = BlzCreateFrameByType("BACKDROP",
+            "JTGSkillRaceDivider", panel, "", 0)
+        BlzFrameSetTexture(raceDivider, "JTGMenu\\MenuDivider.dds", 0, true)
+        BlzFrameSetSize(raceDivider, 0.001, 0.0012)
+        BlzFrameSetPoint(raceDivider, FRAMEPOINT_BOTTOMLEFT,
+            firstRaceFrame, FRAMEPOINT_TOPLEFT, 0.004, 0.0042)
+        BlzFrameSetPoint(raceDivider, FRAMEPOINT_BOTTOMRIGHT,
+            firstRaceFrame, FRAMEPOINT_TOPRIGHT, -0.004, 0.0042)
+        BlzFrameSetLevel(raceDivider, 8)
+        BlzFrameSetEnable(raceDivider, false)
+    end
     if firstActivityFrame ~= nil then
         BlzFrameClearAllPoints(summary)
         BlzFrameSetPoint(summary, FRAMEPOINT_TOP, title, FRAMEPOINT_BOTTOM, 0, 0)
@@ -693,6 +786,68 @@ local function CreateCategoryPanel(category, categoryIndex)
         FOOTER_BUTTON_WIDTH, FOOTER_BUTTON_HEIGHT)
     BlzFrameSetPoint(back, FRAMEPOINT_BOTTOM, panel, FRAMEPOINT_BOTTOM, 0, 0.035)
     RegisterClick(back, UI.ShowRoot, "return")
+end
+
+
+local function CreateSkillRacePanel(race, raceIndex)
+    local panel = CreateNativePanel("JTGSkillRacePanel" .. raceIndex,
+        GAME_UI, MENU_WIDTH, MENU_HEIGHT)
+    PositionTop(panel)
+    AddFooterDivider(panel)
+    local contentDivider = AddContentDivider(panel, -0.087)
+    UI.panels["skill_race_" .. race.id] = panel
+    BlzFrameSetVisible(panel, false)
+
+    local title = CreateText("JTGSkillRaceTitle" .. raceIndex, panel,
+        "|cffffcc00Skill Training - Race Specific|r",
+        TITLE_WIDTH, TITLE_HEIGHT, TITLE_SCALE)
+    BlzFrameSetPoint(title, FRAMEPOINT_TOP, panel, FRAMEPOINT_TOP, 0, TITLE_TOP_OFFSET)
+    local summary = CreateText("JTGSkillRaceSummary" .. raceIndex, panel,
+        race.title .. " exercises.",
+        0.54 / PARAGRAPH_SCALE, 0.025 / PARAGRAPH_SCALE, PARAGRAPH_SCALE)
+
+    local activities = JTG.GetActivities("skills", race.id)
+    local firstActivityFrame = nil
+    for index, descriptor in ipairs(activities) do
+        local column = (index - 1) % 3
+        local row = math.floor((index - 1) / 3)
+        local name = "JTGSkillRaceActivity" .. raceIndex .. "x" .. index
+        local frame
+        local button
+        if descriptor.artwork ~= nil then
+            frame, button = CreateIllustratedActivityCard(name, panel, descriptor)
+        else
+            button = CreateButton(name, panel,
+                descriptor.title .. "  |cff808080[Planned]|r",
+                CATALOGUE_BUTTON_WIDTH, CATALOGUE_BUTTON_HEIGHT)
+            frame = button
+        end
+        BlzFrameSetPoint(frame, FRAMEPOINT_TOP, panel, FRAMEPOINT_TOP,
+            -0.192 + column * 0.192, -0.100 - row * 0.055)
+        if firstActivityFrame == nil then firstActivityFrame = frame end
+        if descriptor.status ~= "available" then
+            BlzFrameSetEnable(button, false)
+            BlzFrameSetAlpha(button, 145)
+            BlzFrameSetTextColor(button, BlzConvertColor(255, 145, 145, 145))
+        else
+            AttachTooltip(button, descriptor.description, column >= 2 and "left" or "right")
+            RegisterClick(button, function()
+                if descriptor.menu ~= nil then JTG.OpenActivityMenu(descriptor.id, "skills")
+                else JTG.StartActivity(descriptor.id, "skills") end
+            end)
+        end
+        UI.catalogueRows[descriptor.id .. "_" .. race.id] = button
+    end
+    if firstActivityFrame ~= nil then
+        BlzFrameClearAllPoints(summary)
+        BlzFrameSetPoint(summary, FRAMEPOINT_TOP, title, FRAMEPOINT_BOTTOM, 0, 0)
+        BlzFrameSetPoint(summary, FRAMEPOINT_BOTTOM, contentDivider, FRAMEPOINT_TOP, 0, 0.013)
+    end
+
+    local back = CreateButton("JTGSkillRaceBack" .. raceIndex, panel, "Back",
+        FOOTER_BUTTON_WIDTH, FOOTER_BUTTON_HEIGHT)
+    BlzFrameSetPoint(back, FRAMEPOINT_BOTTOM, panel, FRAMEPOINT_BOTTOM, 0, 0.035)
+    RegisterClick(back, function() UI.ShowCategory("skills") end, "return")
 end
 
 local function CreateInfoPanel(key, titleText, bodyText, index, scrollable)
@@ -934,7 +1089,11 @@ function UI.Initialize()
     CreateMenuShade()
     CreateRootPanel()
     for index, category in ipairs(JTG.Categories) do CreateCategoryPanel(category, index) end
+    for index, race in ipairs(JTG.SkillRaces) do CreateSkillRacePanel(race, index) end
     CreateInfoPanel("patch", "Patch Notes",
+        "|cffffcc00v0.0.4|r  |cffb0b0b027 September 2026|r\n" ..
+        "- Added Demonstration: Power Building.\n" ..
+        "- Improved native-menu integration.\n\n" ..
         "|cffffcc00v0.0.3|r  |cffb0b0b027 September 2026|r\n" ..
         "- Added Training: Body Blocking.\n" ..
         "- Reworked menus.\n\n" ..
