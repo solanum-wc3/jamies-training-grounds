@@ -3,6 +3,7 @@ JTG = JTG or {}
 JTG.UI = {
     panels = {}, categoryButtons = {}, catalogueRows = {}, toolbarButtons = {},
     clickActions = {}, clickSounds = {}, clickTrigger = nil, browsingActivity = false,
+    nativeHiddenFrames = {}, tooltips = {},
 }
 
 local UI = JTG.UI
@@ -23,6 +24,17 @@ local FOOTER_BUTTON_WIDTH = 0.17
 local FOOTER_BUTTON_HEIGHT = 0.044
 local footerDividerCount = 0
 
+local function SetActivityOverlayVisible(visible)
+    local session = JTG.Controller and JTG.Controller.session
+    local activity = session and session.activity
+    if activity ~= nil and activity.setOverlayVisible ~= nil then
+        local ok, message = pcall(activity.setOverlayVisible, activity, visible == true)
+        if not ok then print("JTG overlay visibility warning: " .. tostring(message)) end
+    end
+end
+
+UI.SetActivityOverlayVisible = SetActivityOverlayVisible
+
 local function CreateNativePanel(name, parent, width, height)
     local panel = BlzCreateFrameByType("FRAME", name, parent, "", 0)
     BlzFrameSetSize(panel, width, height)
@@ -41,9 +53,22 @@ local function AddFooterDivider(panel)
     footerDividerCount = footerDividerCount + 1
     local divider = BlzCreateFrameByType("BACKDROP",
         "JTGMenuFooterDivider" .. footerDividerCount, panel, "", 0)
-    BlzFrameSetTexture(divider, "JTGMenu\\TooltipTop.dds", 0, true)
+    BlzFrameSetTexture(divider, "JTGMenu\\MenuDivider.dds", 0, true)
     BlzFrameSetSize(divider, 0.52, 0.0012)
     BlzFrameSetPoint(divider, FRAMEPOINT_BOTTOM, panel, FRAMEPOINT_BOTTOM, 0, 0.092)
+    BlzFrameSetLevel(divider, 8)
+    BlzFrameSetEnable(divider, false)
+    return divider
+end
+
+local function AddContentDivider(panel, topOffset)
+    footerDividerCount = footerDividerCount + 1
+    local divider = BlzCreateFrameByType("BACKDROP",
+        "JTGMenuContentDivider" .. footerDividerCount, panel, "", 0)
+    BlzFrameSetTexture(divider, "JTGMenu\\MenuDivider.dds", 0, true)
+    BlzFrameSetSize(divider, 0.52, 0.0012)
+    BlzFrameSetPoint(divider, FRAMEPOINT_TOP, panel, FRAMEPOINT_TOP, 0, topOffset)
+    BlzFrameSetLevel(divider, 8)
     BlzFrameSetEnable(divider, false)
     return divider
 end
@@ -68,7 +93,7 @@ local function BriefingChoicePoint(index, count, compact)
     if compact then
         local column = (index - 1) % 3
         local row = math.floor((index - 1) / 3)
-        return -0.180 + column * 0.180, -0.190 - row * 0.036
+        return -0.180 + column * 0.180, -0.225 - row * 0.036
     end
     if count <= 2 then
         return index == 1 and -0.108 or 0.108, -0.305
@@ -198,7 +223,101 @@ local function AttachTooltip(button, description, side)
     BlzFrameSetPoint(label, FRAMEPOINT_TOPLEFT, tooltip, FRAMEPOINT_TOPLEFT, 0.006, -0.006)
     BlzFrameSetVisible(tooltip, false)
     BlzFrameSetTooltip(button, tooltip)
+    table.insert(UI.tooltips, tooltip)
     return tooltip, label
+end
+
+local function HookNativeCloseButtons()
+    if UI.nativeCloseTrigger == nil then return end
+    local names = {
+        "QuestAcceptButton", "LogOkButton", "ReturnButton",
+        "AllianceAcceptButton", "AllianceCancelButton", "ChatAcceptButton",
+    }
+    for _, name in ipairs(names) do
+        local button = BlzGetFrameByName(name, 0)
+        if button ~= nil then
+            local id = GetHandleId(button)
+            if not UI.nativeCloseHooks[id] then
+                UI.nativeCloseHooks[id] = true
+                BlzTriggerRegisterFrameEvent(UI.nativeCloseTrigger, button,
+                    FRAMEEVENT_CONTROL_CLICK)
+            end
+        end
+    end
+end
+
+local function SuspendForNativeMenu()
+    if UI.nativeMenuOpen then return end
+    UI.nativeMenuOpen = true
+    UI.nativeHiddenFrames = {}
+    local seen = {}
+    local function suspend(frame)
+        if frame == nil then return end
+        local id = GetHandleId(frame)
+        if seen[id] or not BlzFrameIsVisible(frame) then return end
+        seen[id] = true
+        table.insert(UI.nativeHiddenFrames, frame)
+        BlzFrameSetVisible(frame, false)
+    end
+    -- Remove every shared custom surface that could accept clicks through a
+    -- native dialog. Each frame is restored only if it was visible here.
+    for _, panel in pairs(UI.panels) do suspend(panel) end
+    suspend(UI.toolbar)
+    suspend(UI.pausedActivityResume)
+    suspend(UI.pausedActivityExit)
+    suspend(UI.activityBriefingResume)
+    suspend(UI.activityBriefingExit)
+    SetActivityOverlayVisible(false)
+    for _, tooltip in ipairs(UI.tooltips) do
+        if tooltip ~= nil then BlzFrameSetVisible(tooltip, false) end
+    end
+    HookNativeCloseButtons()
+end
+
+local function QueueNativeMenuSuspend()
+    if UI.nativeMenuOpen or UI.nativeSuspendQueued then return end
+    UI.nativeSuspendQueued = true
+    local timer = CreateTimer()
+    TimerStart(timer, 0.00, false, function()
+        DestroyTimer(timer)
+        UI.nativeSuspendQueued = false
+        SuspendForNativeMenu()
+    end)
+end
+
+local function RestoreAfterNativeMenu()
+    if not UI.nativeMenuOpen then return false end
+    UI.nativeMenuOpen = false
+    for _, frame in ipairs(UI.nativeHiddenFrames) do
+        BlzFrameSetVisible(frame, true)
+    end
+    UI.nativeHiddenFrames = {}
+    if not UI.menuVisible then SetActivityOverlayVisible(true) end
+    return true
+end
+
+local function NativeMenuIsVisible()
+    local names = {
+        "EscMenuBackdrop", "QuestDialog", "LogDialog",
+        "AllianceDialog", "ChatDialog",
+    }
+    for _, name in ipairs(names) do
+        local frame = BlzGetFrameByName(name, 0)
+        if frame ~= nil and BlzFrameIsVisible(frame) then return true end
+    end
+    return false
+end
+
+local function StartNativeMenuMonitor()
+    UI.nativeMenuMonitor = CreateTimer()
+    TimerStart(UI.nativeMenuMonitor, 0.05, true, function()
+        if NativeMenuIsVisible() then
+            SuspendForNativeMenu()
+            HookNativeCloseButtons()
+        elseif UI.nativeMenuOpen then
+            RestoreAfterNativeMenu()
+        end
+    end)
 end
 
 local function ReleaseKeyboardFocus()
@@ -321,8 +440,10 @@ function UI.ShowToolbar(capabilities)
     BlzFrameSetVisible(UI.toolbarButtons.restart, caps.restart == true)
     BlzFrameSetVisible(UI.toolbarButtons.menu, caps.menu ~= false)
     BlzFrameSetVisible(UI.toolbarButtons.lastRunner, caps.lastRunner == true)
-    UI.SetLastRunnerEnabled(false)
+    BlzFrameSetVisible(UI.toolbarButtons.pause, caps.pause == true)
     BlzFrameSetVisible(UI.toolbar, true)
+    UI.LayoutToolbar()
+    UI.SetLastRunnerEnabled(false)
 end
 
 function UI.SetLastRunnerEnabled(enabled)
@@ -349,9 +470,12 @@ function UI.ShowActivityMenu(categoryId)
     UI.browsingActivity = true
     UI.ShowCategory(categoryId)
     BlzFrameSetVisible(UI.toolbarButtons.restart, false)
+    BlzFrameSetVisible(UI.toolbarButtons.lastRunner, false)
+    BlzFrameSetVisible(UI.toolbarButtons.pause, false)
     BlzFrameSetText(UI.toolbarButtons.menu, "Return to Training")
     BlzFrameSetVisible(UI.toolbarButtons.menu, true)
     BlzFrameSetVisible(UI.toolbar, true)
+    UI.LayoutToolbar()
 end
 
 function UI.HideActivityBriefing()
@@ -387,19 +511,35 @@ end
 function UI.ShowActivityBriefing(spec)
     local panel = UI.panels.activityBriefing
     if panel == nil then return end
+    local actions = spec.choices or {}
+    local compact = spec.compactChoices == true
+    local _, firstChoiceY = BriefingChoicePoint(1, math.max(1, #actions), compact)
     UI.SetGameplayMenuPaused(spec.pauseGame == true)
+    SetActivityOverlayVisible(false)
     UI.HideAllPanels()
     UI.HideToolbar()
     BlzFrameSetText(UI.activityBriefingTitle, "|cffffcc00" .. (spec.title or "") .. "|r")
     BlzFrameSetText(UI.activityBriefingBody, spec.body or "")
-    BlzFrameSetSize(UI.activityBriefingBody, 0.53 / PARAGRAPH_SCALE,
-        (spec.compactChoices and 0.060 or 0.205) / PARAGRAPH_SCALE)
+    BlzFrameClearAllPoints(UI.activityBriefingContentDivider)
+    BlzFrameSetPoint(UI.activityBriefingContentDivider, FRAMEPOINT_TOP, panel,
+        FRAMEPOINT_TOP, 0, firstChoiceY + 0.013)
+    BlzFrameClearAllPoints(UI.activityBriefingBody)
+    BlzFrameSetPoint(UI.activityBriefingBody, FRAMEPOINT_TOP,
+        UI.activityBriefingTitle, FRAMEPOINT_BOTTOM, 0, -0.022)
+    BlzFrameSetPoint(UI.activityBriefingBody, FRAMEPOINT_BOTTOM,
+        UI.activityBriefingContentDivider, FRAMEPOINT_TOP, 0, 0.013)
     BlzFrameSetVisible(UI.activityBriefingArtwork, spec.headingArtwork ~= nil)
     if spec.headingArtwork ~= nil then
+        BlzFrameClearAllPoints(UI.activityBriefingArtwork)
+        BlzFrameSetSize(UI.activityBriefingArtwork,
+            spec.headingArtworkWidth or 0.200,
+            spec.headingArtworkHeight or 0.098)
+        BlzFrameSetPoint(UI.activityBriefingArtwork, FRAMEPOINT_TOPRIGHT,
+            panel, FRAMEPOINT_TOPRIGHT, -0.065, -0.025)
         BlzFrameSetTexture(UI.activityBriefingArtwork, spec.headingArtwork, 0, true)
     end
-    UI.activityBriefingActions = spec.choices or {}
-    UI.activityBriefingCompact = spec.compactChoices == true
+    UI.activityBriefingActions = actions
+    UI.activityBriefingCompact = compact
     RefreshActivityBriefingChoices()
     UI.activityBriefingBackAction = spec.backAction
     BlzFrameSetTextColor(UI.activityBriefingBack, BlzConvertColor(255, 255, 255, 255))
@@ -450,6 +590,7 @@ local function CreateRootPanel()
     local panel = CreateNativePanel("JTGRootPanel", GAME_UI, MENU_WIDTH, MENU_HEIGHT)
     PositionTop(panel)
     AddFooterDivider(panel)
+    local contentDivider = AddContentDivider(panel, -0.112)
     UI.panels.root = panel
 
     local title = CreateText("JTGRootTitle", panel, "|cffffcc00Jamie's Training Grounds|r",
@@ -471,7 +612,7 @@ local function CreateRootPanel()
     end
     BlzFrameClearAllPoints(subtitle)
     BlzFrameSetPoint(subtitle, FRAMEPOINT_TOP, title, FRAMEPOINT_BOTTOM, 0, 0)
-    BlzFrameSetPoint(subtitle, FRAMEPOINT_BOTTOM, firstCategoryButton, FRAMEPOINT_TOP, 0, 0)
+    BlzFrameSetPoint(subtitle, FRAMEPOINT_BOTTOM, contentDivider, FRAMEPOINT_TOP, 0, 0.013)
 
     local patch = CreateButton("JTGPatchNotes", panel, "Patch Notes",
         FOOTER_BUTTON_WIDTH, FOOTER_BUTTON_HEIGHT)
@@ -496,6 +637,7 @@ local function CreateCategoryPanel(category, categoryIndex)
     local panel = CreateNativePanel("JTGCategoryPanel" .. categoryIndex, GAME_UI, MENU_WIDTH, MENU_HEIGHT)
     PositionTop(panel)
     AddFooterDivider(panel)
+    local contentDivider = AddContentDivider(panel, -0.087)
     UI.panels["category_" .. category.id] = panel
     BlzFrameSetVisible(panel, false)
 
@@ -544,7 +686,7 @@ local function CreateCategoryPanel(category, categoryIndex)
     if firstActivityFrame ~= nil then
         BlzFrameClearAllPoints(summary)
         BlzFrameSetPoint(summary, FRAMEPOINT_TOP, title, FRAMEPOINT_BOTTOM, 0, 0)
-        BlzFrameSetPoint(summary, FRAMEPOINT_BOTTOM, firstActivityFrame, FRAMEPOINT_TOP, 0, 0)
+        BlzFrameSetPoint(summary, FRAMEPOINT_BOTTOM, contentDivider, FRAMEPOINT_TOP, 0, 0.013)
     end
 
     local back = CreateButton("JTGCategoryBack" .. categoryIndex, panel, "Back",
@@ -585,6 +727,7 @@ local function CreateActivityBriefingPanel()
     local panel = CreateNativePanel("JTGActivityBriefing", GAME_UI, MENU_WIDTH, MENU_HEIGHT)
     PositionTop(panel)
     AddFooterDivider(panel)
+    UI.activityBriefingContentDivider = AddContentDivider(panel, -0.265)
     UI.panels.activityBriefing = panel
     BlzFrameSetVisible(panel, false)
 
@@ -663,6 +806,8 @@ local function CreateToolbar()
     BlzFrameSetAbsPoint(bar, FRAMEPOINT_TOPRIGHT, 0.79, 0.575)
     UI.toolbar = bar
 
+    local toolbarOrder = {}
+
     local function toolbarButton(name, label, width)
         local button = CreateButton(name, bar, label, width, 0.024)
         local text = FindButtonText(button)
@@ -671,30 +816,45 @@ local function CreateToolbar()
     end
 
     local restart = toolbarButton("JTGToolbarRestart", "Redo", 0.062)
-    BlzFrameSetPoint(restart, FRAMEPOINT_LEFT, bar, FRAMEPOINT_LEFT, 0.004, 0)
     AttachTooltip(restart, "Cleanly reset the current activity and begin it again.", "left")
     RegisterClick(restart, JTG.ResetActivity)
     UI.toolbarButtons.restart = restart
+    table.insert(toolbarOrder, restart)
     local menu = toolbarButton("JTGToolbarMenu", "Menu", 0.062)
-    BlzFrameSetPoint(menu, FRAMEPOINT_LEFT, restart, FRAMEPOINT_RIGHT, 0.004, 0)
     AttachTooltip(menu, "Change this exercise's configuration or return to the training menus.", "left")
     RegisterClick(menu, JTG.OpenTrainingMenu)
     UI.toolbarButtons.menu = menu
+    table.insert(toolbarOrder, menu)
 
     local lastRunner = toolbarButton("JTGToolbarLastRunner", "Last Runner", 0.078)
-    BlzFrameSetPoint(lastRunner, FRAMEPOINT_LEFT, menu, FRAMEPOINT_RIGHT, 0.004, 0)
     AttachTooltip(lastRunner, "Restart the exercise against the previous runner.", "left")
     BlzFrameSetEnable(lastRunner, false)
     BlzFrameSetAlpha(lastRunner, 145)
     RegisterClick(lastRunner, JTG.LastRunnerActivity)
     UI.toolbarButtons.lastRunner = lastRunner
+    table.insert(toolbarOrder, lastRunner)
 
     local pause = toolbarButton("JTGToolbarPause", "Pause", 0.058)
-    BlzFrameSetPoint(pause, FRAMEPOINT_LEFT, lastRunner, FRAMEPOINT_RIGHT, 0.004, 0)
     RegisterClick(pause, UI.ToggleExercisePause, function()
         return UI.exercisePaused and "return" or "normal"
     end)
     UI.toolbarButtons.pause = pause
+    table.insert(toolbarOrder, pause)
+    UI.LayoutToolbar = function()
+        local previous = nil
+        for _, button in ipairs(toolbarOrder) do
+            BlzFrameClearAllPoints(button)
+            if BlzFrameIsVisible(button) then
+                if previous == nil then
+                    BlzFrameSetPoint(button, FRAMEPOINT_LEFT, bar, FRAMEPOINT_LEFT, 0.004, 0)
+                else
+                    BlzFrameSetPoint(button, FRAMEPOINT_LEFT, previous, FRAMEPOINT_RIGHT, 0.004, 0)
+                end
+                previous = button
+            end
+        end
+    end
+    UI.LayoutToolbar()
     BlzFrameSetVisible(bar, false)
 end
 
@@ -746,10 +906,31 @@ function UI.Initialize()
     UI.escapeTrigger = CreateTrigger()
     BlzTriggerRegisterPlayerKeyEvent(UI.escapeTrigger, Player(0), OSKEY_ESCAPE, 0, true)
     TriggerAddAction(UI.escapeTrigger, function()
+        if RestoreAfterNativeMenu() then return end
         if UI.menuVisible and UI.currentBackAction ~= nil then
             UI.currentBackAction()
         end
     end)
+    UI.nativeMenuTrigger = CreateTrigger()
+    UI.nativeCloseHooks = {}
+    UI.nativeCloseTrigger = CreateTrigger()
+    TriggerAddAction(UI.nativeCloseTrigger, RestoreAfterNativeMenu)
+    HookNativeCloseButtons()
+    local nativeButtons = {
+        BlzGetOriginFrame(ORIGIN_FRAME_QUEST_BUTTON, 0),
+        BlzGetOriginFrame(ORIGIN_FRAME_ALLY_BUTTON, 0),
+        BlzGetOriginFrame(ORIGIN_FRAME_CHAT_MSG_BUTTON, 0),
+    }
+    for _, button in ipairs(nativeButtons) do
+        if button ~= nil then
+            BlzTriggerRegisterFrameEvent(UI.nativeMenuTrigger, button,
+                FRAMEEVENT_CONTROL_CLICK)
+        end
+    end
+    -- The system button is intentionally not hooked: merely observing its
+    -- click prevents Warcraft from opening F10. The visibility monitor handles
+    -- the system menu after Warcraft opens it, as it already does for F10.
+    TriggerAddAction(UI.nativeMenuTrigger, QueueNativeMenuSuspend)
     CreateMenuShade()
     CreateRootPanel()
     for index, category in ipairs(JTG.Categories) do CreateCategoryPanel(category, index) end
@@ -772,4 +953,5 @@ function UI.Initialize()
     CreateToolbar()
     CreatePausedActivityResume()
     UI.ShowRoot()
+    StartNativeMenuMonitor()
 end

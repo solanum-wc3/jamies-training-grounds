@@ -283,6 +283,7 @@ function JTG.CreateBodyBlockingActivity(session)
         sampleTicks = 0,
         streak = 0.0,
         streakBreak = 0.0,
+        courseTags = {},
         bestStreak = 0.0,
         streakLevel = 0,
         raceResults = {},
@@ -328,7 +329,6 @@ function JTG.CreateBodyBlockingActivity(session)
         BlzFrameSetTextAlignment(self.resultDetails, TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_CENTER)
         BlzFrameSetScale(self.resultDetails, 1.04)
         BlzFrameSetVisible(self.resultBackdrop, false)
-
         local function addResultButton(name, label, x, y, enabled, action)
             local button = TrackFrame(session.scope,
                 BlzCreateFrameByType("GLUETEXTBUTTON", name, self.resultBackdrop, "ScriptDialogButton", 0))
@@ -392,6 +392,17 @@ function JTG.CreateBodyBlockingActivity(session)
         BlzFrameSetVisible(self.speedFrame, false)
     end
 
+    function activity:setOverlayVisible(visible)
+        local show = visible == true and (not self.finished or self.replaying)
+        if self.speedFrame ~= nil then BlzFrameSetVisible(self.speedFrame, show) end
+        if self.countdownFrame ~= nil then
+            BlzFrameSetVisible(self.countdownFrame, show and self.countdownActive == true)
+        end
+        for _, tag in ipairs(self.courseTags or {}) do
+            if tag ~= nil then SetTextTagVisibility(tag, show) end
+        end
+    end
+
     function activity:createCourseMarkers()
         local y = self.laneY
         self.startLine = TrackLightning(session.scope,
@@ -401,10 +412,12 @@ function JTG.CreateBodyBlockingActivity(session)
         if self.startLine ~= nil then SetLightningColor(self.startLine, 0.25, 1.0, 0.25, 0.90) end
         if self.finishLine ~= nil then SetLightningColor(self.finishLine, 1.0, 0.20, 0.20, 0.90) end
         self.startTag = TrackTextTag(session.scope, CreateTextTag())
+        table.insert(self.courseTags, self.startTag)
         SetTextTagText(self.startTag, "|cff80ff80START|r", 0.032)
         SetTextTagPos(self.startTag, self.startX - 120, y + 440, 20)
         SetTextTagPermanent(self.startTag, true)
         self.finishTag = TrackTextTag(session.scope, CreateTextTag())
+        table.insert(self.courseTags, self.finishTag)
         SetTextTagText(self.finishTag, "|cffff5555FINISH|r", 0.032)
         SetTextTagPos(self.finishTag, self.finishX - 130, y + 440, 20)
         SetTextTagPermanent(self.finishTag, true)
@@ -714,6 +727,7 @@ function JTG.CreateBodyBlockingActivity(session)
         SetUnitAnimation(self.runner, "stand")
         SetUnitAnimation(self.referenceRunner, "stand")
         BlzFrameSetVisible(self.resultBackdrop, true)
+        self:setOverlayVisible(false)
         if JTG.UI then JTG.UI.HideToolbar() end
     end
 
@@ -731,6 +745,7 @@ function JTG.CreateBodyBlockingActivity(session)
         SetUnitAnimation(self.runner, "walk")
         SetUnitAnimation(self.referenceRunner, "walk")
         self.replaying = true
+        self:setOverlayVisible(true)
         self.replayPosition = 1.0
         self:applyReplaySample(self.replaySamples[1])
         if JTG.UI then JTG.UI.ShowToolbar(session.descriptor.capabilities) end
@@ -891,6 +906,7 @@ function JTG.CreateBodyBlockingActivity(session)
         BlzFrameSetAlpha(self.resultReplay,
             self.replaySamples ~= nil and #self.replaySamples > 0 and 255 or 145)
         BlzFrameSetVisible(self.speedFrame, false)
+        self:setOverlayVisible(false)
         if JTG.UI then JTG.UI.HideToolbar() end
     end
 
@@ -899,9 +915,11 @@ function JTG.CreateBodyBlockingActivity(session)
             BlzFrameSetVisible(self.resultBackdrop, false)
             if JTG.UI then JTG.UI.ShowToolbar(session.descriptor.capabilities) end
         elseif self.finished then
+            self:setOverlayVisible(false)
             BlzFrameSetVisible(self.resultBackdrop, true)
             if JTG.UI then JTG.UI.HideToolbar() end
         elseif JTG.UI then
+            self:setOverlayVisible(true)
             JTG.UI.ShowToolbar(session.descriptor.capabilities)
             JTG.UI.SetLastRunnerEnabled(self.mode == "training" and self.runnerIndex > 1)
         end
@@ -952,6 +970,13 @@ function JTG.CreateBodyBlockingActivity(session)
         JTG.ResetWorldFog(p0)
         local visible = Rect(scene.minX, scene.minY, scene.maxX, scene.maxY)
         SetFogStateRect(p0, FOG_OF_WAR_VISIBLE, visible, true)
+        local vision = CreateFogModifierRect(p0, FOG_OF_WAR_VISIBLE,
+            visible, false, false)
+        FogModifierStart(vision)
+        JTG.ScopeAdd(current.scope, function()
+            FogModifierStop(vision)
+            DestroyFogModifier(vision)
+        end)
         RemoveRect(visible)
         self:createCountdownUI()
         self:createSpeedUI()
@@ -960,9 +985,11 @@ function JTG.CreateBodyBlockingActivity(session)
 
     function activity:start(current)
         if GetLocalPlayer() == Player(0) then
-            ResetToGameCamera(0)
-            PanCameraToTimed(current.scene.centerX, current.scene.centerY, 0)
-            SetCameraField(CAMERA_FIELD_TARGET_DISTANCE, 2100, 0)
+            SetCameraPosition(current.scene.centerX, current.scene.centerY)
+            if JTG.defaultCameraDistance ~= nil then
+                SetCameraField(CAMERA_FIELD_TARGET_DISTANCE,
+                    JTG.defaultCameraDistance, 0)
+            end
         end
         if self.mode == "training" or (self.mode == "custom" and self.runnerId ~= nil) then self:createRound()
         else JTG.OpenActivityMenu(session.id, JTG.Controller.lastCategory) end

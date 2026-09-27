@@ -34,8 +34,11 @@ JTG.RegisterActivity({
 
         function activity:start(current)
             if GetLocalPlayer() == Player(0) then
-                ResetToGameCamera(0)
-                PanCameraToTimed(current.scene.centerX, current.scene.centerY, 0)
+                SetCameraPosition(current.scene.centerX, current.scene.centerY)
+                if JTG.defaultCameraDistance ~= nil then
+                    SetCameraField(CAMERA_FIELD_TARGET_DISTANCE,
+                        JTG.defaultCameraDistance, 0)
+                end
                 ClearSelection()
                 SelectUnit(self.unit, true)
             end

@@ -19,6 +19,9 @@ CARDS = {
     "GoldMineMicro": ("gold-mine-micro-source.png", 1.05, 0.50),
     "UnitComparison": ("unit-comparison-source.png", 1.02, 0.50),
     "DemoMode": ("demo-mode-source.png", 1.25, 0.28),
+    # Preserve the complete construction scene; the transparent source is
+    # already composed as a wide card and only needs fitting to the slot.
+    "SpeedBuilding": ("speed-building-source.png", 1.0, 0.50, 0.50, "contain"),
 }
 
 ROOT_CARDS = {
@@ -137,6 +140,13 @@ tooltip_draw.rounded_rectangle(
 tooltip_native_path = OUTPUT / "TooltipNative.dds"
 tooltip_native.save(tooltip_native_path, pixel_format="DXT5")
 generated.append((tooltip_native_path, (512, 128)))
+
+# A solid rule shared by content and footer dividers. A thin frame sampling the
+# tooltip-border texture can land on either its gold edge or dark interior.
+menu_divider = Image.new("RGBA", (64, 4), (239, 174, 33, 255))
+menu_divider_path = OUTPUT / "MenuDivider.dds"
+menu_divider.save(menu_divider_path, pixel_format="DXT5")
+generated.append((menu_divider_path, (64, 4)))
 
 # Nine-slice runtime skin. Only straight sections stretch; the four rounded
 # corners retain their shape at every tooltip height.

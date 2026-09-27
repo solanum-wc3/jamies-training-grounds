@@ -62,9 +62,22 @@ JTG.RegisterActivity({
     artwork = "JTGMenu\\BodyBlocking.dds",
     status = "available",
     sceneId = "arena.south",
-    capabilities = {restart = true, menu = true, lastRunner = true},
+    capabilities = {restart = true, menu = true, lastRunner = true, pause = true},
     menu = JTG.OpenBodyBlockingMenu,
     factory = JTG.CreateBodyBlockingActivity,
+})
+
+JTG.RegisterActivity({
+    id = "tools.speed_building",
+    category = "tools",
+    title = "Speed Building",
+    description = "Compare how additional Peasants affect construction time and resource cost.",
+    artwork = "JTGMenu\\SpeedBuilding.dds",
+    status = "available",
+    sceneId = "arena.south",
+    capabilities = {menu = true, pause = true},
+    menu = JTG.OpenSpeedBuildingMenu,
+    factory = JTG.CreateSpeedBuildingActivity,
 })
 
 for _, entry in ipairs(planned) do
