@@ -4,7 +4,7 @@
 
 `foundation-minimap.py` updates the matching region of the minimap and preserves the remaining pixels. Run it after the build script's `--prepare` step and before the final build.
 
-`build-infrastructure.cjs` creates the current `v0.0.2` infrastructure candidate directly from the accepted alpha.5 foundation. It changes only `war3map.lua`, `war3map.wtg`, `war3map.wct`, and the map-title string table. It verifies the accepted source hash, parses the assembled Lua, round-trips all changed members, and proves all other listed archive members remain byte-identical.
+`build-infrastructure.cjs` creates the current playable release directly from the accepted alpha.5 foundation. It assembles the Lua modules, editor trigger metadata, version string, menu assets and native interface overrides. It verifies the accepted source hash, parses the assembled Lua, round-trips all changed members, and proves all other listed archive members remain byte-identical.
 
 Install the locked dependencies and build with:
 

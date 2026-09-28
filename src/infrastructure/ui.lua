@@ -18,6 +18,21 @@ local TITLE_WIDTH = 0.54
 local TITLE_HEIGHT = 0.045
 local TITLE_SCALE = 1.55
 local TITLE_TOP_OFFSET = -0.010
+local TOOLBAR_BUTTON_WIDTH = 0.087
+local TOOLBAR_BUTTON_HEIGHT = 0.024
+local TOOLBAR_BUTTON_GAP = 0.001
+local TOOLBAR_ROW_STEP = TOOLBAR_BUTTON_HEIGHT + 0.001
+local TOOLBAR_LEFT = 0.446
+local TOOLBAR_TOP = 0.575
+
+UI.ToolbarLayout = {
+    buttonWidth = TOOLBAR_BUTTON_WIDTH,
+    buttonHeight = TOOLBAR_BUTTON_HEIGHT,
+    gap = TOOLBAR_BUTTON_GAP,
+    rowStep = TOOLBAR_ROW_STEP,
+    left = TOOLBAR_LEFT,
+    top = TOOLBAR_TOP,
+}
 local PARAGRAPH_SCALE = 1.18
 local CATALOGUE_BUTTON_WIDTH = 0.190
 local CATALOGUE_BUTTON_HEIGHT = 0.052
@@ -199,9 +214,33 @@ local function HighlightUnpauseButton()
     end)
 end
 
+-- Activity-owned toolbars can register their Pause/Unpause notification
+-- sprite with the same paused-load warning used by the shared toolbar. The
+-- returned disposer must run before the activity destroys the sprite frame.
+function UI.RegisterPauseHighlight(highlight)
+    if highlight == nil then return function() end end
+    UI.unpauseHighlights = UI.unpauseHighlights or {}
+    table.insert(UI.unpauseHighlights, highlight)
+    local registered = true
+    return function()
+        if not registered then return end
+        registered = false
+        local highlights = UI.unpauseHighlights or {}
+        for index = #highlights, 1, -1 do
+            if highlights[index] == highlight then
+                table.remove(highlights, index)
+            end
+        end
+    end
+end
+
 local function WarnPausedLoad()
     UI.nativeLoadPanelWasVisible = true
     if UI.loadWarningText ~= nil then
+        -- Native Save/Load dialogs are raised after the ordinary game UI.
+        -- Reassert a top overlay level when the warning is shown so the text
+        -- renders over the dialog rather than through its translucent panel.
+        BlzFrameSetLevel(UI.loadWarningText, 10000)
         BlzFrameSetText(UI.loadWarningText,
             "|cffffffffTo load a game, you have to |r" ..
             "|cffffcc00Unpause|r|cffffffff.|r")
@@ -252,7 +291,7 @@ end
 local function CreateIllustratedActivityCard(name, parent, descriptor)
     return CreateIllustratedCard(name, parent, descriptor,
         CATALOGUE_BUTTON_WIDTH, CATALOGUE_BUTTON_HEIGHT,
-        0.098, 0.048, 0.120, 0.84, 0.020)
+        0.098, 0.048, 0.120, 0.84, descriptor.labelInset or 0.020)
 end
 
 local function CreateIllustratedCategoryCard(name, parent, category)
@@ -538,6 +577,38 @@ local function ReleaseKeyboardFocus()
     end
 end
 
+local function ReleaseKeyboardFocusAfterClick()
+    -- Timers do not advance while the game is paused, so paused interfaces
+    -- must release focus synchronously. During play, defer until Warcraft has
+    -- finished dispatching the frame click or it may focus the button again.
+    if UI.gameplayMenuPaused or UI.exercisePaused then
+        ReleaseKeyboardFocus()
+        return
+    end
+    local epoch = UI.epoch
+    local focusTimer = CreateTimer()
+    TimerStart(focusTimer, 0.05, false, function()
+        DestroyTimer(focusTimer)
+        if UI.epoch ~= epoch then return end
+        ReleaseKeyboardFocus()
+    end)
+end
+
+UI.ReleaseKeyboardFocus = ReleaseKeyboardFocus
+UI.ReleaseKeyboardFocusAfterClick = ReleaseKeyboardFocusAfterClick
+
+local function ReleaseFrameFocus(frame)
+    if frame == nil or GetLocalPlayer() ~= Player(0) then return end
+    -- Warcraft often restores focus to a clicked GLUETEXTBUTTON after the
+    -- frame event finishes. Cycling the clicked frame itself prevents that
+    -- restoration and immediately returns F-key input to the game.
+    BlzFrameSetFocus(frame, false)
+    BlzFrameSetEnable(frame, false)
+    BlzFrameSetEnable(frame, true)
+end
+
+UI.ReleaseFrameFocus = ReleaseFrameFocus
+
 local function PlayButtonSound(kind)
     local sound = kind == "return" and UI.returnButtonSound or UI.normalButtonSound
     if sound ~= nil then
@@ -687,13 +758,9 @@ end
 function UI.ShowActivityMenu(categoryId)
     UI.browsingActivity = true
     UI.ShowCategory(categoryId)
-    BlzFrameSetVisible(UI.toolbarButtons.restart, false)
-    BlzFrameSetVisible(UI.toolbarButtons.lastRunner, false)
-    BlzFrameSetVisible(UI.toolbarButtons.pause, false)
-    BlzFrameSetText(UI.toolbarButtons.menu, "Return to Training")
-    BlzFrameSetVisible(UI.toolbarButtons.menu, true)
-    BlzFrameSetVisible(UI.toolbar, true)
-    UI.LayoutToolbar()
+    -- Resume and Exit already provide the activity controls around this menu.
+    -- The former "Return to Training" toolbar button duplicated Resume.
+    BlzFrameSetVisible(UI.toolbar, false)
 end
 
 function UI.HideActivityBriefing()
@@ -1158,43 +1225,46 @@ end
 
 local function CreateToolbar()
     local bar = BlzCreateFrameByType("FRAME", "JTGActivityToolbar", GAME_UI, "", 0)
-    -- Match the compact native system-button row and sit directly beneath the
-    -- resource gauges on the right side of the upper interface.
-    BlzFrameSetSize(bar, 0.315, 0.030)
-    BlzFrameSetAbsPoint(bar, FRAMEPOINT_TOPRIGHT, 0.79, 0.575)
+    -- Toolbars share two left-aligned rows beginning below the left edge of
+    -- the gold resource window. Both row and column gaps are half a button.
+    BlzFrameSetSize(bar, 0.285, 0.060)
+    BlzFrameSetAbsPoint(bar, FRAMEPOINT_TOPLEFT,
+        TOOLBAR_LEFT, TOOLBAR_TOP)
     UI.toolbar = bar
 
-    local toolbarOrder = {}
+    local topRow = {}
+    local bottomRow = {}
 
-    local function toolbarButton(name, label, width)
-        local button = CreateButton(name, bar, label, width, 0.024)
+    local function toolbarButton(name, label)
+        local button = CreateButton(name, bar, label,
+            TOOLBAR_BUTTON_WIDTH, TOOLBAR_BUTTON_HEIGHT)
         local text = FindButtonText(button)
         if text ~= nil then BlzFrameSetScale(text, 0.72) end
         return button
     end
 
-    local restart = toolbarButton("JTGToolbarRestart", "Redo", 0.062)
+    local restart = toolbarButton("JTGToolbarRestart", "Redo")
     AttachTooltip(restart, "Cleanly reset the current activity and begin it again.", "left")
     RegisterClick(restart, JTG.ResetActivity)
     UI.toolbarButtons.restart = restart
-    table.insert(toolbarOrder, restart)
-    local menu = toolbarButton("JTGToolbarMenu", "Menu", 0.062)
+    table.insert(bottomRow, restart)
+    local menu = toolbarButton("JTGToolbarMenu", "Menu")
     AttachTooltip(menu, "Change this exercise's configuration or return to the training menus.", "left")
     RegisterClick(menu, JTG.OpenTrainingMenu)
     UI.toolbarButtons.menu = menu
-    table.insert(toolbarOrder, menu)
+    table.insert(topRow, menu)
 
-    local lastRunner = toolbarButton("JTGToolbarLastRunner", "Last Runner", 0.078)
+    local lastRunner = toolbarButton("JTGToolbarLastRunner", "Last Runner")
     AttachTooltip(lastRunner, "Restart the exercise against the previous runner.", "left")
     BlzFrameSetEnable(lastRunner, false)
     BlzFrameSetAlpha(lastRunner, 145)
     RegisterClick(lastRunner, JTG.LastRunnerActivity)
     UI.toolbarButtons.lastRunner = lastRunner
-    table.insert(toolbarOrder, lastRunner)
+    table.insert(bottomRow, lastRunner)
 
     -- Match the aspect ratio of Warcraft's native Quest-button notification
     -- effect, which is authored for the wider upper-button-bar controls.
-    local pause = toolbarButton("JTGToolbarPause", "Pause", 0.087)
+    local pause = toolbarButton("JTGToolbarPause", "Pause")
     RegisterClick(pause, UI.ToggleExercisePause, function()
         return UI.exercisePaused and "return" or "normal"
     end)
@@ -1210,7 +1280,7 @@ local function CreateToolbar()
     -- frame origin. Offset the host frame so the rendered border centers on
     -- the wider Pause/Unpause button.
     BlzFrameSetPoint(pauseHighlight, FRAMEPOINT_CENTER, pause,
-        FRAMEPOINT_CENTER, -0.011, 0)
+        FRAMEPOINT_CENTER, -0.0125, 0)
     BlzFrameSetModel(pauseHighlight,
         "UI\\Feedback\\QuestButton\\UI-QuestButtonOn.mdl", 0)
     BlzFrameSetLevel(pauseHighlight, 3)
@@ -1218,20 +1288,26 @@ local function CreateToolbar()
     BlzFrameSetVisible(pauseHighlight, false)
     table.insert(UI.unpauseHighlights, pauseHighlight)
     BlzFrameSetLevel(pause, 2)
-    table.insert(toolbarOrder, pause)
+    table.insert(topRow, pause)
     UI.LayoutToolbar = function()
-        local previous = nil
-        for _, button in ipairs(toolbarOrder) do
-            BlzFrameClearAllPoints(button)
-            if BlzFrameIsVisible(button) then
-                if previous == nil then
-                    BlzFrameSetPoint(button, FRAMEPOINT_LEFT, bar, FRAMEPOINT_LEFT, 0.004, 0)
-                else
-                    BlzFrameSetPoint(button, FRAMEPOINT_LEFT, previous, FRAMEPOINT_RIGHT, 0.004, 0)
+        local function layoutRow(buttons, offsetY)
+            local previous = nil
+            for _, button in ipairs(buttons) do
+                BlzFrameClearAllPoints(button)
+                if BlzFrameIsVisible(button) then
+                    if previous == nil then
+                        BlzFrameSetPoint(button, FRAMEPOINT_TOPLEFT, bar,
+                            FRAMEPOINT_TOPLEFT, 0, offsetY)
+                    else
+                        BlzFrameSetPoint(button, FRAMEPOINT_LEFT, previous,
+                            FRAMEPOINT_RIGHT, TOOLBAR_BUTTON_GAP, 0)
+                    end
+                    previous = button
                 end
-                previous = button
             end
         end
+        layoutRow(topRow, 0)
+        layoutRow(bottomRow, -TOOLBAR_ROW_STEP)
     end
     UI.LayoutToolbar()
     BlzFrameSetVisible(bar, false)
@@ -1418,21 +1494,27 @@ function UI.Initialize(restoring)
     GAME_UI = BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0)
     UI.loadWarningText = CreateText("JTGPausedLoadWarning", GAME_UI, "",
         0.72, 0.024, 1.55)
-    BlzFrameSetAbsPoint(UI.loadWarningText, FRAMEPOINT_TOP, 0.40, 0.538)
-    BlzFrameSetLevel(UI.loadWarningText, 40)
+    -- Keep the instruction independent of Warcraft's native Load dialog, but
+    -- place it in the dialog's open space immediately above its button row.
+    BlzFrameSetAbsPoint(UI.loadWarningText, FRAMEPOINT_CENTER, 0.40, 0.302)
+    BlzFrameSetLevel(UI.loadWarningText, 10000)
     BlzFrameSetEnable(UI.loadWarningText, false)
     BlzFrameSetVisible(UI.loadWarningText, false)
     UI.normalButtonSound = CreateSound("Sound\\Interface\\BigButtonClick.wav", false, false, false, 10, 10, "")
     UI.returnButtonSound = CreateSound("Sound\\Interface\\GamePause.wav", false, false, false, 10, 10, "")
     UI.clickTrigger = CreateTrigger()
     TriggerAddAction(UI.clickTrigger, function()
-        local action = UI.clickActions[GetHandleId(BlzGetTriggerFrame())]
+        local clickedFrame = BlzGetTriggerFrame()
+        local action = UI.clickActions[GetHandleId(clickedFrame)]
         if action ~= nil then
-            local soundKind = UI.clickSounds[GetHandleId(BlzGetTriggerFrame())]
+            local soundKind = UI.clickSounds[GetHandleId(clickedFrame)]
             if type(soundKind) == "function" then soundKind = soundKind() end
             PlayButtonSound(soundKind)
+            ReleaseFrameFocus(clickedFrame)
             if UI.gameplayMenuPaused or UI.exercisePaused then
                 action()
+                ReleaseFrameFocus(clickedFrame)
+                ReleaseKeyboardFocusAfterClick()
                 return
             end
             local epoch = UI.epoch
@@ -1441,12 +1523,8 @@ function UI.Initialize(restoring)
                 DestroyTimer(releaseTimer)
                 if UI.epoch ~= epoch then return end
                 action()
-                local focusTimer = CreateTimer()
-                TimerStart(focusTimer, 0.05, false, function()
-                    DestroyTimer(focusTimer)
-                    if UI.epoch ~= epoch then return end
-                    ReleaseKeyboardFocus()
-                end)
+                ReleaseFrameFocus(clickedFrame)
+                ReleaseKeyboardFocusAfterClick()
             end)
         end
     end)
@@ -1530,6 +1608,9 @@ function UI.Initialize(restoring)
     for index, category in ipairs(JTG.Categories) do CreateCategoryPanel(category, index) end
     for index, race in ipairs(JTG.SkillRaces) do CreateSkillRacePanel(race, index) end
     CreateInfoPanel("patch", "Patch Notes",
+        "|cffffcc00v0.0.6|r  |cffb0b0b029 September 2026|r\n" ..
+        "- Added the Camera tutorial, covering essential camera controls and navigation.\n" ..
+        "- Added guided demonstrations, checkpoints, Topics and supporting Quest information.\n\n" ..
         "|cffffcc00v0.0.5|r  |cffb0b0b028 September 2026|r\n" ..
         "- Added save and load support across menus and exercises.\n" ..
         "- Added race-specific Skill Training catalogues.\n" ..

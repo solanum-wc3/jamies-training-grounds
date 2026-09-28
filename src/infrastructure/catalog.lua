@@ -23,9 +23,12 @@ JTG.RegisterScene({
     id = "arena.north", centerX = 4864, centerY = 6016,
     minX = 2048, minY = 4864, maxX = 7808, maxY = 7552,
 })
+JTG.RegisterScene({
+    -- Preserved Twisted Meadows terrain at the imported main Orc base.
+    id = "tutorial.camera", centerX = 3648, centerY = -5120,
+})
 
 local planned = {
-    {"learn.camera", "learn", "Camera & Interface", "Move, pan, zoom and orient the camera."},
     {"learn.selection", "learn", "Unit Selection & Commands", "Select units, form groups and issue orders."},
     {"learn.economy", "learn", "Workers & Resources", "Gather resources and keep workers productive."},
     {"learn.base", "learn", "Build Your Base", "Place and construct the buildings you need."},
@@ -49,12 +52,12 @@ local planned = {
     {"skills.gold_mine", "skills", "Gold Mine Micro", "Optimize workers around a contested mine.", "JTGMenu\\GoldMineMicro.dds", {"human", "orc"}},
     {"skills.merc_creep", "skills", "Merc Camp Creeping", "Practice a Mercenary Camp creep route.", nil, {"human"}},
     {"skills.lab_creep", "skills", "Goblin Lab Creeping", "Practice a Goblin Laboratory creep route.", nil, {"human"}},
-    {"skills.windwalk", "skills", "Windwalk Pop", "Use collision timing to displace units.", nil, {"orc"}},
+    {"skills.windwalk", "skills", "Windwalk Pop", "Use collision timing to displace units.", "JTGMenu\\WindwalkPop.dds", {"orc"}},
     {"skills.gargoyle", "skills", "Gargoyle Surround", "Surround targets with flying units.", nil, {"undead"}},
     {"skills.aow_creep", "skills", "AoW Creeping", "Practice Ancient of War creeping.", "JTGMenu\\AoWCreeping.dds", {"nightelf"}},
     {"skills.peon_micro", "skills", "Peon Micro", "Practice Peon movement and survival under pressure.", "JTGMenu\\PeonMicro.dds", {"orc"}},
     {"skills.wisp_micro", "skills", "Wisp Micro", "Practice Wisp movement and survival under pressure.", "JTGMenu\\WispMicro.dds", {"nightelf"}},
-    {"skills.zeppelin", "skills", "Zeppelin Micro", "Load, unload and protect transported units."},
+    {"skills.zeppelin", "skills", "Zeppelin Micro", "Load, unload and protect transported units.", "JTGMenu\\ZeppelinMicro.dds"},
     {"skills.reflex", "skills", "Reflex Training", "React quickly and accurately to visual targets.", "JTGMenu\\ReflexTraining.dds"},
 
     {"tools.demo", "tools", "Demo Mode", "Explore units and mechanics freely.", "JTGMenu\\DemoMode.dds"},
@@ -62,6 +65,19 @@ local planned = {
     {"tools.quiz", "tools", "Warcraft III Quiz", "Test knowledge of units and mechanics."},
     {"tools.compare", "tools", "Unit Comparison", "Compare unit statistics and interactions.", "JTGMenu\\UnitComparison.dds"},
 }
+
+JTG.RegisterActivity({
+    id = "learn.camera",
+    category = "learn",
+    title = "1. Camera",
+    description = "Learn how to move, zoom and quickly reposition the camera.",
+    artwork = "JTGMenu\\CameraControls.dds",
+    labelInset = 0.022,
+    status = "available",
+    sceneId = "tutorial.camera",
+    capabilities = {menu = false, pause = false},
+    factory = JTG.CreateCameraTutorialActivity,
+})
 
 JTG.RegisterActivity({
     id = "skills.body_blocking",

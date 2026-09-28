@@ -358,7 +358,16 @@ function JTG.CreateBodyBlockingActivity(session)
                 BlzTriggerRegisterFrameEvent(trigger, button, FRAMEEVENT_CONTROL_CLICK)
                 TriggerAddAction(trigger, function()
                     if JTG.UI and JTG.UI.PlayButtonSound then JTG.UI.PlayButtonSound("normal") end
+                    if JTG.UI and JTG.UI.ReleaseFrameFocus then
+                        JTG.UI.ReleaseFrameFocus(BlzGetTriggerFrame())
+                    end
                     action()
+                    if JTG.UI and JTG.UI.ReleaseFrameFocus then
+                        JTG.UI.ReleaseFrameFocus(BlzGetTriggerFrame())
+                    end
+                    if JTG.UI and JTG.UI.ReleaseKeyboardFocusAfterClick then
+                        JTG.UI.ReleaseKeyboardFocusAfterClick()
+                    end
                 end)
             end
             return button

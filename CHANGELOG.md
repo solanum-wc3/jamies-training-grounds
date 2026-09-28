@@ -2,6 +2,11 @@
 
 This file records player-visible changes in tested project versions. Development reasoning belongs in commit messages and `docs/decisions/`.
 
+## v0.0.6 — Camera tutorial (2026-09-29)
+
+- Added the Camera tutorial, covering essential camera controls and navigation.
+- Added guided demonstrations, checkpoints, Topics and supporting Quest information.
+
 ## v0.0.2-alpha.31 — Menu and shared infrastructure (2026-09-25)
 
 - Established the successor-project repository structure.

@@ -18,13 +18,14 @@ const {
 } = req('@jamiephan/stormlib');
 const luaParser = req('luaparse');
 
-const version = 'v0.0.5-alpha50';
+const version = 'v0.0.6';
 const sourcePath = path.join(root, 'reference/foundation/Jamies-Training-Grounds-v0.0.1-alpha.5.w3x');
 const outputPath = path.join(root, `outputs/Jamies-Training-Grounds-${version}.w3x`);
 const reportPath = path.join(root, `outputs/Jamies-Training-Grounds-${version}-validation.json`);
 const acceptedHash = 'a1ea7789e60b30e77d64f14337759842dff309d129929ef24defb1276cf1ba64';
 const modulePaths = [
     'src/infrastructure/core.lua',
+    'src/activities/camera-tutorial.lua',
     'src/activities/body-blocking.lua',
     'src/activities/power-building.lua',
     'src/infrastructure/catalog.lua',
@@ -39,6 +40,11 @@ const assetPaths = [
     ['JTGMenu\\ReflexTraining.dds', 'src/assets/menu/ReflexTraining.dds'],
     ['JTGMenu\\PeonMicro.dds', 'src/assets/menu/PeonMicro.dds'],
     ['JTGMenu\\WispMicro.dds', 'src/assets/menu/WispMicro.dds'],
+    ['JTGMenu\\CameraControls.dds', 'src/assets/menu/CameraControls.dds'],
+    ['JTGMenu\\WindwalkPop.dds', 'src/assets/menu/WindwalkPop.dds'],
+    ['JTGMenu\\ZeppelinMicro.dds', 'src/assets/menu/ZeppelinMicro.dds'],
+    ['JTGQuest\\CameraSettingsZoom.dds', 'src/assets/menu/CameraSettingsZoom.dds'],
+    ['JTGQuest\\IdleWorkerSettings.dds', 'src/assets/menu/IdleWorkerSettings.dds'],
     ['JTGMenu\\Surrounds.dds', 'src/assets/menu/Surrounds.dds'],
     ['JTGMenu\\AoWCreeping.dds', 'src/assets/menu/AoWCreeping.dds'],
     ['JTGMenu\\BatSplitter.dds', 'src/assets/menu/BatSplitter.dds'],
@@ -60,6 +66,17 @@ const assetPaths = [
     ['JTGMenu\\TooltipBottom.dds', 'src/assets/menu/TooltipBottom.dds'],
     ['JTGMenu\\TooltipBR.dds', 'src/assets/menu/TooltipBR.dds'],
     ['JTGMenu\\MenuDivider.dds', 'src/assets/menu/MenuDivider.dds'],
+];
+const configurationPaths = [
+    ['war3mapSkin.txt', 'src/config/war3mapSkin.txt'],
+];
+// The foundation inherited object-skin tables from the source melee map.
+// They redirect ordinary Blizzard objects (including Rings and Claws) to
+// texture paths that are not part of the map and render as green squares on
+// affected clients. Removing the tables restores every native object skin.
+const removedArchivePaths = [
+    'war3mapSkin.w3b',
+    'war3mapSkin.w3t',
 ];
 
 const hash = buffer => crypto.createHash('sha256').update(buffer).digest('hex');
@@ -102,6 +119,13 @@ let nextLua = compiled.slice(0, oldStart) + bundle + '\n' + compiled.slice(oldEn
 nextLua = nextLua
     .replaceAll('gg_trg_Foundation_Test', 'gg_trg_Infrastructure')
     .replaceAll('InitTrig_Foundation_Test', 'InitTrig_Infrastructure');
+// The foundation's original start point is inside the southern training
+// arena. Native notification history can record that location before the
+// Camera tutorial has a chance to move it, and Warcraft exposes no API for
+// clearing that history. Start the player at the tutorial base from config.
+nextLua = nextLua.replace(
+    'DefineStartLocation(0, 4864.0, 3456.0)',
+    'DefineStartLocation(0, 3648.0, -5120.0)');
 assert(nextLua.includes('function InitTrig_Infrastructure()'));
 assert(nextLua.includes('function JTG.CreateBodyBlockingActivity(session)'),
     'Body Blocking activity factory is missing from the compiled map');
@@ -111,6 +135,10 @@ assert(nextLua.includes('function JTG.CreatePowerBuildingActivity(session)'),
     'Power Building activity factory is missing from the compiled map');
 assert(nextLua.includes('id = "tools.power_building"'),
     'Power Building catalogue registration is missing from the compiled map');
+assert(nextLua.includes('function JTG.CreateCameraTutorialActivity(session)'),
+    'Camera tutorial activity factory is missing from the compiled map');
+assert(nextLua.includes('title = "1. Camera"'),
+    'Camera tutorial catalogue entry is missing from the compiled map');
 assert(nextLua.includes('EVENT_GAME_LOADED') && nextLua.includes('RestoreLoadedGame'),
     'Save/load restoration infrastructure is missing from the compiled map');
 assert(nextLua.includes('Skill Training - Race Specific'),
@@ -169,11 +197,17 @@ for (const [archivePath, relativePath] of assetPaths) {
     }
     changes.set(archivePath, bytes);
 }
+for (const [archivePath, relativePath] of configurationPaths) {
+    changes.set(archivePath, fs.readFileSync(path.join(root, relativePath)));
+}
 
 fs.mkdirSync(path.dirname(outputPath), {recursive: true});
 fs.copyFileSync(sourcePath, outputPath);
 const outputArchive = Archive.open(outputPath);
 try {
+    for (const name of removedArchivePaths) {
+        if (outputArchive.hasFile(name)) outputArchive.removeFile(name);
+    }
     for (const [name, bytes] of changes) {
         outputArchive.addBuffer(name, bytes, {
             flags: MPQ_FILE_COMPRESS | MPQ_FILE_REPLACEEXISTING,
@@ -188,8 +222,12 @@ try {
 const verifyArchive = Archive.open(outputPath, {flags: 256});
 try {
     for (const [name, bytes] of source) {
-        if (name === '(attributes)' || name === '(listfile)' || changes.has(name)) continue;
+        if (name === '(attributes)' || name === '(listfile)' ||
+                changes.has(name) || removedArchivePaths.includes(name)) continue;
         assert(verifyArchive.readFile(name).equals(bytes), 'Unexpected archive change: ' + name);
+    }
+    for (const name of removedArchivePaths) {
+        assert(!verifyArchive.hasFile(name), 'Skin override remained in archive: ' + name);
     }
     for (const [name, bytes] of changes) {
         assert(verifyArchive.readFile(name).equals(bytes), 'Archive roundtrip failed: ' + name);
@@ -202,7 +240,7 @@ try {
 assert.equal(hash(fs.readFileSync(sourcePath)), acceptedHash, 'Source foundation was modified');
 const report = {
     version,
-    purpose: 'Completed v0.0.5 save/load support and patch notes.',
+    purpose: 'Release the Camera Controls tutorial with guided demonstrations and supporting UI.',
     acceptedFoundation: {
         path: path.relative(root, sourcePath).replaceAll('\\', '/'),
         sha256: acceptedHash,
@@ -216,6 +254,7 @@ const report = {
     })),
     bundleSha256: hash(Buffer.from(bundle)),
     changedArchiveFiles: [...changes.keys()],
+    removedArchiveFiles: removedArchivePaths,
     preservedArchiveFiles: [...source.keys()].filter(name =>
         name !== '(attributes)' && name !== '(listfile)' && !changes.has(name)
     ).length,

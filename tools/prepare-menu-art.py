@@ -28,6 +28,11 @@ CARDS = {
     "ReflexTraining": ("reflex-training-source.png", 1.24, 0.30, 0.50, "crop"),
     "PeonMicro": ("peon-micro-source.png", 1.0, 0.50, 0.50, "contain"),
     "WispMicro": ("wisp-micro-source.png", 1.0, 0.50, 0.50, "contain"),
+    # Keep the cameraman large and crop below the arms for the narrow card.
+    "CameraControls": ("camera-controls-source.png", 1.20, 0.40, 0.36, "crop"),
+    "WindwalkPop": ("windwalk-pop-source.png", 1.0, 0.50, 0.50, "crop"),
+    # Keep the zeppelin dominant while retaining the hanging Footmen.
+    "ZeppelinMicro": ("zeppelin-micro-source.png", 1.0, 0.42, 0.50, "crop"),
 }
 
 ROOT_CARDS = {
@@ -97,6 +102,37 @@ for output_name, values in CARDS.items():
     hover_path = OUTPUT / f"{output_name}Hover.dds"
     hover.save(hover_path, pixel_format="DXT5")
     generated.append((hover_path, CARD_SIZE))
+
+# Native quests support an icon rather than an embedded full-width image. Keep
+# the complete settings screenshot legible within the largest useful square
+# texture so the Camera Settings quest can use it as its illustrated entry.
+quest_zoom_source = Image.open(
+    SOURCE / "camera-settings-zoom-source.png"
+).convert("RGBA")
+quest_zoom = Image.new("RGBA", (256, 256), (0, 0, 0, 255))
+quest_zoom_art = quest_zoom_source.copy()
+quest_zoom_art.thumbnail(quest_zoom.size, Image.Resampling.LANCZOS)
+quest_zoom.alpha_composite(quest_zoom_art, (
+    (quest_zoom.width - quest_zoom_art.width) // 2,
+    (quest_zoom.height - quest_zoom_art.height) // 2,
+))
+quest_zoom_path = OUTPUT / "CameraSettingsZoom.dds"
+quest_zoom.save(quest_zoom_path, pixel_format="DXT5")
+generated.append((quest_zoom_path, (256, 256)))
+
+quest_idle_source = Image.open(
+    SOURCE / "camera-settings-idle-worker-source.png"
+).convert("RGBA")
+quest_idle = Image.new("RGBA", (256, 256), (0, 0, 0, 255))
+quest_idle_art = quest_idle_source.copy()
+quest_idle_art.thumbnail(quest_idle.size, Image.Resampling.LANCZOS)
+quest_idle.alpha_composite(quest_idle_art, (
+    (quest_idle.width - quest_idle_art.width) // 2,
+    (quest_idle.height - quest_idle_art.height) // 2,
+))
+quest_idle_path = OUTPUT / "IdleWorkerSettings.dds"
+quest_idle.save(quest_idle_path, pixel_format="DXT5")
+generated.append((quest_idle_path, (256, 256)))
 
 # Root catalogue and Hotkey Trainer artwork is displayed in comparatively
 # small button slots. A 256x128 DXT5 texture preserves the visible detail while
