@@ -119,12 +119,13 @@ local BODY_BLOCKING_INTRO =
     "This exercise trains you in blocking the movement of other units. You control a Footman, and using the Move, Stop and Hold Position commands, try to stay in front of a series of units, for as long as possible.|n|n" ..
     "The usual |cffffcc00Training|r has you choose between the race of the units you want to practice against, and you will encounter a series of that race's units.|nAlternatively, you can freely customize which unit you want to practice blocking with which."
 
-function JTG.OpenBodyBlockingMenu(originCategory, pauseGame)
+function JTG.OpenBodyBlockingMenu(originCategory, pauseGame, restorePage, restoreData)
     local selection = {
         mode = nil, difficulty = 1, race = "human", runnerIndex = 1,
         runnerId = nil, runnerName = nil, blockerRace = "human",
         blockerId = FourCC("hfoo"), blockerName = "Footman",
     }
+    for key, value in pairs(restoreData or {}) do selection[key] = value end
     local function releaseMenuPause()
         if JTG.UI then JTG.UI.SetGameplayMenuPaused(false) end
     end
@@ -147,10 +148,14 @@ function JTG.OpenBodyBlockingMenu(originCategory, pauseGame)
     local showRoot, showTrainingRace, showTrainingDifficulty
     local showCustomRace, showCustomRunner, showCustomBlockerRace
     local showCustomBlocker, showCustomDifficulty
-    local function show(spec)
+    local function show(spec, pageId)
         spec.title = "Body Blocking"
+        spec.activityId = "skills.body_blocking"
+        spec.originCategory = originCategory or "skills"
         spec.headingArtwork = "JTGMenu\\BodyBlockingBriefing.dds"
         spec.pauseGame = pauseGame == true
+        spec.pageId = pageId
+        spec.restoreData = selection
         if pauseGame then
             spec.resumeAction = resumeCurrentRun
             spec.exitAction = function()
@@ -172,7 +177,7 @@ function JTG.OpenBodyBlockingMenu(originCategory, pauseGame)
                     action = function() selection.mode = "custom"; showCustomRace() end},
             },
             backAction = leaveMenu,
-        })
+        }, "root")
     end
     showTrainingRace = function()
         local choices = {}
@@ -188,7 +193,7 @@ function JTG.OpenBodyBlockingMenu(originCategory, pauseGame)
                 end})
         end
         show({body = "Choose the race whose units you want to practice blocking.",
-            choices = choices, backAction = showRoot})
+            choices = choices, backAction = showRoot}, "training_race")
     end
     showTrainingDifficulty = function()
         show({body = "Choose a difficulty. Hard runners take a less predictable route.", choices = {
@@ -196,7 +201,7 @@ function JTG.OpenBodyBlockingMenu(originCategory, pauseGame)
                 action = function() selection.difficulty = 1; launch() end},
             {label = "Hard", tooltip = "The runner changes its route more often.",
                 action = function() selection.difficulty = 2; launch() end},
-        }, backAction = showTrainingRace})
+        }, backAction = showTrainingRace}, "training_difficulty")
     end
     showCustomRace = function()
         local choices = {}
@@ -206,7 +211,7 @@ function JTG.OpenBodyBlockingMenu(originCategory, pauseGame)
                 action = function() selection.race = key; showCustomRunner() end})
         end
         show({body = "Choose the race of the runner you want to block.", choices = choices,
-            backAction = showRoot})
+            backAction = showRoot}, "custom_race")
     end
     showCustomRunner = function()
         local choices = {}
@@ -221,7 +226,7 @@ function JTG.OpenBodyBlockingMenu(originCategory, pauseGame)
         end
         show({body = "Choose the unit you want to block.", choices = choices,
             compactChoices = true,
-            backAction = showCustomRace})
+            backAction = showCustomRace}, "custom_runner")
     end
     showCustomBlockerRace = function()
         local choices = {}
@@ -231,7 +236,7 @@ function JTG.OpenBodyBlockingMenu(originCategory, pauseGame)
                 action = function() selection.blockerRace = key; showCustomBlocker() end})
         end
         show({body = "Choose the race of the unit you want to control.", choices = choices,
-            backAction = showCustomRunner})
+            backAction = showCustomRunner}, "custom_blocker_race")
     end
     showCustomBlocker = function()
         local choices = {}
@@ -246,7 +251,7 @@ function JTG.OpenBodyBlockingMenu(originCategory, pauseGame)
         end
         show({body = "Choose the unit you want to use for blocking.", choices = choices,
             compactChoices = true,
-            backAction = showCustomBlockerRace})
+            backAction = showCustomBlockerRace}, "custom_blocker")
     end
     showCustomDifficulty = function()
         show({body = "Choose a difficulty. Hard runners take a less predictable route.", choices = {
@@ -254,9 +259,19 @@ function JTG.OpenBodyBlockingMenu(originCategory, pauseGame)
                 action = function() selection.difficulty = 1; launch() end},
             {label = "Hard", tooltip = "The runner changes its route more often.",
                 action = function() selection.difficulty = 2; launch() end},
-        }, backAction = showCustomBlocker})
+        }, backAction = showCustomBlocker}, "custom_difficulty")
     end
-    showRoot()
+    local pages = {
+        root = showRoot,
+        training_race = showTrainingRace,
+        training_difficulty = showTrainingDifficulty,
+        custom_race = showCustomRace,
+        custom_runner = showCustomRunner,
+        custom_blocker_race = showCustomBlockerRace,
+        custom_blocker = showCustomBlocker,
+        custom_difficulty = showCustomDifficulty,
+    }
+    (pages[restorePage] or showRoot)()
 end
 
 function JTG.CreateBodyBlockingActivity(session)
@@ -312,17 +327,17 @@ function JTG.CreateBodyBlockingActivity(session)
 
     function activity:createResultUI()
         local gameUI = BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0)
-        self.resultBackdrop = TrackFrame(session.scope,
+        self.resultBackdrop = TrackFrame(session.presentationScope,
             JTG.UI.CreateNativePanel("JTGBodyBlockResult", gameUI, 0.42, 0.36))
         BlzFrameSetSize(self.resultBackdrop, 0.42, 0.36)
         BlzFrameSetAbsPoint(self.resultBackdrop, FRAMEPOINT_CENTER, 0.40, 0.325)
-        self.resultTitle = TrackFrame(session.scope,
+        self.resultTitle = TrackFrame(session.presentationScope,
             BlzCreateFrameByType("TEXT", "JTGBodyBlockResultTitle", self.resultBackdrop, "", 0))
         BlzFrameSetSize(self.resultTitle, 0.36, 0.04)
         BlzFrameSetPoint(self.resultTitle, FRAMEPOINT_TOP, self.resultBackdrop, FRAMEPOINT_TOP, 0, -0.025)
         BlzFrameSetTextAlignment(self.resultTitle, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
         BlzFrameSetScale(self.resultTitle, 1.35)
-        self.resultDetails = TrackFrame(session.scope,
+        self.resultDetails = TrackFrame(session.presentationScope,
             BlzCreateFrameByType("TEXT", "JTGBodyBlockResultDetails", self.resultBackdrop, "", 0))
         BlzFrameSetSize(self.resultDetails, 0.36, 0.155)
         BlzFrameSetPoint(self.resultDetails, FRAMEPOINT_TOP, self.resultTitle, FRAMEPOINT_BOTTOM, 0, -0.008)
@@ -330,7 +345,7 @@ function JTG.CreateBodyBlockingActivity(session)
         BlzFrameSetScale(self.resultDetails, 1.04)
         BlzFrameSetVisible(self.resultBackdrop, false)
         local function addResultButton(name, label, x, y, enabled, action)
-            local button = TrackFrame(session.scope,
+            local button = TrackFrame(session.presentationScope,
                 BlzCreateFrameByType("GLUETEXTBUTTON", name, self.resultBackdrop, "ScriptDialogButton", 0))
             BlzFrameSetSize(button, 0.170, 0.034)
             BlzFrameSetPoint(button, FRAMEPOINT_TOPLEFT, self.resultBackdrop, FRAMEPOINT_TOPLEFT, x, y)
@@ -339,7 +354,7 @@ function JTG.CreateBodyBlockingActivity(session)
                 BlzFrameSetEnable(button, false)
                 BlzFrameSetAlpha(button, 145)
             else
-                local trigger = JTG.ScopeTrackTrigger(session.scope, CreateTrigger())
+                local trigger = JTG.ScopeTrackTrigger(session.presentationScope, CreateTrigger())
                 BlzTriggerRegisterFrameEvent(trigger, button, FRAMEEVENT_CONTROL_CLICK)
                 TriggerAddAction(trigger, function()
                     if JTG.UI and JTG.UI.PlayButtonSound then JTG.UI.PlayButtonSound("normal") end
@@ -369,7 +384,7 @@ function JTG.CreateBodyBlockingActivity(session)
 
     function activity:createCountdownUI()
         local gameUI = BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0)
-        self.countdownFrame = TrackFrame(session.scope,
+        self.countdownFrame = TrackFrame(session.presentationScope,
             BlzCreateFrameByType("TEXT", "JTGBodyBlockCountdown", gameUI, "", 0))
         BlzFrameSetSize(self.countdownFrame, 0.20, 0.08)
         BlzFrameSetAbsPoint(self.countdownFrame, FRAMEPOINT_CENTER, 0.40, 0.38)
@@ -381,7 +396,7 @@ function JTG.CreateBodyBlockingActivity(session)
 
     function activity:createSpeedUI()
         local gameUI = BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0)
-        self.speedFrame = TrackFrame(session.scope,
+        self.speedFrame = TrackFrame(session.presentationScope,
             BlzCreateFrameByType("TEXT", "JTGBodyBlockRunnerSpeed", gameUI, "", 0))
         local scale = 1.45
         BlzFrameSetSize(self.speedFrame, 0.38 / scale, 0.040 / scale)
@@ -405,18 +420,18 @@ function JTG.CreateBodyBlockingActivity(session)
 
     function activity:createCourseMarkers()
         local y = self.laneY
-        self.startLine = TrackLightning(session.scope,
+        self.startLine = TrackLightning(session.presentationScope,
             AddLightning("DRAL", false, self.startX, self.arenaMinY, self.startX, self.arenaMaxY))
-        self.finishLine = TrackLightning(session.scope,
+        self.finishLine = TrackLightning(session.presentationScope,
             AddLightning("DRAL", false, self.finishX, self.arenaMinY, self.finishX, self.arenaMaxY))
         if self.startLine ~= nil then SetLightningColor(self.startLine, 0.25, 1.0, 0.25, 0.90) end
         if self.finishLine ~= nil then SetLightningColor(self.finishLine, 1.0, 0.20, 0.20, 0.90) end
-        self.startTag = TrackTextTag(session.scope, CreateTextTag())
+        self.startTag = TrackTextTag(session.presentationScope, CreateTextTag())
         table.insert(self.courseTags, self.startTag)
         SetTextTagText(self.startTag, "|cff80ff80START|r", 0.032)
         SetTextTagPos(self.startTag, self.startX - 120, y + 440, 20)
         SetTextTagPermanent(self.startTag, true)
-        self.finishTag = TrackTextTag(session.scope, CreateTextTag())
+        self.finishTag = TrackTextTag(session.presentationScope, CreateTextTag())
         table.insert(self.courseTags, self.finishTag)
         SetTextTagText(self.finishTag, "|cffff5555FINISH|r", 0.032)
         SetTextTagPos(self.finishTag, self.finishX - 130, y + 440, 20)
@@ -559,7 +574,7 @@ function JTG.CreateBodyBlockingActivity(session)
             SetUnitFacingTimed(self.blocker, math.deg(Atan2(dy, dx)), 0)
         end)
         self.countdownLockTimer = self:makeTimer(0.03, true, function()
-            if self.countdownActive and self.blocker ~= nil then
+            if not self.locallyPaused and self.countdownActive and self.blocker ~= nil then
                 SetUnitX(self.blocker, self.countdownLockX)
                 SetUnitY(self.blocker, self.countdownLockY)
             end
@@ -574,6 +589,7 @@ function JTG.CreateBodyBlockingActivity(session)
     end
 
     function activity:countdownTick()
+        if self.locallyPaused then return end
         if self.countdownValue > 1 then
             self.countdownValue = self.countdownValue - 1
             BlzFrameSetText(self.countdownFrame, "|cffffcc00" .. tostring(self.countdownValue) .. "|r")
@@ -657,7 +673,9 @@ function JTG.CreateBodyBlockingActivity(session)
         self:issueRunnerOrder()
         self:issueReferenceOrder()
         self.routeTimer = self:makeTimer(0.01, true, function()
-            if self.running and not self.referenceFinished then self:advanceReferenceRunner() end
+            if not self.locallyPaused and self.running and not self.referenceFinished then
+                self:advanceReferenceRunner()
+            end
         end)
         self:captureReplaySample()
         self.runTimer = self:makeTimer(0.05, true, function() self:runTick() end)
@@ -750,7 +768,7 @@ function JTG.CreateBodyBlockingActivity(session)
         self:applyReplaySample(self.replaySamples[1])
         if JTG.UI then JTG.UI.ShowToolbar(session.descriptor.capabilities) end
         self.replayTimer = self:makeTimer(0.025, true, function()
-            if not self.replaying then return end
+            if self.locallyPaused or not self.replaying then return end
             self.replayPosition = self.replayPosition + 0.5
             if self.replayPosition > #self.replaySamples then
                 self:finishReplay()
@@ -807,7 +825,7 @@ function JTG.CreateBodyBlockingActivity(session)
     end
 
     function activity:runTick()
-        if not self.running or self.finished then return end
+        if self.locallyPaused or not self.running or self.finished then return end
         self.elapsed = self.elapsed + 0.05
         self:captureReplaySample()
         if not self.referenceFinished then
@@ -859,6 +877,27 @@ function JTG.CreateBodyBlockingActivity(session)
         self:clearFeedback()
     end
 
+    function activity:setPaused(paused)
+        local nextState = paused == true
+        if self.locallyPaused == nextState then return end
+        self.locallyPaused = nextState
+    end
+
+    function activity:renderResultPresentation()
+        if self.resultBackdrop == nil or self.resultTitleText == nil then return end
+        BlzFrameSetText(self.resultTitle, self.resultTitleText)
+        BlzFrameSetText(self.resultDetails, self.resultDetailsText or "")
+        BlzFrameSetVisible(self.resultBackdrop, true)
+        BlzFrameSetText(self.resultNext, "Next Runner")
+        BlzFrameSetVisible(self.resultNext, self.mode == "training")
+        BlzFrameSetEnable(self.resultNext,
+            self.mode == "training" and not self.raceComplete)
+        BlzFrameSetAlpha(self.resultNext, self.raceComplete and 145 or 255)
+        local hasReplay = self.replaySamples ~= nil and #self.replaySamples > 0
+        BlzFrameSetEnable(self.resultReplay, hasReplay)
+        BlzFrameSetAlpha(self.resultReplay, hasReplay and 255 or 145)
+    end
+
     function activity:finishRun(maxed)
         if self.finished then return end
         self.finished = true
@@ -878,9 +917,9 @@ function JTG.CreateBodyBlockingActivity(session)
             }
             self.raceComplete = self.runnerIndex >= #TRAINING_ROSTERS[self.race]
         end
-        BlzFrameSetText(self.resultTitle, self.raceComplete and
+        self.resultTitleText = self.raceComplete and
             "|cffffcc00" .. string.upper(self.race) .. " ROSTER COMPLETE|r" or
-            (maxed and "|cff80ff80MAXIMUM DELAY!|r" or "|cffffcc00RUN COMPLETE|r"))
+            (maxed and "|cff80ff80MAXIMUM DELAY!|r" or "|cffffcc00RUN COMPLETE|r")
         local nextText = self.mode == "training" and
             '|cffccccccPress |r|cffd7bd6aNext Runner|r|cffcccccc to advance!|r' or
             'Press "Redo" to retry this custom matchup.'
@@ -896,15 +935,8 @@ function JTG.CreateBodyBlockingActivity(session)
             end
             details = details .. "|cffccccccPress |r|cffd7bd6aMenu|r|cffcccccc to choose another format.|r"
         end
-        BlzFrameSetText(self.resultDetails, details)
-        BlzFrameSetVisible(self.resultBackdrop, true)
-        BlzFrameSetText(self.resultNext, "Next Runner")
-        BlzFrameSetVisible(self.resultNext, self.mode == "training")
-        BlzFrameSetEnable(self.resultNext, self.mode == "training" and not self.raceComplete)
-        BlzFrameSetAlpha(self.resultNext, self.raceComplete and 145 or 255)
-        BlzFrameSetEnable(self.resultReplay, self.replaySamples ~= nil and #self.replaySamples > 0)
-        BlzFrameSetAlpha(self.resultReplay,
-            self.replaySamples ~= nil and #self.replaySamples > 0 and 255 or 145)
+        self.resultDetailsText = details
+        self:renderResultPresentation()
         BlzFrameSetVisible(self.speedFrame, false)
         self:setOverlayVisible(false)
         if JTG.UI then JTG.UI.HideToolbar() end
@@ -923,6 +955,64 @@ function JTG.CreateBodyBlockingActivity(session)
             JTG.UI.ShowToolbar(session.descriptor.capabilities)
             JTG.UI.SetLastRunnerEnabled(self.mode == "training" and self.runnerIndex > 1)
         end
+    end
+
+    function activity:hidePresentationForMenu()
+        self:setOverlayVisible(false)
+        if self.resultBackdrop ~= nil then
+            BlzFrameSetVisible(self.resultBackdrop, false)
+        end
+    end
+
+    function activity:rebuildPresentation()
+        self.resultBackdrop = nil
+        self.resultTitle = nil
+        self.resultDetails = nil
+        self.resultNext = nil
+        self.resultReplay = nil
+        self.resultRetry = nil
+        self.resultPause = nil
+        self.resultMenu = nil
+        self.countdownFrame = nil
+        self.speedFrame = nil
+        self.startLine = nil
+        self.finishLine = nil
+        self.startTag = nil
+        self.finishTag = nil
+        self.courseTags = {}
+        self:createCountdownUI()
+        self:createSpeedUI()
+        self:createResultUI()
+        if self.startX ~= nil and self.finishX ~= nil and self.laneY ~= nil then
+            self:createCourseMarkers()
+        end
+        if self.runnerName ~= nil and self.moveSpeed ~= nil then
+            BlzFrameSetText(self.speedFrame, "|cffffcc00" .. self.runnerName ..
+                "|r Movement Speed " .. tostring(math.floor(self.moveSpeed + 0.5)))
+        end
+        if self.countdownActive then
+            BlzFrameSetText(self.countdownFrame, "|cffffcc00" ..
+                tostring(self.countdownValue or 3) .. "|r")
+        end
+        if self.finished and not self.replaying then
+            self:renderResultPresentation()
+            self:setOverlayVisible(false)
+        else
+            self:setOverlayVisible(true)
+        end
+    end
+
+    function activity:discardPresentationForLoad()
+        if self.startLine ~= nil then DestroyLightning(self.startLine) end
+        if self.finishLine ~= nil then DestroyLightning(self.finishLine) end
+        for _, tag in ipairs(self.courseTags or {}) do
+            if tag ~= nil then DestroyTextTag(tag) end
+        end
+        self.startLine = nil
+        self.finishLine = nil
+        self.startTag = nil
+        self.finishTag = nil
+        self.courseTags = {}
     end
 
     function activity:failRun()

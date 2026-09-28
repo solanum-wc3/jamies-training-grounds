@@ -18,7 +18,7 @@ const {
 } = req('@jamiephan/stormlib');
 const luaParser = req('luaparse');
 
-const version = 'v0.0.5-alpha22';
+const version = 'v0.0.5-alpha50';
 const sourcePath = path.join(root, 'reference/foundation/Jamies-Training-Grounds-v0.0.1-alpha.5.w3x');
 const outputPath = path.join(root, `outputs/Jamies-Training-Grounds-${version}.w3x`);
 const reportPath = path.join(root, `outputs/Jamies-Training-Grounds-${version}-validation.json`);
@@ -111,6 +111,8 @@ assert(nextLua.includes('function JTG.CreatePowerBuildingActivity(session)'),
     'Power Building activity factory is missing from the compiled map');
 assert(nextLua.includes('id = "tools.power_building"'),
     'Power Building catalogue registration is missing from the compiled map');
+assert(nextLua.includes('EVENT_GAME_LOADED') && nextLua.includes('RestoreLoadedGame'),
+    'Save/load restoration infrastructure is missing from the compiled map');
 assert(nextLua.includes('Skill Training - Race Specific'),
     'Race-specific Skill Training panels are missing from the compiled map');
 assert(nextLua.includes('id = "nightelf", title = "Night Elf"'),
@@ -200,7 +202,7 @@ try {
 assert.equal(hash(fs.readFileSync(sourcePath)), acceptedHash, 'Source foundation was modified');
 const report = {
     version,
-    purpose: 'Race-specific Skill Training navigation and new exercise card artwork.',
+    purpose: 'Completed v0.0.5 save/load support and patch notes.',
     acceptedFoundation: {
         path: path.relative(root, sourcePath).replaceAll('\\', '/'),
         sha256: acceptedHash,

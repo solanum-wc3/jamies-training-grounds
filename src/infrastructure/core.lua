@@ -43,7 +43,7 @@ function JTG.GetActivities(category, skillRace)
 end
 
 function JTG.CreateScope(label)
-    return {label = label, disposed = false, disposers = {}}
+    return {label = label, disposed = false, disposers = {}, loadDisposers = {}}
 end
 
 function JTG.ScopeAdd(scope, disposer)
@@ -60,22 +60,26 @@ function JTG.ScopeTrackUnit(scope, unit)
 end
 
 function JTG.ScopeTrackTimer(scope, timer)
-    JTG.ScopeAdd(scope, function()
+    local dispose = function()
         if timer ~= nil then
             PauseTimer(timer)
             DestroyTimer(timer)
         end
-    end)
+    end
+    JTG.ScopeAdd(scope, dispose)
+    table.insert(scope.loadDisposers, dispose)
     return timer
 end
 
 function JTG.ScopeTrackTrigger(scope, trigger)
-    JTG.ScopeAdd(scope, function()
+    local dispose = function()
         if trigger ~= nil then
             DisableTrigger(trigger)
             DestroyTrigger(trigger)
         end
-    end)
+    end
+    JTG.ScopeAdd(scope, dispose)
+    table.insert(scope.loadDisposers, dispose)
     return trigger
 end
 
@@ -124,7 +128,20 @@ function JTG.DisposeScope(scope)
         end
     end
     scope.disposers = {}
+    scope.loadDisposers = {}
     return ok
+end
+
+-- Loaded custom-frame handles are invalid. Abandon their disposer closures
+-- without invoking frame natives; gameplay resources live in a separate scope.
+function JTG.AbandonScope(scope)
+    if scope == nil then return end
+    for index = #(scope.loadDisposers or {}), 1, -1 do
+        pcall(scope.loadDisposers[index])
+    end
+    scope.disposed = true
+    scope.disposers = {}
+    scope.loadDisposers = {}
 end
 
 JTG.Controller = {
@@ -177,6 +194,7 @@ function JTG.StopActivity(reason)
             print("JTG semantic cleanup warning: " .. tostring(message))
         end
     end
+    if not JTG.DisposeScope(session.presentationScope) then ok = false end
     if not JTG.DisposeScope(session.scope) then ok = false end
     JTG.ResetWorldFog(Player(0))
     controller.session = nil
@@ -208,6 +226,7 @@ function JTG.StartActivity(id, originCategory, restartData)
         active = true,
         restartData = restartData,
         scope = JTG.CreateScope("activity:" .. id),
+        presentationScope = JTG.CreateScope("presentation:" .. id),
     }
     controller.session = session
     controller.state = "setting_up"
@@ -292,7 +311,7 @@ function JTG.ExitActivityFromMenu()
     end
 end
 
-function JTG.OpenActivityMenu(id, originCategory)
+function JTG.OpenActivityMenu(id, originCategory, restorePage, restoreData)
     local controller = JTG.Controller
     local session = controller.session
     local targetId = id or (session and session.id)
@@ -301,7 +320,7 @@ function JTG.OpenActivityMenu(id, originCategory)
     local category = originCategory or descriptor.category or controller.lastCategory
     controller.lastCategory = category
     if descriptor.menu ~= nil then
-        descriptor.menu(category, session ~= nil)
+        descriptor.menu(category, session ~= nil, restorePage, restoreData)
     elseif JTG.UI then
         JTG.UI.ShowCategory(category)
     end

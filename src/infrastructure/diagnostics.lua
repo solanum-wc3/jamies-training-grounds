@@ -78,9 +78,10 @@ function JTG.InitializeDiagnostics()
                 pulseText = ", timer pulses: " .. tostring(session.activity.pulses)
             end
             DisplayTimedTextToPlayer(Player(0), 0, 0, 10,
-                "JTG state: " .. JTG.Controller.state .. ", generation: " ..
+                "JTG state: " .. JTG.Controller.state .. ", lifecycle generation: " ..
                 tostring(JTG.Controller.generation) .. ", activity: " ..
-                (session and session.id or "none") .. pulseText)
+                (session and session.id or "none") .. ", load restores: " ..
+                tostring(JTG.loadRestoreCount or 0) .. pulseText)
         end
     end)
 end

@@ -54,8 +54,9 @@ local function FormatTime(seconds)
     return tostring(secondsPart) .. "." .. tostring(decimal)
 end
 
-function JTG.OpenPowerBuildingMenu(originCategory, pauseGame)
+function JTG.OpenPowerBuildingMenu(originCategory, pauseGame, restorePage, restoreData)
     local selection = {buildingId = FourCC("htow"), buildingName = "Town Hall"}
+    for key, value in pairs(restoreData or {}) do selection[key] = value end
     local function releaseMenuPause()
         if JTG.UI then JTG.UI.SetGameplayMenuPaused(false) end
     end
@@ -70,10 +71,14 @@ function JTG.OpenPowerBuildingMenu(originCategory, pauseGame)
     local showRoot
     local function show(spec)
         spec.title = "Power Building"
+        spec.activityId = "tools.power_building"
+        spec.originCategory = originCategory or "tools"
         spec.headingArtwork = "JTGMenu\\PowerBuilding.dds"
         spec.headingArtworkWidth = 0.150
         spec.headingArtworkHeight = 0.0735
         spec.pauseGame = pauseGame == true
+        spec.pageId = "root"
+        spec.restoreData = selection
         if pauseGame then
             spec.resumeAction = resumeCurrentRun
             spec.exitAction = function()
@@ -239,7 +244,7 @@ function JTG.CreatePowerBuildingActivity(session)
     end
 
     function activity:captureTick()
-        if self.released then return end
+        if self.locallyPaused or self.released then return end
         self.captureElapsed = self.captureElapsed + 0.05
         for index = 1, 10 do
             local lane = self.lanes[index]
@@ -278,7 +283,7 @@ function JTG.CreatePowerBuildingActivity(session)
     end
 
     function activity:updateTick()
-        if not self.released or self.completeCount >= 10 then return end
+        if self.locallyPaused or not self.released or self.completeCount >= 10 then return end
         self.elapsed = self.elapsed + 0.10
         for index = 1, 10 do
             local lane = self.lanes[index]
@@ -293,6 +298,20 @@ function JTG.CreatePowerBuildingActivity(session)
         end
     end
 
+    function activity:setPaused(paused)
+        local nextState = paused == true
+        if self.locallyPaused == nextState then return end
+        self.locallyPaused = nextState
+    end
+
+    function activity:createLaneTag(lane, index)
+        lane.tag = TrackTextTag(session.presentationScope, CreateTextTag())
+        SetTextTagPermanent(lane.tag, true)
+        SetTextTagVisibility(lane.tag, true)
+        SetTextTagPos(lane.tag, lane.x - 150.0, lane.y + 330.0, 45.0)
+        self:updateLaneTag(index)
+    end
+
     function activity:createScenario()
         for index = 1, 10 do
             local x, y = self:lanePoint(index)
@@ -304,11 +323,7 @@ function JTG.CreatePowerBuildingActivity(session)
                 owner = owner,
             }
             self.lanes[index] = lane
-            lane.tag = TrackTextTag(session.scope, CreateTextTag())
-            SetTextTagPermanent(lane.tag, true)
-            SetTextTagVisibility(lane.tag, true)
-            SetTextTagPos(lane.tag, x - 150.0, y + 330.0, 45.0)
-            self:updateLaneTag(index)
+            self:createLaneTag(lane, index)
             for prerequisiteIndex, prerequisiteId in ipairs(self.prerequisites) do
                 local prerequisite = JTG.ScopeTrackUnit(session.scope,
                     CreateUnit(owner, prerequisiteId,
@@ -407,6 +422,24 @@ function JTG.CreatePowerBuildingActivity(session)
     function activity:restorePresentation()
         self:setOverlayVisible(true)
         if JTG.UI then JTG.UI.ShowToolbar(session.descriptor.capabilities) end
+    end
+
+    function activity:hidePresentationForMenu()
+        self:setOverlayVisible(false)
+    end
+
+    function activity:rebuildPresentation()
+        for index, lane in ipairs(self.lanes or {}) do
+            lane.tag = nil
+            self:createLaneTag(lane, index)
+        end
+    end
+
+    function activity:discardPresentationForLoad()
+        for _, lane in ipairs(self.lanes or {}) do
+            if lane.tag ~= nil then DestroyTextTag(lane.tag) end
+            lane.tag = nil
+        end
     end
 
     function activity:cleanup()

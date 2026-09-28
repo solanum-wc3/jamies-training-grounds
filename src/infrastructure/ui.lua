@@ -4,6 +4,7 @@ JTG.UI = {
     panels = {}, categoryButtons = {}, catalogueRows = {}, toolbarButtons = {},
     clickActions = {}, clickSounds = {}, clickTrigger = nil, browsingActivity = false,
     nativeHiddenFrames = {}, tooltips = {},
+    epoch = 0, currentView = {kind = "root"},
 }
 
 local UI = JTG.UI
@@ -34,6 +35,20 @@ local function SetActivityOverlayVisible(visible)
 end
 
 UI.SetActivityOverlayVisible = SetActivityOverlayVisible
+
+local function ApplyActivityPause()
+    local session = JTG.Controller and JTG.Controller.session
+    local activity = session and session.activity
+    local paused = UI.gameplayMenuPaused == true or UI.exercisePaused == true
+    if activity ~= nil and activity.setPaused ~= nil then
+        local ok, message = pcall(activity.setPaused, activity, paused)
+        if not ok then print("JTG activity pause warning: " .. tostring(message)) end
+    end
+    -- Freeze Warcraft's simulation clock so engine-owned schedules, including
+    -- power-build resource charges, retain their exact place in the cycle.
+    PauseGame(paused and not UI.nativePauseReleased and
+        not UI.deferGlobalPause)
+end
 
 local function CreateNativePanel(name, parent, width, height)
     local panel = BlzCreateFrameByType("FRAME", name, parent, "", 0)
@@ -121,6 +136,93 @@ local function FindButtonText(button)
         return BlzFrameGetChild(button, 4)
     end
     return nil
+end
+
+local function RefreshPauseButton()
+    local button = UI.toolbarButtons.pause
+    if button == nil then return end
+    local paused = UI.exercisePaused == true
+    local color = paused and BlzConvertColor(255, 255, 255, 255) or
+        BlzConvertColor(255, 255, 204, 0)
+    local text = paused and "Unpause" or "Pause"
+    BlzFrameSetText(button, paused and "|cffffffff" .. text .. "|r" or
+        "|cffffcc00" .. text .. "|r")
+    BlzFrameSetTextColor(button, color)
+    local label = FindButtonText(button)
+    if label ~= nil then BlzFrameSetTextColor(label, color) end
+end
+
+local function ClearPausedLoadNotice()
+    if UI.loadWarningTimer ~= nil then
+        PauseTimer(UI.loadWarningTimer)
+        DestroyTimer(UI.loadWarningTimer)
+        UI.loadWarningTimer = nil
+    end
+    if UI.unpauseHighlightTimer ~= nil then
+        PauseTimer(UI.unpauseHighlightTimer)
+        DestroyTimer(UI.unpauseHighlightTimer)
+        UI.unpauseHighlightTimer = nil
+    end
+    if UI.loadWarningText ~= nil then
+        BlzFrameSetVisible(UI.loadWarningText, false)
+    end
+    for _, highlight in ipairs(UI.unpauseHighlights or {}) do
+        BlzFrameSetVisible(highlight, false)
+    end
+    UI.unpauseHighlightActive = false
+    RefreshPauseButton()
+end
+
+local function HighlightUnpauseButton()
+    if UI.toolbarButtons.pause == nil then return end
+    UI.unpauseHighlightActive = true
+    for _, highlight in ipairs(UI.unpauseHighlights or {}) do
+        BlzFrameSetVisible(highlight, true)
+        BlzFrameSetSpriteAnimate(highlight, 0, 0)
+    end
+    RefreshPauseButton()
+    if UI.unpauseHighlightTimer ~= nil then
+        PauseTimer(UI.unpauseHighlightTimer)
+        DestroyTimer(UI.unpauseHighlightTimer)
+    end
+    local epoch = UI.epoch
+    UI.unpauseHighlightTimer = CreateTimer()
+    TimerStart(UI.unpauseHighlightTimer, 5.0, false, function()
+        DestroyTimer(UI.unpauseHighlightTimer)
+        UI.unpauseHighlightTimer = nil
+        if UI.epoch ~= epoch then return end
+        UI.unpauseHighlightActive = false
+        for _, highlight in ipairs(UI.unpauseHighlights or {}) do
+            BlzFrameSetVisible(highlight, false)
+        end
+        RefreshPauseButton()
+    end)
+end
+
+local function WarnPausedLoad()
+    UI.nativeLoadPanelWasVisible = true
+    if UI.loadWarningText ~= nil then
+        BlzFrameSetText(UI.loadWarningText,
+            "|cffffffffTo load a game, you have to |r" ..
+            "|cffffcc00Unpause|r|cffffffff.|r")
+        BlzFrameSetVisible(UI.loadWarningText, true)
+    end
+    if UI.loadWarningTimer ~= nil then
+        PauseTimer(UI.loadWarningTimer)
+        DestroyTimer(UI.loadWarningTimer)
+    end
+    local epoch = UI.epoch
+    UI.loadWarningTimer = CreateTimer()
+    TimerStart(UI.loadWarningTimer, 5.0, false, function()
+        DestroyTimer(UI.loadWarningTimer)
+        UI.loadWarningTimer = nil
+        if UI.epoch == epoch and UI.loadWarningText ~= nil then
+            BlzFrameSetVisible(UI.loadWarningText, false)
+        end
+    end)
+    PingMinimapEx(GetCameraTargetPositionX(), GetCameraTargetPositionY(),
+        0.10, 255, 204, 0, true)
+    HighlightUnpauseButton()
 end
 
 local function CreateIllustratedCard(name, parent, descriptor, width, height, artWidth, artHeight,
@@ -254,9 +356,13 @@ local function HookNativeCloseButtons()
     end
 end
 
+local HookNativeLoadButtons
+
 local function SuspendForNativeMenu()
     if UI.nativeMenuOpen then return end
     UI.nativeMenuOpen = true
+    UI.nativeCloseTicks = 0
+    UI.nativeLoadPanelWasVisible = false
     UI.nativeHiddenFrames = {}
     local seen = {}
     local function suspend(frame)
@@ -275,19 +381,58 @@ local function SuspendForNativeMenu()
     suspend(UI.pausedActivityExit)
     suspend(UI.activityBriefingResume)
     suspend(UI.activityBriefingExit)
-    SetActivityOverlayVisible(false)
+    local session = JTG.Controller and JTG.Controller.session
+    local activity = session and session.activity
+    if activity ~= nil and activity.hidePresentationForMenu ~= nil then
+        activity:hidePresentationForMenu()
+    else
+        SetActivityOverlayVisible(false)
+    end
     for _, tooltip in ipairs(UI.tooltips) do
         if tooltip ~= nil then BlzFrameSetVisible(tooltip, false) end
     end
     HookNativeCloseButtons()
+    if HookNativeLoadButtons ~= nil then HookNativeLoadButtons() end
+end
+
+local function ReleasePauseForNativeSystemMenu(force)
+    local newlyReleased = not UI.nativePauseReleased
+    UI.nativePauseReleased = true
+    -- Restart Mission cannot finish while a script-owned PauseGame is active.
+    -- Loading deliberately leaves this state untouched and instructs the
+    -- player to return and unpause instead.
+    if newlyReleased or force == true then PauseGame(false) end
+end
+
+
+HookNativeLoadButtons = function()
+    if UI.nativeLoadTrigger == nil then return end
+    local controls = {
+        {"LoadGameButton", FRAMEEVENT_CONTROL_CLICK},
+        {"RestartButton", FRAMEEVENT_CONTROL_CLICK},
+    }
+    for _, control in ipairs(controls) do
+        local frame = BlzGetFrameByName(control[1], 0)
+        if frame ~= nil then
+            local key = tostring(GetHandleId(frame)) .. ":" ..
+                tostring(GetHandleId(control[2]))
+            if not UI.nativeLoadHooks[key] then
+                UI.nativeLoadHooks[key] = true
+                BlzTriggerRegisterFrameEvent(UI.nativeLoadTrigger, frame,
+                    control[2])
+            end
+        end
+    end
 end
 
 local function QueueNativeMenuSuspend()
     if UI.nativeMenuOpen or UI.nativeSuspendQueued then return end
     UI.nativeSuspendQueued = true
+    local epoch = UI.epoch
     local timer = CreateTimer()
     TimerStart(timer, 0.00, false, function()
         DestroyTimer(timer)
+        if UI.epoch ~= epoch then return end
         UI.nativeSuspendQueued = false
         SuspendForNativeMenu()
     end)
@@ -300,14 +445,44 @@ local function RestoreAfterNativeMenu()
         BlzFrameSetVisible(frame, true)
     end
     UI.nativeHiddenFrames = {}
-    if not UI.menuVisible then SetActivityOverlayVisible(true) end
+    UI.nativePauseReleased = false
+    UI.nativeSaveLoadSeen = false
+    UI.nativeLoadPanelWasVisible = false
+    if not UI.menuVisible then
+        local session = JTG.Controller and JTG.Controller.session
+        local activity = session and session.activity
+        if activity ~= nil and activity.restorePresentation ~= nil then
+            activity:restorePresentation()
+        else
+            SetActivityOverlayVisible(true)
+        end
+    end
+    UI.nativeCloseTicks = 0
+    ApplyActivityPause()
     return true
+end
+
+local function NativeSaveLoadIsVisible()
+    local names = {
+        "SaveGameDialog", "LoadGameDialog", "SaveGamePanel", "LoadGamePanel",
+    }
+    for _, name in ipairs(names) do
+        local frame = BlzGetFrameByName(name, 0)
+        if frame ~= nil and BlzFrameIsVisible(frame) then return true end
+    end
+    return false
+end
+
+local function NativeLoadPanelIsVisible()
+    local panel = BlzGetFrameByName("LoadOnly", 0)
+    return panel ~= nil and BlzFrameIsVisible(panel)
 end
 
 local function NativeMenuIsVisible()
     local names = {
         "EscMenuBackdrop", "QuestDialog", "LogDialog",
         "AllianceDialog", "ChatDialog",
+        "SaveGameDialog", "LoadGameDialog", "SaveGamePanel", "LoadGamePanel",
     }
     for _, name in ipairs(names) do
         local frame = BlzGetFrameByName(name, 0)
@@ -320,10 +495,27 @@ local function StartNativeMenuMonitor()
     UI.nativeMenuMonitor = CreateTimer()
     TimerStart(UI.nativeMenuMonitor, 0.05, true, function()
         if NativeMenuIsVisible() then
+            if NativeSaveLoadIsVisible() then UI.nativeSaveLoadSeen = true end
+            UI.nativeCloseTicks = 0
             SuspendForNativeMenu()
             HookNativeCloseButtons()
+            HookNativeLoadButtons()
+            local loadVisible = NativeLoadPanelIsVisible()
+            if loadVisible and not UI.nativeLoadPanelWasVisible and
+                    (UI.exercisePaused == true or UI.gameplayMenuPaused == true) then
+                WarnPausedLoad()
+            end
+            UI.nativeLoadPanelWasVisible = loadVisible
         elseif UI.nativeMenuOpen then
-            RestoreAfterNativeMenu()
+            UI.nativeCloseTicks = (UI.nativeCloseTicks or 0) + 1
+            -- Save/Load temporarily removes the F10 frames while it changes
+            -- screens. Do not mistake that gap for Return to Game and restore
+            -- the script pause before loading can complete. Explicit close
+            -- buttons and hotkeys still restore immediately.
+            local threshold = UI.nativePauseReleased and 20 or 3
+            if not UI.nativeSaveLoadSeen and UI.nativeCloseTicks >= threshold then
+                RestoreAfterNativeMenu()
+            end
         end
     end)
 end
@@ -411,6 +603,7 @@ function UI.ShowRoot()
     BlzFrameSetVisible(UI.panels.root, true)
     SetRootActivityFooter(UI.gameplayMenuPaused == true)
     UI.menuVisible = true
+    UI.currentView = {kind = "root"}
     if UI.gameplayMenuPaused then
         UI.currentBackAction = function() UI.ShowCategory(JTG.Controller.lastCategory) end
     end
@@ -424,6 +617,7 @@ function UI.ShowCategory(categoryId)
     if panel then
         BlzFrameSetVisible(panel, true)
         UI.menuVisible = true
+        UI.currentView = {kind = "category", id = categoryId}
         UI.currentBackAction = UI.ShowRoot
     else UI.ShowRoot() end
 end
@@ -436,6 +630,7 @@ function UI.ShowSkillRace(raceId)
     if panel then
         BlzFrameSetVisible(panel, true)
         UI.menuVisible = true
+        UI.currentView = {kind = "skill_race", id = raceId}
         UI.currentBackAction = function() UI.ShowCategory("skills") end
     else UI.ShowCategory("skills") end
 end
@@ -446,12 +641,14 @@ function UI.ShowInfo(which)
     elseif not UI.browsingActivity then UI.HideToolbar() end
     BlzFrameSetVisible(UI.panels[which], true)
     UI.menuVisible = true
+    UI.currentView = {kind = "info", id = which}
     UI.currentBackAction = UI.ShowRoot
 end
 
 function UI.ShowToolbar(capabilities)
     local caps = capabilities or {}
     UI.browsingActivity = false
+    UI.currentView = {kind = "gameplay"}
     if UI.pausedActivityResume then BlzFrameSetVisible(UI.pausedActivityResume, false) end
     if UI.pausedActivityExit then BlzFrameSetVisible(UI.pausedActivityExit, false) end
     BlzFrameSetText(UI.toolbarButtons.restart, "Redo")
@@ -461,6 +658,7 @@ function UI.ShowToolbar(capabilities)
     BlzFrameSetVisible(UI.toolbarButtons.menu, caps.menu ~= false)
     BlzFrameSetVisible(UI.toolbarButtons.lastRunner, caps.lastRunner == true)
     BlzFrameSetVisible(UI.toolbarButtons.pause, caps.pause == true)
+    RefreshPauseButton()
     BlzFrameSetVisible(UI.toolbar, true)
     UI.LayoutToolbar()
     UI.SetLastRunnerEnabled(false)
@@ -574,14 +772,20 @@ function UI.ShowActivityBriefing(spec)
     BlzFrameSetVisible(UI.activityBriefingExit, spec.resumeAction ~= nil)
     BlzFrameSetVisible(panel, true)
     UI.menuVisible = true
+    UI.currentView = {
+        kind = "activity_briefing",
+        id = spec.activityId,
+        category = spec.originCategory,
+        page = spec.pageId or "root",
+        data = spec.restoreData,
+    }
     UI.currentBackAction = spec.backAction
 end
 
 function UI.SetGameplayMenuPaused(paused)
     local nextState = paused == true
-    if UI.gameplayMenuPaused == nextState then return end
     UI.gameplayMenuPaused = nextState
-    PauseGame(nextState or UI.exercisePaused)
+    ApplyActivityPause()
     -- Pause the simulation without placing an extra dimmed layer over the map.
     if UI.menuShade ~= nil then BlzFrameSetVisible(UI.menuShade, false) end
 end
@@ -589,11 +793,10 @@ end
 function UI.ReleaseGameplayControl()
     UI.gameplayMenuPaused = false
     UI.exercisePaused = false
-    PauseGame(false)
+    ApplyActivityPause()
     if UI.menuShade ~= nil then BlzFrameSetVisible(UI.menuShade, false) end
     if UI.toolbarButtons.pause ~= nil then
-        BlzFrameSetText(UI.toolbarButtons.pause, "Pause")
-        BlzFrameSetTextColor(UI.toolbarButtons.pause, BlzConvertColor(255, 255, 204, 0))
+        RefreshPauseButton()
     end
     ReleaseKeyboardFocus()
 end
@@ -601,10 +804,9 @@ end
 function UI.SetExercisePaused(paused)
     local nextState = paused == true
     UI.exercisePaused = nextState
-    PauseGame(nextState or UI.gameplayMenuPaused)
-    BlzFrameSetText(UI.toolbarButtons.pause, nextState and "Unpause" or "Pause")
-    BlzFrameSetTextColor(UI.toolbarButtons.pause, nextState and
-        BlzConvertColor(255, 255, 255, 255) or BlzConvertColor(255, 255, 204, 0))
+    if not nextState then ClearPausedLoadNotice() end
+    ApplyActivityPause()
+    RefreshPauseButton()
 end
 
 function UI.ToggleExercisePause()
@@ -659,6 +861,7 @@ local function CreateRootPanel()
     RegisterClick(activeBack, function() UI.ShowCategory(JTG.Controller.lastCategory) end, "return")
     BlzFrameSetVisible(activeBack, false)
     UI.rootActivityBack = activeBack
+    BlzFrameSetVisible(panel, false)
 end
 
 local function CreateCategoryPanel(category, categoryIndex)
@@ -957,7 +1160,7 @@ local function CreateToolbar()
     local bar = BlzCreateFrameByType("FRAME", "JTGActivityToolbar", GAME_UI, "", 0)
     -- Match the compact native system-button row and sit directly beneath the
     -- resource gauges on the right side of the upper interface.
-    BlzFrameSetSize(bar, 0.286, 0.030)
+    BlzFrameSetSize(bar, 0.315, 0.030)
     BlzFrameSetAbsPoint(bar, FRAMEPOINT_TOPRIGHT, 0.79, 0.575)
     UI.toolbar = bar
 
@@ -989,11 +1192,32 @@ local function CreateToolbar()
     UI.toolbarButtons.lastRunner = lastRunner
     table.insert(toolbarOrder, lastRunner)
 
-    local pause = toolbarButton("JTGToolbarPause", "Pause", 0.058)
+    -- Match the aspect ratio of Warcraft's native Quest-button notification
+    -- effect, which is authored for the wider upper-button-bar controls.
+    local pause = toolbarButton("JTGToolbarPause", "Pause", 0.087)
     RegisterClick(pause, UI.ToggleExercisePause, function()
         return UI.exercisePaused and "return" or "normal"
     end)
     UI.toolbarButtons.pause = pause
+    -- Use Warcraft's authored rectangular Quest-button notification model.
+    -- Unlike the square autocast model, this is the native upper-button-bar
+    -- effect and can be matched directly to the Unpause button.
+    UI.unpauseHighlights = {}
+    local pauseHighlight = BlzCreateFrameByType("SPRITE",
+        "JTGToolbarPauseHighlight", bar, "", 0)
+    BlzFrameSetSize(pauseHighlight, 0.058, 0.024)
+    -- The native Quest model's visible particles sit to the right of its
+    -- frame origin. Offset the host frame so the rendered border centers on
+    -- the wider Pause/Unpause button.
+    BlzFrameSetPoint(pauseHighlight, FRAMEPOINT_CENTER, pause,
+        FRAMEPOINT_CENTER, -0.011, 0)
+    BlzFrameSetModel(pauseHighlight,
+        "UI\\Feedback\\QuestButton\\UI-QuestButtonOn.mdl", 0)
+    BlzFrameSetLevel(pauseHighlight, 3)
+    BlzFrameSetEnable(pauseHighlight, false)
+    BlzFrameSetVisible(pauseHighlight, false)
+    table.insert(UI.unpauseHighlights, pauseHighlight)
+    BlzFrameSetLevel(pause, 2)
     table.insert(toolbarOrder, pause)
     UI.LayoutToolbar = function()
         local previous = nil
@@ -1031,8 +1255,173 @@ local function CreatePausedActivityResume()
     UI.pausedActivityResume = resume
 end
 
-function UI.Initialize()
+function UI.AbandonForLoad()
+    UI.epoch = (UI.epoch or 0) + 1
+    if UI.loadWarningTimer ~= nil then
+        PauseTimer(UI.loadWarningTimer)
+        DestroyTimer(UI.loadWarningTimer)
+        UI.loadWarningTimer = nil
+    end
+    if UI.unpauseHighlightTimer ~= nil then
+        PauseTimer(UI.unpauseHighlightTimer)
+        DestroyTimer(UI.unpauseHighlightTimer)
+        UI.unpauseHighlightTimer = nil
+    end
+    if UI.nativeMenuMonitor ~= nil then
+        PauseTimer(UI.nativeMenuMonitor)
+        DestroyTimer(UI.nativeMenuMonitor)
+    end
+    local triggers = {
+        UI.clickTrigger, UI.escapeTrigger, UI.nativeMenuTrigger,
+        UI.nativeKeyTrigger, UI.nativeCloseTrigger, UI.nativeLoadTrigger,
+    }
+    for _, trigger in ipairs(triggers) do
+        if trigger ~= nil then
+            DisableTrigger(trigger)
+            DestroyTrigger(trigger)
+        end
+    end
+    GAME_UI = nil
+    keyboardFocusSink = nil
+    tooltipCount = 0
+    nativePanelContext = 100
+    footerDividerCount = 0
+    UI.panels = {}
+    UI.categoryButtons = {}
+    UI.catalogueRows = {}
+    UI.toolbarButtons = {}
+    UI.clickActions = {}
+    UI.clickSounds = {}
+    UI.tooltips = {}
+    UI.nativeHiddenFrames = {}
+    UI.activityBriefingActions = nil
+    UI.activityBriefingVisibleActions = nil
+    UI.activityBriefingButtons = nil
+    UI.activityBriefingTooltipText = nil
+    UI.currentBackAction = nil
+    UI.clickTrigger = nil
+    UI.escapeTrigger = nil
+    UI.nativeMenuTrigger = nil
+    UI.nativeKeyTrigger = nil
+    UI.nativeCloseTrigger = nil
+    UI.nativeLoadTrigger = nil
+    UI.nativeMenuMonitor = nil
+    UI.nativeCloseHooks = {}
+    UI.nativeLoadHooks = {}
+    UI.nativeLoadPanelWasVisible = false
+    UI.loadWarningText = nil
+    UI.unpauseHighlights = nil
+    UI.unpauseHighlightActive = false
+    UI.nativeMenuOpen = false
+    UI.nativeSuspendQueued = false
+    UI.nativeCloseTicks = 0
+    UI.nativePausedGameplayMenu = nil
+    UI.nativePausedExercise = nil
+    UI.nativePauseReleased = false
+    UI.nativeSaveLoadSeen = false
+    UI.deferGlobalPause = false
+    UI.normalButtonSound = nil
+    UI.returnButtonSound = nil
+    UI.menuShade = nil
+    UI.toolbar = nil
+    UI.pausedActivityResume = nil
+    UI.pausedActivityExit = nil
+    UI.rootActivityBack = nil
+    UI.rootCredits = nil
+    UI.rootPatch = nil
+    UI.activityBriefingContentDivider = nil
+    UI.activityBriefingTitle = nil
+    UI.activityBriefingArtwork = nil
+    UI.activityBriefingBody = nil
+    UI.activityBriefingBack = nil
+    UI.activityBriefingExit = nil
+    UI.activityBriefingResume = nil
+    UI.menuVisible = false
+end
+
+function UI.RestoreLoadedView(view)
+    local target = view or {kind = "root"}
+    local session = JTG.Controller and JTG.Controller.session
+    -- Newly reconstructed frames inherit their template visibility. Establish
+    -- a clean baseline before restoring exactly one saved surface.
+    UI.HideAllPanels()
+    UI.HideToolbar()
+    if session ~= nil then
+        if target.kind ~= "gameplay" and session.activity ~= nil then
+            if session.activity.hidePresentationForMenu ~= nil then
+                session.activity:hidePresentationForMenu()
+            elseif session.activity.setOverlayVisible ~= nil then
+                session.activity:setOverlayVisible(false)
+            end
+        end
+        if target.kind == "activity_briefing" then
+            JTG.OpenActivityMenu(session.id, JTG.Controller.lastCategory,
+                target.page, target.data)
+        elseif target.kind == "root" then
+            UI.ShowRoot()
+        elseif target.kind == "category" then
+            UI.ShowCategory(target.id or JTG.Controller.lastCategory)
+        elseif target.kind == "skill_race" then
+            UI.ShowSkillRace(target.id)
+        elseif target.kind == "info" then
+            UI.ShowInfo(target.id)
+        elseif session.activity and session.activity.restorePresentation then
+            session.activity:restorePresentation()
+        else
+            UI.ShowToolbar(session.descriptor.capabilities)
+        end
+        ApplyActivityPause()
+        return
+    end
+    UI.gameplayMenuPaused = false
+    UI.exercisePaused = false
+    if target.kind == "activity_briefing" and target.id ~= nil then
+        JTG.OpenActivityMenu(target.id, target.category, target.page, target.data)
+    elseif target.kind == "category" then UI.ShowCategory(target.id)
+    elseif target.kind == "skill_race" then UI.ShowSkillRace(target.id)
+    elseif target.kind == "info" then UI.ShowInfo(target.id)
+    else UI.ShowRoot() end
+    ApplyActivityPause()
+end
+
+function UI.QueuePostLoadViewRestore(view)
+    local target = view or {kind = "root"}
+    local epoch = UI.epoch
+    local attempts = 0
+    local clearTicks = 0
+    local timer = CreateTimer()
+    TimerStart(timer, 0.05, true, function()
+        attempts = attempts + 1
+        if UI.epoch ~= epoch then
+            PauseTimer(timer)
+            DestroyTimer(timer)
+            return
+        end
+        if NativeMenuIsVisible() then
+            clearTicks = 0
+        else
+            clearTicks = clearTicks + 1
+        end
+        if clearTicks < 3 and attempts < 40 then return end
+        PauseTimer(timer)
+        DestroyTimer(timer)
+        if UI.nativeMenuOpen then RestoreAfterNativeMenu() end
+        -- Warcraft may hide frames created during EVENT_GAME_LOADED while it
+        -- tears down the Load interface. Assert the saved view once more only
+        -- after that native transition has settled.
+        UI.deferGlobalPause = false
+        UI.RestoreLoadedView(target)
+    end)
+end
+
+function UI.Initialize(restoring)
     GAME_UI = BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0)
+    UI.loadWarningText = CreateText("JTGPausedLoadWarning", GAME_UI, "",
+        0.72, 0.024, 1.55)
+    BlzFrameSetAbsPoint(UI.loadWarningText, FRAMEPOINT_TOP, 0.40, 0.538)
+    BlzFrameSetLevel(UI.loadWarningText, 40)
+    BlzFrameSetEnable(UI.loadWarningText, false)
+    BlzFrameSetVisible(UI.loadWarningText, false)
     UI.normalButtonSound = CreateSound("Sound\\Interface\\BigButtonClick.wav", false, false, false, 10, 10, "")
     UI.returnButtonSound = CreateSound("Sound\\Interface\\GamePause.wav", false, false, false, 10, 10, "")
     UI.clickTrigger = CreateTrigger()
@@ -1046,13 +1435,16 @@ function UI.Initialize()
                 action()
                 return
             end
+            local epoch = UI.epoch
             local releaseTimer = CreateTimer()
             TimerStart(releaseTimer, 0.00, false, function()
                 DestroyTimer(releaseTimer)
+                if UI.epoch ~= epoch then return end
                 action()
                 local focusTimer = CreateTimer()
                 TimerStart(focusTimer, 0.05, false, function()
                     DestroyTimer(focusTimer)
+                    if UI.epoch ~= epoch then return end
                     ReleaseKeyboardFocus()
                 end)
             end)
@@ -1061,16 +1453,54 @@ function UI.Initialize()
     UI.escapeTrigger = CreateTrigger()
     BlzTriggerRegisterPlayerKeyEvent(UI.escapeTrigger, Player(0), OSKEY_ESCAPE, 0, true)
     TriggerAddAction(UI.escapeTrigger, function()
-        if RestoreAfterNativeMenu() then return end
+        if UI.nativeMenuOpen then
+            RestoreAfterNativeMenu()
+            return
+        end
         if UI.menuVisible and UI.currentBackAction ~= nil then
             UI.currentBackAction()
         end
+    end)
+    -- Key events continue to fire while PauseGame is active and let us keep
+    -- the custom interface synchronized with Warcraft's native menus.
+    UI.nativeKeyTrigger = CreateTrigger()
+    local nativeKeys = {
+        OSKEY_F9, OSKEY_F10, OSKEY_F11, OSKEY_F12,
+    }
+    for _, key in ipairs(nativeKeys) do
+        BlzTriggerRegisterPlayerKeyEvent(UI.nativeKeyTrigger, Player(0), key, 0, true)
+    end
+    TriggerAddAction(UI.nativeKeyTrigger, function()
+        if UI.nativeMenuOpen then
+            RestoreAfterNativeMenu()
+            return
+        end
+        SuspendForNativeMenu()
     end)
     UI.nativeMenuTrigger = CreateTrigger()
     UI.nativeCloseHooks = {}
     UI.nativeCloseTrigger = CreateTrigger()
     TriggerAddAction(UI.nativeCloseTrigger, RestoreAfterNativeMenu)
+    UI.nativeLoadHooks = {}
+    UI.nativeLoadTrigger = CreateTrigger()
+    TriggerAddAction(UI.nativeLoadTrigger, function()
+        -- Loading is deliberately never force-unpaused. Warcraft does not
+        -- expose every native save activation method, so paused loading uses
+        -- one consistent instruction for clicks, keys and double-clicks.
+        -- Restart Mission remains a native map transition that needs the
+        -- script-owned pause released before it can proceed.
+        local frame = BlzGetTriggerFrame()
+        local restart = BlzGetFrameByName("RestartButton", 0)
+        local loadMenu = BlzGetFrameByName("LoadGameButton", 0)
+        if restart ~= nil and frame == restart then
+            ReleasePauseForNativeSystemMenu(true)
+        elseif loadMenu ~= nil and frame == loadMenu and
+                (UI.exercisePaused == true or UI.gameplayMenuPaused == true) then
+            WarnPausedLoad()
+        end
+    end)
     HookNativeCloseButtons()
+    HookNativeLoadButtons()
     local nativeButtons = {
         BlzGetOriginFrame(ORIGIN_FRAME_QUEST_BUTTON, 0),
         BlzGetOriginFrame(ORIGIN_FRAME_ALLY_BUTTON, 0),
@@ -1085,12 +1515,25 @@ function UI.Initialize()
     -- The system button is intentionally not hooked: merely observing its
     -- click prevents Warcraft from opening F10. The visibility monitor handles
     -- the system menu after Warcraft opens it, as it already does for F10.
-    TriggerAddAction(UI.nativeMenuTrigger, QueueNativeMenuSuspend)
+    TriggerAddAction(UI.nativeMenuTrigger, function()
+        if UI.nativeMenuOpen then
+            RestoreAfterNativeMenu()
+        elseif UI.gameplayMenuPaused or UI.exercisePaused then
+            -- Timers do not advance under PauseGame, so hide synchronously.
+            SuspendForNativeMenu()
+        else
+            QueueNativeMenuSuspend()
+        end
+    end)
     CreateMenuShade()
     CreateRootPanel()
     for index, category in ipairs(JTG.Categories) do CreateCategoryPanel(category, index) end
     for index, race in ipairs(JTG.SkillRaces) do CreateSkillRacePanel(race, index) end
     CreateInfoPanel("patch", "Patch Notes",
+        "|cffffcc00v0.0.5|r  |cffb0b0b028 September 2026|r\n" ..
+        "- Added save and load support across menus and exercises.\n" ..
+        "- Added race-specific Skill Training catalogues.\n" ..
+        "- Improved menu layouts, native-menu integration and exercise controls.\n\n" ..
         "|cffffcc00v0.0.4|r  |cffb0b0b027 September 2026|r\n" ..
         "- Added Demonstration: Power Building.\n" ..
         "- Improved native-menu integration.\n\n" ..
@@ -1111,6 +1554,6 @@ function UI.Initialize()
     CreateActivityBriefingPanel()
     CreateToolbar()
     CreatePausedActivityResume()
-    UI.ShowRoot()
+    if not restoring then UI.ShowRoot() end
     StartNativeMenuMonitor()
 end
