@@ -169,6 +169,20 @@ briefing_path = OUTPUT / "BodyBlockingBriefing.dds"
 briefing.save(briefing_path, pixel_format="DXT5")
 generated.append((briefing_path, (512, 256)))
 
+mining_briefing_source = Image.open(
+    SOURCE / "gold-mine-micro-source.png"
+).convert("RGBA")
+mining_briefing = Image.new("RGBA", (512, 256), (0, 0, 0, 0))
+mining_briefing_art = mining_briefing_source.copy()
+mining_briefing_art.thumbnail(mining_briefing.size, Image.Resampling.LANCZOS)
+mining_briefing.alpha_composite(mining_briefing_art, (
+    (mining_briefing.width - mining_briefing_art.width) // 2,
+    (mining_briefing.height - mining_briefing_art.height) // 2,
+))
+mining_briefing_path = OUTPUT / "GoldMineMicroBriefing.dds"
+mining_briefing.save(mining_briefing_path, pixel_format="DXT5")
+generated.append((mining_briefing_path, (512, 256)))
+
 # A lighter, more transparent field for delayed descriptive tooltips.
 tooltip = Image.new("RGBA", (64, 64), (38, 38, 38, 145))
 tooltip_path = OUTPUT / "TooltipGrey.dds"

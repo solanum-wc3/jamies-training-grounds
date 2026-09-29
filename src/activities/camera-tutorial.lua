@@ -519,26 +519,7 @@ function JTG.CreateCameraTutorialActivity(session)
         end
     end
 
-    function activity:createZoomQuest()
-        if self.zoomQuest ~= nil then return end
-        local quest = CreateQuest()
-        QuestSetTitle(quest, "Changing Default Camera Distance")
-        QuestSetDescription(quest, FormatNarration(
-            "To change the default camera distance, go to " ..
-            "{Menu: Gameplay -> Camera Settings}, enable " ..
-            "{Menu: Improved Zoom}, and enter your preferred value.\n\n" ..
-            "To do this, you need to leave this map temporarily. " ..
-            "Before you do, you should make a {Term: Quicksave}. " ..
-            "The default key for this is {Input: F6}."))
-        QuestSetIconPath(quest,
-            "ReplaceableTextures\\CommandButtons\\BTNReveal.blp")
-        QuestSetRequired(quest, false)
-        QuestSetDiscovered(quest, true)
-        QuestSetEnabled(quest, true)
-        self.zoomQuest = quest
-        JTG.ScopeAdd(session.scope, function()
-            if quest ~= nil then DestroyQuest(quest) end
-        end)
+    function activity:announceQuestDiscovery()
         FlashQuestDialogButton()
         local sound = CreateSoundFromLabel("QuestNew", false, false,
             false, 10, 10)
@@ -548,30 +529,62 @@ function JTG.CreateCameraTutorialActivity(session)
         end
     end
 
-    function activity:createIdleWorkerQuest()
-        if self.idleWorkerQuest ~= nil then return end
-        local quest = CreateQuest()
-        QuestSetTitle(quest, "Idle Worker Double-Tap")
-        QuestSetDescription(quest, FormatNarration(
-            "To make centering the camera on an idle worker require a " ..
-            "double-tap, go to {Menu: Gameplay -> Game Behavior}, and " ..
-            "enable {Menu: Snap Camera to Worker on Double Click}."))
-        QuestSetIconPath(quest,
-            "ReplaceableTextures\\CommandButtons\\BTNPeon.blp")
-        QuestSetRequired(quest, false)
-        QuestSetDiscovered(quest, true)
-        QuestSetEnabled(quest, true)
-        self.idleWorkerQuest = quest
-        JTG.ScopeAdd(session.scope, function()
-            if quest ~= nil then DestroyQuest(quest) end
-        end)
-        FlashQuestDialogButton()
-        local sound = CreateSoundFromLabel("QuestNew", false, false,
-            false, 10, 10)
-        if sound ~= nil then
-            StartSound(sound)
-            KillSoundWhenDone(sound)
+    function activity:createZoomQuest(discover, silent)
+        if self.zoomQuest == nil then
+            local quest = CreateQuest()
+            QuestSetTitle(quest, "Changing Default Camera Distance")
+            QuestSetDescription(quest, FormatNarration(
+                "To change the default camera distance, go to " ..
+                "{Menu: Gameplay -> Camera Settings}, enable " ..
+                "{Menu: Improved Zoom}, and enter your preferred value.\n\n" ..
+                "To do this, you need to leave this map temporarily. " ..
+                "Before you do, you should make a {Term: Quicksave}. " ..
+                "The default key for this is {Input: F6}."))
+            QuestSetIconPath(quest,
+                "ReplaceableTextures\\CommandButtons\\BTNReveal.blp")
+            QuestSetRequired(quest, false)
+            QuestSetDiscovered(quest, false)
+            QuestSetEnabled(quest, true)
+            self.zoomQuest = quest
+            JTG.ScopeAdd(session.scope, function()
+                if quest ~= nil then DestroyQuest(quest) end
+            end)
         end
+        if discover == true and not self.zoomQuestDiscovered then
+            self.zoomQuestDiscovered = true
+            QuestSetDiscovered(self.zoomQuest, true)
+            if not silent then self:announceQuestDiscovery() end
+        end
+    end
+
+    function activity:createIdleWorkerQuest(discover, silent)
+        if self.idleWorkerQuest == nil then
+            local quest = CreateQuest()
+            QuestSetTitle(quest, "Idle Worker Double-Tap")
+            QuestSetDescription(quest, FormatNarration(
+                "To make centering the camera on an idle worker require a " ..
+                "double-tap, go to {Menu: Gameplay -> Game Behavior}, and " ..
+                "enable {Menu: Snap Camera to Worker on Double Click}."))
+            QuestSetIconPath(quest,
+                "ReplaceableTextures\\CommandButtons\\BTNPeon.blp")
+            QuestSetRequired(quest, false)
+            QuestSetDiscovered(quest, false)
+            QuestSetEnabled(quest, true)
+            self.idleWorkerQuest = quest
+            JTG.ScopeAdd(session.scope, function()
+                if quest ~= nil then DestroyQuest(quest) end
+            end)
+        end
+        if discover == true and not self.idleWorkerQuestDiscovered then
+            self.idleWorkerQuestDiscovered = true
+            QuestSetDiscovered(self.idleWorkerQuest, true)
+            if not silent then self:announceQuestDiscovery() end
+        end
+    end
+
+    function activity:revealQuestsThrough(stepIndex)
+        if stepIndex >= 8 then self:createZoomQuest(true, true) end
+        if stepIndex >= 19 then self:createIdleWorkerQuest(true, true) end
     end
 
     function activity:findOwnedUnit(rawcode, x, y, radius)
@@ -838,7 +851,7 @@ function JTG.CreateCameraTutorialActivity(session)
 
     function activity:runStepTrigger(step)
         if step ~= nil and step.trigger == "zoomQuest" then
-            self:createZoomQuest()
+            self:createZoomQuest(true)
         elseif step ~= nil and step.trigger == "mainBase" then
             self:takeCameraTo(MAIN_BASE_X, MAIN_BASE_Y,
                 CAMERA_MOVE_DURATION)
@@ -855,7 +868,7 @@ function JTG.CreateCameraTutorialActivity(session)
         elseif step ~= nil and step.trigger == "armyCenter" then
             self:takeCameraTo(-708.0, -4572.0, CAMERA_MOVE_DURATION)
         elseif step ~= nil and step.trigger == "idleWorkerQuest" then
-            self:createIdleWorkerQuest()
+            self:createIdleWorkerQuest(true)
         end
     end
 
@@ -972,6 +985,7 @@ function JTG.CreateCameraTutorialActivity(session)
         self.objectivesOpen = false
         self:setObjectivesVisible(false)
         self:clearNarration()
+        self:revealQuestsThrough(8)
         self:showStep(8, true)
     end
 
@@ -979,6 +993,7 @@ function JTG.CreateCameraTutorialActivity(session)
         self.objectivesOpen = false
         self:setObjectivesVisible(false)
         self:clearNarration()
+        self:revealQuestsThrough(2)
         self:showStep(2, true)
     end
 
@@ -986,6 +1001,7 @@ function JTG.CreateCameraTutorialActivity(session)
         self.objectivesOpen = false
         self:setObjectivesVisible(false)
         self:clearNarration()
+        self:revealQuestsThrough(11)
         self:showStep(11, true)
     end
 
@@ -993,6 +1009,7 @@ function JTG.CreateCameraTutorialActivity(session)
         self.objectivesOpen = false
         self:setObjectivesVisible(false)
         self:clearNarration()
+        self:revealQuestsThrough(20)
         self:showStep(20, true)
     end
 
@@ -1568,6 +1585,8 @@ function JTG.CreateCameraTutorialActivity(session)
         self:clearOwnedArenaUnits()
         self:createImportedLayout()
         self:prepareNotificationGhoul()
+        self:createZoomQuest(false)
+        self:createIdleWorkerQuest(false)
         SetPlayerState(CAMERA_PLAYER, PLAYER_STATE_RESOURCE_FOOD_USED, 0)
         self.tickTimer = JTG.ScopeTrackTimer(current.scope, CreateTimer())
         TimerStart(self.tickTimer, TICK_INTERVAL, true,

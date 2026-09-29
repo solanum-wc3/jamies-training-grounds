@@ -119,7 +119,7 @@ local function CreateButton(name, parent, text, width, height)
     return button
 end
 
-local function BriefingChoicePoint(index, count, compact, compactColumns)
+local function BriefingChoicePoint(index, count, compact, compactColumns, centerSingle)
     if compact then
         local columns = compactColumns or 3
         local spacing = columns == 4 and 0.137 or 0.180
@@ -128,6 +128,9 @@ local function BriefingChoicePoint(index, count, compact, compactColumns)
         local firstRowY = columns == 4 and -0.261 or -0.225
         return -0.5 * (columns - 1) * spacing + column * spacing,
             firstRowY - row * 0.036
+    end
+    if centerSingle and count == 1 then
+        return 0, -0.305
     end
     if count <= 2 then
         return index == 1 and -0.108 or 0.108, -0.305
@@ -395,6 +398,26 @@ local function HookNativeCloseButtons()
     end
 end
 
+local function ApplyFullQuestTextLayout()
+    local display = BlzGetFrameByName("QuestDisplay", 0)
+    local detailsTitle = BlzGetFrameByName("QuestDetailsTitle", 0)
+    local backdrop = BlzGetFrameByName("QuestDisplayBackdrop", 0)
+    if display == nil or detailsTitle == nil or backdrop == nil then return end
+
+    local displayId = GetHandleId(display)
+    if UI.fullQuestTextFrameId == displayId then return end
+    UI.fullQuestTextFrameId = displayId
+
+    -- Exercise quests are reference pages rather than campaign objective
+    -- checklists. Expand Warcraft's native description area through the
+    -- otherwise empty QuestItem region so their text begins below the title.
+    BlzFrameClearAllPoints(display)
+    BlzFrameSetPoint(display, FRAMEPOINT_TOPLEFT,
+        detailsTitle, FRAMEPOINT_BOTTOMLEFT, 0.003, -0.003)
+    BlzFrameSetPoint(display, FRAMEPOINT_BOTTOMRIGHT,
+        backdrop, FRAMEPOINT_BOTTOMRIGHT, -0.003, 0.003)
+end
+
 local HookNativeLoadButtons
 
 local function SuspendForNativeMenu()
@@ -429,6 +452,10 @@ local function SuspendForNativeMenu()
     end
     for _, tooltip in ipairs(UI.tooltips) do
         if tooltip ~= nil then BlzFrameSetVisible(tooltip, false) end
+    end
+    local questDialog = BlzGetFrameByName("QuestDialog", 0)
+    if questDialog ~= nil and BlzFrameIsVisible(questDialog) then
+        ApplyFullQuestTextLayout()
     end
     HookNativeCloseButtons()
     if HookNativeLoadButtons ~= nil then HookNativeLoadButtons() end
@@ -656,6 +683,7 @@ end
 
 function UI.HideAllPanels()
     for _, panel in pairs(UI.panels) do BlzFrameSetVisible(panel, false) end
+    if UI.menuShade ~= nil then BlzFrameSetVisible(UI.menuShade, false) end
     UI.menuVisible = false
     UI.currentBackAction = nil
 end
@@ -665,6 +693,38 @@ function UI.HideToolbar()
     if UI.toolbar then BlzFrameSetVisible(UI.toolbar, false) end
     if UI.pausedActivityResume then BlzFrameSetVisible(UI.pausedActivityResume, false) end
     if UI.pausedActivityExit then BlzFrameSetVisible(UI.pausedActivityExit, false) end
+end
+
+function UI.SetQuestAvailable(available)
+    UI.questAvailable = available == true
+    local button = BlzGetFrameByName("UpperButtonBarQuestsButton", 0) or
+        BlzGetOriginFrame(ORIGIN_FRAME_QUEST_BUTTON, 0)
+    if button ~= nil then
+        BlzFrameSetEnable(button, UI.questAvailable)
+        BlzFrameSetAlpha(button, UI.questAvailable and 255 or 145)
+    end
+    if not UI.questAvailable and UI.questHighlight ~= nil then
+        BlzFrameSetVisible(UI.questHighlight, false)
+    end
+end
+
+function UI.HighlightQuestButton(duration)
+    if not UI.questAvailable or UI.questHighlight == nil then return end
+    if UI.questHighlightTimer ~= nil then
+        PauseTimer(UI.questHighlightTimer)
+        DestroyTimer(UI.questHighlightTimer)
+    end
+    BlzFrameSetVisible(UI.questHighlight, true)
+    BlzFrameSetSpriteAnimate(UI.questHighlight, 0, 0)
+    local epoch = UI.epoch
+    UI.questHighlightTimer = CreateTimer()
+    TimerStart(UI.questHighlightTimer, duration or 5.0, false, function()
+        DestroyTimer(UI.questHighlightTimer)
+        UI.questHighlightTimer = nil
+        if UI.epoch == epoch and UI.questHighlight ~= nil then
+            BlzFrameSetVisible(UI.questHighlight, false)
+        end
+    end)
 end
 
 function UI.ShowRoot()
@@ -718,6 +778,7 @@ end
 
 function UI.ShowToolbar(capabilities)
     local caps = capabilities or {}
+    UI.SetQuestAvailable(caps.quests == true)
     UI.browsingActivity = false
     UI.currentView = {kind = "gameplay"}
     if UI.pausedActivityResume then BlzFrameSetVisible(UI.pausedActivityResume, false) end
@@ -779,7 +840,8 @@ local function RefreshActivityBriefingChoices()
         UI.activityBriefingVisibleActions[index] = choice
         BlzFrameSetVisible(button, choice ~= nil)
         if choice ~= nil then
-            local x, y = BriefingChoicePoint(index, #actions, compact, compactColumns)
+            local x, y = BriefingChoicePoint(index, #actions, compact, compactColumns,
+                UI.activityBriefingCenterSingle)
             BlzFrameClearAllPoints(button)
             BlzFrameSetPoint(button, FRAMEPOINT_TOP, UI.panels.activityBriefing,
                 FRAMEPOINT_TOP, x, y)
@@ -802,7 +864,7 @@ function UI.ShowActivityBriefing(spec)
     local compact = spec.compactChoices == true
     local compactColumns = spec.compactColumns
     local _, firstChoiceY = BriefingChoicePoint(1, math.max(1, #actions),
-        compact, compactColumns)
+        compact, compactColumns, spec.centerSingleChoice == true)
     UI.SetGameplayMenuPaused(spec.pauseGame == true)
     SetActivityOverlayVisible(false)
     UI.HideAllPanels()
@@ -824,12 +886,14 @@ function UI.ShowActivityBriefing(spec)
             spec.headingArtworkWidth or 0.200,
             spec.headingArtworkHeight or 0.098)
         BlzFrameSetPoint(UI.activityBriefingArtwork, FRAMEPOINT_TOPRIGHT,
-            panel, FRAMEPOINT_TOPRIGHT, -0.065, -0.025)
+            panel, FRAMEPOINT_TOPRIGHT, spec.headingArtworkOffsetX or -0.065,
+            spec.headingArtworkOffsetY or -0.025)
         BlzFrameSetTexture(UI.activityBriefingArtwork, spec.headingArtwork, 0, true)
     end
     UI.activityBriefingActions = actions
     UI.activityBriefingCompact = compact
     UI.activityBriefingCompactColumns = compactColumns
+    UI.activityBriefingCenterSingle = spec.centerSingleChoice == true
     RefreshActivityBriefingChoices()
     UI.activityBriefingBackAction = spec.backAction
     BlzFrameSetTextColor(UI.activityBriefingBack, BlzConvertColor(255, 255, 255, 255))
@@ -1102,8 +1166,10 @@ local function CreateSkillRacePanel(race, raceIndex)
         else
             AttachTooltip(button, descriptor.description, column >= 2 and "left" or "right")
             RegisterClick(button, function()
-                if descriptor.menu ~= nil then JTG.OpenActivityMenu(descriptor.id, "skills")
-                else JTG.StartActivity(descriptor.id, "skills") end
+                local raceData = {race = race.id}
+                if descriptor.menu ~= nil then
+                    JTG.OpenActivityMenu(descriptor.id, "skills", nil, raceData)
+                else JTG.StartActivity(descriptor.id, "skills", raceData) end
             end)
         end
         UI.catalogueRows[descriptor.id .. "_" .. race.id] = button
@@ -1210,17 +1276,6 @@ local function CreateActivityBriefingPanel()
     end, "return")
     UI.activityBriefingResume = resume
     BlzFrameSetVisible(resume, false)
-end
-
-local function CreateMenuShade()
-    local shade = BlzCreateFrameByType("BACKDROP", "JTGMenuShade", GAME_UI, "", 0)
-    BlzFrameSetTexture(shade, "UI\\Widgets\\EscMenu\\Human\\human-options-menu-background.blp", 0, true)
-    BlzFrameSetSize(shade, 0.80, 0.60)
-    BlzFrameSetAbsPoint(shade, FRAMEPOINT_CENTER, 0.40, 0.30)
-    BlzFrameSetEnable(shade, false)
-    BlzFrameSetVertexColor(shade, BlzConvertColor(145, 30, 30, 30))
-    BlzFrameSetVisible(shade, false)
-    UI.menuShade = shade
 end
 
 local function CreateToolbar()
@@ -1343,6 +1398,11 @@ function UI.AbandonForLoad()
         DestroyTimer(UI.unpauseHighlightTimer)
         UI.unpauseHighlightTimer = nil
     end
+    if UI.questHighlightTimer ~= nil then
+        PauseTimer(UI.questHighlightTimer)
+        DestroyTimer(UI.questHighlightTimer)
+        UI.questHighlightTimer = nil
+    end
     if UI.nativeMenuMonitor ~= nil then
         PauseTimer(UI.nativeMenuMonitor)
         DestroyTimer(UI.nativeMenuMonitor)
@@ -1385,6 +1445,10 @@ function UI.AbandonForLoad()
     UI.nativeCloseHooks = {}
     UI.nativeLoadHooks = {}
     UI.nativeLoadPanelWasVisible = false
+    UI.fullQuestTextFrameId = nil
+    UI.questAvailable = false
+    UI.questHighlight = nil
+    UI.questHighlightTimer = nil
     UI.loadWarningText = nil
     UI.unpauseHighlights = nil
     UI.unpauseHighlightActive = false
@@ -1549,6 +1613,22 @@ function UI.Initialize(restoring)
         BlzTriggerRegisterPlayerKeyEvent(UI.nativeKeyTrigger, Player(0), key, 0, true)
     end
     TriggerAddAction(UI.nativeKeyTrigger, function()
+        if BlzGetTriggerPlayerKey() == OSKEY_F9 and not UI.questAvailable then
+            -- Disabling the upper-bar frame blocks its mouse action. Some
+            -- clients dispatch F9 directly, so close that native dialog on
+            -- the following UI frame as a defensive fallback.
+            local closeTimer = CreateTimer()
+            TimerStart(closeTimer, 0.00, false, function()
+                DestroyTimer(closeTimer)
+                local dialog = BlzGetFrameByName("QuestDialog", 0)
+                local done = BlzGetFrameByName("QuestAcceptButton", 0)
+                if dialog ~= nil and done ~= nil and
+                        BlzFrameIsVisible(dialog) then
+                    BlzFrameClick(done)
+                end
+            end)
+            return
+        end
         if UI.nativeMenuOpen then
             RestoreAfterNativeMenu()
             return
@@ -1603,14 +1683,14 @@ function UI.Initialize(restoring)
             QueueNativeMenuSuspend()
         end
     end)
-    CreateMenuShade()
     CreateRootPanel()
     for index, category in ipairs(JTG.Categories) do CreateCategoryPanel(category, index) end
     for index, race in ipairs(JTG.SkillRaces) do CreateSkillRacePanel(race, index) end
     CreateInfoPanel("patch", "Patch Notes",
+        "|cffffcc00v0.0.7|r  |cffb0b0b029 September 2026|r\n" ..
+        "- Added Mining Micro training for Human and Orc workers.\n\n" ..
         "|cffffcc00v0.0.6|r  |cffb0b0b029 September 2026|r\n" ..
-        "- Added the Camera tutorial, covering essential camera controls and navigation.\n" ..
-        "- Added guided demonstrations, checkpoints, Topics and supporting Quest information.\n\n" ..
+        "- Added the Camera tutorial, covering essential camera controls and navigation.\n\n" ..
         "|cffffcc00v0.0.5|r  |cffb0b0b028 September 2026|r\n" ..
         "- Added save and load support across menus and exercises.\n" ..
         "- Added race-specific Skill Training catalogues.\n" ..
@@ -1635,6 +1715,23 @@ function UI.Initialize(restoring)
     CreateActivityBriefingPanel()
     CreateToolbar()
     CreatePausedActivityResume()
+    local questButton = BlzGetFrameByName("UpperButtonBarQuestsButton", 0) or
+        BlzGetOriginFrame(ORIGIN_FRAME_QUEST_BUTTON, 0)
+    if questButton ~= nil then
+        UI.questHighlight = BlzCreateFrameByType("SPRITE",
+            "JTGQuestButtonHighlight", GAME_UI, "", 0)
+        BlzFrameSetSize(UI.questHighlight, 0.058, 0.024)
+        BlzFrameSetPoint(UI.questHighlight, FRAMEPOINT_CENTER,
+            questButton, FRAMEPOINT_CENTER, -0.0125, 0)
+        BlzFrameSetModel(UI.questHighlight,
+            "UI\\Feedback\\QuestButton\\UI-QuestButtonOn.mdl", 0)
+        BlzFrameSetLevel(UI.questHighlight, 3)
+        BlzFrameSetEnable(UI.questHighlight, false)
+        BlzFrameSetVisible(UI.questHighlight, false)
+    end
+    local activeSession = JTG.Controller and JTG.Controller.session
+    UI.SetQuestAvailable(activeSession ~= nil and
+        activeSession.descriptor.capabilities.quests == true)
     if not restoring then UI.ShowRoot() end
     StartNativeMenuMonitor()
 end

@@ -33,6 +33,22 @@ local POWER_BUILDING_INTRO =
     "Power building has diminishing returns, but it can be worth it. For example, the seconds gained from building a Town Hall at an expansion are always worth it in the long run, because you can start mining gold earlier. You just have to be able to afford the investment.|n|n" ..
     "Here you can choose a building to see a demonstration comparing 1 through 10 peasants!"
 
+local POWER_BUILDING_QUEST_TEXT =
+    "The formula for build time is: {Term: Base Time} / (1+{Term: 0.6*P}), " ..
+    "where P is the amount of extra workers after the first.|n|n" ..
+    "So three workers (two helpers) divide the base time by 2.2, more than " ..
+    "halving it, and ten workers (nine helpers) divide it by 6.4.|n|n" ..
+    "Meanwhile every worker after the first adds around 15% to the total " ..
+    "build cost across the building's entire build time.|n|n" ..
+    "So one extra worker adds 15%, two add 30%, and so on.|n|n" ..
+    "The extra cost is taken once per second, which is why in practice these " ..
+    "percentages are less accurate: there is a lot of rounding error involved, " ..
+    "depending on the building's respective gold and lumber costs and build time."
+
+local function FormatQuestText(text)
+    return string.gsub(text, "{Term:%s*(.-)}", "|cffff9933%1|r")
+end
+
 local function TrackFrame(scope, frame)
     JTG.ScopeAdd(scope, function()
         if frame ~= nil then BlzDestroyFrame(frame) end
@@ -344,6 +360,16 @@ function JTG.CreatePowerBuildingActivity(session)
         local p0 = Player(0)
         JTG.BorrowCamera(current.scope, p0)
 
+        local quest = CreateQuest()
+        QuestSetTitle(quest, "Some Math")
+        QuestSetDescription(quest, FormatQuestText(POWER_BUILDING_QUEST_TEXT))
+        QuestSetIconPath(quest,
+            "ReplaceableTextures\\CommandButtons\\BTNBasicStruct.blp")
+        QuestSetRequired(quest, false)
+        QuestSetDiscovered(quest, true)
+        QuestSetEnabled(quest, true)
+        JTG.ScopeAdd(current.scope, function() DestroyQuest(quest) end)
+
         local resourceGold = {}
         local resourceLumber = {}
         local playerControllers = {}
@@ -412,10 +438,6 @@ function JTG.CreatePowerBuildingActivity(session)
     function activity:start(current)
         if GetLocalPlayer() == Player(0) then
             SetCameraPosition(current.scene.centerX, current.scene.centerY)
-            if JTG.defaultCameraDistance ~= nil then
-                SetCameraField(CAMERA_FIELD_TARGET_DISTANCE,
-                    JTG.defaultCameraDistance, 0)
-            end
         end
     end
 

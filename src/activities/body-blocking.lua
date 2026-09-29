@@ -4,6 +4,30 @@
 -- current activity scope.
 JTG = JTG or {}
 
+local BODY_BLOCKING_QUEST_TEXT =
+    "The game does not keep every moving unit's path perfectly up to date. " ..
+    "Instead, units receive short movement instructions that tell them which " ..
+    "direction and distance they can currently move.|n|n" ..
+    "If a unit collides with another unit, its instruction is interrupted, " ..
+    "which makes it stop shortly.|n|n" ..
+    "The unit then has to receive a pathfinding update before it can move " ..
+    "around the obstacle.|n|n" ..
+    "Every player gets up to 50 such pathfinding instructions per second for " ..
+    "all of their moving units, which includes the repeated movements of " ..
+    "workers.|n|n" ..
+    "This explains why big armies become more and more unwieldy, as more and " ..
+    "more units block each other and require more and more instructions.|n|n" ..
+    "When trying to body block a unit, this explains part of why the unit " ..
+    "stands still for a moment.|n|n" ..
+    "The other half is that the unit now has to navigate around the obstacle, " ..
+    "which requires it to turn left or right.|n|n" ..
+    "Turning in Warcraft takes time, with every unit having its own turn " ..
+    "speed.|n|n" ..
+    "So a blocked unit has to wait for new movement instructions, and then " ..
+    "turn on the spot to start moving along the new path.|n|n" ..
+    "In the time this takes, a keen-eyed player can predict where the new " ..
+    "path is going to go, and move their blocker into position again."
+
 local TRAINING_ROSTERS = {
     human = {
         {FourCC("hpea"), "Peasant"}, {FourCC("hmtm"), "Mortar Team"},
@@ -1049,6 +1073,16 @@ function JTG.CreateBodyBlockingActivity(session)
         self.arenaMinY = scene.minY
         self.arenaMaxY = scene.maxY
 
+        local quest = CreateQuest()
+        QuestSetTitle(quest, "On Pathfinding and Movement")
+        QuestSetDescription(quest, BODY_BLOCKING_QUEST_TEXT)
+        QuestSetIconPath(quest,
+            "ReplaceableTextures\\CommandButtons\\BTNManual3.blp")
+        QuestSetRequired(quest, false)
+        QuestSetDiscovered(quest, true)
+        QuestSetEnabled(quest, true)
+        JTG.ScopeAdd(current.scope, function() DestroyQuest(quest) end)
+
         JTG.BorrowCamera(current.scope, Player(0))
         local oldTime = GetFloatGameState(GAME_STATE_TIME_OF_DAY)
         JTG.ScopeAdd(current.scope, function() SetFloatGameState(GAME_STATE_TIME_OF_DAY, oldTime) end)
@@ -1085,10 +1119,6 @@ function JTG.CreateBodyBlockingActivity(session)
     function activity:start(current)
         if GetLocalPlayer() == Player(0) then
             SetCameraPosition(current.scene.centerX, current.scene.centerY)
-            if JTG.defaultCameraDistance ~= nil then
-                SetCameraField(CAMERA_FIELD_TARGET_DISTANCE,
-                    JTG.defaultCameraDistance, 0)
-            end
         end
         if self.mode == "training" or (self.mode == "custom" and self.runnerId ~= nil) then self:createRound()
         else JTG.OpenActivityMenu(session.id, JTG.Controller.lastCategory) end

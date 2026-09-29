@@ -175,6 +175,7 @@ function JTG.StopActivity(reason)
     if JTG.UI then
         JTG.UI.SetGameplayMenuPaused(false)
         JTG.UI.SetExercisePaused(false)
+        JTG.UI.SetQuestAvailable(false)
     end
     if session == nil then
         controller.state = "idle"
@@ -199,15 +200,22 @@ function JTG.StopActivity(reason)
     JTG.ResetWorldFog(Player(0))
     controller.session = nil
     controller.state = "idle"
-    if JTG.UI then JTG.UI.HideToolbar() end
+    if JTG.UI then
+        JTG.UI.HideToolbar()
+        JTG.UI.SetQuestAvailable(false)
+    end
     return ok
 end
 
-function JTG.StartActivity(id, originCategory, restartData)
+function JTG.StartActivity(id, originCategory, restartData, preservedCameraDistance)
     local controller = JTG.Controller
     local descriptor = JTG.Registry.byId[id]
     if descriptor == nil or descriptor.status ~= "available" or type(descriptor.factory) ~= "function" then
         return false, "Activity is unavailable: " .. tostring(id)
+    end
+    local entryCameraDistance = preservedCameraDistance
+    if entryCameraDistance == nil and GetLocalPlayer() == Player(0) then
+        entryCameraDistance = GetCameraField(CAMERA_FIELD_TARGET_DISTANCE)
     end
     local scene = nil
     if descriptor.sceneId ~= nil then
@@ -264,12 +272,47 @@ function JTG.StartActivity(id, originCategory, restartData)
             return false, startMessage
         end
     end
+    -- Camera distance belongs to the player. Activities may recenter the
+    -- camera, but retain the distance present when they were entered or reset
+    -- unless their descriptor explicitly requests a particular distance.
+    if GetLocalPlayer() == Player(0) then
+        local requestedDistance = descriptor.cameraDistance or entryCameraDistance
+        if requestedDistance ~= nil then
+            SetCameraField(CAMERA_FIELD_TARGET_DISTANCE, requestedDistance, 0)
+        end
+    end
+    return true
+end
+
+-- Some exercises recreate pathing-heavy objects at identical coordinates.
+-- Starting them in the same callback that removes the previous run can make
+-- Warcraft resolve the new melee start against stale unit footprints.
+function JTG.StartActivityAfterCleanup(id, originCategory, restartData,
+        preservedCameraDistance, reason)
+    local cameraDistance = preservedCameraDistance
+    if cameraDistance == nil and GetLocalPlayer() == Player(0) then
+        cameraDistance = GetCameraField(CAMERA_FIELD_TARGET_DISTANCE)
+    end
+    JTG.StopActivity(reason or "replace")
+    local stoppedGeneration = JTG.Controller.generation
+    local timer = CreateTimer()
+    TimerStart(timer, 0.00, false, function()
+        DestroyTimer(timer)
+        if JTG.Controller.session == nil and
+                JTG.Controller.generation == stoppedGeneration then
+            JTG.StartActivity(id, originCategory, restartData, cameraDistance)
+        end
+    end)
     return true
 end
 
 function JTG.ResetActivity()
     local session = JTG.Controller.session
     if session == nil then return false end
+    local cameraDistance = nil
+    if GetLocalPlayer() == Player(0) then
+        cameraDistance = GetCameraField(CAMERA_FIELD_TARGET_DISTANCE)
+    end
     local id, category = session.id, JTG.Controller.lastCategory
     local restartData = nil
     if session.activity and session.activity.captureResetState then
@@ -277,8 +320,16 @@ function JTG.ResetActivity()
         if captured then restartData = data
         else print("JTG reset-state warning: " .. tostring(data)) end
     end
+    -- Mining Micro recreates pathing-heavy mines, halls, trees and the native
+    -- melee worker formation at the same coordinates. Give Warcraft one frame
+    -- to retire the removed objects before resolving those fixed placements;
+    -- rebuilding in the click callback can otherwise fail and restore the menu.
+    if id == "skills.gold_mine" then
+        return JTG.StartActivityAfterCleanup(id, category, restartData,
+            cameraDistance, "reset")
+    end
     JTG.StopActivity("reset")
-    return JTG.StartActivity(id, category, restartData)
+    return JTG.StartActivity(id, category, restartData, cameraDistance)
 end
 
 function JTG.LastRunnerActivity()
@@ -289,8 +340,12 @@ function JTG.LastRunnerActivity()
         session.activity, session)
     if not captured or restartData == nil then return false end
     local id, category = session.id, JTG.Controller.lastCategory
+    local cameraDistance = nil
+    if GetLocalPlayer() == Player(0) then
+        cameraDistance = GetCameraField(CAMERA_FIELD_TARGET_DISTANCE)
+    end
     JTG.StopActivity("last-runner")
-    return JTG.StartActivity(id, category, restartData)
+    return JTG.StartActivity(id, category, restartData, cameraDistance)
 end
 
 function JTG.ExitActivity()

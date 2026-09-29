@@ -18,7 +18,7 @@ const {
 } = req('@jamiephan/stormlib');
 const luaParser = req('luaparse');
 
-const version = 'v0.0.6';
+const version = 'v0.0.7';
 const sourcePath = path.join(root, 'reference/foundation/Jamies-Training-Grounds-v0.0.1-alpha.5.w3x');
 const outputPath = path.join(root, `outputs/Jamies-Training-Grounds-${version}.w3x`);
 const reportPath = path.join(root, `outputs/Jamies-Training-Grounds-${version}-validation.json`);
@@ -26,6 +26,7 @@ const acceptedHash = 'a1ea7789e60b30e77d64f14337759842dff309d129929ef24defb1276c
 const modulePaths = [
     'src/infrastructure/core.lua',
     'src/activities/camera-tutorial.lua',
+    'src/activities/mining-micro.lua',
     'src/activities/body-blocking.lua',
     'src/activities/power-building.lua',
     'src/infrastructure/catalog.lua',
@@ -49,6 +50,7 @@ const assetPaths = [
     ['JTGMenu\\AoWCreeping.dds', 'src/assets/menu/AoWCreeping.dds'],
     ['JTGMenu\\BatSplitter.dds', 'src/assets/menu/BatSplitter.dds'],
     ['JTGMenu\\GoldMineMicro.dds', 'src/assets/menu/GoldMineMicro.dds'],
+    ['JTGMenu\\GoldMineMicroBriefing.dds', 'src/assets/menu/GoldMineMicroBriefing.dds'],
     ['JTGMenu\\UnitComparison.dds', 'src/assets/menu/UnitComparison.dds'],
     ['JTGMenu\\DemoMode.dds', 'src/assets/menu/DemoMode.dds'],
     ['JTGMenu\\LearnToPlay.dds', 'src/assets/menu/LearnToPlay.dds'],
@@ -137,6 +139,10 @@ assert(nextLua.includes('id = "tools.power_building"'),
     'Power Building catalogue registration is missing from the compiled map');
 assert(nextLua.includes('function JTG.CreateCameraTutorialActivity(session)'),
     'Camera tutorial activity factory is missing from the compiled map');
+assert(nextLua.includes('function JTG.CreateMiningMicroActivity(session)'),
+    'Mining Micro activity factory is missing from the compiled map');
+assert(nextLua.includes('title = "Mining Micro"'),
+    'Mining Micro catalogue entry is missing from the compiled map');
 assert(nextLua.includes('title = "1. Camera"'),
     'Camera tutorial catalogue entry is missing from the compiled map');
 assert(nextLua.includes('EVENT_GAME_LOADED') && nextLua.includes('RestoreLoadedGame'),
@@ -190,12 +196,62 @@ let wts = source.get('war3map.wts').toString('utf8');
 assert(/STRING 1\s*\{[^}]*\}/.test(wts), 'Map title string was not found');
 wts = wts.replace(/(STRING 1\s*\{)[^}]*\}/, `$1\nJamie's Training Grounds ${version}\n}`);
 changes.set('war3map.wts', Buffer.from(wts));
+changes.set('war3map.w3b', addTrainingTreeObject(source.get('war3map.w3b')));
 for (const [archivePath, relativePath] of assetPaths) {
     const bytes = fs.readFileSync(path.join(root, relativePath));
     if (relativePath.endsWith('.dds')) {
         assert.equal(bytes.toString('ascii', 0, 4), 'DDS ', relativePath + ' is not a DDS texture');
     }
     changes.set(archivePath, bytes);
+}
+
+function skipObjectTable(cursor) {
+    const objectCount = cursor.int();
+    for (let objectIndex = 0; objectIndex < objectCount; objectIndex++) {
+        cursor.position += 8;
+        const setCount = cursor.int();
+        for (let setIndex = 0; setIndex < setCount; setIndex++) {
+            cursor.int();
+            const modificationCount = cursor.int();
+            for (let modificationIndex = 0; modificationIndex < modificationCount;
+                    modificationIndex++) {
+                cursor.position += 4;
+                const valueType = cursor.int();
+                if (valueType === 3) cursor.text();
+                else {
+                    assert(valueType >= 0 && valueType <= 2,
+                        'Unexpected object-data value type: ' + valueType);
+                    cursor.position += 4;
+                }
+                cursor.position += 4;
+            }
+        }
+    }
+}
+
+function addTrainingTreeObject(sourceObjects) {
+    const cursor = new Cursor(sourceObjects);
+    assert.equal(cursor.int(), 3, 'Unexpected destructable object-data version');
+    skipObjectTable(cursor);
+    const customCountOffset = cursor.position;
+    const customCount = cursor.int();
+    const customTree = Buffer.concat([
+        Buffer.from('LTlt', 'ascii'),
+        Buffer.from('JTtr', 'ascii'),
+        i32(1),
+        i32(0),
+        i32(1),
+        Buffer.from('bhps', 'ascii'),
+        i32(0),
+        i32(1000),
+        Buffer.from('JTtr', 'ascii'),
+    ]);
+    return Buffer.concat([
+        sourceObjects.subarray(0, customCountOffset),
+        i32(customCount + 1),
+        sourceObjects.subarray(customCountOffset + 4),
+        customTree,
+    ]);
 }
 for (const [archivePath, relativePath] of configurationPaths) {
     changes.set(archivePath, fs.readFileSync(path.join(root, relativePath)));
@@ -240,7 +296,7 @@ try {
 assert.equal(hash(fs.readFileSync(sourcePath)), acceptedHash, 'Source foundation was modified');
 const report = {
     version,
-    purpose: 'Release the Camera Controls tutorial with guided demonstrations and supporting UI.',
+    purpose: 'Release Mining Micro, the Camera tutorial and expanded exercise Quest guidance.',
     acceptedFoundation: {
         path: path.relative(root, sourcePath).replaceAll('\\', '/'),
         sha256: acceptedHash,

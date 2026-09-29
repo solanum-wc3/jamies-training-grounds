@@ -49,7 +49,6 @@ local planned = {
     {"skills.bat_splitter", "skills", "Bat Splitter", "Split vulnerable air units under pressure.", "JTGMenu\\BatSplitter.dds"},
     {"skills.micro", "skills", "Micro Training", "Control mixed armies efficiently."},
     {"skills.staffing", "skills", "Staffing Units", "Save and reposition units with a Staff.", nil, {"human", "nightelf"}},
-    {"skills.gold_mine", "skills", "Gold Mine Micro", "Optimize workers around a contested mine.", "JTGMenu\\GoldMineMicro.dds", {"human", "orc"}},
     {"skills.merc_creep", "skills", "Merc Camp Creeping", "Practice a Mercenary Camp creep route.", nil, {"human"}},
     {"skills.lab_creep", "skills", "Goblin Lab Creeping", "Practice a Goblin Laboratory creep route.", nil, {"human"}},
     {"skills.windwalk", "skills", "Windwalk Pop", "Use collision timing to displace units.", "JTGMenu\\WindwalkPop.dds", {"orc"}},
@@ -75,8 +74,22 @@ JTG.RegisterActivity({
     labelInset = 0.022,
     status = "available",
     sceneId = "tutorial.camera",
-    capabilities = {menu = false, pause = false},
+    capabilities = {menu = false, pause = false, quests = true},
     factory = JTG.CreateCameraTutorialActivity,
+})
+
+JTG.RegisterActivity({
+    id = "skills.gold_mine",
+    category = "skills",
+    title = "Mining Micro",
+    description = "Optimize four-worker gold mining against fixed reference economies.",
+    artwork = "JTGMenu\\GoldMineMicro.dds",
+    skillRaces = {"human", "orc"},
+    status = "available",
+    sceneId = "arena.north",
+    capabilities = {restart = true, menu = true, pause = true, quests = true},
+    menu = JTG.OpenMiningMicroMenu,
+    factory = JTG.CreateMiningMicroActivity,
 })
 
 JTG.RegisterActivity({
@@ -87,7 +100,7 @@ JTG.RegisterActivity({
     artwork = "JTGMenu\\BodyBlocking.dds",
     status = "available",
     sceneId = "arena.south",
-    capabilities = {restart = true, menu = true, lastRunner = true, pause = true},
+    capabilities = {restart = true, menu = true, lastRunner = true, pause = true, quests = true},
     menu = JTG.OpenBodyBlockingMenu,
     factory = JTG.CreateBodyBlockingActivity,
 })
@@ -100,7 +113,7 @@ JTG.RegisterActivity({
     artwork = "JTGMenu\\PowerBuilding.dds",
     status = "available",
     sceneId = "arena.south",
-    capabilities = {menu = true, pause = true},
+    capabilities = {menu = true, pause = true, quests = true},
     menu = JTG.OpenPowerBuildingMenu,
     factory = JTG.CreatePowerBuildingActivity,
 })
