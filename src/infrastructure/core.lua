@@ -2,6 +2,13 @@
 -- a scope; the map owns navigation, registry data and the controller itself.
 JTG = JTG or {}
 
+-- Tutorial checkpoint panels share a 0.026-high button, 0.003 spacing, the
+-- established 0.041 top inset and a dedicated footer for Close. Growing the
+-- frame from this count keeps later checkpoints from colliding with Close.
+function JTG.TutorialMenuHeight(buttonCount)
+    return 0.095 + math.max(0, buttonCount or 0) * 0.029
+end
+
 JTG.Registry = {byId = {}, ordered = {}}
 JTG.Scenes = {}
 
@@ -114,6 +121,16 @@ function JTG.ResetWorldFog(player)
     FogEnable(true)
     FogMaskEnable(true)
     SetFogStateRect(player, FOG_OF_WAR_MASKED, bj_mapInitialPlayableArea, true)
+end
+
+-- Regular-map tutorials normally begin with the terrain explored, while
+-- ordinary unit sight still determines what is currently visible. Activities
+-- with a different teaching requirement can explicitly choose another state.
+function JTG.UseExploredWorldFog(player)
+    FogEnable(true)
+    FogMaskEnable(true)
+    SetFogStateRect(player, FOG_OF_WAR_FOGGED,
+        bj_mapInitialPlayableArea, true)
 end
 
 function JTG.DisposeScope(scope)
@@ -320,11 +337,11 @@ function JTG.ResetActivity()
         if captured then restartData = data
         else print("JTG reset-state warning: " .. tostring(data)) end
     end
-    -- Mining Micro recreates pathing-heavy mines, halls, trees and the native
-    -- melee worker formation at the same coordinates. Give Warcraft one frame
-    -- to retire the removed objects before resolving those fixed placements;
-    -- rebuilding in the click callback can otherwise fail and restore the menu.
-    if id == "skills.gold_mine" then
+    -- Exercises that recreate collision-sensitive setups at identical
+    -- coordinates get one frame for Warcraft to retire the old footprints.
+    -- Rebuilding directly in the click callback can otherwise make the next
+    -- setup inherit stale placement or collision state.
+    if id == "skills.gold_mine" or id == "skills.windwalk" then
         return JTG.StartActivityAfterCleanup(id, category, restartData,
             cameraDistance, "reset")
     end

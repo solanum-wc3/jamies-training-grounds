@@ -1197,11 +1197,18 @@ local function CreateInfoPanel(key, titleText, bodyText, index, scrollable)
     BlzFrameSetPoint(title, FRAMEPOINT_TOP, panel, FRAMEPOINT_TOP, 0, TITLE_TOP_OFFSET)
     local body
     if scrollable then
-        body = BlzCreateFrame("EscMenuTextAreaTemplate", panel, 0, index)
-        BlzFrameSetSize(body, 0.52 / PARAGRAPH_SCALE, 0.30 / PARAGRAPH_SCALE)
-        BlzFrameSetScale(body, PARAGRAPH_SCALE)
-        BlzFrameSetText(body, bodyText)
+        -- Instantiate an actual TEXTAREA control inheriting the native
+        -- template. Creating the template itself leaves its text and
+        -- scrollbar children disconnected from the parent frame's text.
+        body = BlzCreateFrameByType("TEXTAREA", "JTGInfoBody" .. index,
+            panel, "EscMenuTextAreaTemplate", index)
+        BlzFrameSetSize(body, 0.52, 0.30)
         BlzFrameSetPoint(body, FRAMEPOINT_TOP, title, FRAMEPOINT_BOTTOM, 0, -0.025)
+        -- Feed the native line model so it derives the scrollbar range from
+        -- the complete contents, including intentional blank lines.
+        for line in string.gmatch(bodyText .. "\n", "(.-)\n") do
+            BlzFrameAddText(body, line)
+        end
     else
         body = CreateText("JTGInfoBody" .. index, panel, bodyText,
             0.52 / PARAGRAPH_SCALE, 0.30 / PARAGRAPH_SCALE, PARAGRAPH_SCALE)
@@ -1687,6 +1694,8 @@ function UI.Initialize(restoring)
     for index, category in ipairs(JTG.Categories) do CreateCategoryPanel(category, index) end
     for index, race in ipairs(JTG.SkillRaces) do CreateSkillRacePanel(race, index) end
     CreateInfoPanel("patch", "Patch Notes",
+        "|cffffcc00v0.0.8|r  |cffb0b0b01 October 2026|r\n" ..
+        "- Added the Unit Controls tutorial and optional tutorial topics.\n\n" ..
         "|cffffcc00v0.0.7|r  |cffb0b0b029 September 2026|r\n" ..
         "- Added Mining Micro training for Human and Orc workers.\n\n" ..
         "|cffffcc00v0.0.6|r  |cffb0b0b029 September 2026|r\n" ..
@@ -1706,7 +1715,7 @@ function UI.Initialize(restoring)
         "- Implemented base architecture.\n\n" ..
         "|cffffcc00v0.0.1|r  |cffb0b0b024 September 2026|r\n" ..
         "- Cleaned up source map.\n" ..
-        "- Implemented menu-to-game environment transition.", 1)
+        "- Implemented menu-to-game environment transition.", 1, true)
     CreateInfoPanel("credits", "Credits",
         "Project started by |cffffcc00Jamie|r and currently run by |cffffcc00Solanum|r.\n\n" ..
         "Contributors: AoW, poison, floss2xdaily, Kaccel, MadPad09 and Solstice1221.\n\n" ..

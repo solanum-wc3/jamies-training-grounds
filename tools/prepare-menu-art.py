@@ -30,6 +30,9 @@ CARDS = {
     "WispMicro": ("wisp-micro-source.png", 1.0, 0.50, 0.50, "contain"),
     # Keep the cameraman large and crop below the arms for the narrow card.
     "CameraControls": ("camera-controls-source.png", 1.20, 0.40, 0.36, "crop"),
+    # The Unit Controls card receives a custom leg crop below, then contains
+    # the complete remaining puppet composition in the button slot.
+    "UnitControls": ("unit-controls-source.png", 1.0, 0.50, 0.50, "puppet"),
     "WindwalkPop": ("windwalk-pop-source.png", 1.0, 0.50, 0.50, "crop"),
     # Keep the zeppelin dominant while retaining the hanging Footmen.
     "ZeppelinMicro": ("zeppelin-micro-source.png", 1.0, 0.42, 0.50, "crop"),
@@ -66,7 +69,7 @@ def card_crop(image, zoom, focal_y, focal_x=0.50, mode="crop"):
     )
 
 
-def contain_visible(image, size, fill):
+def contain_visible(image, size, fill, offset_x=0, offset_y=0):
     """Fit the complete non-transparent composition with controlled padding."""
     alpha_box = image.getchannel("A").getbbox()
     visible = image.crop(alpha_box) if alpha_box is not None else image.copy()
@@ -77,8 +80,8 @@ def contain_visible(image, size, fill):
     visible.thumbnail(target, Image.Resampling.LANCZOS)
     card = Image.new("RGBA", size, (0, 0, 0, 0))
     card.alpha_composite(visible, (
-        (size[0] - visible.width) // 2,
-        (size[1] - visible.height) // 2,
+        (size[0] - visible.width) // 2 + offset_x,
+        (size[1] - visible.height) // 2 + offset_y,
     ))
     return card
 
@@ -90,7 +93,14 @@ for output_name, values in CARDS.items():
     mode = values[4] if len(values) > 4 else "crop"
     source = Image.open(SOURCE / source_name).convert("RGBA")
     assert source.getchannel("A").getextrema()[0] == 0, source_name + " must retain transparency"
-    card = card_crop(source, zoom, focal_y, focal_x, mode)
+    if mode == "puppet":
+        # Remove only the Grunt's legs, preserving the puppeteer's hand,
+        # strings, axe, torso and both arms before fitting the whole scene.
+        leg_crop = source.crop((0, 0, source.width, round(source.height * 0.75)))
+        card = contain_visible(leg_crop, CARD_SIZE, 0.98,
+                               offset_x=round(CARD_SIZE[0] * 0.06))
+    else:
+        card = card_crop(source, zoom, focal_y, focal_x, mode)
     card_path = OUTPUT / f"{output_name}.dds"
     card.save(card_path, pixel_format="DXT5")
     generated.append((card_path, CARD_SIZE))
@@ -208,6 +218,17 @@ menu_divider = Image.new("RGBA", (64, 4), (239, 174, 33, 255))
 menu_divider_path = OUTPUT / "MenuDivider.dds"
 menu_divider.save(menu_divider_path, pixel_format="DXT5")
 generated.append((menu_divider_path, (64, 4)))
+
+# Rotate the supplied right-facing pointer clockwise so it points down. The
+# complete visible arrow is retained with a small transparent safety margin.
+arrow_source = Image.open(
+    SOURCE / "tutorial-arrow-right-source.png"
+).convert("RGBA")
+arrow_down = arrow_source.rotate(-90, expand=True, resample=Image.Resampling.BICUBIC)
+tutorial_arrow = contain_visible(arrow_down, (128, 128), 0.92)
+tutorial_arrow_path = OUTPUT / "TutorialArrowDown.dds"
+tutorial_arrow.save(tutorial_arrow_path, pixel_format="DXT5")
+generated.append((tutorial_arrow_path, (128, 128)))
 
 # Nine-slice runtime skin. Only straight sections stretch; the four rounded
 # corners retain their shape at every tooltip height.

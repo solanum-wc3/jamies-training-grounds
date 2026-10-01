@@ -18,7 +18,7 @@ const {
 } = req('@jamiephan/stormlib');
 const luaParser = req('luaparse');
 
-const version = 'v0.0.7';
+const version = 'v0.0.9-alpha02';
 const sourcePath = path.join(root, 'reference/foundation/Jamies-Training-Grounds-v0.0.1-alpha.5.w3x');
 const outputPath = path.join(root, `outputs/Jamies-Training-Grounds-${version}.w3x`);
 const reportPath = path.join(root, `outputs/Jamies-Training-Grounds-${version}-validation.json`);
@@ -26,7 +26,9 @@ const acceptedHash = 'a1ea7789e60b30e77d64f14337759842dff309d129929ef24defb1276c
 const modulePaths = [
     'src/infrastructure/core.lua',
     'src/activities/camera-tutorial.lua',
+    'src/activities/unit-controls-tutorial.lua',
     'src/activities/mining-micro.lua',
+    'src/activities/windwalk-pop.lua',
     'src/activities/body-blocking.lua',
     'src/activities/power-building.lua',
     'src/infrastructure/catalog.lua',
@@ -42,6 +44,8 @@ const assetPaths = [
     ['JTGMenu\\PeonMicro.dds', 'src/assets/menu/PeonMicro.dds'],
     ['JTGMenu\\WispMicro.dds', 'src/assets/menu/WispMicro.dds'],
     ['JTGMenu\\CameraControls.dds', 'src/assets/menu/CameraControls.dds'],
+    ['JTGMenu\\UnitControls.dds', 'src/assets/menu/UnitControls.dds'],
+    ['JTGMenu\\TutorialArrowDown.dds', 'src/assets/menu/TutorialArrowDown.dds'],
     ['JTGMenu\\WindwalkPop.dds', 'src/assets/menu/WindwalkPop.dds'],
     ['JTGMenu\\ZeppelinMicro.dds', 'src/assets/menu/ZeppelinMicro.dds'],
     ['JTGQuest\\CameraSettingsZoom.dds', 'src/assets/menu/CameraSettingsZoom.dds'],
@@ -139,10 +143,18 @@ assert(nextLua.includes('id = "tools.power_building"'),
     'Power Building catalogue registration is missing from the compiled map');
 assert(nextLua.includes('function JTG.CreateCameraTutorialActivity(session)'),
     'Camera tutorial activity factory is missing from the compiled map');
+assert(nextLua.includes('function JTG.CreateUnitControlsTutorialActivity(session)'),
+    'Unit Controls tutorial activity factory is missing from the compiled map');
+assert(nextLua.includes('title = "2. Unit Controls"'),
+    'Unit Controls tutorial catalogue entry is missing from the compiled map');
 assert(nextLua.includes('function JTG.CreateMiningMicroActivity(session)'),
     'Mining Micro activity factory is missing from the compiled map');
 assert(nextLua.includes('title = "Mining Micro"'),
     'Mining Micro catalogue entry is missing from the compiled map');
+assert(nextLua.includes('function JTG.CreateWindwalkPopActivity(session)'),
+    'Windwalk Pop activity factory is missing from the compiled map');
+assert(nextLua.includes('title = "Windwalk Pop"'),
+    'Windwalk Pop catalogue entry is missing from the compiled map');
 assert(nextLua.includes('title = "1. Camera"'),
     'Camera tutorial catalogue entry is missing from the compiled map');
 assert(nextLua.includes('EVENT_GAME_LOADED') && nextLua.includes('RestoreLoadedGame'),
@@ -296,7 +308,7 @@ try {
 assert.equal(hash(fs.readFileSync(sourcePath)), acceptedHash, 'Source foundation was modified');
 const report = {
     version,
-    purpose: 'Release Mining Micro, the Camera tutorial and expanded exercise Quest guidance.',
+    purpose: 'Test Windwalk Pop training and scrollable Patch Notes.',
     acceptedFoundation: {
         path: path.relative(root, sourcePath).replaceAll('\\', '/'),
         sha256: acceptedHash,

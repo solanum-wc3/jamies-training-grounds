@@ -555,6 +555,7 @@ function JTG.CreateBodyBlockingActivity(session)
         SetUnitInvulnerable(self.runner, true)
         PauseUnit(self.runner, true)
         self.moveSpeed = math.max(1, GetUnitMoveSpeed(self.runner))
+        self.turnRate = GetUnitTurnSpeed(self.runner)
         -- Antonidas is both the visible reference and the timing source. Giving
         -- him the runner's owner avoids Neutral Passive guard-return orders;
         -- Locust, no pathing and invulnerability keep him noninteractive.
@@ -572,7 +573,9 @@ function JTG.CreateBodyBlockingActivity(session)
         PauseUnit(self.referenceRunner, true)
         self:buildRoute()
         BlzFrameSetText(self.speedFrame, "|cffffcc00" .. runnerName ..
-            "|r Movement Speed " .. tostring(math.floor(self.moveSpeed + 0.5)))
+            "|r  Movement Speed " ..
+            tostring(math.floor(self.moveSpeed + 0.5)) ..
+            "   Turn Rate " .. string.format("%.2f", self.turnRate))
         BlzFrameSetVisible(self.speedFrame, true)
 
         self.blocker = JTG.ScopeTrackUnit(session.scope,
@@ -1019,9 +1022,12 @@ function JTG.CreateBodyBlockingActivity(session)
         if self.startX ~= nil and self.finishX ~= nil and self.laneY ~= nil then
             self:createCourseMarkers()
         end
-        if self.runnerName ~= nil and self.moveSpeed ~= nil then
+        if self.runnerName ~= nil and self.moveSpeed ~= nil and
+                self.turnRate ~= nil then
             BlzFrameSetText(self.speedFrame, "|cffffcc00" .. self.runnerName ..
-                "|r Movement Speed " .. tostring(math.floor(self.moveSpeed + 0.5)))
+                "|r  Movement Speed " ..
+                tostring(math.floor(self.moveSpeed + 0.5)) ..
+                "   Turn Rate " .. string.format("%.2f", self.turnRate))
         end
         if self.countdownActive then
             BlzFrameSetText(self.countdownFrame, "|cffffcc00" ..

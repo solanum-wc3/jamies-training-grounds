@@ -29,7 +29,6 @@ JTG.RegisterScene({
 })
 
 local planned = {
-    {"learn.selection", "learn", "Unit Selection & Commands", "Select units, form groups and issue orders."},
     {"learn.economy", "learn", "Workers & Resources", "Gather resources and keep workers productive."},
     {"learn.base", "learn", "Build Your Base", "Place and construct the buildings you need."},
     {"learn.units", "learn", "Units & Food", "Train an army and manage the food limit."},
@@ -47,11 +46,11 @@ local planned = {
 
     {"skills.surround", "skills", "Surrounds", "Trap a target with coordinated movement.", "JTGMenu\\Surrounds.dds"},
     {"skills.bat_splitter", "skills", "Bat Splitter", "Split vulnerable air units under pressure.", "JTGMenu\\BatSplitter.dds"},
+    {"skills.missile_dodging", "skills", "Missile Dodging", "Avoid incoming projectiles with precise movement and timing."},
     {"skills.micro", "skills", "Micro Training", "Control mixed armies efficiently."},
     {"skills.staffing", "skills", "Staffing Units", "Save and reposition units with a Staff.", nil, {"human", "nightelf"}},
     {"skills.merc_creep", "skills", "Merc Camp Creeping", "Practice a Mercenary Camp creep route.", nil, {"human"}},
     {"skills.lab_creep", "skills", "Goblin Lab Creeping", "Practice a Goblin Laboratory creep route.", nil, {"human"}},
-    {"skills.windwalk", "skills", "Windwalk Pop", "Use collision timing to displace units.", "JTGMenu\\WindwalkPop.dds", {"orc"}},
     {"skills.gargoyle", "skills", "Gargoyle Surround", "Surround targets with flying units.", nil, {"undead"}},
     {"skills.aow_creep", "skills", "AoW Creeping", "Practice Ancient of War creeping.", "JTGMenu\\AoWCreeping.dds", {"nightelf"}},
     {"skills.peon_micro", "skills", "Peon Micro", "Practice Peon movement and survival under pressure.", "JTGMenu\\PeonMicro.dds", {"orc"}},
@@ -79,6 +78,19 @@ JTG.RegisterActivity({
 })
 
 JTG.RegisterActivity({
+    id = "learn.unit_controls",
+    category = "learn",
+    title = "2. Unit Controls",
+    description = "Learn how to select units, read their interface and use their abilities.",
+    artwork = "JTGMenu\\UnitControls.dds",
+    labelInset = 0.022,
+    status = "available",
+    sceneId = "arena.south",
+    capabilities = {menu = false, pause = false, quests = false},
+    factory = JTG.CreateUnitControlsTutorialActivity,
+})
+
+JTG.RegisterActivity({
     id = "skills.gold_mine",
     category = "skills",
     title = "Mining Micro",
@@ -90,6 +102,20 @@ JTG.RegisterActivity({
     capabilities = {restart = true, menu = true, pause = true, quests = true},
     menu = JTG.OpenMiningMicroMenu,
     factory = JTG.CreateMiningMicroActivity,
+})
+
+JTG.RegisterActivity({
+    id = "skills.windwalk",
+    category = "skills",
+    title = "Windwalk Pop",
+    description = "Use Wind Walk collision to free a surrounded Grunt.",
+    artwork = "JTGMenu\\WindwalkPop.dds",
+    skillRaces = {"orc"},
+    status = "available",
+    sceneId = "arena.north",
+    capabilities = {restart = true, menu = true, pause = true, quests = false},
+    menu = JTG.OpenWindwalkPopMenu,
+    factory = JTG.CreateWindwalkPopActivity,
 })
 
 JTG.RegisterActivity({

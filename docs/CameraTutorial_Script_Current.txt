@@ -1,0 +1,224 @@
+Section 1 - Welcome
+
+Checkpoint: Welcome
+
+Trigger: Show the main Orc base, centered on the Fortress, at the player's default camera zoom distance.
+
+Narration: {Heading: WELCOME}
+Narration: Welcome to the Camera Tutorial!
+Narration: Let us first take a look at the basic camera controls of Warcraft III.
+Narration: Once you are done reading and playing around with whatever mechanic you learn, press the {Button: Continue} or {Button: Next} button to move on!
+Progression: Wait for Continue.
+
+
+Section 2 - Free Camera
+
+Checkpoint: Free Camera
+
+Trigger: Reset to the main Orc base, centered on the Fortress.
+
+Narration: {Heading: FREE CAMERA}
+Narration: There are four ways to freely move the camera.
+Progression: Wait for Continue.
+
+Narration: Firstly, you can use "edge pan" by {Input: moving the mouse} to the edges of the screen.
+Narration: Edge pan is the most common way to move the camera. It is quick and intuitive.
+Narration: The drawback is that your mouse cursor will have to leave the center of the screen, where the action happens. Moving it back may cost you some time.
+Narration: Try using edge pan!
+Progression: Wait for Continue.
+
+Narration: The second way to freely move the camera is to {Input: press and hold the Middle Mouse Button} and drag the screen.
+Narration: This is slower, but it allows you to make small adjustments quickly, without having to move the cursor away from the action.
+Narration: Try dragging the camera!
+Progression: Wait for Continue.
+
+Narration: The third way to move the camera is using the minimap. It is displayed on the bottom left of the screen.
+Narration: You can {Input: click on the map} to center the camera on that location, or {Input: click and drag across the map} to move it.
+Narration: Try moving the camera using the minimap!
+Progression: Wait for Continue.
+
+Narration: The last way to freely move the camera is using the keyboard. The default keys for this are the {Input: arrow keys}.
+Narration: These are a bit out of the way for both your left and your right hand, but some people prefer moving the camera using their keyboard hand.
+Narration: Try moving the camera using the arrow keys!
+Progression: Wait for Continue.
+
+
+Section 3 - Zooming
+
+Checkpoint: Zooming
+
+Narration: {Heading: ZOOMING}
+Narration: The default camera distance is 1650 units. This can be changed in the settings.
+Narration: Click the Quest button on the top left, or press {Input: F9}, for more details.
+Trigger: Reveal the optional quest "Changing Default Camera Distance", play the quest-discovery sound, and highlight the Quest button.
+Progression: Wait for Continue.
+
+Narration: You can change the camera distance while in-game. The default control for this is rolling the {Input: Mouse Wheel}.
+Narration: A closer camera makes controlling units easier, while having the camera further back can help to keep a clear view of a situation.
+Narration: It is best to set zoom to a default value that allows you to do both. You can always zoom in or out during play.
+Narration: Feel free to set the default value to something that feels right for you!
+Progression: Wait for Continue.
+
+Narration: After zooming in or out using the {Input: Mouse Wheel}, you can reset the current camera distance back to the default value you chose.
+Narration: The default key to do this is {Input: F5}.
+Narration: Change the camera zoom, and then reset it!
+Progression: Wait for Continue.
+
+
+Section 4 - Base Camera
+
+Checkpoint: Base Camera
+
+Trigger: Reset the camera to center on the main Orc base's Fortress.
+
+Narration: {Heading: BASE CAMERA}
+Narration: Now let us take a look at the camera commands you can use for your bases and units.
+Narration: In this tutorial, you are in control of three different bases.
+Progression: Wait for Continue.
+
+Trigger: Center the camera on the Great Hall building of the tertiary Orc base.
+Narration: Each of your bases has a main building at a different tier.
+Narration: For Orcs the tier 1 building is called a Great Hall.
+Progression: Wait for Continue.
+
+Trigger: Center the camera on the Stronghold building of the secondary Orc base.
+Narration: The tier 2 building is called a Stronghold.
+Progression: Wait for Continue.
+
+Trigger: Center the camera on the Fortress building of the main Orc base.
+Narration: And the tier 3 building is called a Fortress.
+Progression: Wait for Continue.
+
+Narration: {Heading: JUMP TO BASE}
+Narration: You can return to your main buildings, and cycle between them.
+Narration: The default key for this is {Input: Backspace}.
+Narration: When doing this, the first main building the camera will jump to is the one with the highest tier, the next will be of the next highest tier.
+Narration: If several have the same tier, the camera will jump to the oldest ones first.
+Narration: Try cycling through your main buildings!
+Progression: Wait for Continue.
+
+Trigger: Begin the accelerated unit, building and research completion demonstrations.
+Narration: {Heading: NOTIFICATIONS}
+Narration: Throughout the game, you will receive notifications, with associated audio callouts.
+Narration: Each of the notifications has a location. You can jump to the most recent location, and then cycle through the 8 most recent ones.
+Narration: The default key for this is {Input: Space}.
+Narration: These notifications can be for finished units, buildings, or researches.
+Progression: Wait for Continue.
+
+Trigger: Begin the attacks against the main and tertiary bases.
+Narration: You also get notified when you are being attacked.
+Narration: Once you are being attacked, pressing {Input: Space} is the quickest way to get to the action.
+Narration: This is easier than first checking on the minimap and manually clicking where the enemy units are shown to be.
+Narration: Try cycling through your notifications!
+Progression: Wait for Continue.
+
+Narration: {Heading: IDLE WORKERS}
+Narration: You can automatically center the camera on idle worker units, and cycle through them.
+Narration: The default key for this is {Input: Tilde}.
+Narration: Its label varies on your keyboard layout. It is between the Tabulator and the Escape keys.
+Narration: Try cycling through your workers!
+Progression: Wait for Continue.
+
+Narration: If you want to be able to just select idle workers without automatically centering the camera on them, you can set it to require a {Input: double-tap}.
+Narration: Click the Quest button on the top left, or press {Input: F9}, for more details.
+Trigger: Reveal the optional quest "Idle Worker Double-Tap", play the quest-discovery sound, and highlight the Quest button.
+Progression: Wait for Continue.
+
+
+Section 5 - Army Camera
+
+Checkpoint: Army Camera
+
+Trigger: Center the camera on the main Orc army.
+
+Narration: {Heading: ARMY CAMERA}
+Narration: There are two main ways of navigating the camera to your army units.
+Progression: Wait for Continue.
+
+Narration: By pressing {Input: F1}, {Input: F2} or {Input: F3}, you can select your hero units.
+Narration: {Input: Double-tapping} the key centers the camera on the hero.
+Narration: Which hero is bound to which key depends on the order you trained them in the current game, with your first hero always being bound to {Input: F1} and so on.
+Narration: Alternatively, you can {Input: click the hero icons} on the top left of the screen.
+Narration: These keys cannot be changed in-game.
+Narration: Try moving the camera to your heroes!
+Progression: Wait for Continue.
+
+Narration: If you want to freely assign units or buildings to keys, you have to use {Term: Control Groups}.
+Narration: {Input: Click} one of your units, {Input: hold CTRL}, and then {Input: press 1} on your keyboard!
+Narration: {Input: (CTRL+1)}
+Narration: This assigns them to Control Group 1.
+Narration: You can create a control group for every number key.
+Progression: Wait for Continue.
+
+Narration: Control groups can be used to control and divide your army according to type and function.
+Narration: How to best use control groups will be covered in more detail in a later tutorial.
+Progression: Wait for Continue.
+
+Narration: After forming it, {Input: pressing 1} will select the units of Control Group 1.
+Narration: {Input: Double-tapping} the key moves the camera to the location of the group's units.
+Narration: Try to assign and use different control groups!
+Progression: Wait for Continue.
+
+Narration: Instead of locking the camera, you can also center it on the unit by {Input: clicking its portrait} at the bottom of the screen, or follow the unit by {Input: clicking and holding} the portrait.
+Narration: Try using these commands!
+Progression: Wait for Continue.
+
+
+Section 6 - Outro
+
+Narration: {Heading: END OF TUTORIAL}
+Narration: This concludes the camera tutorial. Press the {Button: Menu} button to choose another tutorial.
+Narration: There are also some mechanics that are a bit more niche, which you will probably not need for competitive play. If you are interested in those, press the {Button: Optional} button.
+Progression: Highlight both the {Button: Menu} and {Button: Optional} buttons with their own respective sprite.
+
+
+Optional Section - Camera Rotation
+
+Optional Checkpoint: Camera Rotation
+
+Narration: {Heading: BONUS: CAMERA ROTATION}
+Narration: You can rotate the camera by 90 degrees left or right.
+Narration: By default, hold {Input: Insert} to rotate left or {Input: Delete} to rotate right.
+Narration: Usually there is no reason to do this while playing, but you might get in a situation where clicking something is easier when the camera is rotated.
+Narration: Try rotating the camera!
+Progression: Wait for Continue.
+
+Narration: {Heading: OPTIONAL TOPIC COMPLETE}
+Narration: This optional topic is complete.
+Narration: Press the {Button: Next} button to return to the tutorial section you previously left.
+Progression: Wait for Next. Return to the previous tutorial position.
+
+
+Optional Section - Lock-On
+
+Optional Checkpoint: Lock-On
+
+Narration: {Heading: BONUS: LOCK-ON}
+Narration: These commands lock the camera to the unit you have currently selected.
+Narration: The default command for this is {Input: holding CTRL} and {Input: pressing C}.
+Narration: {Input: (CTRL+C)}
+Narration: To unlock the camera again, use the same command.
+Progression: Wait for Continue.
+
+Narration: When multiple units are selected, the camera locks onto the one that is displayed on the very left of the selection.
+Progression: Wait for Continue.
+
+Narration: {Heading: OPTIONAL TOPIC COMPLETE}
+Narration: This optional topic is complete.
+Narration: Press the {Button: Next} button to return to the tutorial section you previously left.
+Progression: Wait for Next. Return to the previous tutorial position.
+
+
+Quest - Changing Default Camera Distance
+
+Type: Optional Quest
+Icon: Reveal
+Text: To change the default camera distance, go to {Menu: Gameplay -> Camera Settings}, enable {Menu: Improved Zoom}, and enter your preferred value.
+Text: To do this, you need to leave this map temporarily. Before you do, you should make a {Term: Quicksave}. The default key for this is {Input: F6}.
+
+
+Quest - Idle Worker Double-Tap
+
+Type: Optional Quest
+Icon: Peon
+Text: To make centering the camera on an idle worker require a double-tap, go to {Menu: Gameplay -> Game Behavior}, and enable {Menu: Snap Camera to Worker on Double Click}.

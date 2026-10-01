@@ -82,6 +82,7 @@ local TUTORIAL_STEPS = {
     {
         groupStart = 6,
         wait = true,
+        sectionEnd = true,
         lines = {
             "The last way to freely move the camera is using the keyboard. The default keys for this are the {Input: arrow keys}.",
             "These are a bit out of the way for both your left and your right hand, but some people prefer moving the camera using their keyboard hand.",
@@ -89,20 +90,8 @@ local TUTORIAL_STEPS = {
         },
     },
     {
-        groupStart = 7,
-        wait = true,
-        sectionEnd = true,
-        lines = {
-            "{Heading: BONUS: CAMERA ROTATION}",
-            "You can rotate the camera by 90 degrees left or right.",
-            "By default, hold {Input: Insert} to rotate left or {Input: Delete} to rotate right.",
-            "Usually there is no reason to do this while playing, but you might get in a situation where clicking something is easier when the camera is rotated.",
-            "Try rotating the camera!",
-        },
-    },
-    {
         checkpoint = "zooming",
-        groupStart = 8,
+        groupStart = 7,
         wait = true,
         lines = {
             "{Heading: ZOOMING}",
@@ -112,7 +101,7 @@ local TUTORIAL_STEPS = {
         trigger = "zoomQuest",
     },
     {
-        groupStart = 9,
+        groupStart = 8,
         wait = true,
         lines = {
             "You can change the camera distance while in-game. The default control for this is rolling the {Input: Mouse Wheel}.",
@@ -122,7 +111,7 @@ local TUTORIAL_STEPS = {
         },
     },
     {
-        groupStart = 10,
+        groupStart = 9,
         wait = true,
         sectionEnd = true,
         lines = {
@@ -133,7 +122,7 @@ local TUTORIAL_STEPS = {
     },
     {
         checkpoint = "baseControl",
-        groupStart = 11,
+        groupStart = 10,
         wait = true,
         trigger = "mainBase",
         lines = {
@@ -143,7 +132,7 @@ local TUTORIAL_STEPS = {
         },
     },
     {
-        groupStart = 12,
+        groupStart = 11,
         wait = true,
         trigger = "tertiaryBase",
         lines = {
@@ -152,7 +141,7 @@ local TUTORIAL_STEPS = {
         },
     },
     {
-        groupStart = 13,
+        groupStart = 12,
         wait = true,
         trigger = "secondaryBase",
         lines = {
@@ -160,7 +149,7 @@ local TUTORIAL_STEPS = {
         },
     },
     {
-        groupStart = 14,
+        groupStart = 13,
         wait = true,
         trigger = "mainBase",
         lines = {
@@ -168,7 +157,7 @@ local TUTORIAL_STEPS = {
         },
     },
     {
-        groupStart = 15,
+        groupStart = 14,
         wait = true,
         lines = {
             "{Heading: JUMP TO BASE}",
@@ -180,7 +169,7 @@ local TUTORIAL_STEPS = {
         },
     },
     {
-        groupStart = 16,
+        groupStart = 15,
         wait = true,
         trigger = "notificationProduction",
         lines = {
@@ -192,7 +181,7 @@ local TUTORIAL_STEPS = {
         },
     },
     {
-        groupStart = 17,
+        groupStart = 16,
         wait = true,
         trigger = "notificationAttack",
         lines = {
@@ -203,7 +192,7 @@ local TUTORIAL_STEPS = {
         },
     },
     {
-        groupStart = 18,
+        groupStart = 17,
         wait = true,
         lines = {
             "{Heading: IDLE WORKERS}",
@@ -214,7 +203,7 @@ local TUTORIAL_STEPS = {
         },
     },
     {
-        groupStart = 19,
+        groupStart = 18,
         wait = true,
         sectionEnd = true,
         trigger = "idleWorkerQuest",
@@ -225,7 +214,7 @@ local TUTORIAL_STEPS = {
     },
     {
         checkpoint = "armyControl",
-        groupStart = 20,
+        groupStart = 19,
         wait = true,
         trigger = "armyCenter",
         lines = {
@@ -234,7 +223,7 @@ local TUTORIAL_STEPS = {
         },
     },
     {
-        groupStart = 21,
+        groupStart = 20,
         wait = true,
         lines = {
             "By pressing {Input: F1}, {Input: F2} or {Input: F3}, you can select your hero units.",
@@ -246,7 +235,7 @@ local TUTORIAL_STEPS = {
         },
     },
     {
-        groupStart = 22,
+        groupStart = 21,
         wait = true,
         lines = {
             "If you want to freely assign units or buildings to keys, you have to use {Term: Control Groups}.",
@@ -257,7 +246,7 @@ local TUTORIAL_STEPS = {
         },
     },
     {
-        groupStart = 23,
+        groupStart = 22,
         wait = true,
         lines = {
             "Control groups can be used to control and divide your army according to type and function.",
@@ -265,7 +254,7 @@ local TUTORIAL_STEPS = {
         },
     },
     {
-        groupStart = 24,
+        groupStart = 23,
         wait = true,
         lines = {
             "After forming it, {Input: pressing 1} will select the units of Control Group 1.",
@@ -274,25 +263,7 @@ local TUTORIAL_STEPS = {
         },
     },
     {
-        groupStart = 25,
-        wait = true,
-        lines = {
-            "{Heading: BONUS: LOCK-ON}",
-            "The last command of this tutorial locks the camera to the unit you have currently selected.",
-            "The default command for this is {Input: holding CTRL} and {Input: pressing C}.",
-            "{Input: (CTRL+C)}",
-            "To unlock the camera again, use the same command.",
-        },
-    },
-    {
-        groupStart = 26,
-        wait = true,
-        lines = {
-            "When multiple units are selected, the camera locks onto the one that is displayed on the very left of the selection.",
-        },
-    },
-    {
-        groupStart = 27,
+        groupStart = 24,
         wait = true,
         sectionEnd = true,
         lines = {
@@ -301,12 +272,56 @@ local TUTORIAL_STEPS = {
         },
     },
     {
-        groupStart = 28,
+        groupStart = 25,
         terminal = true,
-        trigger = "highlightMenu",
+        trigger = "highlightMenuAndOptional",
         lines = {
             "{Heading: END OF TUTORIAL}",
-            "This concludes the camera tutorial. Press the {Button: Menu} button to choose another tutorial!",
+            "This concludes the camera tutorial. Press the {Button: Menu} button to choose another tutorial.",
+            "There are also some mechanics that are a bit more niche, which you will probably not need for competitive play. If you are interested in those, press the {Button: Optional} button.",
+        },
+    },
+}
+
+local OPTIONAL_SECTIONS = {
+    rotation = {
+        title = "Camera Rotation",
+        checkpoint = "Camera Rotation",
+        steps = {
+            {
+                wait = true,
+                sectionEnd = true,
+                lines = {
+                    "{Heading: BONUS: CAMERA ROTATION}",
+                    "You can rotate the camera by 90 degrees left or right.",
+                    "By default, hold {Input: Insert} to rotate left or {Input: Delete} to rotate right.",
+                    "Usually there is no reason to do this while playing, but you might get in a situation where clicking something is easier when the camera is rotated.",
+                    "Try rotating the camera!",
+                },
+            },
+        },
+    },
+    lockOn = {
+        title = "Lock-On",
+        checkpoint = "Lock-On",
+        steps = {
+            {
+                wait = true,
+                lines = {
+                    "{Heading: BONUS: LOCK-ON}",
+                    "These commands lock the camera to the unit you have currently selected.",
+                    "The default command for this is {Input: holding CTRL} and {Input: pressing C}.",
+                    "{Input: (CTRL+C)}",
+                    "To unlock the camera again, use the same command.",
+                },
+            },
+            {
+                wait = true,
+                sectionEnd = true,
+                lines = {
+                    "When multiple units are selected, the camera locks onto the one that is displayed on the very left of the selection.",
+                },
+            },
         },
     },
 }
@@ -330,6 +345,12 @@ end
 
 local function StepText(step)
     return table.concat(step.lines or {}, "\n")
+end
+
+local function CopyArray(source)
+    local copy = {}
+    for index, value in ipairs(source or {}) do copy[index] = value end
+    return copy
 end
 
 -- Captured in-game with -export-layout. Worker records additionally store the
@@ -443,6 +464,10 @@ function JTG.CreateCameraTutorialActivity(session)
         complete = false,
         locallyPaused = false,
         objectivesOpen = false,
+        optionalOpen = false,
+        optionalSection = nil,
+        optionalStep = 0,
+        optionalReturnState = nil,
         presentationVisible = true,
         narrationBlocks = {},
         workerActivities = {},
@@ -471,32 +496,47 @@ function JTG.CreateCameraTutorialActivity(session)
         local frames = self.frames
         if frames.continue == nil then return end
         local currentStep = TUTORIAL_STEPS[self.step]
-        local terminal = currentStep ~= nil and currentStep.terminal == true
+        local optional = self.optionalSection ~= nil and
+            OPTIONAL_SECTIONS[self.optionalSection] or nil
+        local optionalStep = optional ~= nil and
+            optional.steps[self.optionalStep] or nil
+        local optionalComplete = optional ~= nil and
+            self.optionalStep > #optional.steps
+        local terminal = optional == nil and currentStep ~= nil and
+            currentStep.terminal == true
         local canContinue = self.waitingForContinue and
-            not terminal
+            (optional ~= nil or not terminal)
         BlzFrameSetText(frames.continue,
-            currentStep ~= nil and currentStep.sectionEnd == true and
+            (optionalComplete or
+            (optional == nil and currentStep ~= nil and
+                currentStep.sectionEnd == true)) and
             "Next" or "Continue")
         self:setButtonEnabled(frames.continue, canContinue)
-        self:setButtonEnabled(frames.back, self.step > 1 or self.complete)
+        self:setButtonEnabled(frames.back,
+            optional ~= nil or self.step > 1 or self.complete)
         local paused = JTG.UI and JTG.UI.exercisePaused == true
         BlzFrameSetText(frames.pause, paused and
             "|cffffffffUnpause|r" or "|cffffcc00Pause|r")
+        local menusClosed = not self.objectivesOpen and not self.optionalOpen
         if frames.continueHighlight ~= nil then
             BlzFrameSetVisible(frames.continueHighlight,
                 canContinue and self.presentationVisible and
-                not self.objectivesOpen)
+                menusClosed)
         end
         if frames.menuHighlight ~= nil then
             BlzFrameSetVisible(frames.menuHighlight,
-                currentStep ~= nil and currentStep.terminal == true and
-                self.presentationVisible and not self.objectivesOpen)
+                terminal and self.presentationVisible and menusClosed)
+        end
+        if frames.optionalHighlight ~= nil then
+            BlzFrameSetVisible(frames.optionalHighlight,
+                terminal and self.presentationVisible and menusClosed)
         end
     end
 
     function activity:renderNarration()
         ClearTextMessages()
-        if not self.presentationVisible or self.objectivesOpen then return end
+        if not self.presentationVisible or self.objectivesOpen or
+                self.optionalOpen then return end
         for _, text in ipairs(self.narrationBlocks) do
             DisplayTimedTextToPlayer(CAMERA_PLAYER, 0, 0,
                 NARRATION_DURATION, text)
@@ -512,7 +552,8 @@ function JTG.CreateCameraTutorialActivity(session)
         if text == nil or text == "" then return end
         local formatted = FormatNarration(text)
         table.insert(self.narrationBlocks, formatted)
-        if self.presentationVisible and not self.objectivesOpen then
+        if self.presentationVisible and not self.objectivesOpen and
+                not self.optionalOpen then
             DisplayTimedTextToPlayer(CAMERA_PLAYER, 0, 0,
                 NARRATION_DURATION,
                 formatted)
@@ -583,8 +624,8 @@ function JTG.CreateCameraTutorialActivity(session)
     end
 
     function activity:revealQuestsThrough(stepIndex)
-        if stepIndex >= 8 then self:createZoomQuest(true, true) end
-        if stepIndex >= 19 then self:createIdleWorkerQuest(true, true) end
+        if stepIndex >= 7 then self:createZoomQuest(true, true) end
+        if stepIndex >= 18 then self:createIdleWorkerQuest(true, true) end
     end
 
     function activity:findOwnedUnit(rawcode, x, y, radius)
@@ -911,7 +952,8 @@ function JTG.CreateCameraTutorialActivity(session)
         self.advanceRemaining = nil
         self:clearNarration()
         self:appendNarration(
-            "This concludes the camera tutorial. Press the {Button: Menu} button to choose another tutorial!",
+            "This concludes the camera tutorial. Press the {Button: Menu} button to choose another tutorial.\n" ..
+            "There are also some mechanics that are a bit more niche, which you will probably not need for competitive play. If you are interested in those, press the {Button: Optional} button.",
             recordInLog ~= false)
         self:refreshControls()
     end
@@ -934,12 +976,115 @@ function JTG.CreateCameraTutorialActivity(session)
     end
 
     function activity:restoreWelcomeCheckpoint()
+        self.optionalSection = nil
+        self.optionalStep = 0
+        self.optionalReturnState = nil
         self.objectivesOpen = false
+        self.optionalOpen = false
         self:setObjectivesVisible(false)
+        self:setOptionalVisible(false)
         self:moveToMainBase()
     end
 
+    function activity:showOptionalStep(index)
+        local optional = OPTIONAL_SECTIONS[self.optionalSection]
+        local spec = optional ~= nil and optional.steps[index] or nil
+        if spec == nil then
+            self:returnFromOptionalSection()
+            return
+        end
+        self.optionalStep = index
+        self.waitingForContinue = spec.wait == true
+        self.advanceRemaining = nil
+        self:clearNarration()
+        self:appendNarration(StepText(spec), true)
+        self:refreshControls()
+    end
+
+    function activity:showOptionalCompletion()
+        local optional = OPTIONAL_SECTIONS[self.optionalSection]
+        if optional == nil then
+            self:returnFromOptionalSection()
+            return
+        end
+        self.optionalStep = #optional.steps + 1
+        self.waitingForContinue = true
+        self.advanceRemaining = nil
+        self:clearNarration()
+        self:appendNarration(table.concat({
+            "{Heading: OPTIONAL TOPIC COMPLETE}",
+            "This optional topic is complete.",
+            "Press {Button: Next} to return to the tutorial section you previously left.",
+        }, "\n"), true)
+        self:refreshControls()
+    end
+
+    function activity:beginOptionalSection(sectionId)
+        local optional = OPTIONAL_SECTIONS[sectionId]
+        if optional == nil then return end
+        if self.optionalReturnState == nil then
+            self.optionalReturnState = {
+                step = self.step,
+                checkpoint = self.checkpoint,
+                complete = self.complete,
+                waitingForContinue = self.waitingForContinue,
+                advanceRemaining = self.advanceRemaining,
+                cameraRemaining = self.cameraRemaining,
+                narrationBlocks = CopyArray(self.narrationBlocks),
+            }
+        end
+        self.objectivesOpen = false
+        self.optionalOpen = false
+        self:setObjectivesVisible(false)
+        self:setOptionalVisible(false)
+        self.optionalSection = sectionId
+        self.optionalStep = 0
+        self.complete = false
+        self:showOptionalStep(1)
+    end
+
+    function activity:returnFromOptionalSection()
+        local saved = self.optionalReturnState
+        self.optionalSection = nil
+        self.optionalStep = 0
+        self.optionalReturnState = nil
+        self.optionalOpen = false
+        self:setOptionalVisible(false)
+        if saved ~= nil then
+            self.step = saved.step
+            self.checkpoint = saved.checkpoint
+            self.complete = saved.complete
+            self.waitingForContinue = saved.waitingForContinue
+            self.advanceRemaining = saved.advanceRemaining
+            self.cameraRemaining = saved.cameraRemaining
+            self.narrationBlocks = CopyArray(saved.narrationBlocks)
+        end
+        self:renderNarration()
+        self:refreshControls()
+    end
+
+    function activity:abandonOptionalSection()
+        self.optionalSection = nil
+        self.optionalStep = 0
+        self.optionalReturnState = nil
+        self.optionalOpen = false
+        self:setOptionalVisible(false)
+    end
+
     function activity:continueTutorial()
+        if self.optionalSection ~= nil then
+            if not self.waitingForContinue then return end
+            local optional = OPTIONAL_SECTIONS[self.optionalSection]
+            if optional ~= nil and self.optionalStep < #optional.steps then
+                self:showOptionalStep(self.optionalStep + 1)
+            elseif optional ~= nil and
+                    self.optionalStep == #optional.steps then
+                self:showOptionalCompletion()
+            else
+                self:returnFromOptionalSection()
+            end
+            return
+        end
         if self.complete then return end
         if not self.waitingForContinue then return end
         local currentStep = TUTORIAL_STEPS[self.step]
@@ -962,6 +1107,17 @@ function JTG.CreateCameraTutorialActivity(session)
     end
 
     function activity:goBack()
+        if self.optionalSection ~= nil then
+            local optional = OPTIONAL_SECTIONS[self.optionalSection]
+            if optional ~= nil and self.optionalStep > #optional.steps then
+                self:showOptionalStep(#optional.steps)
+            elseif self.optionalStep > 1 then
+                self:showOptionalStep(self.optionalStep - 1)
+            else
+                self:returnFromOptionalSection()
+            end
+            return
+        end
         local targetIndex = self.complete and #TUTORIAL_STEPS or
             math.max(1, self.step - 1)
         if targetIndex == self.step and not self.complete then return end
@@ -982,14 +1138,16 @@ function JTG.CreateCameraTutorialActivity(session)
     end
 
     function activity:restoreZoomCheckpoint()
+        self:abandonOptionalSection()
         self.objectivesOpen = false
         self:setObjectivesVisible(false)
         self:clearNarration()
-        self:revealQuestsThrough(8)
-        self:showStep(8, true)
+        self:revealQuestsThrough(7)
+        self:showStep(7, true)
     end
 
     function activity:restoreMovementCheckpoint()
+        self:abandonOptionalSection()
         self.objectivesOpen = false
         self:setObjectivesVisible(false)
         self:clearNarration()
@@ -998,19 +1156,21 @@ function JTG.CreateCameraTutorialActivity(session)
     end
 
     function activity:restoreBaseControlCheckpoint()
+        self:abandonOptionalSection()
         self.objectivesOpen = false
         self:setObjectivesVisible(false)
         self:clearNarration()
-        self:revealQuestsThrough(11)
-        self:showStep(11, true)
+        self:revealQuestsThrough(10)
+        self:showStep(10, true)
     end
 
     function activity:restoreArmyControlCheckpoint()
+        self:abandonOptionalSection()
         self.objectivesOpen = false
         self:setObjectivesVisible(false)
         self:clearNarration()
-        self:revealQuestsThrough(20)
-        self:showStep(20, true)
+        self:revealQuestsThrough(19)
+        self:showStep(19, true)
     end
 
     function activity:openMenu()
@@ -1029,15 +1189,49 @@ function JTG.CreateCameraTutorialActivity(session)
 
     function activity:setObjectivesVisible(visible)
         self.objectivesOpen = visible == true
+        if self.objectivesOpen then
+            self.optionalOpen = false
+            if self.frames.optionalMenu ~= nil then
+                BlzFrameSetVisible(self.frames.optionalMenu, false)
+            end
+        end
         if self.frames.objectives ~= nil then
             BlzFrameSetVisible(self.frames.objectives,
                 self.presentationVisible and self.objectivesOpen)
         end
         self:renderNarration()
+        self:refreshControls()
     end
 
     function activity:toggleObjectives()
-        self:setObjectivesVisible(not self.objectivesOpen)
+        if self.objectivesOpen then
+            self:setObjectivesVisible(false)
+            return
+        end
+        if self.optionalSection ~= nil then
+            self:returnFromOptionalSection()
+        end
+        self:setObjectivesVisible(true)
+    end
+
+    function activity:setOptionalVisible(visible)
+        self.optionalOpen = visible == true
+        if self.optionalOpen then
+            self.objectivesOpen = false
+            if self.frames.objectives ~= nil then
+                BlzFrameSetVisible(self.frames.objectives, false)
+            end
+        end
+        if self.frames.optionalMenu ~= nil then
+            BlzFrameSetVisible(self.frames.optionalMenu,
+                self.presentationVisible and self.optionalOpen)
+        end
+        self:renderNarration()
+        self:refreshControls()
+    end
+
+    function activity:toggleOptional()
+        self:setOptionalVisible(not self.optionalOpen)
     end
 
     function activity:createPresentation()
@@ -1086,7 +1280,7 @@ function JTG.CreateCameraTutorialActivity(session)
         }
         local bar = TrackFrame(scope, BlzCreateFrameByType("FRAME",
             "JTGCameraTutorialBar" .. suffix, root, "", 0))
-        BlzFrameSetSize(bar, 0.285, 0.060)
+        BlzFrameSetSize(bar, 0.351, 0.060)
         BlzFrameSetAbsPoint(bar, FRAMEPOINT_TOPLEFT,
             toolbarLayout.left, toolbarLayout.top)
         self.frames.bar = bar
@@ -1097,6 +1291,7 @@ function JTG.CreateCameraTutorialActivity(session)
             {"continue", "Continue", "bottom"},
             {"back", "Back", "bottom"},
             {"objectivesButton", "Topics", "bottom"},
+            {"optionalButton", "Optional", "bottom"},
         }
         local previousTop = nil
         local previousBottom = nil
@@ -1169,9 +1364,23 @@ function JTG.CreateCameraTutorialActivity(session)
         BlzFrameSetLevel(self.frames.menu, 2)
         self.frames.menuHighlight = menuHighlight
 
+        local optionalHighlight = TrackFrame(scope, BlzCreateFrameByType(
+            "SPRITE", "JTGCameraTutorialOptionalHighlight" .. suffix,
+            bar, "", 0))
+        BlzFrameSetSize(optionalHighlight, 0.058, 0.024)
+        BlzFrameSetPoint(optionalHighlight, FRAMEPOINT_CENTER,
+            self.frames.optionalButton, FRAMEPOINT_CENTER, -0.0125, 0)
+        BlzFrameSetModel(optionalHighlight,
+            "UI\\Feedback\\QuestButton\\UI-QuestButtonOn.mdl", 0)
+        BlzFrameSetLevel(optionalHighlight, 3)
+        BlzFrameSetEnable(optionalHighlight, false)
+        BlzFrameSetVisible(optionalHighlight, false)
+        BlzFrameSetLevel(self.frames.optionalButton, 2)
+        self.frames.optionalHighlight = optionalHighlight
+
         local objectives = TrackFrame(scope, BlzCreateFrameByType("FRAME",
             "JTGCameraTutorialObjectives" .. suffix, root, "", 0))
-        BlzFrameSetSize(objectives, 0.185, 0.255)
+        BlzFrameSetSize(objectives, 0.185, JTG.TutorialMenuHeight(5))
         BlzFrameSetAbsPoint(objectives, FRAMEPOINT_TOPRIGHT, 0.795, 0.500)
         local skin = TrackFrame(scope, BlzCreateFrame("EscMenuBackdrop",
             objectives, 0, 600 + session.generation))
@@ -1218,6 +1427,39 @@ function JTG.CreateCameraTutorialActivity(session)
             FRAMEPOINT_BOTTOM, 0, 0.025)
         self.frames.objectives = objectives
 
+        -- Optional tutorial branches use the same panel geometry and button
+        -- arrangement as Topics, but never participate in the main sequence.
+        local optionalMenu = TrackFrame(scope, BlzCreateFrameByType("FRAME",
+            "JTGCameraTutorialOptionalMenu" .. suffix, root, "", 0))
+        BlzFrameSetSize(optionalMenu, 0.185, JTG.TutorialMenuHeight(2))
+        BlzFrameSetAbsPoint(optionalMenu, FRAMEPOINT_TOPRIGHT, 0.795, 0.500)
+        local optionalSkin = TrackFrame(scope, BlzCreateFrame(
+            "EscMenuBackdrop", optionalMenu, 0, 700 + session.generation))
+        BlzFrameSetPoint(optionalSkin, FRAMEPOINT_TOPLEFT, optionalMenu,
+            FRAMEPOINT_TOPLEFT, 0, 0)
+        BlzFrameSetPoint(optionalSkin, FRAMEPOINT_BOTTOMRIGHT, optionalMenu,
+            FRAMEPOINT_BOTTOMRIGHT, 0, 0)
+        BlzFrameSetEnable(optionalSkin, false)
+        local rotation = TrackFrame(scope, CreateTutorialButton(
+            "JTGCameraTutorialOptionalRotation" .. suffix,
+            optionalMenu, OPTIONAL_SECTIONS.rotation.title, 0.115))
+        BlzFrameSetSize(rotation, 0.115, 0.026)
+        BlzFrameSetPoint(rotation, FRAMEPOINT_TOP, optionalMenu,
+            FRAMEPOINT_TOP, 0, -0.041)
+        local lockOn = TrackFrame(scope, CreateTutorialButton(
+            "JTGCameraTutorialOptionalLockOn" .. suffix,
+            optionalMenu, OPTIONAL_SECTIONS.lockOn.title, 0.115))
+        BlzFrameSetSize(lockOn, 0.115, 0.026)
+        BlzFrameSetPoint(lockOn, FRAMEPOINT_TOP, rotation,
+            FRAMEPOINT_BOTTOM, 0, -0.003)
+        local optionalClose = TrackFrame(scope, CreateTutorialButton(
+            "JTGCameraTutorialOptionalClose" .. suffix,
+            optionalMenu, "Close", 0.10))
+        BlzFrameSetSize(optionalClose, 0.10, 0.026)
+        BlzFrameSetPoint(optionalClose, FRAMEPOINT_BOTTOM, optionalMenu,
+            FRAMEPOINT_BOTTOM, 0, 0.025)
+        self.frames.optionalMenu = optionalMenu
+
         self.clickTrigger = JTG.ScopeTrackTrigger(scope, CreateTrigger())
         TriggerAddAction(self.clickTrigger, function()
             local clickedFrame = BlzGetTriggerFrame()
@@ -1254,6 +1496,8 @@ function JTG.CreateCameraTutorialActivity(session)
             function() self:goBack() end, "return")
         self:registerClick(self.frames.objectivesButton,
             function() self:toggleObjectives() end)
+        self:registerClick(self.frames.optionalButton,
+            function() self:toggleOptional() end)
         self:registerClick(welcome,
             function() self:restoreWelcomeCheckpoint() end)
         self:registerClick(zooming,
@@ -1266,9 +1510,16 @@ function JTG.CreateCameraTutorialActivity(session)
             function() self:restoreArmyControlCheckpoint() end)
         self:registerClick(close,
             function() self:setObjectivesVisible(false) end, "return")
+        self:registerClick(rotation,
+            function() self:beginOptionalSection("rotation") end)
+        self:registerClick(lockOn,
+            function() self:beginOptionalSection("lockOn") end)
+        self:registerClick(optionalClose,
+            function() self:setOptionalVisible(false) end, "return")
 
         self:refreshControls()
         self:setObjectivesVisible(self.objectivesOpen)
+        self:setOptionalVisible(self.optionalOpen)
         self:setPresentationVisible(self.presentationVisible)
     end
 
@@ -1281,12 +1532,17 @@ function JTG.CreateCameraTutorialActivity(session)
             BlzFrameSetVisible(self.frames.objectives,
                 self.presentationVisible and self.objectivesOpen)
         end
+        if self.frames.optionalMenu ~= nil then
+            BlzFrameSetVisible(self.frames.optionalMenu,
+                self.presentationVisible and self.optionalOpen)
+        end
         self:renderNarration()
         self:refreshControls()
     end
 
     function activity:tick()
-        if self.locallyPaused or self.objectivesOpen then return end
+        if self.locallyPaused or self.objectivesOpen or
+                self.optionalOpen or self.optionalSection ~= nil then return end
         if self.cameraRemaining > 0.0 then
             self.cameraRemaining = math.max(0.0,
                 self.cameraRemaining - TICK_INTERVAL)
@@ -1561,9 +1817,9 @@ function JTG.CreateCameraTutorialActivity(session)
                 oldSpikedBarricades)
         end)
 
-        -- Start from ordinary masked fog. The imported bases and armies reveal
-        -- the map solely through their normal unit and building sight ranges.
-        JTG.ResetWorldFog(CAMERA_PLAYER)
+        -- Regular-map tutorials begin with explored terrain. Current vision is
+        -- still supplied solely by the imported units and buildings.
+        JTG.UseExploredWorldFog(CAMERA_PLAYER)
 
         local oldFoodUsed = GetPlayerState(CAMERA_PLAYER,
             PLAYER_STATE_RESOURCE_FOOD_USED)
