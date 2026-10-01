@@ -292,9 +292,18 @@ local function CreateIllustratedCard(name, parent, descriptor, width, height, ar
 end
 
 local function CreateIllustratedActivityCard(name, parent, descriptor)
-    return CreateIllustratedCard(name, parent, descriptor,
+    local frame, button, art = CreateIllustratedCard(name, parent, descriptor,
         CATALOGUE_BUTTON_WIDTH, CATALOGUE_BUTTON_HEIGHT,
-        0.098, 0.048, 0.120, 0.84, descriptor.labelInset or 0.020)
+        descriptor.artworkWidth or 0.098,
+        descriptor.artworkHeight or 0.048,
+        0.120, 0.84, descriptor.labelInset or 0.020)
+    if descriptor.centerArtwork == true then
+        BlzFrameClearAllPoints(art)
+        BlzFrameSetPoint(art, FRAMEPOINT_CENTER, button,
+            FRAMEPOINT_CENTER, descriptor.artworkOffsetX or 0,
+            descriptor.artworkOffsetY or 0)
+    end
+    return frame, button, art
 end
 
 local function CreateIllustratedCategoryCard(name, parent, category)
@@ -1090,10 +1099,10 @@ local function CreateCategoryPanel(category, categoryIndex)
             local frame, button, art = CreateIllustratedCard(
                 "JTGSkillRaceButton" .. raceIndex, panel, descriptor,
                 CATALOGUE_BUTTON_WIDTH, CATALOGUE_BUTTON_HEIGHT,
-                0.048, 0.048, 0.110, 0.84, 0.020)
+                0.0624, 0.0624, 0.110, 0.84, 0.020)
             BlzFrameClearAllPoints(art)
-            BlzFrameSetPoint(art, FRAMEPOINT_RIGHT, button, FRAMEPOINT_RIGHT,
-                -0.014, 0)
+            BlzFrameSetPoint(art, FRAMEPOINT_CENTER, button,
+                FRAMEPOINT_CENTER, 0.042, 0)
             BlzFrameSetPoint(frame, FRAMEPOINT_TOP, panel, FRAMEPOINT_TOP,
                 0.192, -0.1522 - (raceIndex - 1) * 0.0562)
             if firstRaceFrame == nil then firstRaceFrame = frame end
@@ -1189,7 +1198,7 @@ end
 local function CreateInfoPanel(key, titleText, bodyText, index, scrollable)
     local panel = CreateNativePanel("JTGInfoPanel" .. index, GAME_UI, MENU_WIDTH, MENU_HEIGHT)
     PositionTop(panel)
-    AddFooterDivider(panel)
+    local footerDivider = AddFooterDivider(panel)
     UI.panels[key] = panel
     BlzFrameSetVisible(panel, false)
     local title = CreateText("JTGInfoTitle" .. index, panel, "|cffffcc00" .. titleText .. "|r",
@@ -1197,18 +1206,85 @@ local function CreateInfoPanel(key, titleText, bodyText, index, scrollable)
     BlzFrameSetPoint(title, FRAMEPOINT_TOP, panel, FRAMEPOINT_TOP, 0, TITLE_TOP_OFFSET)
     local body
     if scrollable then
-        -- Instantiate an actual TEXTAREA control inheriting the native
-        -- template. Creating the template itself leaves its text and
-        -- scrollbar children disconnected from the parent frame's text.
-        body = BlzCreateFrameByType("TEXTAREA", "JTGInfoBody" .. index,
-            panel, "EscMenuTextAreaTemplate", index)
-        BlzFrameSetSize(body, 0.52, 0.30)
-        BlzFrameSetPoint(body, FRAMEPOINT_TOP, title, FRAMEPOINT_BOTTOM, 0, -0.025)
-        -- Feed the native line model so it derives the scrollbar range from
-        -- the complete contents, including intentional blank lines.
+        local lines = {}
         for line in string.gmatch(bodyText .. "\n", "(.-)\n") do
-            BlzFrameAddText(body, line)
+            table.insert(lines, line)
         end
+        -- Use the available space down to the footer divider. Pagination is
+        -- line based so the slider always maps to a stable part of the notes.
+        local visibleLines = 22
+        local maximumStart = math.max(1, #lines - visibleLines + 1)
+        local pages = {}
+        for first = 1, maximumStart do
+            local page = {}
+            for lineIndex = first,
+                    math.min(#lines, first + visibleLines - 1) do
+                table.insert(page, lines[lineIndex])
+            end
+            local pageFrame = CreateText("JTGInfoBody" .. index .. "x" .. first,
+                panel, table.concat(page, "\n"),
+                0.49 / PARAGRAPH_SCALE, 0.273 / PARAGRAPH_SCALE,
+                PARAGRAPH_SCALE)
+            BlzFrameSetTextAlignment(pageFrame, TEXT_JUSTIFY_TOP,
+                TEXT_JUSTIFY_LEFT)
+            BlzFrameSetPoint(pageFrame, FRAMEPOINT_TOP, title,
+                FRAMEPOINT_BOTTOM, 0, -0.025)
+            BlzFrameSetEnable(pageFrame, false)
+            BlzFrameSetVisible(pageFrame, first == 1)
+            pages[first] = pageFrame
+        end
+        body = pages[1]
+
+        local slider = BlzCreateFrameByType("SLIDER",
+            "JTGInfoScrollBar" .. index, panel, "QuestMainListScrollBar",
+            index)
+        BlzFrameClearAllPoints(slider)
+        BlzFrameSetSize(slider, 0.012, 0.258)
+        BlzFrameSetPoint(slider, FRAMEPOINT_TOPLEFT, body,
+            FRAMEPOINT_TOPRIGHT, 0.007, 0)
+        BlzFrameSetMinMaxValue(slider, 1, maximumStart)
+        BlzFrameSetStepSize(slider, 1)
+        BlzFrameSetVisible(slider, maximumStart > 1)
+
+        local shownPage = 1
+        local function showPage(value)
+            local sliderValue = math.floor((value or maximumStart) + 0.5)
+            local first = maximumStart - sliderValue + 1
+            first = math.max(1, math.min(maximumStart, first))
+            if first ~= shownPage then
+                BlzFrameSetVisible(pages[shownPage], false)
+                BlzFrameSetVisible(pages[first], true)
+                shownPage = first
+            end
+        end
+
+        local sliderTrigger = CreateTrigger()
+        BlzTriggerRegisterFrameEvent(sliderTrigger, slider,
+            FRAMEEVENT_SLIDER_VALUE_CHANGED)
+        TriggerAddAction(sliderTrigger, function()
+            showPage(BlzGetTriggerFrameValue())
+        end)
+
+        -- Build every page once. Scrolling only changes frame visibility,
+        -- avoiding the cursor flicker caused by replacing text during a
+        -- pointer event.
+        local wheelCatcher = BlzCreateFrameByType("BUTTON",
+            "JTGInfoScrollWheel" .. index, panel, "", index)
+        BlzFrameSetAllPoints(wheelCatcher, body)
+        local wheelTrigger = CreateTrigger()
+        BlzTriggerRegisterFrameEvent(wheelTrigger, wheelCatcher,
+            FRAMEEVENT_MOUSE_WHEEL)
+        TriggerAddAction(wheelTrigger, function()
+            local value = BlzFrameGetValue(slider)
+            if BlzGetTriggerFrameValue() > 0 then value = value + 1
+            else value = value - 1 end
+            value = math.max(1, math.min(maximumStart, value))
+            BlzFrameSetValue(slider, value)
+            showPage(value)
+        end)
+
+        BlzFrameSetValue(slider, maximumStart)
+        showPage(maximumStart)
     else
         body = CreateText("JTGInfoBody" .. index, panel, bodyText,
             0.52 / PARAGRAPH_SCALE, 0.30 / PARAGRAPH_SCALE, PARAGRAPH_SCALE)
@@ -1694,6 +1770,8 @@ function UI.Initialize(restoring)
     for index, category in ipairs(JTG.Categories) do CreateCategoryPanel(category, index) end
     for index, race in ipairs(JTG.SkillRaces) do CreateSkillRacePanel(race, index) end
     CreateInfoPanel("patch", "Patch Notes",
+        "|cffffcc00v0.0.9|r  |cffb0b0b02 October 2026|r\n" ..
+        "- Added Windwalk Pop training, Hard Mode and counterplay.\n\n" ..
         "|cffffcc00v0.0.8|r  |cffb0b0b01 October 2026|r\n" ..
         "- Added the Unit Controls tutorial and optional tutorial topics.\n\n" ..
         "|cffffcc00v0.0.7|r  |cffb0b0b029 September 2026|r\n" ..

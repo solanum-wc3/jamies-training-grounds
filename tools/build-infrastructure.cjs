@@ -18,7 +18,7 @@ const {
 } = req('@jamiephan/stormlib');
 const luaParser = req('luaparse');
 
-const version = 'v0.0.9-alpha02';
+const version = 'v0.0.9';
 const sourcePath = path.join(root, 'reference/foundation/Jamies-Training-Grounds-v0.0.1-alpha.5.w3x');
 const outputPath = path.join(root, `outputs/Jamies-Training-Grounds-${version}.w3x`);
 const reportPath = path.join(root, `outputs/Jamies-Training-Grounds-${version}-validation.json`);
@@ -47,6 +47,7 @@ const assetPaths = [
     ['JTGMenu\\UnitControls.dds', 'src/assets/menu/UnitControls.dds'],
     ['JTGMenu\\TutorialArrowDown.dds', 'src/assets/menu/TutorialArrowDown.dds'],
     ['JTGMenu\\WindwalkPop.dds', 'src/assets/menu/WindwalkPop.dds'],
+    ['JTGMenu\\WindwalkPopBriefing.dds', 'src/assets/menu/WindwalkPopBriefing.dds'],
     ['JTGMenu\\ZeppelinMicro.dds', 'src/assets/menu/ZeppelinMicro.dds'],
     ['JTGQuest\\CameraSettingsZoom.dds', 'src/assets/menu/CameraSettingsZoom.dds'],
     ['JTGQuest\\IdleWorkerSettings.dds', 'src/assets/menu/IdleWorkerSettings.dds'],
@@ -308,7 +309,7 @@ try {
 assert.equal(hash(fs.readFileSync(sourcePath)), acceptedHash, 'Source foundation was modified');
 const report = {
     version,
-    purpose: 'Test Windwalk Pop training and scrollable Patch Notes.',
+    purpose: 'Release Windwalk Pop training and scrollable Patch Notes.',
     acceptedFoundation: {
         path: path.relative(root, sourcePath).replaceAll('\\', '/'),
         sha256: acceptedHash,

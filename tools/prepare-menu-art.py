@@ -33,7 +33,9 @@ CARDS = {
     # The Unit Controls card receives a custom leg crop below, then contains
     # the complete remaining puppet composition in the button slot.
     "UnitControls": ("unit-controls-source.png", 1.0, 0.50, 0.50, "puppet"),
-    "WindwalkPop": ("windwalk-pop-source.png", 1.0, 0.50, 0.50, "crop"),
+    # Retain the authored horizontal band from 1/8 to 4/8 of the image:
+    # remove one eighth from the top and four eighths from the bottom.
+    "WindwalkPop": ("windwalk-pop-source.png", 1.0, 0.50, 0.50, "windwalk_band"),
     # Keep the zeppelin dominant while retaining the hanging Footmen.
     "ZeppelinMicro": ("zeppelin-micro-source.png", 1.0, 0.42, 0.50, "crop"),
 }
@@ -92,18 +94,35 @@ for output_name, values in CARDS.items():
     focal_x = values[3] if len(values) > 3 else 0.50
     mode = values[4] if len(values) > 4 else "crop"
     source = Image.open(SOURCE / source_name).convert("RGBA")
-    assert source.getchannel("A").getextrema()[0] == 0, source_name + " must retain transparency"
+    if output_name != "WindwalkPop":
+        assert source.getchannel("A").getextrema()[0] == 0, source_name + " must retain transparency"
     if mode == "puppet":
         # Remove only the Grunt's legs, preserving the puppeteer's hand,
         # strings, axe, torso and both arms before fitting the whole scene.
         leg_crop = source.crop((0, 0, source.width, round(source.height * 0.75)))
         card = contain_visible(leg_crop, CARD_SIZE, 0.98,
                                offset_x=round(CARD_SIZE[0] * 0.06))
+    elif mode == "windwalk_band":
+        # Keep the requested 3/8-high authored band. Fill the button height
+        # without distorting it. Preserve the left edge and remove excess
+        # width only from the right when reaching the full button's ratio.
+        band = source.crop((
+            0, round(source.height * 1 / 8),
+            source.width, round(source.height * 4 / 8),
+        ))
+        # The runtime card moves the composition 0.009 to the right and clips
+        # it at the button's right edge. Author only that visible portion so
+        # no frame content can spill over the border.
+        windwalk_card_size = (444, 140)
+        crop_width = round(
+            band.height * windwalk_card_size[0] / windwalk_card_size[1])
+        card = band.crop((0, 0, min(band.width, crop_width),
+            band.height)).resize(windwalk_card_size, Image.Resampling.LANCZOS)
     else:
         card = card_crop(source, zoom, focal_y, focal_x, mode)
     card_path = OUTPUT / f"{output_name}.dds"
     card.save(card_path, pixel_format="DXT5")
-    generated.append((card_path, CARD_SIZE))
+    generated.append((card_path, card.size))
 
     # White with the source artwork's alpha, reduced to a light hover wash.
     alpha = card.getchannel("A").point(lambda value: round(value * 0.25))
@@ -111,7 +130,7 @@ for output_name, values in CARDS.items():
     hover.putalpha(alpha)
     hover_path = OUTPUT / f"{output_name}Hover.dds"
     hover.save(hover_path, pixel_format="DXT5")
-    generated.append((hover_path, CARD_SIZE))
+    generated.append((hover_path, hover.size))
 
 # Native quests support an icon rather than an embedded full-width image. Keep
 # the complete settings screenshot legible within the largest useful square
@@ -193,6 +212,20 @@ mining_briefing_path = OUTPUT / "GoldMineMicroBriefing.dds"
 mining_briefing.save(mining_briefing_path, pixel_format="DXT5")
 generated.append((mining_briefing_path, (512, 256)))
 
+windwalk_briefing_source = Image.open(
+    SOURCE / "windwalk-pop-source.png"
+).convert("RGBA")
+windwalk_briefing = Image.new("RGBA", (512, 256), (0, 0, 0, 0))
+windwalk_briefing_art = windwalk_briefing_source.copy()
+windwalk_briefing_art.thumbnail(windwalk_briefing.size, Image.Resampling.LANCZOS)
+windwalk_briefing.alpha_composite(windwalk_briefing_art, (
+    (windwalk_briefing.width - windwalk_briefing_art.width) // 2,
+    (windwalk_briefing.height - windwalk_briefing_art.height) // 2,
+))
+windwalk_briefing_path = OUTPUT / "WindwalkPopBriefing.dds"
+windwalk_briefing.save(windwalk_briefing_path, pixel_format="DXT5")
+generated.append((windwalk_briefing_path, (512, 256)))
+
 # A lighter, more transparent field for delayed descriptive tooltips.
 tooltip = Image.new("RGBA", (64, 64), (38, 38, 38, 145))
 tooltip_path = OUTPUT / "TooltipGrey.dds"
@@ -261,6 +294,8 @@ button_hover.save(button_hover_path, pixel_format="DXT5")
 generated.append((button_hover_path, (64, 64)))
 
 for path, expected_size in generated:
+    assert expected_size[0] % 4 == 0 and expected_size[1] % 4 == 0, \
+        f"{path.name} dimensions must align to DXT5's 4x4 blocks"
     decoded = Image.open(path).convert("RGBA")
     assert decoded.size == expected_size
     assert decoded.getchannel("A").getextrema()[1] > 0
