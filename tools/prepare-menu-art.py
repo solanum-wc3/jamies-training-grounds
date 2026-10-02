@@ -38,6 +38,14 @@ CARDS = {
     "WindwalkPop": ("windwalk-pop-source.png", 1.0, 0.50, 0.50, "windwalk_band"),
     # Keep the zeppelin dominant while retaining the hanging Footmen.
     "ZeppelinMicro": ("zeppelin-micro-source.png", 1.0, 0.42, 0.50, "crop"),
+    # Wide training cards supplied for the next content pass.
+    "MissileDodging": ("missile-dodging-source.png", 1.0, 0.50, 0.50, "crop"),
+    "HotkeySetup": ("hotkey-setup-source.png", 1.05, 0.59, 0.50, "hotkey_card"),
+}
+
+STAFFING_CARDS = {
+    "StaffingHuman": "staffing-human-source.png",
+    "StaffingNightElf": "staffing-nightelf-source.png",
 }
 
 ROOT_CARDS = {
@@ -96,7 +104,21 @@ for output_name, values in CARDS.items():
     source = Image.open(SOURCE / source_name).convert("RGBA")
     if output_name != "WindwalkPop":
         assert source.getchannel("A").getextrema()[0] == 0, source_name + " must retain transparency"
-    if mode == "puppet":
+    if mode == "hotkey_card":
+        # Keep the card at full button height, but narrow its source crop so
+        # the flames leave a safety gap after the title. The authored texture
+        # matches the runtime frame ratio and therefore is not squeezed.
+        output_size = (460, 256)
+        width = min(source.width, round(source.width / zoom))
+        height = min(source.height,
+                     round(width * output_size[1] / output_size[0]))
+        centre_x = round(source.width * focal_x)
+        left = max(0, min(source.width - width, centre_x - width // 2))
+        centre_y = round(source.height * focal_y)
+        top = max(0, min(source.height - height, centre_y - height // 2))
+        card = source.crop((left, top, left + width, top + height)).resize(
+            output_size, Image.Resampling.LANCZOS)
+    elif mode == "puppet":
         # Remove only the Grunt's legs, preserving the puppeteer's hand,
         # strings, axe, torso and both arms before fitting the whole scene.
         leg_crop = source.crop((0, 0, source.width, round(source.height * 0.75)))
@@ -131,6 +153,20 @@ for output_name, values in CARDS.items():
     hover_path = OUTPUT / f"{output_name}Hover.dds"
     hover.save(hover_path, pixel_format="DXT5")
     generated.append((hover_path, hover.size))
+
+# The Staffing Units sources are square command-button icons. Keep their
+# aspect ratio and place them on the right half of the wide catalogue card,
+# matching the treatment used by the other race-specific entries.
+for output_name, source_name in STAFFING_CARDS.items():
+    source = Image.open(SOURCE / source_name).convert("RGBA")
+    card = Image.new("RGBA", CARD_SIZE, (0, 0, 0, 0))
+    art = source.copy()
+    art.thumbnail((220, 220), Image.Resampling.LANCZOS)
+    card.alpha_composite(art, (CARD_SIZE[0] - art.width - 14,
+                               (CARD_SIZE[1] - art.height) // 2))
+    card_path = OUTPUT / f"{output_name}.dds"
+    card.save(card_path, pixel_format="DXT5")
+    generated.append((card_path, card.size))
 
 # Native quests support an icon rather than an embedded full-width image. Keep
 # the complete settings screenshot legible within the largest useful square

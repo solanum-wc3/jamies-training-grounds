@@ -46,9 +46,12 @@ local planned = {
 
     {"skills.surround", "skills", "Surrounds", "Trap a target with coordinated movement.", "JTGMenu\\Surrounds.dds"},
     {"skills.bat_splitter", "skills", "Bat Splitter", "Split vulnerable air units under pressure.", "JTGMenu\\BatSplitter.dds"},
-    {"skills.missile_dodging", "skills", "Missile Dodging", "Avoid incoming projectiles with precise movement and timing."},
+    {"skills.missile_dodging", "skills", "Missile Dodging", "Avoid incoming projectiles with precise movement and timing.", "JTGMenu\\MissileDodging.dds"},
     {"skills.micro", "skills", "Micro Training", "Control mixed armies efficiently."},
-    {"skills.staffing", "skills", "Staffing Units", "Save and reposition units with a Staff.", nil, {"human", "nightelf"}},
+    {"skills.staffing", "skills", "Staffing Units", "Save and reposition units with a Staff.", nil, {"human", "nightelf"}, {
+        human = "JTGMenu\\StaffingHuman.dds",
+        nightelf = "JTGMenu\\StaffingNightElf.dds",
+    }},
     {"skills.merc_creep", "skills", "Merc Camp Creeping", "Practice a Mercenary Camp creep route.", nil, {"human"}},
     {"skills.lab_creep", "skills", "Goblin Lab Creeping", "Practice a Goblin Laboratory creep route.", nil, {"human"}},
     {"skills.gargoyle", "skills", "Gargoyle Surround", "Surround targets with flying units.", nil, {"undead"}},
@@ -88,6 +91,23 @@ JTG.RegisterActivity({
     sceneId = "arena.south",
     capabilities = {menu = false, pause = false, quests = false},
     factory = JTG.CreateUnitControlsTutorialActivity,
+})
+
+JTG.RegisterActivity({
+    id = "learn.hotkey_setup",
+    category = "learn",
+    title = "3. Hotkey Setup",
+    description = "Compare hotkey layouts and export editable QWERTY or QWERTZ bindings.",
+    artwork = "JTGMenu\\HotkeySetup.dds",
+    artworkWidth = 0.08625,
+    artworkHeight = 0.048,
+    artworkOffsetX = 0.050875,
+    centerArtwork = true,
+    labelInset = 0.022,
+    status = "available",
+    sceneId = "arena.south",
+    capabilities = {menu = false, pause = false, quests = false},
+    factory = JTG.CreateHotkeySetupTutorialActivity,
 })
 
 JTG.RegisterActivity({
@@ -151,6 +171,7 @@ JTG.RegisterActivity({
 for _, entry in ipairs(planned) do
     JTG.RegisterActivity({
         id = entry[1], category = entry[2], title = entry[3], description = entry[4],
-        artwork = entry[5], skillRaces = entry[6], status = "planned", capabilities = {},
+        artwork = entry[5], skillRaces = entry[6], artworkByRace = entry[7],
+        status = "planned", capabilities = {},
     })
 end

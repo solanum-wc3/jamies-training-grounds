@@ -1152,13 +1152,21 @@ local function CreateSkillRacePanel(race, raceIndex)
     local activities = JTG.GetActivities("skills", race.id)
     local firstActivityFrame = nil
     for index, descriptor in ipairs(activities) do
+        local displayDescriptor = descriptor
+        if descriptor.artworkByRace ~= nil and
+                descriptor.artworkByRace[race.id] ~= nil then
+            displayDescriptor = {}
+            for key, value in pairs(descriptor) do displayDescriptor[key] = value end
+            displayDescriptor.artwork = descriptor.artworkByRace[race.id]
+        end
         local column = (index - 1) % 3
         local row = math.floor((index - 1) / 3)
         local name = "JTGSkillRaceActivity" .. raceIndex .. "x" .. index
         local frame
         local button
-        if descriptor.artwork ~= nil then
-            frame, button = CreateIllustratedActivityCard(name, panel, descriptor)
+        if displayDescriptor.artwork ~= nil then
+            frame, button = CreateIllustratedActivityCard(name, panel,
+                displayDescriptor)
         else
             button = CreateButton(name, panel,
                 descriptor.title .. "  |cff808080[Planned]|r",
@@ -1770,6 +1778,8 @@ function UI.Initialize(restoring)
     for index, category in ipairs(JTG.Categories) do CreateCategoryPanel(category, index) end
     for index, race in ipairs(JTG.SkillRaces) do CreateSkillRacePanel(race, index) end
     CreateInfoPanel("patch", "Patch Notes",
+        "|cffffcc00v0.0.10|r  |cffb0b0b02 October 2026|r\n" ..
+        "- Added the Hotkey Setup tutorial and CustomKeys exports.\n\n" ..
         "|cffffcc00v0.0.9|r  |cffb0b0b02 October 2026|r\n" ..
         "- Added Windwalk Pop training, Hard Mode and counterplay.\n\n" ..
         "|cffffcc00v0.0.8|r  |cffb0b0b01 October 2026|r\n" ..
