@@ -1,4 +1,4 @@
-"""Embed the distributable CustomKeys files as safe preload-sized chunks."""
+"""Embed the distributable hotkey setup files as safe preload-sized chunks."""
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -34,14 +34,20 @@ def lua_long_string(value: str):
 
 
 entries = []
-for layout in ("QWERTY", "QWERTZ"):
-    source = SOURCE / f"CustomKeys-Solanum{layout}.txt"
+exports = [
+    ("CustomKeys-SolanumQWERTY.txt", "QWERTY"),
+    ("CustomKeys-SolanumQWERTZ.txt", "QWERTZ"),
+    ("README_ShortcutSetup.txt", None),
+]
+for filename, layout in exports:
+    source = SOURCE / filename
     chunks = chunks_for(source)
     encoded = ",\n            ".join(lua_long_string(chunk) for chunk in chunks)
+    layout_line = f'        layout = "{layout}",\n' if layout else ""
     entries.append(
         "    {\n"
-        f"        filename = \"CustomKeys-Solanum{layout}.txt\",\n"
-        f"        layout = \"{layout}\",\n"
+        f"        filename = \"{filename}\",\n"
+        + layout_line +
         "        chunks = {\n            " + encoded + "\n        },\n"
         "    },"
     )

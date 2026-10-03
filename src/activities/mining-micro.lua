@@ -109,6 +109,31 @@ local LANE_LAYOUT = {
         treeX = 6336.0, treeY = 6528.0},
 }
 
+local function RotateOffset(x, y, orientation)
+    if orientation == 1 then return y, -x end
+    if orientation == 2 then return -x, -y end
+    if orientation == 3 then return -y, x end
+    return x, y
+end
+
+local function ResolveLaneLayout(base, orientation)
+    local mineOffsetX, mineOffsetY = RotateOffset(
+        base.mineX - base.startX, base.mineY - base.startY, orientation)
+    local layout = {
+        startX = base.startX,
+        startY = base.startY,
+        mineX = base.startX + mineOffsetX,
+        mineY = base.startY + mineOffsetY,
+    }
+    if base.treeX ~= nil then
+        local treeOffsetX, treeOffsetY = RotateOffset(
+            base.treeX - base.startX, base.treeY - base.startY, orientation)
+        layout.treeX = base.startX + treeOffsetX
+        layout.treeY = base.startY + treeOffsetY
+    end
+    return layout
+end
+
 local function TrackFrame(scope, frame)
     JTG.ScopeAdd(scope, function()
         if frame ~= nil then BlzDestroyFrame(frame) end
@@ -154,6 +179,7 @@ function JTG.OpenMiningMicroMenu(originCategory, pauseGame, restorePage, restore
         releaseMenuPause()
         local restartData = {
             race = selection.race,
+            orientation = GetRandomInt(0, 3),
             skipQuestHighlight = returningFromActiveRun,
         }
         if JTG.Controller.session ~= nil then
@@ -200,6 +226,7 @@ function JTG.CreateMiningMicroActivity(session)
     local selection = session.restartData or {}
     local activity = {
         race = RACES[selection.race] and selection.race or "human",
+        orientation = math.floor(tonumber(selection.orientation) or 0) % 4,
         lanes = {},
         playerGoldMined = 0,
         previousPlayerGold = 0,
@@ -285,7 +312,7 @@ function JTG.CreateMiningMicroActivity(session)
             0.012, 0.505 - (index - 1) * 0.125)
         BlzFrameSetTextAlignment(lane.counterFrame,
             TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_LEFT)
-        BlzFrameSetScale(lane.counterFrame, 1.08)
+        BlzFrameSetScale(lane.counterFrame, 1.48)
         BlzFrameSetEnable(lane.counterFrame, false)
         BlzFrameSetVisible(lane.counterFrame, true)
         self:updateLaneCounter(index)
@@ -336,7 +363,7 @@ function JTG.CreateMiningMicroActivity(session)
 
         local previousStarts = {}
         for index = 1, 3 do
-            local layout = LANE_LAYOUT[index]
+            local layout = ResolveLaneLayout(LANE_LAYOUT[index], self.orientation)
             local owner = owners[index]
             local startIndex = GetPlayerId(owner)
             previousStarts[index] = {
@@ -361,7 +388,7 @@ function JTG.CreateMiningMicroActivity(session)
         -- start. No workers or halls exist yet, so their fixed footprints are
         -- never displaced by the other exercise units.
         for index = 1, 3 do
-            local layout = LANE_LAYOUT[index]
+            local layout = ResolveLaneLayout(LANE_LAYOUT[index], self.orientation)
             local lane = {
                 owner = owners[index], startX = layout.startX,
                 startY = layout.startY,
@@ -376,7 +403,7 @@ function JTG.CreateMiningMicroActivity(session)
         end
 
         for index = 1, 3 do
-            local layout = LANE_LAYOUT[index]
+            local layout = ResolveLaneLayout(LANE_LAYOUT[index], self.orientation)
             local lane = self.lanes[index]
             local startLocation = Location(lane.startX, lane.startY)
             MeleeStartingUnitsForPlayer(race.race, lane.owner,
@@ -473,7 +500,19 @@ function JTG.CreateMiningMicroActivity(session)
     end
 
     function activity:captureResetState()
-        return {race = self.race, skipQuestHighlight = true}
+        return {
+            race = self.race,
+            orientation = self.orientation,
+            skipQuestHighlight = true,
+        }
+    end
+
+    function activity:captureRotatedState()
+        return {
+            race = self.race,
+            orientation = (self.orientation + 1) % 4,
+            skipQuestHighlight = true,
+        }
     end
 
     function activity:restorePresentation()

@@ -799,6 +799,7 @@ function UI.ShowToolbar(capabilities)
     BlzFrameSetVisible(UI.toolbarButtons.menu, caps.menu ~= false)
     BlzFrameSetVisible(UI.toolbarButtons.lastRunner, caps.lastRunner == true)
     BlzFrameSetVisible(UI.toolbarButtons.pause, caps.pause == true)
+    BlzFrameSetVisible(UI.toolbarButtons.rotate, caps.rotate == true)
     RefreshPauseButton()
     BlzFrameSetVisible(UI.toolbar, true)
     UI.LayoutToolbar()
@@ -861,8 +862,13 @@ local function RefreshActivityBriefingChoices()
             BlzFrameSetText(button, choice.label)
             local label = FindButtonText(button)
             if label ~= nil then BlzFrameSetScale(label, compact and 0.72 or 1.0) end
-            BlzFrameSetTextColor(button, choice.primary and
-                BlzConvertColor(255, 255, 204, 0) or BlzConvertColor(255, 255, 255, 255))
+            local enabled = choice.enabled ~= false
+            BlzFrameSetEnable(button, enabled)
+            BlzFrameSetAlpha(button, enabled and 255 or 145)
+            BlzFrameSetTextColor(button, not enabled and
+                BlzConvertColor(255, 145, 145, 145) or (choice.primary and
+                BlzConvertColor(255, 255, 204, 0) or
+                BlzConvertColor(255, 255, 255, 255)))
         end
     end
 end
@@ -1410,6 +1416,14 @@ local function CreateToolbar()
     RegisterClick(lastRunner, JTG.LastRunnerActivity)
     UI.toolbarButtons.lastRunner = lastRunner
     table.insert(bottomRow, lastRunner)
+
+    local rotate = toolbarButton("JTGToolbarRotate", "Rotate")
+    AttachTooltip(rotate,
+        "Restart with the mine, main building and lumber position rotated.",
+        "left")
+    RegisterClick(rotate, JTG.RotateActivity)
+    UI.toolbarButtons.rotate = rotate
+    table.insert(bottomRow, rotate)
 
     -- Match the aspect ratio of Warcraft's native Quest-button notification
     -- effect, which is authored for the wider upper-button-bar controls.

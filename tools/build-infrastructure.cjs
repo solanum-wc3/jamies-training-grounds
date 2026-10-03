@@ -18,7 +18,7 @@ const {
 } = req('@jamiephan/stormlib');
 const luaParser = req('luaparse');
 
-const version = 'v0.0.11-alpha17';
+const version = 'v0.0.11-alpha19';
 const sourcePath = path.join(root, 'reference/foundation/Jamies-Training-Grounds-v0.0.1-alpha.5.w3x');
 const outputPath = path.join(root, `outputs/Jamies-Training-Grounds-${version}.w3x`);
 const reportPath = path.join(root, `outputs/Jamies-Training-Grounds-${version}-validation.json`);
@@ -30,6 +30,7 @@ const modulePaths = [
     'src/activities/unit-controls-tutorial.lua',
     'src/activities/hotkey-setup-tutorial.lua',
     'src/activities/mining-micro.lua',
+    'src/activities/surrounds.lua',
     'src/activities/windwalk-pop.lua',
     'src/activities/body-blocking.lua',
     'src/activities/power-building.lua',
@@ -54,6 +55,7 @@ const assetPaths = [
     ['JTGQuest\\CameraSettingsZoom.dds', 'src/assets/menu/CameraSettingsZoom.dds'],
     ['JTGQuest\\IdleWorkerSettings.dds', 'src/assets/menu/IdleWorkerSettings.dds'],
     ['JTGMenu\\Surrounds.dds', 'src/assets/menu/Surrounds.dds'],
+    ['JTGMenu\\SurroundsBriefing.dds', 'src/assets/menu/SurroundsBriefing.dds'],
     ['JTGMenu\\AoWCreeping.dds', 'src/assets/menu/AoWCreeping.dds'],
     ['JTGMenu\\BatSplitter.dds', 'src/assets/menu/BatSplitter.dds'],
     ['JTGMenu\\GoldMineMicro.dds', 'src/assets/menu/GoldMineMicro.dds'],
@@ -159,12 +161,20 @@ assert(nextLua.includes('function JTG.CreateHotkeySetupTutorialActivity(session)
 assert(nextLua.includes('title = "3. Hotkey Setup"'),
     'Hotkey Setup tutorial catalogue entry is missing from the compiled map');
 assert(nextLua.includes('CustomKeys-SolanumQWERTY.txt') &&
-    nextLua.includes('CustomKeys-SolanumQWERTZ.txt'),
-    'CustomKeys exports are missing from the compiled map');
+    nextLua.includes('CustomKeys-SolanumQWERTZ.txt') &&
+    nextLua.includes('README_ShortcutSetup.txt') &&
+    nextLua.includes('W3Champions.exe'),
+    'Hotkey setup exports are missing from the compiled map');
 assert(nextLua.includes('function JTG.CreateMiningMicroActivity(session)'),
     'Mining Micro activity factory is missing from the compiled map');
 assert(nextLua.includes('title = "Mining Micro"'),
     'Mining Micro catalogue entry is missing from the compiled map');
+assert(nextLua.includes('function JTG.RotateActivity()') &&
+    nextLua.includes('captureRotatedState'),
+    'Mining Micro rotation support is missing from the compiled map');
+assert(nextLua.includes('function JTG.OpenSurroundsMenu') &&
+    nextLua.includes('id = "skills.surround"'),
+    'Surrounds briefing is missing from the compiled map');
 assert(nextLua.includes('function JTG.CreateWindwalkPopActivity(session)'),
     'Windwalk Pop activity factory is missing from the compiled map');
 assert(nextLua.includes('title = "Windwalk Pop"'),
@@ -322,7 +332,7 @@ try {
 assert.equal(hash(fs.readFileSync(sourcePath)), acceptedHash, 'Source foundation was modified');
 const report = {
     version,
-    purpose: 'Test the expanded Windwalk Pop training modes and result detection.',
+    purpose: 'Test the expanded Hotkey Setup tutorial and three-file export.',
     acceptedFoundation: {
         path: path.relative(root, sourcePath).replaceAll('\\', '/'),
         sha256: acceptedHash,

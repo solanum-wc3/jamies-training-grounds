@@ -349,6 +349,26 @@ function JTG.ResetActivity()
     return JTG.StartActivity(id, category, restartData, cameraDistance)
 end
 
+function JTG.RotateActivity()
+    local session = JTG.Controller.session
+    if session == nil or session.activity == nil or
+            session.activity.captureRotatedState == nil then return false end
+    local captured, restartData = pcall(
+        session.activity.captureRotatedState, session.activity, session)
+    if not captured or restartData == nil then
+        if not captured then
+            print("JTG rotate-state warning: " .. tostring(restartData))
+        end
+        return false
+    end
+    local cameraDistance = nil
+    if GetLocalPlayer() == Player(0) then
+        cameraDistance = GetCameraField(CAMERA_FIELD_TARGET_DISTANCE)
+    end
+    return JTG.StartActivityAfterCleanup(session.id,
+        JTG.Controller.lastCategory, restartData, cameraDistance, "rotate")
+end
+
 function JTG.LastRunnerActivity()
     local session = JTG.Controller.session
     if session == nil or session.activity == nil or

@@ -1,5 +1,6 @@
 -- Hotkey Setup tutorial. This tutorial presents Warcraft's hotkey options and
--- exports two ready-to-edit CustomKeys examples into CustomMapData.
+-- exports two ready-to-edit CustomKeys examples and their shortcut-setup
+-- instructions into CustomMapData.
 JTG = JTG or {}
 
 local HOTKEY_PLAYER = Player(0)
@@ -138,7 +139,7 @@ local STEPS = {
         wait = true, trigger = "highlightExport",
         lines = {
             "In the {Menu: Warcraft III} folder, there is also a folder called {Menu: CustomMapData}.",
-            "Press the {Input: Export} button! Two files will appear in that folder. One for a {Green Font: QWERTY}, one for a {Green Font: QWERTZ} keyboard layout.",
+            "Press the {Input: Export} button! Three files will appear in that folder. One for a {Green Font: QWERTY}, one for a {Green Font: QWERTZ} keyboard layout, and one you do not need yet.",
             "You can now rename the one that fits your layout to {Green Font: \"CustomKeys.txt\"}, and put it into the {Menu: CustomKeyBindings} folder.",
             "It is recommended you first {Input: rename your old key bindings file}, so it does not get deleted. (Just add a number to the name.)",
         },
@@ -187,7 +188,7 @@ local STEPS = {
         wait = true,
         lines = {
             "People from the community have created their own interfaces to allow easy editing of all aspects of hotkeys.",
-            "One of the simplest can be found by using a search engine and typing in {Input: \"warcraft 3 hotkey editor\"}.",
+            "One of the simplest can be found by using a search engine and typing in \"{Input: warcraft 3 hotkey editor}\".",
             "The first result should lead you to a GitHub page belonging to a {Yellow Font: J.C.Fields}, where you can upload your hotkey file, edit it, and download the changed version.",
             "This page allows you to change hotkey positions, by simple dragging and dropping the buttons in the displayed command grid.",
         },
@@ -229,17 +230,25 @@ local STEPS = {
     {
         wait = true,
         lines = {
-            "The simplest tool to use for this can be found by using a search engine and typing in {Input: \"warcraft inventory hotkeys\"}.",
+            "The simplest tool to use for this can be found by using a search engine and typing in \"{Input: warcraft inventory hotkeys}\".",
             "The first result should be the tool by {Yellow Font: J.C.Fields}.",
             "You can use it to customize your inventory buttons in any way you want.",
         },
     },
     {
-        wait = true, sectionEnd = true,
+        wait = true,
         lines = {
             "However, be aware that this tool does not work properly if you have rebound the inventory hotkeys away from the {Input: Numpad} in the Warcraft options.",
             "You have to reset them to default before using it.",
             "The tool makes your operating system believe that {Input: Alt+Q} is really {Input: Num1} (for example). If Num1 is not the right key, nothing will happen.",
+        },
+    },
+    {
+        wait = true, sectionEnd = true,
+        lines = {
+            "Since you need to have the program running while the game is running, it is easiest to start them at the same time.",
+            "Even simpler, you can do this using the same shortcut on your Desktop. (assuming you are using Windows)",
+            "Pressing the {Button: Export} button earlier also exported a .txt file with instructions on how to do this.",
         },
     },
     {
@@ -486,10 +495,11 @@ function JTG.CreateHotkeySetupTutorialActivity(session)
             end
         end
         DisplayTimedTextToPlayer(HOTKEY_PLAYER, 0, 0, 20,
-            "|cffffcc00CustomKeys files exported.|r\n" ..
+            "|cffffcc00Hotkey setup files exported.|r\n" ..
             "Documents\\Warcraft III\\CustomMapData\\\n" ..
             "CustomKeys-SolanumQWERTY.txt\n" ..
-            "CustomKeys-SolanumQWERTZ.txt")
+            "CustomKeys-SolanumQWERTZ.txt\n" ..
+            "README_ShortcutSetup.txt")
     end
 
     function activity:setTopicsVisible(visible)

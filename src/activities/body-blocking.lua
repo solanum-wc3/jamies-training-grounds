@@ -194,7 +194,7 @@ function JTG.OpenBodyBlockingMenu(originCategory, pauseGame, restorePage, restor
         show({
             body = BODY_BLOCKING_INTRO,
             choices = {
-                {label = "Training", primary = true,
+                {label = "Start Training", primary = true,
                     tooltip = "Choose a race and practice against its sequence of units.",
                     action = function() selection.mode = "training"; showTrainingRace() end},
                 {label = "Custom", tooltip = "Choose both the runner and the unit you control.",

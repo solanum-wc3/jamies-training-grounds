@@ -248,6 +248,21 @@ mining_briefing_path = OUTPUT / "GoldMineMicroBriefing.dds"
 mining_briefing.save(mining_briefing_path, pixel_format="DXT5")
 generated.append((mining_briefing_path, (512, 256)))
 
+surrounds_briefing_source = Image.open(
+    SOURCE / "surrounds-source.png"
+).convert("RGBA")
+surrounds_briefing = Image.new("RGBA", (512, 256), (0, 0, 0, 0))
+surrounds_briefing_art = surrounds_briefing_source.copy()
+surrounds_briefing_art.thumbnail(surrounds_briefing.size,
+                                 Image.Resampling.LANCZOS)
+surrounds_briefing.alpha_composite(surrounds_briefing_art, (
+    (surrounds_briefing.width - surrounds_briefing_art.width) // 2,
+    (surrounds_briefing.height - surrounds_briefing_art.height) // 2,
+))
+surrounds_briefing_path = OUTPUT / "SurroundsBriefing.dds"
+surrounds_briefing.save(surrounds_briefing_path, pixel_format="DXT5")
+generated.append((surrounds_briefing_path, (512, 256)))
+
 windwalk_briefing_source = Image.open(
     SOURCE / "windwalk-pop-source.png"
 ).convert("RGBA")

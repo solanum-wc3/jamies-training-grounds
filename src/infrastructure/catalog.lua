@@ -44,7 +44,6 @@ local planned = {
     {"advanced.composition", "advanced", "Army Composition", "Adapt units and upgrades to the opponent."},
     {"advanced.matchups", "advanced", "Matchup Plans", "Develop plans for common race matchups."},
 
-    {"skills.surround", "skills", "Surrounds", "Trap a target with coordinated movement.", "JTGMenu\\Surrounds.dds"},
     {"skills.bat_splitter", "skills", "Bat Splitter", "Split vulnerable air units under pressure.", "JTGMenu\\BatSplitter.dds"},
     {"skills.missile_dodging", "skills", "Missile Dodging", "Avoid incoming projectiles with precise movement and timing.", "JTGMenu\\MissileDodging.dds"},
     {"skills.micro", "skills", "Micro Training", "Control mixed armies efficiently."},
@@ -119,9 +118,20 @@ JTG.RegisterActivity({
     skillRaces = {"human", "orc"},
     status = "available",
     sceneId = "arena.north",
-    capabilities = {restart = true, menu = true, pause = true, quests = true},
+    capabilities = {restart = true, rotate = true, menu = true, pause = true, quests = true},
     menu = JTG.OpenMiningMicroMenu,
     factory = JTG.CreateMiningMicroActivity,
+})
+
+JTG.RegisterActivity({
+    id = "skills.surround",
+    category = "skills",
+    title = "Surrounds",
+    description = "Trap a target with coordinated movement.",
+    artwork = "JTGMenu\\Surrounds.dds",
+    status = "available",
+    capabilities = {},
+    menu = JTG.OpenSurroundsMenu,
 })
 
 JTG.RegisterActivity({
