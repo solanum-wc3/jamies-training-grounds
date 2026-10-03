@@ -851,6 +851,7 @@ local function RefreshActivityBriefingChoices()
         if choice ~= nil then
             local x, y = BriefingChoicePoint(index, #actions, compact, compactColumns,
                 UI.activityBriefingCenterSingle)
+            y = y + (UI.activityBriefingChoiceOffsetY or 0)
             BlzFrameClearAllPoints(button)
             BlzFrameSetPoint(button, FRAMEPOINT_TOP, UI.panels.activityBriefing,
                 FRAMEPOINT_TOP, x, y)
@@ -874,6 +875,7 @@ function UI.ShowActivityBriefing(spec)
     local compactColumns = spec.compactColumns
     local _, firstChoiceY = BriefingChoicePoint(1, math.max(1, #actions),
         compact, compactColumns, spec.centerSingleChoice == true)
+    firstChoiceY = firstChoiceY + (spec.choiceOffsetY or 0)
     UI.SetGameplayMenuPaused(spec.pauseGame == true)
     SetActivityOverlayVisible(false)
     UI.HideAllPanels()
@@ -882,7 +884,7 @@ function UI.ShowActivityBriefing(spec)
     BlzFrameSetText(UI.activityBriefingBody, spec.body or "")
     BlzFrameClearAllPoints(UI.activityBriefingContentDivider)
     BlzFrameSetPoint(UI.activityBriefingContentDivider, FRAMEPOINT_TOP, panel,
-        FRAMEPOINT_TOP, 0, firstChoiceY + 0.013)
+        FRAMEPOINT_TOP, 0, spec.contentDividerY or (firstChoiceY + 0.013))
     BlzFrameClearAllPoints(UI.activityBriefingBody)
     BlzFrameSetPoint(UI.activityBriefingBody, FRAMEPOINT_TOP,
         UI.activityBriefingTitle, FRAMEPOINT_BOTTOM, 0, -0.022)
@@ -903,6 +905,7 @@ function UI.ShowActivityBriefing(spec)
     UI.activityBriefingCompact = compact
     UI.activityBriefingCompactColumns = compactColumns
     UI.activityBriefingCenterSingle = spec.centerSingleChoice == true
+    UI.activityBriefingChoiceOffsetY = spec.choiceOffsetY or 0
     RefreshActivityBriefingChoices()
     UI.activityBriefingBackAction = spec.backAction
     BlzFrameSetTextColor(UI.activityBriefingBack, BlzConvertColor(255, 255, 255, 255))
