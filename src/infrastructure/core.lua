@@ -587,6 +587,30 @@ function JTG.LastRunnerActivity()
     return JTG.StartActivity(id, category, restartData, cameraDistance)
 end
 
+-- Result cards share their controls, while each activity decides what a
+-- replay, retry or next step means for its own rules. Menu, Replay and Retry have
+-- useful common defaults; activities override only the actions that differ.
+function JTG.ActivateResultAction(action)
+    local session = JTG.Controller.session
+    if session == nil or session.activity == nil then return false end
+    local activity = session.activity
+    local callback = activity.resultActions and activity.resultActions[action]
+    if callback ~= nil then
+        local ok, result = pcall(callback, activity, session)
+        if not ok then
+            print("JTG result-action warning: " .. tostring(result))
+            return false
+        end
+        return result ~= false
+    end
+    if action == "menu" then
+        return JTG.OpenTrainingMenu()
+    elseif action == "retry" or action == "replay" then
+        return JTG.ResetActivity()
+    end
+    return false
+end
+
 function JTG.ExitActivity()
     local category = JTG.Controller.lastCategory
     JTG.StopActivity("exit")

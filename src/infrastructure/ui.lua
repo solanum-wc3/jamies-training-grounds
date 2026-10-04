@@ -676,6 +676,133 @@ local function RegisterClick(frame, action, soundKind)
     BlzTriggerRegisterFrameEvent(UI.clickTrigger, frame, FRAMEEVENT_CONTROL_CLICK)
 end
 
+local RESULT_ACTION_ORDER = {"replay", "retry", "next", "menu"}
+local RESULT_ACTION_LABELS = {
+    replay = "Replay", retry = "Retry", next = "Next", menu = "Menu",
+}
+local resultCardCount = 0
+
+-- Result cards own presentation only. Activities provide the title, details,
+-- visible actions and exercise-specific callbacks; the shared UI owns layout,
+-- click safety, focus release and presentation-scope cleanup.
+function UI.CreateResultCard(session, options)
+    assert(session ~= nil and session.presentationScope ~= nil,
+        "Result cards require an activity presentation scope")
+    options = options or {}
+    resultCardCount = resultCardCount + 1
+    local name = options.name or ("JTGResultCard" .. resultCardCount)
+    local width = options.width or 0.38
+    local detailsHeight = options.detailsHeight or 0.080
+    local gameUI = BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0)
+    local card = {
+        session = session,
+        width = width,
+        detailsHeight = detailsHeight,
+        centerY = options.centerY or 0.325,
+        actions = {},
+        buttons = {},
+        busy = false,
+    }
+    card.panel = JTG.ScopeTrackFrame(session.presentationScope,
+        CreateNativePanel(name, gameUI, width, 0.30))
+    BlzFrameSetAbsPoint(card.panel, FRAMEPOINT_CENTER, 0.40, card.centerY)
+    card.title = JTG.ScopeTrackFrame(session.presentationScope,
+        BlzCreateFrameByType("TEXT", name .. "Title", card.panel, "", 0))
+    BlzFrameSetSize(card.title, width - 0.060, 0.040)
+    BlzFrameSetPoint(card.title, FRAMEPOINT_TOP, card.panel,
+        FRAMEPOINT_TOP, 0, -0.025)
+    BlzFrameSetTextAlignment(card.title, TEXT_JUSTIFY_MIDDLE,
+        TEXT_JUSTIFY_CENTER)
+    BlzFrameSetScale(card.title, options.titleScale or 1.30)
+    card.details = JTG.ScopeTrackFrame(session.presentationScope,
+        BlzCreateFrameByType("TEXT", name .. "Details", card.panel, "", 0))
+    BlzFrameSetSize(card.details, width - 0.060, detailsHeight)
+    BlzFrameSetPoint(card.details, FRAMEPOINT_TOP, card.title,
+        FRAMEPOINT_BOTTOM, 0, -0.008)
+    BlzFrameSetTextAlignment(card.details, TEXT_JUSTIFY_TOP,
+        TEXT_JUSTIFY_CENTER)
+    BlzFrameSetScale(card.details, options.detailsScale or 1.0)
+
+    local buttonWidth = math.min(0.170, (width - 0.068) * 0.5)
+    card.buttonWidth = buttonWidth
+    for _, action in ipairs(RESULT_ACTION_ORDER) do
+        local actionName = action
+        local button = JTG.ScopeTrackFrame(session.presentationScope,
+            CreateButton(name .. actionName, card.panel,
+                RESULT_ACTION_LABELS[actionName], buttonWidth, 0.034))
+        card.buttons[actionName] = button
+        RegisterClick(button, function()
+            local state = card.actions[actionName]
+            if card.busy or not JTG.IsCurrentSession(session) or
+                    state == nil or state.visible == false or
+                    state.enabled == false then return end
+            card.busy = true
+            BlzFrameSetVisible(card.panel, false)
+            JTG.ActivateResultAction(actionName)
+        end)
+    end
+    JTG.ScopeAdd(session.presentationScope, function()
+        for _, button in pairs(card.buttons) do
+            local handleId = GetHandleId(button)
+            UI.clickActions[handleId] = nil
+            UI.clickSounds[handleId] = nil
+        end
+    end)
+    BlzFrameSetVisible(card.panel, false)
+    return card
+end
+
+function UI.ShowResultCard(card, presentation)
+    if card == nil then return end
+    presentation = presentation or {}
+    card.busy = false
+    card.actions = presentation.actions or {}
+    BlzFrameSetText(card.title, presentation.title or "")
+    BlzFrameSetText(card.details, presentation.details or "")
+
+    local visible = {}
+    for _, action in ipairs(RESULT_ACTION_ORDER) do
+        local state = card.actions[action]
+        local button = card.buttons[action]
+        local shown = state ~= nil and state.visible ~= false
+        BlzFrameSetVisible(button, shown)
+        if shown then
+            BlzFrameSetText(button, state.label or RESULT_ACTION_LABELS[action])
+            local enabled = state.enabled ~= false
+            BlzFrameSetEnable(button, enabled)
+            BlzFrameSetAlpha(button, enabled and 255 or 145)
+            table.insert(visible, button)
+        end
+    end
+
+    local rows = math.max(1, math.ceil(#visible / 2))
+    local buttonTop = -(0.087 + card.detailsHeight)
+    local gap = 0.008
+    for index, button in ipairs(visible) do
+        local row = math.floor((index - 1) / 2)
+        local firstInRow = row * 2 + 1
+        local itemsInRow = math.min(2, #visible - firstInRow + 1)
+        local column = index - firstInRow
+        local x = itemsInRow == 1 and 0 or
+            (column == 0 and -(0.5 * (card.buttonWidth + gap)) or
+                (0.5 * (card.buttonWidth + gap)))
+        BlzFrameClearAllPoints(button)
+        BlzFrameSetPoint(button, FRAMEPOINT_TOP, card.panel,
+            FRAMEPOINT_TOP, x, buttonTop - row * 0.040)
+    end
+    local height = 0.112 + card.detailsHeight + rows * 0.040
+    BlzFrameSetSize(card.panel, card.width, height)
+    BlzFrameClearAllPoints(card.panel)
+    BlzFrameSetAbsPoint(card.panel, FRAMEPOINT_CENTER, 0.40, card.centerY)
+    BlzFrameSetVisible(card.panel, presentation.visible ~= false)
+end
+
+function UI.HideResultCard(card)
+    if card ~= nil and card.panel ~= nil then
+        BlzFrameSetVisible(card.panel, false)
+    end
+end
+
 local function PositionTop(frame)
     BlzFrameClearAllPoints(frame)
     BlzFrameSetAbsPoint(frame, FRAMEPOINT_TOP, 0.40, 0.555)

@@ -233,13 +233,8 @@ function JTG.CreateWindwalkPopActivity(session)
         resultKind = nil,
         resultTitleText = nil,
         resultDetailsText = nil,
+        resultCard = nil,
         resultBackdrop = nil,
-        resultTitle = nil,
-        resultDetails = nil,
-        resultPrimary = nil,
-        resultRetry = nil,
-        resultReplay = nil,
-        resultMenu = nil,
         timerFrame = nil,
         countdownFrame = nil,
         countdownTimer = nil,
@@ -351,76 +346,26 @@ function JTG.CreateWindwalkPopActivity(session)
         end
     end
 
+    activity.resultActions = {
+        next = function(self)
+            if self.mode == "timed" and self.resultKind == "success" then
+                if self.timedStage < 10 then
+                    self.timedStage = self.timedStage + 1
+                else
+                    self.timedStage = 1
+                end
+            end
+            JTG.ResetActivity()
+        end,
+    }
+
     function activity:createResultUI()
-        local gameUI = BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0)
-        self.resultBackdrop = JTG.ScopeTrackFrame(session.presentationScope,
-            JTG.UI.CreateNativePanel("JTGWindwalkPopResult", gameUI, 0.32,
-                0.345))
-        BlzFrameSetSize(self.resultBackdrop, 0.32, 0.345)
-        BlzFrameSetAbsPoint(self.resultBackdrop, FRAMEPOINT_CENTER, 0.40,
-            0.325)
-        self.resultTitle = JTG.ScopeTrackFrame(session.presentationScope,
-            BlzCreateFrameByType("TEXT", "JTGWindwalkPopResultTitle",
-                self.resultBackdrop, "", 0))
-        BlzFrameSetSize(self.resultTitle, 0.28, 0.032)
-        BlzFrameSetPoint(self.resultTitle, FRAMEPOINT_TOP,
-            self.resultBackdrop, FRAMEPOINT_TOP, 0, -0.025)
-        BlzFrameSetTextAlignment(self.resultTitle, TEXT_JUSTIFY_MIDDLE,
-            TEXT_JUSTIFY_CENTER)
-        BlzFrameSetScale(self.resultTitle, 1.20)
-        self.resultDetails = JTG.ScopeTrackFrame(session.presentationScope,
-            BlzCreateFrameByType("TEXT", "JTGWindwalkPopResultDetails",
-                self.resultBackdrop, "", 0))
-        BlzFrameSetSize(self.resultDetails, 0.27, 0.070)
-        BlzFrameSetPoint(self.resultDetails, FRAMEPOINT_TOP,
-            self.resultTitle, FRAMEPOINT_BOTTOM, 0, -0.008)
-        BlzFrameSetTextAlignment(self.resultDetails, TEXT_JUSTIFY_TOP,
-            TEXT_JUSTIFY_CENTER)
-        local function addButton(name, label, x, y, action)
-            local button = JTG.ScopeTrackFrame(session.presentationScope,
-                BlzCreateFrameByType("GLUETEXTBUTTON", name,
-                    self.resultBackdrop, "ScriptDialogButton", 0))
-            BlzFrameSetSize(button, 0.170, 0.032)
-            BlzFrameSetPoint(button, FRAMEPOINT_TOPLEFT, self.resultBackdrop,
-                FRAMEPOINT_TOPLEFT, x, y)
-            BlzFrameSetText(button, label)
-            local trigger = JTG.ScopeTrackTrigger(session.presentationScope,
-                CreateTrigger())
-            BlzTriggerRegisterFrameEvent(trigger, button,
-                FRAMEEVENT_CONTROL_CLICK)
-            TriggerAddAction(trigger, function()
-                if JTG.UI and JTG.UI.PlayButtonSound then
-                    JTG.UI.PlayButtonSound("normal")
-                end
-                if JTG.UI and JTG.UI.ReleaseFrameFocus then
-                    JTG.UI.ReleaseFrameFocus(BlzGetTriggerFrame())
-                end
-                action()
-            end)
-            return button
-        end
-        self.resultPrimary = addButton("JTGWindwalkPopResultPrimary",
-            "Continue", 0.075, -0.140, function()
-                if self.mode == "timed" and self.resultKind == "success" then
-                    if self.timedStage < 10 then
-                        self.timedStage = self.timedStage + 1
-                    else
-                        self.timedStage = 1
-                    end
-                end
-                JTG.ResetActivity()
-            end)
-        self.resultRetry = addButton("JTGWindwalkPopResultRetry", "Retry",
-            0.075, -0.185, function() JTG.ResetActivity() end)
-        self.resultReplay = addButton("JTGWindwalkPopResultReplay", "Replay",
-            0.075, -0.230, function() JTG.ResetActivity() end)
-        self.resultMenu = addButton("JTGWindwalkPopResultMenu", "Menu", 0.075,
-            -0.275,
-            function()
-                BlzFrameSetVisible(self.resultBackdrop, false)
-                JTG.OpenTrainingMenu()
-            end)
-        BlzFrameSetVisible(self.resultBackdrop, false)
+        self.resultCard = JTG.UI.CreateResultCard(session, {
+            name = "JTGWindwalkPopResult", width = 0.36,
+            detailsHeight = 0.070, centerY = 0.325,
+            titleScale = 1.20,
+        })
+        self.resultBackdrop = self.resultCard.panel
     end
 
     function activity:createTimerUI()
@@ -462,30 +407,22 @@ function JTG.CreateWindwalkPopActivity(session)
     end
 
     function activity:renderResultPresentation()
-        if self.resultBackdrop == nil then return end
-        BlzFrameSetText(self.resultTitle, self.resultTitleText or "")
-        BlzFrameSetText(self.resultDetails, self.resultDetailsText or "")
-        local primary = "Replay"
+        if self.resultCard == nil then return end
         local showPrimary = self.mode == "timed" and
             self.resultKind == "success"
+        local primary = "Next"
         if showPrimary then
             primary = self.timedStage < 10 and "Next Stage" or "Restart Course"
         end
-        BlzFrameSetText(self.resultPrimary, primary)
-        BlzFrameSetVisible(self.resultPrimary, showPrimary)
-        BlzFrameSetVisible(self.resultRetry, false)
-        BlzFrameClearAllPoints(self.resultRetry)
-        BlzFrameClearAllPoints(self.resultReplay)
-        BlzFrameClearAllPoints(self.resultMenu)
-        BlzFrameSetPoint(self.resultRetry, FRAMEPOINT_TOPLEFT,
-            self.resultBackdrop, FRAMEPOINT_TOPLEFT, 0.075, -0.185)
-        BlzFrameSetPoint(self.resultMenu, FRAMEPOINT_TOPLEFT,
-            self.resultBackdrop, FRAMEPOINT_TOPLEFT, 0.075,
-            showPrimary and -0.230 or -0.205)
-        BlzFrameSetPoint(self.resultReplay, FRAMEPOINT_TOPLEFT,
-            self.resultBackdrop, FRAMEPOINT_TOPLEFT, 0.075,
-            showPrimary and -0.185 or -0.160)
-        BlzFrameSetVisible(self.resultBackdrop, true)
+        JTG.UI.ShowResultCard(self.resultCard, {
+            title = self.resultTitleText or "",
+            details = self.resultDetailsText or "",
+            actions = {
+                replay = {},
+                next = showPrimary and {label = primary} or nil,
+                menu = {},
+            },
+        })
         if self.timerFrame ~= nil then BlzFrameSetVisible(self.timerFrame, false) end
         if JTG.UI then JTG.UI.HideToolbar() end
     end
@@ -1387,20 +1324,13 @@ function JTG.CreateWindwalkPopActivity(session)
         if self.countdownFrame ~= nil then
             BlzFrameSetVisible(self.countdownFrame, false)
         end
-        if self.resultBackdrop ~= nil then
-            BlzFrameSetVisible(self.resultBackdrop, false)
-        end
+        JTG.UI.HideResultCard(self.resultCard)
         self:updateSquareOverlays()
     end
 
     function activity:rebuildPresentation()
+        self.resultCard = nil
         self.resultBackdrop = nil
-        self.resultTitle = nil
-        self.resultDetails = nil
-        self.resultPrimary = nil
-        self.resultRetry = nil
-        self.resultReplay = nil
-        self.resultMenu = nil
         self.timerFrame = nil
         self.countdownFrame = nil
         self:createTimerUI()
@@ -1422,13 +1352,8 @@ function JTG.CreateWindwalkPopActivity(session)
     end
 
     function activity:discardPresentationForLoad()
+        self.resultCard = nil
         self.resultBackdrop = nil
-        self.resultTitle = nil
-        self.resultDetails = nil
-        self.resultPrimary = nil
-        self.resultRetry = nil
-        self.resultReplay = nil
-        self.resultMenu = nil
         self.timerFrame = nil
         self.countdownFrame = nil
         self.squareEntries = {}

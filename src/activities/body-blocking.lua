@@ -326,70 +326,25 @@ function JTG.CreateBodyBlockingActivity(session)
             callback)
     end
 
+    activity.resultActions = {
+        next = function(self)
+            if self.raceComplete then JTG.ExitActivity()
+            else JTG.ResetActivity() end
+        end,
+        replay = function(self) self:startReplay() end,
+        retry = function(self)
+            self.advancePending = false
+            JTG.ResetActivity()
+        end,
+    }
+
     function activity:createResultUI()
-        local gameUI = BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0)
-        self.resultBackdrop = JTG.ScopeTrackFrame(session.presentationScope,
-            JTG.UI.CreateNativePanel("JTGBodyBlockResult", gameUI, 0.42, 0.36))
-        BlzFrameSetSize(self.resultBackdrop, 0.42, 0.36)
-        BlzFrameSetAbsPoint(self.resultBackdrop, FRAMEPOINT_CENTER, 0.40, 0.325)
-        self.resultTitle = JTG.ScopeTrackFrame(session.presentationScope,
-            BlzCreateFrameByType("TEXT", "JTGBodyBlockResultTitle", self.resultBackdrop, "", 0))
-        BlzFrameSetSize(self.resultTitle, 0.36, 0.04)
-        BlzFrameSetPoint(self.resultTitle, FRAMEPOINT_TOP, self.resultBackdrop, FRAMEPOINT_TOP, 0, -0.025)
-        BlzFrameSetTextAlignment(self.resultTitle, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
-        BlzFrameSetScale(self.resultTitle, 1.35)
-        self.resultDetails = JTG.ScopeTrackFrame(session.presentationScope,
-            BlzCreateFrameByType("TEXT", "JTGBodyBlockResultDetails", self.resultBackdrop, "", 0))
-        BlzFrameSetSize(self.resultDetails, 0.36, 0.155)
-        BlzFrameSetPoint(self.resultDetails, FRAMEPOINT_TOP, self.resultTitle, FRAMEPOINT_BOTTOM, 0, -0.008)
-        BlzFrameSetTextAlignment(self.resultDetails, TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_CENTER)
-        BlzFrameSetScale(self.resultDetails, 1.04)
-        BlzFrameSetVisible(self.resultBackdrop, false)
-        local function addResultButton(name, label, x, y, enabled, action)
-            local button = JTG.ScopeTrackFrame(session.presentationScope,
-                BlzCreateFrameByType("GLUETEXTBUTTON", name, self.resultBackdrop, "ScriptDialogButton", 0))
-            BlzFrameSetSize(button, 0.170, 0.034)
-            BlzFrameSetPoint(button, FRAMEPOINT_TOPLEFT, self.resultBackdrop, FRAMEPOINT_TOPLEFT, x, y)
-            BlzFrameSetText(button, label)
-            if not enabled then
-                BlzFrameSetEnable(button, false)
-                BlzFrameSetAlpha(button, 145)
-            else
-                local trigger = JTG.ScopeTrackTrigger(session.presentationScope, CreateTrigger())
-                BlzTriggerRegisterFrameEvent(trigger, button, FRAMEEVENT_CONTROL_CLICK)
-                TriggerAddAction(trigger, function()
-                    if JTG.UI and JTG.UI.PlayButtonSound then JTG.UI.PlayButtonSound("normal") end
-                    if JTG.UI and JTG.UI.ReleaseFrameFocus then
-                        JTG.UI.ReleaseFrameFocus(BlzGetTriggerFrame())
-                    end
-                    action()
-                    if JTG.UI and JTG.UI.ReleaseFrameFocus then
-                        JTG.UI.ReleaseFrameFocus(BlzGetTriggerFrame())
-                    end
-                    if JTG.UI and JTG.UI.ReleaseKeyboardFocusAfterClick then
-                        JTG.UI.ReleaseKeyboardFocusAfterClick()
-                    end
-                end)
-            end
-            return button
-        end
-        self.resultNext = addResultButton("JTGBodyBlockResultNext", "Next Runner", 0.036, -0.205, true,
-            function()
-                if self.raceComplete then JTG.ExitActivity() else JTG.ResetActivity() end
-            end)
-        self.resultReplay = addResultButton("JTGBodyBlockResultReplay", "Replay", 0.214, -0.205, true,
-            function() self:startReplay() end)
-        self.resultRetry = addResultButton("JTGBodyBlockResultRetry", "Retry", 0.036, -0.245, true,
-            function()
-                self.advancePending = false
-                JTG.ResetActivity()
-            end)
-        self.resultPause = addResultButton("JTGBodyBlockResultPause", "Pause", 0.214, -0.245, false, nil)
-        self.resultMenu = addResultButton("JTGBodyBlockResultMenu", "Menu", 0.125, -0.285, true,
-            function()
-                BlzFrameSetVisible(self.resultBackdrop, false)
-                JTG.OpenTrainingMenu()
-            end)
+        self.resultCard = JTG.UI.CreateResultCard(session, {
+            name = "JTGBodyBlockResult", width = 0.42,
+            detailsHeight = 0.155, titleScale = 1.35,
+            detailsScale = 1.04,
+        })
+        self.resultBackdrop = self.resultCard.panel
     end
 
     function activity:createCountdownUI()
@@ -757,7 +712,7 @@ function JTG.CreateBodyBlockingActivity(session)
         SetUnitAnimation(self.blocker, "stand")
         SetUnitAnimation(self.runner, "stand")
         SetUnitAnimation(self.referenceRunner, "stand")
-        BlzFrameSetVisible(self.resultBackdrop, true)
+        self:renderResultPresentation()
         self:setOverlayVisible(false)
         if JTG.UI then JTG.UI.HideToolbar() end
     end
@@ -897,18 +852,19 @@ function JTG.CreateBodyBlockingActivity(session)
     end
 
     function activity:renderResultPresentation()
-        if self.resultBackdrop == nil or self.resultTitleText == nil then return end
-        BlzFrameSetText(self.resultTitle, self.resultTitleText)
-        BlzFrameSetText(self.resultDetails, self.resultDetailsText or "")
-        BlzFrameSetVisible(self.resultBackdrop, true)
-        BlzFrameSetText(self.resultNext, "Next Runner")
-        BlzFrameSetVisible(self.resultNext, self.mode == "training")
-        BlzFrameSetEnable(self.resultNext,
-            self.mode == "training" and not self.raceComplete)
-        BlzFrameSetAlpha(self.resultNext, self.raceComplete and 145 or 255)
+        if self.resultCard == nil or self.resultTitleText == nil then return end
         local hasReplay = self.replaySamples ~= nil and #self.replaySamples > 0
-        BlzFrameSetEnable(self.resultReplay, hasReplay)
-        BlzFrameSetAlpha(self.resultReplay, hasReplay and 255 or 145)
+        JTG.UI.ShowResultCard(self.resultCard, {
+            title = self.resultTitleText,
+            details = self.resultDetailsText or "",
+            actions = {
+                replay = {enabled = hasReplay},
+                retry = {},
+                next = self.mode == "training" and
+                    {label = "Next Runner", enabled = not self.raceComplete} or nil,
+                menu = {},
+            },
+        })
     end
 
     function activity:finishRun(maxed)
@@ -961,7 +917,7 @@ function JTG.CreateBodyBlockingActivity(session)
             if JTG.UI then JTG.UI.ShowToolbar(session.descriptor.capabilities) end
         elseif self.finished then
             self:setOverlayVisible(false)
-            BlzFrameSetVisible(self.resultBackdrop, true)
+            self:renderResultPresentation()
             if JTG.UI then JTG.UI.HideToolbar() end
         elseif JTG.UI then
             self:setOverlayVisible(true)
@@ -978,14 +934,8 @@ function JTG.CreateBodyBlockingActivity(session)
     end
 
     function activity:rebuildPresentation()
+        self.resultCard = nil
         self.resultBackdrop = nil
-        self.resultTitle = nil
-        self.resultDetails = nil
-        self.resultNext = nil
-        self.resultReplay = nil
-        self.resultRetry = nil
-        self.resultPause = nil
-        self.resultMenu = nil
         self.countdownFrame = nil
         self.speedFrame = nil
         self.startLine = nil
@@ -1019,6 +969,8 @@ function JTG.CreateBodyBlockingActivity(session)
     end
 
     function activity:discardPresentationForLoad()
+        self.resultCard = nil
+        self.resultBackdrop = nil
         if self.startLine ~= nil then DestroyLightning(self.startLine) end
         if self.finishLine ~= nil then DestroyLightning(self.finishLine) end
         for _, tag in ipairs(self.courseTags or {}) do

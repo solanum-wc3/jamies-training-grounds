@@ -19,7 +19,7 @@ const {
 const luaParser = req('luaparse');
 
 const version = 'v0.1.0';
-const alpha = 'alpha2';
+const alpha = 'alpha3';
 const modeArgument = process.argv.find(argument => argument.startsWith('--mode='));
 const buildMode = modeArgument ? modeArgument.slice('--mode='.length) : 'release';
 assert(['release', 'development'].includes(buildMode),
@@ -225,9 +225,13 @@ assert(nextLua.includes('function JTG.CreateWindwalkPopActivity(session)'),
     'Windwalk Pop activity factory is missing from the compiled map');
 assert(nextLua.includes('title = "Windwalk Pop"'),
     'Windwalk Pop catalogue entry is missing from the compiled map');
-assert(nextLua.includes('JTGWindwalkPopResultReplay') &&
+assert(nextLua.includes('function UI.CreateResultCard(session, options)') &&
+    nextLua.includes('function JTG.ActivateResultAction(action)') &&
+    nextLua.includes('name = "JTGWindwalkPopResult"') &&
+    nextLua.includes('name = "JTGSurroundResult"') &&
+    nextLua.includes('name = "JTGBodyBlockResult"') &&
     nextLua.includes('squares = true'),
-    'Windwalk Pop Replay or square overlays are missing');
+    'Shared result cards, exercise actions or square overlays are missing');
 assert(nextLua.includes('UI.PlaceToolbarButton(menu, 1, bar)') &&
     nextLua.includes('UI.PlaceToolbarButton(restart, 6, bar)') &&
     nextLua.includes('UI.PlaceToolbarButton(pause, 7, bar)') &&
@@ -427,6 +431,7 @@ const report = {
         acceptedFoundationHashUnchanged: 'PASS',
         developmentToolBoundary: 'PASS',
         sharedActivityLifecycle: 'PASS',
+        sharedResultCards: 'PASS',
     },
     output: path.relative(root, outputPath).replaceAll('\\', '/'),
     outputSha256: hash(fs.readFileSync(outputPath)),

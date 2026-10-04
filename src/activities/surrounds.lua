@@ -418,64 +418,43 @@ function JTG.CreateSurroundsActivity(session)
             "   Still " .. tostring(hold) .. "%")
     end
 
+    activity.resultActions = {
+        next = function(self)
+            if self.resultAction == "finish" then
+                JTG.ExitActivity()
+                return
+            end
+            if self.resultAction == "next_round" then
+                self.runnerIndex = 2
+            elseif self.resultAction == "next_setup" then
+                self.setupIndex = self.setupIndex + 1
+                self.runnerIndex = 1
+            end
+            JTG.ResetActivity()
+        end,
+    }
+
     function activity:createResultUI()
-        local gameUI = BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0)
-        self.resultPanel = JTG.ScopeTrackFrame(session.presentationScope,
-            JTG.UI.CreateNativePanel("JTGSurroundResult", gameUI, 0.34, 0.33))
-        BlzFrameSetAbsPoint(self.resultPanel, FRAMEPOINT_CENTER, 0.40, 0.33)
-        self.resultTitle = JTG.ScopeTrackFrame(session.presentationScope,
-            BlzCreateFrameByType("TEXT", "JTGSurroundResultTitle",
-                self.resultPanel, "", 0))
-        BlzFrameSetSize(self.resultTitle, 0.29, 0.04)
-        BlzFrameSetPoint(self.resultTitle, FRAMEPOINT_TOP, self.resultPanel,
-            FRAMEPOINT_TOP, 0, -0.030)
-        BlzFrameSetTextAlignment(self.resultTitle, TEXT_JUSTIFY_MIDDLE,
-            TEXT_JUSTIFY_CENTER)
-        BlzFrameSetScale(self.resultTitle, 1.30)
-        self.resultDetails = JTG.ScopeTrackFrame(session.presentationScope,
-            BlzCreateFrameByType("TEXT", "JTGSurroundResultDetails",
-                self.resultPanel, "", 0))
-        BlzFrameSetSize(self.resultDetails, 0.28, 0.035)
-        BlzFrameSetPoint(self.resultDetails, FRAMEPOINT_TOP, self.resultTitle,
-            FRAMEPOINT_BOTTOM, 0, -0.012)
-        BlzFrameSetTextAlignment(self.resultDetails, TEXT_JUSTIFY_TOP,
-            TEXT_JUSTIFY_CENTER)
-        self.resultPrimary = AddButton(session.presentationScope,
-            self.resultPanel, "JTGSurroundResultPrimary", "Next Round",
-            0.19, 0.034, function()
-                if self.resultAction == "finish" then
-                    JTG.ExitActivity()
-                else
-                    if self.resultAction == "next_round" then
-                        self.runnerIndex = 2
-                    elseif self.resultAction == "next_setup" then
-                        self.setupIndex = self.setupIndex + 1
-                        self.runnerIndex = 1
-                    end
-                    JTG.ResetActivity()
-                end
-            end)
-        BlzFrameSetPoint(self.resultPrimary, FRAMEPOINT_TOP, self.resultDetails,
-            FRAMEPOINT_BOTTOM, 0, -0.004)
-        self.resultRetry = AddButton(session.presentationScope,
-            self.resultPanel, "JTGSurroundResultRetry", "Retry", 0.19, 0.034,
-            function() JTG.ResetActivity() end)
-        BlzFrameSetPoint(self.resultRetry, FRAMEPOINT_TOP, self.resultPrimary,
-            FRAMEPOINT_BOTTOM, 0, -0.003)
-        self.resultReplay = AddButton(session.presentationScope,
-            self.resultPanel, "JTGSurroundResultReplay", "Replay", 0.19, 0.034,
-            function() JTG.ResetActivity() end)
-        BlzFrameSetPoint(self.resultReplay, FRAMEPOINT_TOP, self.resultRetry,
-            FRAMEPOINT_BOTTOM, 0, -0.003)
-        self.resultMenu = AddButton(session.presentationScope,
-            self.resultPanel, "JTGSurroundResultMenu", "Menu", 0.19, 0.034,
-            function()
-                BlzFrameSetVisible(self.resultPanel, false)
-                JTG.OpenTrainingMenu()
-            end)
-        BlzFrameSetPoint(self.resultMenu, FRAMEPOINT_TOP, self.resultReplay,
-            FRAMEPOINT_BOTTOM, 0, -0.003)
-        BlzFrameSetVisible(self.resultPanel, false)
+        self.resultCard = JTG.UI.CreateResultCard(session, {
+            name = "JTGSurroundResult", width = 0.36,
+            detailsHeight = 0.060, centerY = 0.33,
+        })
+        self.resultPanel = self.resultCard.panel
+    end
+
+    function activity:renderResultPresentation(visible)
+        if self.resultCard == nil or self.resultTitleText == nil then return end
+        JTG.UI.ShowResultCard(self.resultCard, {
+            title = self.resultTitleText,
+            details = self.resultDetailsText or "",
+            visible = visible ~= false,
+            actions = {
+                replay = {},
+                next = self.resultAction ~= "retry" and
+                    {label = self.resultPrimaryLabel or "Next"} or nil,
+                menu = {},
+            },
+        })
     end
 
     function activity:createSetupsUI()
@@ -657,22 +636,10 @@ function JTG.CreateSurroundsActivity(session)
             self.resultDetailsText = reason or
                 "The runner reached the finish line."
         end
-        BlzFrameSetText(self.resultTitle, self.resultTitleText)
-        BlzFrameSetText(self.resultDetails, self.resultDetailsText)
-        BlzFrameSetText(self.resultPrimary, self.resultPrimaryLabel)
-        local showPrimary = self.resultAction ~= "retry"
-        BlzFrameSetVisible(self.resultPrimary, showPrimary)
-        BlzFrameSetVisible(self.resultRetry, false)
-        BlzFrameClearAllPoints(self.resultReplay)
-        BlzFrameClearAllPoints(self.resultMenu)
-        BlzFrameSetPoint(self.resultReplay, FRAMEPOINT_TOP,
-            showPrimary and self.resultPrimary or self.resultDetails,
-            FRAMEPOINT_BOTTOM, 0, -0.004)
-        BlzFrameSetPoint(self.resultMenu, FRAMEPOINT_TOP, self.resultReplay,
-            FRAMEPOINT_BOTTOM, 0, -0.003)
+        self:renderResultPresentation(false)
         if JTG.UI then JTG.UI.HideToolbar() end
         self:makeTimer(1.0, false, function()
-            BlzFrameSetVisible(self.resultPanel, self.presentationVisible)
+            self:renderResultPresentation(self.presentationVisible)
         end)
     end
 
@@ -836,6 +803,7 @@ function JTG.CreateSurroundsActivity(session)
         self.presentationVisible = true
         self:setOverlayVisible(true)
         if self.finished then
+            self:renderResultPresentation(true)
             if JTG.UI then JTG.UI.HideToolbar() end
         elseif JTG.UI then
             JTG.UI.ShowToolbar(session.descriptor.capabilities)
@@ -846,18 +814,14 @@ function JTG.CreateSurroundsActivity(session)
 
     function activity:hidePresentationForMenu()
         self:setOverlayVisible(false)
+        JTG.UI.HideResultCard(self.resultCard)
     end
 
     function activity:rebuildPresentation()
         self.countdownFrame = nil
         self.statusFrame = nil
+        self.resultCard = nil
         self.resultPanel = nil
-        self.resultTitle = nil
-        self.resultDetails = nil
-        self.resultPrimary = nil
-        self.resultRetry = nil
-        self.resultReplay = nil
-        self.resultMenu = nil
         self.setupsPanel = nil
         self.startLine = nil
         self.finishLine = nil
@@ -872,24 +836,14 @@ function JTG.CreateSurroundsActivity(session)
         self:createSquareOverlays()
         self:updateStatus()
         if self.finished then
-            BlzFrameSetText(self.resultTitle, self.resultTitleText or "")
-            BlzFrameSetText(self.resultDetails, self.resultDetailsText or "")
-            BlzFrameSetText(self.resultPrimary, self.resultPrimaryLabel or "Retry")
-            local showPrimary = self.resultAction ~= "retry"
-            BlzFrameSetVisible(self.resultPrimary, showPrimary)
-            BlzFrameSetVisible(self.resultRetry, false)
-            BlzFrameClearAllPoints(self.resultReplay)
-            BlzFrameClearAllPoints(self.resultMenu)
-            BlzFrameSetPoint(self.resultReplay, FRAMEPOINT_TOP,
-                showPrimary and self.resultPrimary or self.resultDetails,
-                FRAMEPOINT_BOTTOM, 0, -0.004)
-            BlzFrameSetPoint(self.resultMenu, FRAMEPOINT_TOP,
-                self.resultReplay, FRAMEPOINT_BOTTOM, 0, -0.003)
+            self:renderResultPresentation(true)
         end
         self:setOverlayVisible(true)
     end
 
     function activity:discardPresentationForLoad()
+        self.resultCard = nil
+        self.resultPanel = nil
         if self.startLine ~= nil then DestroyLightning(self.startLine) end
         if self.finishLine ~= nil then DestroyLightning(self.finishLine) end
         if self.startTag ~= nil then DestroyTextTag(self.startTag) end

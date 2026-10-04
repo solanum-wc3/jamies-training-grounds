@@ -37,6 +37,12 @@ session identity without changing the timing chosen by an exercise.
 
 The menu selects activities but does not contain their gameplay logic.
 
+Completed exercises present their outcome through one shared result-card
+component. The shared layer owns its layout, action order, click handling,
+keyboard-focus release and cleanup. Each exercise supplies its text and decides
+what progression means; common Replay, Retry and Menu actions use controller
+defaults where no exercise-specific behavior is required.
+
 ## Shared interface
 
 The shared interface now provides root/category navigation and capability-driven Restart and Training Menu controls. Training Menu enters a reversible browsing state while the activity continues; Return to Training restores its toolbar and view. Continue, Back, Pause, Objectives, and lesson text remain future capabilities for activities that need them:

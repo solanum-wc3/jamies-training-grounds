@@ -28,11 +28,13 @@ lifecycle check.
 
 ## 3. Shared result cards and exercise controls
 
-Status: planned.
+Status: implemented; awaiting in-game verification.
 
-- Standardize result-card layout and sizing.
-- Share Replay, Retry, Next, Back and Menu behavior.
-- Migrate exercises individually and validate each playable result.
+- One shared result-card component owns layout, sizing, button order, click
+  safety, focus release and presentation cleanup.
+- One shared action dispatcher provides common Replay, Retry and Menu behavior
+  while allowing each exercise to define what progression means.
+- Body Blocking, Surrounds and Windwalk Pop now use the shared result card.
 
 ## 4. Shared tutorial system
 
