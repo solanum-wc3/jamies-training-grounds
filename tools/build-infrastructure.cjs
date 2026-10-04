@@ -18,14 +18,17 @@ const {
 } = req('@jamiephan/stormlib');
 const luaParser = req('luaparse');
 
-const version = 'v0.0.11';
+const version = 'v0.1.0';
+const alpha = 'alpha1';
 const modeArgument = process.argv.find(argument => argument.startsWith('--mode='));
 const buildMode = modeArgument ? modeArgument.slice('--mode='.length) : 'release';
 assert(['release', 'development'].includes(buildMode),
     'Build mode must be release or development');
 const isDevelopment = buildMode === 'development';
 const sourcePath = path.join(root, 'reference/foundation/Jamies-Training-Grounds-v0.0.1-alpha.5.w3x');
-const outputLabel = isDevelopment ? `${version}-dev` : version;
+const outputLabel = isDevelopment
+    ? `${version}-${alpha}-dev`
+    : `${version}-${alpha}`;
 const outputPath = path.join(root, `outputs/Jamies-Training-Grounds-${outputLabel}.w3x`);
 const reportPath = path.join(root,
     `outputs/Jamies-Training-Grounds-${outputLabel}-validation.json`);

@@ -13,7 +13,9 @@ pnpm install --frozen-lockfile
 pnpm run build:release
 ```
 
-The release map contains no developer commands or diagnostic activities. Build
+The release map contains no developer commands or diagnostic activities. Test
+builds carry an incrementing alpha name, with `-dev` identifying the matching
+development build. Build
 the clearly marked internal test map with:
 
 ```text
