@@ -4,14 +4,28 @@
 
 `foundation-minimap.py` updates the matching region of the minimap and preserves the remaining pixels. Run it after the build script's `--prepare` step and before the final build.
 
-`build-infrastructure.cjs` creates the current playable release directly from the accepted alpha.5 foundation. It assembles the Lua modules, editor trigger metadata, version string, menu assets and native interface overrides. It verifies the accepted source hash, parses the assembled Lua, round-trips all changed members, and proves all other listed archive members remain byte-identical.
+`build-infrastructure.cjs` creates release and development maps directly from the accepted alpha.5 foundation. It assembles the selected Lua modules, editor trigger metadata, version string, menu assets and native interface overrides. It verifies the accepted source hash, parses the assembled Lua, round-trips all changed members, and proves all other listed archive members remain byte-identical.
 
 Install the locked dependencies and build with:
 
 ```text
 pnpm install --frozen-lockfile
-pnpm run build:infrastructure
+pnpm run build:release
 ```
+
+The release map contains no developer commands or diagnostic activities. Build
+the clearly marked internal test map with:
+
+```text
+pnpm run build:development
+```
+
+In the development map, enter `-diag-lifecycle` while no activity is active to
+automatically check start, reset, activity replacement, exit, resource disposal
+and stale-callback protection. Enter `-diag-status` for the latest result or
+`-diag-cancel` to stop a running check. `pnpm run build:all` produces and
+validates both variants. The older `build:infrastructure` command remains an
+alias for the release build.
 
 The current reproducibility check uses Node.js 24 and pnpm 11. The two direct dependencies and their transitive packages are pinned in `pnpm-lock.yaml`.
 

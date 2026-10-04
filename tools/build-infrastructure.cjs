@@ -19,11 +19,18 @@ const {
 const luaParser = req('luaparse');
 
 const version = 'v0.0.11';
+const modeArgument = process.argv.find(argument => argument.startsWith('--mode='));
+const buildMode = modeArgument ? modeArgument.slice('--mode='.length) : 'release';
+assert(['release', 'development'].includes(buildMode),
+    'Build mode must be release or development');
+const isDevelopment = buildMode === 'development';
 const sourcePath = path.join(root, 'reference/foundation/Jamies-Training-Grounds-v0.0.1-alpha.5.w3x');
-const outputPath = path.join(root, `outputs/Jamies-Training-Grounds-${version}.w3x`);
-const reportPath = path.join(root, `outputs/Jamies-Training-Grounds-${version}-validation.json`);
+const outputLabel = isDevelopment ? `${version}-dev` : version;
+const outputPath = path.join(root, `outputs/Jamies-Training-Grounds-${outputLabel}.w3x`);
+const reportPath = path.join(root,
+    `outputs/Jamies-Training-Grounds-${outputLabel}-validation.json`);
 const acceptedHash = 'a1ea7789e60b30e77d64f14337759842dff309d129929ef24defb1276cf1ba64';
-const modulePaths = [
+const sharedModulePaths = [
     'src/infrastructure/core.lua',
     'src/generated/custom-keys.lua',
     'src/activities/camera-tutorial.lua',
@@ -36,7 +43,10 @@ const modulePaths = [
     'src/activities/power-building.lua',
     'src/infrastructure/catalog.lua',
     'src/infrastructure/ui.lua',
-    'src/infrastructure/diagnostics.lua',
+];
+const modulePaths = [
+    ...sharedModulePaths,
+    ...(isDevelopment ? ['src/infrastructure/diagnostics.lua'] : []),
     'src/infrastructure/bootstrap.lua',
 ];
 const assetPaths = [
@@ -196,7 +206,18 @@ assert(nextLua.includes('How to Surround') &&
     'Surround Training quests or authored unit-square overlays are missing');
 assert(!nextLua.includes('Square Calibration') &&
     !nextLua.includes('Collision Diagnostics'),
-    'Development-only Surround diagnostics remain in the release map');
+    'Archived Surround calibration code remains in the playable map');
+if (isDevelopment) {
+    assert(nextLua.includes('function JTG.RunAutomatedLifecycleCheck()') &&
+        nextLua.includes('"-diag-lifecycle"') &&
+        nextLua.includes('id = PROBE_B'),
+        'Development build is missing lifecycle diagnostics');
+} else {
+    assert(!nextLua.includes('function JTG.InitializeDiagnostics()') &&
+        !nextLua.includes('dev.lifecycle') &&
+        !nextLua.includes('-diag-'),
+        'Release build contains development diagnostics');
+}
 assert(nextLua.includes('function JTG.CreateWindwalkPopActivity(session)'),
     'Windwalk Pop activity factory is missing from the compiled map');
 assert(nextLua.includes('title = "Windwalk Pop"'),
@@ -264,7 +285,9 @@ changes.set('war3map.wct', Buffer.concat([
 
 let wts = source.get('war3map.wts').toString('utf8');
 assert(/STRING 1\s*\{[^}]*\}/.test(wts), 'Map title string was not found');
-wts = wts.replace(/(STRING 1\s*\{)[^}]*\}/, `$1\nJamie's Training Grounds ${version}\n}`);
+const displayVersion = isDevelopment ? `${version} DEVELOPMENT` : version;
+wts = wts.replace(/(STRING 1\s*\{)[^}]*\}/,
+    `$1\nJamie's Training Grounds ${displayVersion}\n}`);
 changes.set('war3map.wts', Buffer.from(wts));
 changes.set('war3map.w3b', addTrainingTreeObject(source.get('war3map.w3b')));
 for (const [archivePath, relativePath] of assetPaths) {
@@ -366,7 +389,10 @@ try {
 assert.equal(hash(fs.readFileSync(sourcePath)), acceptedHash, 'Source foundation was modified');
 const report = {
     version,
-    purpose: 'Release Surrounds training and the standardized exercise interface.',
+    buildMode,
+    purpose: isDevelopment ?
+        'Internal development build with lifecycle diagnostics.' :
+        'Public release build without development tools.',
     acceptedFoundation: {
         path: path.relative(root, sourcePath).replaceAll('\\', '/'),
         sha256: acceptedHash,
@@ -390,6 +416,7 @@ const report = {
         archiveRoundtrip: 'PASS',
         unchangedMembersByteIdentical: 'PASS',
         acceptedFoundationHashUnchanged: 'PASS',
+        developmentToolBoundary: 'PASS',
     },
     output: path.relative(root, outputPath).replaceAll('\\', '/'),
     outputSha256: hash(fs.readFileSync(outputPath)),

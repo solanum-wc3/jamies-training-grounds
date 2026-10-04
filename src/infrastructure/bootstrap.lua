@@ -61,7 +61,13 @@ function JTG.Initialize()
     FogMaskEnable(true)
     BlzChangeMinimapTerrainTex("war3mapMap_ingame.blp")
     JTG.UI.Initialize()
-    JTG.InitializeDiagnostics()
+    for _, initializer in ipairs(JTG.BootstrapInitializers or {}) do
+        local ok, message = pcall(initializer)
+        if not ok then
+            print("JTG optional-module initialization warning: " ..
+                tostring(message))
+        end
+    end
 end
 
 function InitTrig_Infrastructure()

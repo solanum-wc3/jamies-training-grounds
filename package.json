@@ -7,7 +7,10 @@
   },
   "scripts": {
     "build:foundation": "node tools/build-foundation.cjs",
-    "build:infrastructure": "node tools/build-infrastructure.cjs",
+    "build:infrastructure": "node tools/build-infrastructure.cjs --mode=release",
+    "build:release": "node tools/build-infrastructure.cjs --mode=release",
+    "build:development": "node tools/build-infrastructure.cjs --mode=development",
+    "build:all": "node tools/build-infrastructure.cjs --mode=release && node tools/build-infrastructure.cjs --mode=development",
     "extract:legacy-menu-assets": "node tools/extract-legacy-menu-assets.cjs"
   },
   "dependencies": {

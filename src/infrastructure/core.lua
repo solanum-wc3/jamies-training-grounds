@@ -21,6 +21,16 @@ end
 
 JTG.Registry = {byId = {}, ordered = {}}
 JTG.Scenes = {}
+JTG.BootstrapInitializers = {}
+
+-- Optional modules register startup work here. Release builds can omit those
+-- modules entirely without leaving direct references to development code in
+-- the permanent bootstrap.
+function JTG.RegisterBootstrapInitializer(initializer)
+    assert(type(initializer) == "function",
+        "Bootstrap initializer must be a function")
+    table.insert(JTG.BootstrapInitializers, initializer)
+end
 
 function JTG.RegisterScene(scene)
     assert(type(scene) == "table", "Scene descriptor must be a table")
