@@ -565,7 +565,7 @@ function JTG.CreateHotkeySetupTutorialActivity(session)
         self.frames.menuHighlight = createHighlight("menu")
         local pauseHighlight = createHighlight("pause")
         if JTG.UI and JTG.UI.RegisterPauseHighlight then
-            JTG.ScopeAdd(scope, JTG.UI.RegisterPauseHighlight(pauseHighlight))
+            JTG.ScopeBorrow(scope, JTG.UI.RegisterPauseHighlight(pauseHighlight))
         end
 
         local arrow = JTG.ScopeTrackFrame(scope, BlzCreateFrameByType("BACKDROP",
@@ -696,7 +696,7 @@ function JTG.CreateHotkeySetupTutorialActivity(session)
         JTG.ResetWorldFog(HOTKEY_PLAYER)
         local oldFood = GetPlayerState(HOTKEY_PLAYER,
             PLAYER_STATE_RESOURCE_FOOD_USED)
-        JTG.ScopeAdd(current.scope, function()
+        JTG.ScopeBorrow(current.scope, function()
             SetPlayerState(HOTKEY_PLAYER,
                 PLAYER_STATE_RESOURCE_FOOD_USED, oldFood)
         end)

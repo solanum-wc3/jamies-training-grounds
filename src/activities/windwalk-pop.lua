@@ -879,18 +879,11 @@ function JTG.CreateWindwalkPopActivity(session)
             local summoned = GetSummonedUnit()
             if GetSummoningUnit() == self.archmage and summoned ~= nil and
                     WATER_ELEMENTAL_UNIT_IDS[GetUnitTypeId(summoned)] then
+                JTG.ScopeTrackUnit(session.scope, summoned)
                 table.insert(self.summonedWaterElementals, summoned)
                 self:addSquareOverlay(summoned)
             end
         end))
-        JTG.ScopeAdd(session.scope, function()
-            for _, summoned in ipairs(self.summonedWaterElementals) do
-                if summoned ~= nil and GetUnitTypeId(summoned) ~= 0 then
-                    RemoveUnit(summoned)
-                end
-            end
-            self.summonedWaterElementals = {}
-        end)
     end
 
     function activity:formBasicSurround(centerX, centerY)
@@ -1316,7 +1309,7 @@ function JTG.CreateWindwalkPopActivity(session)
         local passive10 = GetPlayerAlliance(p1, p0, ALLIANCE_PASSIVE)
         local oldController = GetPlayerController(p1)
         local oldColor = GetPlayerColor(p1)
-        JTG.ScopeAdd(current.scope, function()
+        JTG.ScopeBorrow(current.scope, function()
             SetPlayerAlliance(p0, p1, ALLIANCE_PASSIVE, passive01)
             SetPlayerAlliance(p1, p0, ALLIANCE_PASSIVE, passive10)
             SetPlayerController(p1, oldController)
@@ -1443,11 +1436,6 @@ function JTG.CreateWindwalkPopActivity(session)
 
     function activity:cleanup()
         if JTG.UI then JTG.UI.HideActivityBriefing() end
-        for _, summoned in ipairs(self.summonedWaterElementals) do
-            if summoned ~= nil and GetUnitTypeId(summoned) ~= 0 then
-                RemoveUnit(summoned)
-            end
-        end
         self.blademaster = nil
         self.surroundee = nil
         self.humanArmy = {}

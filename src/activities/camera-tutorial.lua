@@ -685,7 +685,7 @@ function JTG.CreateCameraTutorialActivity(session)
             oldGold + 2000)
         SetPlayerState(CAMERA_PLAYER, PLAYER_STATE_RESOURCE_LUMBER,
             oldLumber + 2000)
-        JTG.ScopeAdd(session.scope, function()
+        JTG.ScopeBorrow(session.scope, function()
             SetPlayerState(CAMERA_PLAYER, PLAYER_STATE_RESOURCE_GOLD,
                 oldGold)
             SetPlayerState(CAMERA_PLAYER, PLAYER_STATE_RESOURCE_LUMBER,
@@ -705,7 +705,7 @@ function JTG.CreateCameraTutorialActivity(session)
         Cheat("warpten")
         self.warpTenActive = true
         self:suppressCheatMessage()
-        JTG.ScopeAdd(session.scope, function()
+        JTG.ScopeBorrow(session.scope, function()
             if self.warpTenActive then
                 Cheat("warpten")
                 self.warpTenActive = false
@@ -865,7 +865,7 @@ function JTG.CreateCameraTutorialActivity(session)
             ALLIANCE_PASSIVE)
         SetPlayerAlliance(enemy, CAMERA_PLAYER, ALLIANCE_PASSIVE, false)
         SetPlayerAlliance(CAMERA_PLAYER, enemy, ALLIANCE_PASSIVE, false)
-        JTG.ScopeAdd(session.scope, function()
+        JTG.ScopeBorrow(session.scope, function()
             SetPlayerColor(enemy, oldEnemyColor)
             SetPlayerAlliance(enemy, CAMERA_PLAYER, ALLIANCE_PASSIVE,
                 passiveFromEnemy)
@@ -1305,7 +1305,7 @@ function JTG.CreateCameraTutorialActivity(session)
         BlzFrameSetLevel(self.frames.pause, 2)
         if JTG.UI and JTG.UI.RegisterPauseHighlight then
             local unregister = JTG.UI.RegisterPauseHighlight(pauseHighlight)
-            JTG.ScopeAdd(scope, unregister)
+            JTG.ScopeBorrow(scope, unregister)
         end
 
         -- Reuse the same authored Quest-button notification effect as the
@@ -1680,7 +1680,7 @@ function JTG.CreateCameraTutorialActivity(session)
                 local restoredUnit = unit
                 ShowUnit(restoredUnit, false)
                 PauseUnit(restoredUnit, true)
-                JTG.ScopeAdd(session.scope, function()
+                JTG.ScopeBorrow(session.scope, function()
                     PauseUnit(restoredUnit, false)
                     ShowUnit(restoredUnit, true)
                 end)
@@ -1758,14 +1758,14 @@ function JTG.CreateCameraTutorialActivity(session)
         SetPlayerRacePreference(CAMERA_PLAYER, RACE_PREF_ORC)
         StopMusic(false)
         PlayMusic(ORC_TUTORIAL_MUSIC)
-        JTG.ScopeAdd(current.scope, function()
+        JTG.ScopeBorrow(current.scope, function()
             SetPlayerRacePreference(CAMERA_PLAYER,
                 previousRacePreference)
             StopMusic(false)
             SetMapMusic("Music", true, 0)
         end)
         local oldColor = GetPlayerColor(CAMERA_PLAYER)
-        JTG.ScopeAdd(current.scope,
+        JTG.ScopeBorrow(current.scope,
             function() SetPlayerColor(CAMERA_PLAYER, oldColor) end)
         SetPlayerColor(CAMERA_PLAYER, BLUE_PLAYER_COLOR)
 
@@ -1776,7 +1776,7 @@ function JTG.CreateCameraTutorialActivity(session)
         local previousStartY = GetStartLocationY(0)
         DefineStartLocation(0, MAIN_BASE_X, MAIN_BASE_Y)
         SetPlayerStartLocation(CAMERA_PLAYER, 0)
-        JTG.ScopeAdd(current.scope, function()
+        JTG.ScopeBorrow(current.scope, function()
             DefineStartLocation(0, previousStartX, previousStartY)
             SetPlayerStartLocation(CAMERA_PLAYER, 0)
         end)
@@ -1787,7 +1787,7 @@ function JTG.CreateCameraTutorialActivity(session)
             CAMERA_PLAYER, SPIKED_BARRICADES, true)
         SetPlayerTechResearched(CAMERA_PLAYER, SPIKED_BARRICADES,
             math.max(1, oldSpikedBarricades))
-        JTG.ScopeAdd(current.scope, function()
+        JTG.ScopeBorrow(current.scope, function()
             SetPlayerTechResearched(CAMERA_PLAYER, SPIKED_BARRICADES,
                 oldSpikedBarricades)
         end)
@@ -1799,7 +1799,7 @@ function JTG.CreateCameraTutorialActivity(session)
         local oldFoodUsed = GetPlayerState(CAMERA_PLAYER,
             PLAYER_STATE_RESOURCE_FOOD_USED)
         SetPlayerState(CAMERA_PLAYER, PLAYER_STATE_RESOURCE_FOOD_USED, 0)
-        JTG.ScopeAdd(current.scope, function()
+        JTG.ScopeBorrow(current.scope, function()
             SetPlayerState(CAMERA_PLAYER, PLAYER_STATE_RESOURCE_FOOD_USED,
                 oldFoodUsed)
         end)

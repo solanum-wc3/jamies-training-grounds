@@ -5,7 +5,7 @@ build and commit so Warcraft-specific regressions remain easy to isolate.
 
 ## 1. Development and release builds
 
-Status: implemented; automated lifecycle check awaits an in-game run.
+Status: implemented and verified in game.
 
 - Release builds omit development tools and diagnostic commands entirely.
 - Development builds include the diagnostic module and are clearly marked.
@@ -14,13 +14,17 @@ Status: implemented; automated lifecycle check awaits an in-game run.
 
 ## 2. Shared activity lifecycle
 
-Status: planned.
+Status: implemented; the expanded automated lifecycle check awaits an in-game
+run.
 
-- Add a final cleanup stage after all activity-owned objects are removed.
-- Standardize ownership of units, timers, triggers, terrain changes, fog and
-  other borrowed state.
-- Provide shared safe timer helpers without changing exercise timing merely
-  for the sake of consolidation.
+- The controller now runs semantic cleanup, disposes presentation and gameplay
+  resources, and then runs a guaranteed final cleanup stage.
+- Shared ownership helpers cover units, timers, triggers, frames, images,
+  markers, quests, destructables, fog and borrowed state.
+- Shared timers automatically stop stale callbacks while retaining every
+  exercise's existing timing values.
+- Hotkey Setup uses final cleanup to remove blight after its hidden dependency
+  buildings have been removed.
 
 ## 3. Shared result cards and exercise controls
 

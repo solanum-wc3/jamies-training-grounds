@@ -1483,7 +1483,7 @@ function JTG.CreateUnitControlsTutorialActivity(session)
         BlzFrameSetLevel(self.frames.pause, 2)
         if JTG.UI and JTG.UI.RegisterPauseHighlight then
             local unregister = JTG.UI.RegisterPauseHighlight(pauseHighlight)
-            JTG.ScopeAdd(scope, unregister)
+            JTG.ScopeBorrow(scope, unregister)
         end
 
         local menuHighlight = JTG.ScopeTrackFrame(scope, BlzCreateFrameByType("SPRITE",
@@ -1654,7 +1654,7 @@ function JTG.CreateUnitControlsTutorialActivity(session)
             ALLIANCE_PASSIVE)
         SetPlayerAlliance(UNIT_PLAYER, HOSTILE_PLAYER, ALLIANCE_PASSIVE, false)
         SetPlayerAlliance(HOSTILE_PLAYER, UNIT_PLAYER, ALLIANCE_PASSIVE, false)
-        JTG.ScopeAdd(current.scope, function()
+        JTG.ScopeBorrow(current.scope, function()
             SetPlayerAlliance(UNIT_PLAYER, HOSTILE_PLAYER, ALLIANCE_PASSIVE,
                 playerHostile)
             SetPlayerAlliance(HOSTILE_PLAYER, UNIT_PLAYER, ALLIANCE_PASSIVE,
@@ -1676,7 +1676,7 @@ function JTG.CreateUnitControlsTutorialActivity(session)
             local targetLevel = upgrade[2]
             local oldLevel = GetPlayerTechCount(UNIT_PLAYER, techId, true)
             SetPlayerTechResearched(UNIT_PLAYER, techId, targetLevel)
-            JTG.ScopeAdd(current.scope, function()
+            JTG.ScopeBorrow(current.scope, function()
                 SetPlayerTechResearched(UNIT_PLAYER, techId, oldLevel)
             end)
         end
@@ -1685,7 +1685,7 @@ function JTG.CreateUnitControlsTutorialActivity(session)
         -- army. Keep it from producing an upkeep transition on entry.
         local oldFoodUsed = GetPlayerState(UNIT_PLAYER,
             PLAYER_STATE_RESOURCE_FOOD_USED)
-        JTG.ScopeAdd(current.scope, function()
+        JTG.ScopeBorrow(current.scope, function()
             SetPlayerState(UNIT_PLAYER, PLAYER_STATE_RESOURCE_FOOD_USED,
                 oldFoodUsed)
         end)

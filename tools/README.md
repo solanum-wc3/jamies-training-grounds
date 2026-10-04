@@ -22,7 +22,7 @@ pnpm run build:development
 
 In the development map, enter `-diag-lifecycle` while no activity is active to
 automatically check start, reset, activity replacement, exit, resource disposal
-and stale-callback protection. Enter `-diag-status` for the latest result or
+post-disposal final cleanup and stale-callback protection. Enter `-diag-status` for the latest result or
 `-diag-cancel` to stop a running check. `pnpm run build:all` produces and
 validates both variants. The older `build:infrastructure` command remains an
 alias for the release build.

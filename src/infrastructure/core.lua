@@ -92,6 +92,12 @@ function JTG.ScopeAdd(scope, disposer)
     return disposer
 end
 
+-- Borrowed state remains owned by the map or player. Register only the
+-- operation that restores it, keeping that distinct from owned handles.
+function JTG.ScopeBorrow(scope, restore)
+    return JTG.ScopeAdd(scope, restore)
+end
+
 local function ScopeTrack(scope, resource, disposer, disposeOnLoad)
     local disposed = false
     local dispose = function()

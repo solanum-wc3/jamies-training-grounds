@@ -23,9 +23,17 @@ The shared controller allows only one active activity. Each activity provides th
 
 1. `setup` creates or restores its required state.
 2. `start` positions the player, camera, and interface.
-3. `reset` returns the activity to its initial playable state.
-4. `cleanup` removes activity-owned units, triggers, timers, effects, and interface state.
-5. `exit` restores shared state and returns to the training menu.
+3. Reset, replacement or exit invalidates the session so stale callbacks stop.
+4. `cleanup` performs semantic work while its resources are still available.
+5. Shared scopes dispose presentation and gameplay resources in reverse order.
+6. `afterCleanup` and registered finalizers run after those resources are gone.
+7. The controller restores shared fog and interface state, then returns to the
+   requested menu or creates a fresh run.
+
+Activities register owned handles and borrowed state with their session. The
+shared layer handles units, timers, triggers, frames, images, markers, quests,
+destructables and fog modifiers. Its timer helper guards callbacks with the
+session identity without changing the timing chosen by an exercise.
 
 The menu selects activities but does not contain their gameplay logic.
 

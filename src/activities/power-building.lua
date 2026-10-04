@@ -371,7 +371,7 @@ function JTG.CreatePowerBuildingActivity(session)
                     Player(otherIndex), ALLIANCE_PASSIVE)
             end
         end
-        JTG.ScopeAdd(current.scope, function()
+        JTG.ScopeBorrow(current.scope, function()
             for ownerIndex = 0, 10 do
                 local owner = Player(ownerIndex)
                 SetPlayerState(owner, PLAYER_STATE_RESOURCE_GOLD, resourceGold[ownerIndex])

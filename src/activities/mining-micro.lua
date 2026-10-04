@@ -358,7 +358,7 @@ function JTG.CreateMiningMicroActivity(session)
             DefineStartLocation(startIndex, layout.startX, layout.startY)
             SetPlayerStartLocation(owner, startIndex)
         end
-        JTG.ScopeAdd(session.scope, function()
+        JTG.ScopeBorrow(session.scope, function()
             for index = 1, 3 do
                 local owner = owners[index]
                 local previous = previousStarts[index]
@@ -425,7 +425,7 @@ function JTG.CreateMiningMicroActivity(session)
                     owner, Player(otherIndex), ALLIANCE_PASSIVE)
             end
         end
-        JTG.ScopeAdd(current.scope, function()
+        JTG.ScopeBorrow(current.scope, function()
             for ownerIndex = 0, 2 do
                 local owner = Player(ownerIndex)
                 local state = saved[ownerIndex]

@@ -162,7 +162,7 @@ local function FinishLifecycleCheck(lifecycle)
     local passed = #lifecycle.failures == 0
     lifecycle.lastPassed = passed
     lifecycle.lastReport = passed and
-        "PASS: start, reset, replacement, exit, disposal and stale callbacks" or
+        "PASS: start, reset, replacement, exit, disposal, final cleanup and stale callbacks" or
         ("FAIL: " .. table.concat(lifecycle.failures, "; "))
     local color = passed and "|cff40ff40" or "|cffff4040"
     local heading = passed and "Lifecycle check passed" or

@@ -239,6 +239,11 @@ assert(nextLua.includes('title = "1. Camera"'),
     'Camera tutorial catalogue entry is missing from the compiled map');
 assert(nextLua.includes('EVENT_GAME_LOADED') && nextLua.includes('RestoreLoadedGame'),
     'Save/load restoration infrastructure is missing from the compiled map');
+assert(nextLua.includes('function JTG.StartScopedTimer(') &&
+    nextLua.includes('function JTG.ScopeRevealScene(') &&
+    nextLua.includes('function JTG.ClearBlightAfterActivity(') &&
+    nextLua.includes('RunActivityFinalizers(session, reason)'),
+    'Shared activity lifecycle helpers are missing');
 assert(nextLua.includes('Skill Training - Race Specific'),
     'Race-specific Skill Training panels are missing from the compiled map');
 assert(nextLua.includes('id = "nightelf", title = "Night Elf"'),
@@ -418,6 +423,7 @@ const report = {
         unchangedMembersByteIdentical: 'PASS',
         acceptedFoundationHashUnchanged: 'PASS',
         developmentToolBoundary: 'PASS',
+        sharedActivityLifecycle: 'PASS',
     },
     output: path.relative(root, outputPath).replaceAll('\\', '/'),
     outputSha256: hash(fs.readFileSync(outputPath)),
