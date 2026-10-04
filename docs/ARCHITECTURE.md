@@ -57,6 +57,18 @@ The shared interface now provides root/category navigation and capability-driven
 - reliable release of custom-frame keyboard focus;
 - access to Warcraft III's native Quest window.
 
+Category menus and activity briefing pages use one shared visual shell. Titles,
+summary/body regions, divider positions and footer controls therefore keep the
+same anchors across activities. Briefing artwork begins from a shared top and
+horizontal-center position, while an activity may override that position or
+button size when its artwork or choices require it. The divider above the
+choices follows the first choice row automatically.
+
+Advanced Play and Skill Training share a General / Race Specific catalogue
+layout and the same race-submenu builder. Race menus can remain empty until a
+real race-specific topic is registered; adding such a topic does not require a
+new menu implementation.
+
 The archived design keeps the native lower console untouched and places successor controls in the safe top interface band: a compact toolbar, an Objectives dropdown beneath its button, and a Training Menu control beside the other custom buttons. The native Quest button and F9 path remain available. Custom-frame focus must be released after clicks so native F-keys and command inputs continue to work.
 
 The campaign-style reference establishes three separate text channels: Quest entries for durable objectives and reference material; the Message Log for readable narration history; and temporary colored notifications for new concepts, prompts, or scripted events. A message disappearing must never advance a tutorial. Color changes use Warcraft’s inline text-color formatting, while Continue remains the explicit progression control for player-paced practice.

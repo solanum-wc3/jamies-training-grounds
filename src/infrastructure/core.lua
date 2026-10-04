@@ -52,16 +52,17 @@ function JTG.RegisterActivity(descriptor)
     return descriptor
 end
 
-function JTG.GetActivities(category, skillRace)
+function JTG.GetActivities(category, raceId)
     local result = {}
     for _, descriptor in ipairs(JTG.Registry.ordered) do
-        local matchesRace = skillRace == nil
-        if skillRace ~= nil and descriptor.skillRaces ~= nil then
-            for _, race in ipairs(descriptor.skillRaces) do
-                if race == skillRace then matchesRace = true end
+        local raceIds = descriptor.races or descriptor.skillRaces
+        local matchesRace = raceId == nil
+        if raceId ~= nil and raceIds ~= nil then
+            for _, race in ipairs(raceIds) do
+                if race == raceId then matchesRace = true end
             end
         end
-        local belongsOnGeneralPage = skillRace ~= nil or descriptor.skillRaces == nil
+        local belongsOnGeneralPage = raceId ~= nil or raceIds == nil
         if descriptor.category == category and not descriptor.hidden and
                 matchesRace and belongsOnGeneralPage then
             table.insert(result, descriptor)

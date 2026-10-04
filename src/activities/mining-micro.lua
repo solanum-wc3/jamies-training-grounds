@@ -185,7 +185,6 @@ function JTG.OpenMiningMicroMenu(originCategory, pauseGame, restorePage, restore
             headingArtwork = "JTGMenu\\GoldMineMicroBriefing.dds",
             headingArtworkWidth = 0.176,
             headingArtworkHeight = 0.086,
-            headingArtworkOffsetX = -0.065,
             body = MINING_MICRO_INTRO,
             choices = {{label = "Start Training", primary = true, action = launch}},
             centerSingleChoice = true,

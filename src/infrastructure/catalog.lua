@@ -8,12 +8,15 @@ JTG.Categories = {
     {id = "tools", title = "Tools & Extras", summary = "Analysis tools, demonstrations, quizzes and games.", artwork = "JTGMenu\\ToolsExtras.dds"},
 }
 
-JTG.SkillRaces = {
+JTG.Races = {
     {id = "human", title = "Human", artwork = "UI\\Glues\\Loading\\Backgrounds\\Campaigns\\HumanSymbol.dds"},
     {id = "orc", title = "Orc", artwork = "UI\\Glues\\Loading\\Backgrounds\\Campaigns\\OrcSymbol.dds"},
     {id = "undead", title = "Undead", artwork = "UI\\Glues\\Loading\\Backgrounds\\Campaigns\\UndeadSymbol.dds"},
     {id = "nightelf", title = "Night Elf", artwork = "UI\\Glues\\Loading\\Backgrounds\\Campaigns\\NightElfSymbol.dds"},
 }
+-- Compatibility name for activity modules written before race menus became
+-- shared by more than Skill Training.
+JTG.SkillRaces = JTG.Races
 
 JTG.RegisterScene({
     id = "arena.south", centerX = 4864, centerY = 3456,
@@ -115,7 +118,7 @@ JTG.RegisterActivity({
     title = "Mining Micro",
     description = "Optimize four-worker gold mining against fixed reference economies.",
     artwork = "JTGMenu\\GoldMineMicro.dds",
-    skillRaces = {"human", "orc"},
+    races = {"human", "orc"},
     status = "available",
     sceneId = "arena.north",
     capabilities = {restart = true, rotate = true, menu = true, pause = true, quests = true},
@@ -148,7 +151,7 @@ JTG.RegisterActivity({
     artworkHeight = 0.048,
     artworkOffsetX = 0.014885,
     centerArtwork = true,
-    skillRaces = {"orc"},
+    races = {"orc"},
     status = "available",
     sceneId = "arena.north",
     capabilities = {restart = true, menu = true, pause = true, quests = true,
@@ -187,7 +190,7 @@ JTG.RegisterActivity({
 for _, entry in ipairs(planned) do
     JTG.RegisterActivity({
         id = entry[1], category = entry[2], title = entry[3], description = entry[4],
-        artwork = entry[5], skillRaces = entry[6], artworkByRace = entry[7],
+        artwork = entry[5], races = entry[6], artworkByRace = entry[7],
         status = "planned", capabilities = {},
     })
 end

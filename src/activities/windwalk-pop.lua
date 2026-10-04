@@ -177,8 +177,8 @@ function JTG.OpenWindwalkPopMenu(originCategory, pauseGame, restorePage,
             headingArtwork = "JTGMenu\\WindwalkPopBriefing.dds",
             headingArtworkWidth = 0.2214,
             headingArtworkHeight = 0.108,
-            headingArtworkOffsetX = -0.010,
-            headingArtworkOffsetY = -0.027,
+            headingArtworkCenterX = 0.1993,
+            headingArtworkTopOffset = -0.027,
             body = FormatBriefingText(WINDWALK_POP_INTRO),
             choices = choices,
             backAction = backAction,
@@ -190,7 +190,6 @@ function JTG.OpenWindwalkPopMenu(originCategory, pauseGame, restorePage,
             spec.compactChoices = true
             spec.compactColumns = 3
             spec.choiceOffsetY = -0.079
-            spec.contentDividerY = -0.245
         end
         if pauseGame then
             spec.resumeAction = resumeCurrentRun

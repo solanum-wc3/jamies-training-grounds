@@ -36,6 +36,10 @@ now use shared semantic colors.
 - One shared action dispatcher provides common Replay, Retry and Menu behavior
   while allowing each exercise to define what progression means.
 - Body Blocking, Surrounds and Windwalk Pop now use the shared result card.
+- Activity briefing pages share title, body, artwork, divider, choice-button and
+  footer positioning, with explicit overrides available for exceptional pages.
+- Advanced Play and Skill Training share the General / Race Specific catalogue
+  structure and race-submenu builder.
 
 ## 4. Shared tutorial system
 

@@ -19,7 +19,7 @@ const {
 const luaParser = req('luaparse');
 
 const version = 'v0.1.0';
-const alpha = 'alpha4';
+const alpha = 'alpha5';
 const modeArgument = process.argv.find(argument => argument.startsWith('--mode='));
 const buildMode = modeArgument ? modeArgument.slice('--mode='.length) : 'release';
 assert(['release', 'development'].includes(buildMode),
@@ -238,6 +238,12 @@ assert(nextLua.includes('UI.PlaceToolbarButton(menu, 1, bar)') &&
     nextLua.includes('UI.PlaceToolbarButton(pause, 7, bar)') &&
     nextLua.includes('UI.PlaceToolbarButton(squares, 8, bar)'),
     'The standardized fixed toolbar layout is missing');
+assert(nextLua.includes('local function CreateStandardMenuShell(') &&
+    nextLua.includes('local SECTIONED_CATEGORY_LAYOUTS = {advanced = true, skills = true}') &&
+    nextLua.includes('function UI.ShowCategoryRace(categoryId, raceId)') &&
+    nextLua.includes('spec.headingArtworkCenterX or BRIEFING_IMAGE_CENTER_X') &&
+    nextLua.includes('firstChoiceY + BRIEFING_DIVIDER_BUTTON_GAP'),
+    'Shared menu and briefing layout infrastructure is incomplete');
 assert(nextLua.includes('JTG.ClearBlightAfterActivity(current,') &&
     nextLua.includes('function JTG.ClearBlightAfterActivity('),
     'Hotkey Setup post-disposal blight cleanup is missing');
@@ -252,8 +258,9 @@ assert(nextLua.includes('function JTG.StartScopedTimer(') &&
     nextLua.includes('function JTG.ClearBlightAfterActivity(') &&
     nextLua.includes('RunActivityFinalizers(session, reason)'),
     'Shared activity lifecycle helpers are missing');
-assert(nextLua.includes('Skill Training - Race Specific'),
-    'Race-specific Skill Training panels are missing from the compiled map');
+assert(nextLua.includes('category.title .. " - Race Specific"') &&
+    nextLua.includes('JTG.Races = {'),
+    'Shared race-specific category panels are missing from the compiled map');
 assert(nextLua.includes('id = "nightelf", title = "Night Elf"'),
     'Race-specific Skill Training catalogue is missing from the compiled map');
 assert(nextLua.includes('skills.peon_micro') && nextLua.includes('skills.wisp_micro'),
@@ -433,6 +440,7 @@ const report = {
         developmentToolBoundary: 'PASS',
         sharedActivityLifecycle: 'PASS',
         sharedResultCards: 'PASS',
+        sharedMenuLayouts: 'PASS',
     },
     output: path.relative(root, outputPath).replaceAll('\\', '/'),
     outputSha256: hash(fs.readFileSync(outputPath)),

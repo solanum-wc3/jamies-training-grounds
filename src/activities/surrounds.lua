@@ -201,7 +201,6 @@ function JTG.OpenSurroundsMenu(originCategory, pauseGame, restorePage,
         spec.headingArtwork = "JTGMenu\\SurroundsBriefing.dds"
         spec.headingArtworkWidth = 0.176
         spec.headingArtworkHeight = 0.086
-        spec.headingArtworkOffsetX = -0.065
         spec.body = INTRO
         spec.pageId = page
         spec.restoreData = selection
