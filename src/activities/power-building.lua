@@ -4,21 +4,32 @@
 JTG = JTG or {}
 
 local BUILDINGS = {
-    {FourCC("htow"), "Town Hall", 390.0, nil, 385, 205},
-    {FourCC("hhou"), "Farm", 270.0, nil, 80, 20},
-    {FourCC("hbar"), "Barracks", 360.0, nil, 160, 60},
-    {FourCC("halt"), "Altar of Kings", 360.0, nil, 180, 50},
-    {FourCC("hlum"), "Lumber Mill", 330.0, nil, 120, 0},
+    {FourCC("htow"), "Town Hall", 390.0, nil, 385, 205,
+        "BTNTownHall.blp", 0, 0},
+    {FourCC("hhou"), "Farm", 270.0, nil, 80, 20,
+        "BTNFarm.blp", 0, 1},
+    {FourCC("hbar"), "Barracks", 360.0, nil, 160, 60,
+        "BTNHumanBarracks.blp", 1, 0},
+    {FourCC("halt"), "Altar of Kings", 360.0, nil, 180, 50,
+        "BTNAltarOfKings.blp", 1, 1},
+    {FourCC("hlum"), "Lumber Mill", 330.0, nil, 120, 0,
+        "BTNHumanLumberMill.blp", 2, 0},
     -- The Blacksmith rawcode is hbla. Give its otherwise empty lane owner the
     -- completed Town Hall that exists in an ordinary Human game.
-    {FourCC("hbla"), "Blacksmith", 390.0, {FourCC("htow")}, 140, 40},
-    {FourCC("hwtw"), "Scout Tower", 250.0, nil, 30, 20},
-    {FourCC("hvlt"), "Arcane Vault", 300.0, nil, 130, 30},
+    {FourCC("hbla"), "Blacksmith", 390.0, {FourCC("htow")}, 140, 40,
+        "BTNBlacksmith.blp", 3, 0},
+    {FourCC("hwtw"), "Scout Tower", 250.0, nil, 30, 20,
+        "BTNHumanWatchTower.blp", 0, 2},
+    {FourCC("hvlt"), "Arcane Vault", 300.0, nil, 130, 30,
+        "BTNArcaneVault.blp", 2, 2},
     -- Advanced production structures need completed prerequisite buildings.
     -- Those are created hidden and outside the arena for each lane owner.
-    {FourCC("hars"), "Arcane Sanctum", 360.0, {FourCC("hkee")}, 150, 140},
-    {FourCC("harm"), "Workshop", 390.0, {FourCC("hkee"), FourCC("hbla")}, 140, 140},
-    {FourCC("hgra"), "Gryphon Aviary", 390.0, {FourCC("hcas"), FourCC("hlum")}, 140, 150},
+    {FourCC("hars"), "Arcane Sanctum", 360.0, {FourCC("hkee")}, 150, 140,
+        "BTNArcaneSanctum.blp", 2, 1},
+    {FourCC("harm"), "Workshop", 390.0, {FourCC("hkee"), FourCC("hbla")}, 140, 140,
+        "BTNWorkshop.blp", 3, 1},
+    {FourCC("hgra"), "Gryphon Aviary", 390.0, {FourCC("hcas"), FourCC("hlum")}, 140, 150,
+        "BTNGryphonAviary.blp", 1, 2},
 }
 
 local BUILD_OFFSETS = {
@@ -93,19 +104,16 @@ function JTG.OpenPowerBuildingMenu(originCategory, pauseGame, restorePage, resto
     end
     showRoot = function()
         local choices = {}
-        for index, building in ipairs(BUILDINGS) do
-            local unitId, unitName, workerRadius, prerequisites, goldCost, lumberCost =
-                building[1], building[2], building[3], building[4], building[5], building[6]
-            local fallbackColumn = (index - 1) % 4
-            local fallbackRow = math.floor((index - 1) / 4)
-            local commandCard = JTG.GetUnitCommandCardMetadata(unitId,
-                fallbackColumn, fallbackRow)
+        for _, building in ipairs(BUILDINGS) do
+            local unitId, unitName, workerRadius, prerequisites, goldCost, lumberCost,
+                iconName, commandColumn, commandRow = building[1], building[2],
+                building[3], building[4], building[5], building[6], building[7],
+                building[8], building[9]
             table.insert(choices, {
                 label = unitName,
-                tooltip = "Compare one through ten Peasants constructing a " .. unitName .. ".",
-                icon = commandCard.icon,
-                column = commandCard.column,
-                row = commandCard.row,
+                icon = "ReplaceableTextures\\CommandButtons\\" .. iconName,
+                column = commandColumn,
+                row = commandRow,
                 action = function()
                     selection.buildingId = unitId
                     selection.buildingName = unitName

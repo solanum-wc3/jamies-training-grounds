@@ -67,7 +67,7 @@ local BRIEFING_IMAGE_CENTER_X = 0.167
 local BRIEFING_IMAGE_TOP_OFFSET = -0.025
 local BRIEFING_DIVIDER_BUTTON_GAP = 0.013
 local BRIEFING_COMMAND_BUTTON_SIZE = 0.043
-local BRIEFING_COMMAND_BUTTON_STEP = 0.049
+local BRIEFING_COMMAND_BUTTON_STEP = BRIEFING_COMMAND_BUTTON_SIZE
 local BRIEFING_COMMAND_GRID_TOP = -0.247
 local SECTIONED_CATEGORY_LAYOUTS = {advanced = true, skills = true}
 local footerDividerCount = 0
@@ -1338,6 +1338,13 @@ local function CreateRootPanel()
     BlzFrameSetVisible(panel, false)
 end
 
+local function HasAvailableRaceActivity(categoryId, raceId)
+    for _, descriptor in ipairs(JTG.GetActivities(categoryId, raceId)) do
+        if descriptor.status == "available" then return true end
+    end
+    return false
+end
+
 local function CreateCategoryPanel(category, categoryIndex)
     local shell = CreateStandardMenuShell("JTGCategoryPanel" .. categoryIndex,
         category.title, category.summary, -0.087)
@@ -1420,8 +1427,11 @@ local function CreateCategoryPanel(category, categoryIndex)
             0.192, -0.122)
         local firstRaceFrame = nil
         for raceIndex, race in ipairs(JTG.Races) do
+            local hasAvailableActivity = HasAvailableRaceActivity(category.id, race.id)
             local descriptor = {
-                title = race.title, artwork = race.artwork, status = "available",
+                title = race.title,
+                artwork = race.artwork,
+                status = hasAvailableActivity and "available" or "planned",
             }
             local frame, button, art = CreateIllustratedCard(
                 "JTGSectionedRaceButton" .. categoryIndex .. "x" .. raceIndex,
@@ -1434,9 +1444,16 @@ local function CreateCategoryPanel(category, categoryIndex)
             BlzFrameSetPoint(frame, FRAMEPOINT_TOP, panel, FRAMEPOINT_TOP,
                 0.192, -0.1522 - (raceIndex - 1) * 0.0562)
             if firstRaceFrame == nil then firstRaceFrame = frame end
-            RegisterClick(button, function()
-                UI.ShowCategoryRace(category.id, race.id)
-            end)
+            if hasAvailableActivity then
+                RegisterClick(button, function()
+                    UI.ShowCategoryRace(category.id, race.id)
+                end)
+            else
+                BlzFrameSetEnable(button, false)
+                BlzFrameSetAlpha(button, 145)
+                BlzFrameSetTextColor(button,
+                    BlzConvertColor(255, 145, 145, 145))
+            end
         end
         local raceDivider = BlzCreateFrameByType("BACKDROP",
             "JTGSectionedRaceDivider" .. categoryIndex, panel, "", 0)

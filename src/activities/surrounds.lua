@@ -716,7 +716,7 @@ function JTG.CreateSurroundsActivity(session)
             },
             {
                 title = "How it works...",
-                icon = "ReplaceableTextures\\CommandButtons\\BTNHeroLevelUp.blp",
+                icon = "ReplaceableTextures\\CommandButtons\\BTNSkillz.blp",
                 text = JTG.SurroundHowItWorksQuestText,
                 required = false,
             },
