@@ -31,12 +31,26 @@ local function CreateProbeFactory(unitId, label)
                     cleaned = 0,
                     disposed = 0,
                     presentationDisposed = 0,
+                    afterCleanup = 0,
+                    finalizers = 0,
                     cleanupReasons = {},
                     failures = {},
                 }
                 JTG.Dev.lifecycle = lifecycle
             end
             lifecycle.created = lifecycle.created + 1
+
+            -- These sentinels are registered before the handles, so reverse
+            -- scope disposal reaches them only after every owned handle.
+            JTG.ScopeAdd(current.scope, function()
+                self.resourcesDisposed = true
+                lifecycle.disposed = lifecycle.disposed + 1
+            end)
+            JTG.ScopeAdd(current.presentationScope, function()
+                self.presentationDisposed = true
+                lifecycle.presentationDisposed =
+                    lifecycle.presentationDisposed + 1
+            end)
 
             self.unit = JTG.ScopeTrackUnit(current.scope,
                 CreateUnit(PLAYER, FourCC(unitId),
@@ -51,18 +65,17 @@ local function CreateProbeFactory(unitId, label)
             self.guardedCallback = JTG.GuardSession(current, function()
                 self.guardCalls = self.guardCalls + 1
             end)
-            self.pulseTimer = JTG.ScopeTrackTimer(current.scope, CreateTimer())
-            TimerStart(self.pulseTimer, 0.05, true,
-                JTG.GuardSession(current, function()
-                    self.pulses = self.pulses + 1
-                end))
-
-            JTG.ScopeAdd(current.scope, function()
-                lifecycle.disposed = lifecycle.disposed + 1
+            self.pulseTimer = JTG.StartScopedTimer(current, current.scope,
+                0.05, true, function()
+                self.pulses = self.pulses + 1
             end)
-            JTG.ScopeAdd(current.presentationScope, function()
-                lifecycle.presentationDisposed =
-                    lifecycle.presentationDisposed + 1
+            JTG.AddActivityFinalizer(current, function()
+                lifecycle.finalizers = lifecycle.finalizers + 1
+                if not self.resourcesDisposed or
+                        not self.presentationDisposed then
+                    table.insert(lifecycle.failures,
+                        label .. " finalizer ran before scope disposal")
+                end
             end)
         end
 
@@ -75,6 +88,24 @@ local function CreateProbeFactory(unitId, label)
             local lifecycle = JTG.Dev.lifecycle
             lifecycle.cleaned = lifecycle.cleaned + 1
             table.insert(lifecycle.cleanupReasons, tostring(reason))
+            if self.resourcesDisposed or self.presentationDisposed then
+                table.insert(lifecycle.failures,
+                    label .. " semantic cleanup ran after scope disposal")
+            end
+        end
+
+        function activity:afterCleanup()
+            local lifecycle = JTG.Dev.lifecycle
+            lifecycle.afterCleanup = lifecycle.afterCleanup + 1
+            if not self.resourcesDisposed or
+                    not self.presentationDisposed then
+                table.insert(lifecycle.failures,
+                    label .. " afterCleanup ran before scope disposal")
+            end
+            if GetUnitTypeId(self.unit) ~= 0 then
+                table.insert(lifecycle.failures,
+                    label .. " afterCleanup found its unit alive")
+            end
         end
 
         return activity
@@ -246,7 +277,9 @@ local function AdvanceLifecycleCheck()
             Expect(lifecycle, lifecycle.created == 3 and
                 lifecycle.started == 3 and lifecycle.cleaned == 3 and
                 lifecycle.disposed == 3 and
-                lifecycle.presentationDisposed == 3,
+                lifecycle.presentationDisposed == 3 and
+                lifecycle.afterCleanup == 3 and
+                lifecycle.finalizers == 3,
                 "lifecycle callback counts did not balance")
             FinishLifecycleCheck(lifecycle)
         end
@@ -275,6 +308,8 @@ function JTG.RunAutomatedLifecycleCheck()
         cleaned = 0,
         disposed = 0,
         presentationDisposed = 0,
+        afterCleanup = 0,
+        finalizers = 0,
         cleanupReasons = {},
         failures = {},
         savedView = CopyView(JTG.UI and JTG.UI.currentView),

@@ -621,13 +621,6 @@ local function StepText(step)
     return table.concat(step.lines or {}, "\n")
 end
 
-local function TrackFrame(scope, frame)
-    JTG.ScopeAdd(scope, function()
-        if frame ~= nil then BlzDestroyFrame(frame) end
-    end)
-    return frame
-end
-
 local function CreateTutorialButton(name, parent, label, width)
     local button = BlzCreateFrameByType("GLUETEXTBUTTON", name, parent,
         "ScriptDialogButton", 0)
@@ -671,9 +664,8 @@ function JTG.CreateUnitControlsTutorialActivity(session)
     }
 
     function activity:makeTimer(period, repeating, callback)
-        local timer = JTG.ScopeTrackTimer(session.scope, CreateTimer())
-        TimerStart(timer, period, repeating, JTG.GuardSession(session, callback))
-        return timer
+        return JTG.StartScopedTimer(session, session.scope, period, repeating,
+            callback)
     end
 
     function activity:registerClick(button, action, soundKind)
@@ -1410,12 +1402,12 @@ function JTG.CreateUnitControlsTutorialActivity(session)
 
     function activity:createMenuPanel(name, suffix, buttonCount)
         local root = BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0)
-        local panel = TrackFrame(session.presentationScope,
+        local panel = JTG.ScopeTrackFrame(session.presentationScope,
             BlzCreateFrameByType("FRAME", name .. suffix, root, "", 0))
         BlzFrameSetSize(panel, 0.185,
             JTG.TutorialMenuHeight(buttonCount))
         BlzFrameSetAbsPoint(panel, FRAMEPOINT_TOPRIGHT, 0.795, 0.500)
-        local skin = TrackFrame(session.presentationScope,
+        local skin = JTG.ScopeTrackFrame(session.presentationScope,
             BlzCreateFrame("EscMenuBackdrop", panel, 0,
                 800 + session.generation + string.len(name)))
         BlzFrameSetPoint(skin, FRAMEPOINT_TOPLEFT, panel,
@@ -1439,7 +1431,7 @@ function JTG.CreateUnitControlsTutorialActivity(session)
             buttonWidth = 0.087, buttonHeight = 0.024,
             gap = 0.001, rowStep = 0.025, left = 0.446, top = 0.575,
         }
-        local bar = TrackFrame(scope, BlzCreateFrameByType("FRAME",
+        local bar = JTG.ScopeTrackFrame(scope, BlzCreateFrameByType("FRAME",
             "JTGUnitControlsTutorialBar" .. suffix, root, "", 0))
         BlzFrameSetSize(bar, 0.351, 0.060)
         BlzFrameSetAbsPoint(bar, FRAMEPOINT_TOPLEFT,
@@ -1452,7 +1444,7 @@ function JTG.CreateUnitControlsTutorialActivity(session)
             {"continue", "Continue", 5}, {"pause", "Pause", 7},
         }
         for _, spec in ipairs(labels) do
-            local button = TrackFrame(scope, CreateTutorialButton(
+            local button = JTG.ScopeTrackFrame(scope, CreateTutorialButton(
                 "JTGUnitControlsTutorial" .. spec[1] .. suffix,
                 bar, spec[2], toolbarLayout.buttonWidth))
             local slot = spec[3] - 1
@@ -1465,7 +1457,7 @@ function JTG.CreateUnitControlsTutorialActivity(session)
             if label ~= nil then BlzFrameSetScale(label, 0.72) end
         end
 
-        local highlight = TrackFrame(scope, BlzCreateFrameByType("SPRITE",
+        local highlight = JTG.ScopeTrackFrame(scope, BlzCreateFrameByType("SPRITE",
             "JTGUnitControlsContinueHighlight" .. suffix, bar, "", 0))
         BlzFrameSetSize(highlight, 0.058, 0.024)
         BlzFrameSetPoint(highlight, FRAMEPOINT_CENTER, self.frames.continue,
@@ -1478,7 +1470,7 @@ function JTG.CreateUnitControlsTutorialActivity(session)
         BlzFrameSetLevel(self.frames.continue, 2)
         self.frames.continueHighlight = highlight
 
-        local pauseHighlight = TrackFrame(scope, BlzCreateFrameByType("SPRITE",
+        local pauseHighlight = JTG.ScopeTrackFrame(scope, BlzCreateFrameByType("SPRITE",
             "JTGUnitControlsPauseHighlight" .. suffix, bar, "", 0))
         BlzFrameSetSize(pauseHighlight, 0.058, 0.024)
         BlzFrameSetPoint(pauseHighlight, FRAMEPOINT_CENTER, self.frames.pause,
@@ -1494,7 +1486,7 @@ function JTG.CreateUnitControlsTutorialActivity(session)
             JTG.ScopeAdd(scope, unregister)
         end
 
-        local menuHighlight = TrackFrame(scope, BlzCreateFrameByType("SPRITE",
+        local menuHighlight = JTG.ScopeTrackFrame(scope, BlzCreateFrameByType("SPRITE",
             "JTGUnitControlsMenuHighlight" .. suffix, bar, "", 0))
         BlzFrameSetSize(menuHighlight, 0.058, 0.024)
         BlzFrameSetPoint(menuHighlight, FRAMEPOINT_CENTER, self.frames.menu,
@@ -1507,7 +1499,7 @@ function JTG.CreateUnitControlsTutorialActivity(session)
         BlzFrameSetLevel(self.frames.menu, 2)
         self.frames.menuHighlight = menuHighlight
 
-        local arrow = TrackFrame(scope, BlzCreateFrameByType("BACKDROP",
+        local arrow = JTG.ScopeTrackFrame(scope, BlzCreateFrameByType("BACKDROP",
             "JTGUnitControlsInterfaceArrow" .. suffix, root, "", 0))
         BlzFrameSetSize(arrow, 0.052, 0.052)
         BlzFrameSetTexture(arrow, "JTGMenu\\TutorialArrowDown.dds", 0, true)
@@ -1522,7 +1514,7 @@ function JTG.CreateUnitControlsTutorialActivity(session)
         local previous = nil
         local topicButtons = {}
         for index, topic in ipairs(TOPICS) do
-            local button = TrackFrame(scope, CreateTutorialButton(
+            local button = JTG.ScopeTrackFrame(scope, CreateTutorialButton(
                 "JTGUnitControlsTopic" .. index .. suffix,
                 topics, topic.label, 0.115))
             BlzFrameSetSize(button, 0.115, 0.026)
@@ -1536,7 +1528,7 @@ function JTG.CreateUnitControlsTutorialActivity(session)
             topicButtons[index] = button
             previous = button
         end
-        local topicsClose = TrackFrame(scope, CreateTutorialButton(
+        local topicsClose = JTG.ScopeTrackFrame(scope, CreateTutorialButton(
             "JTGUnitControlsTopicsClose" .. suffix, topics, "Close", 0.10))
         BlzFrameSetSize(topicsClose, 0.10, 0.026)
         BlzFrameSetPoint(topicsClose, FRAMEPOINT_BOTTOM, topics,
@@ -1548,7 +1540,7 @@ function JTG.CreateUnitControlsTutorialActivity(session)
         local optionalButtons = {}
         previous = nil
         for index, section in ipairs(OPTIONAL_SECTIONS) do
-            local button = TrackFrame(scope, CreateTutorialButton(
+            local button = JTG.ScopeTrackFrame(scope, CreateTutorialButton(
                 "JTGUnitControlsOptional" .. index .. suffix,
                 optional, section.label, 0.115))
             BlzFrameSetSize(button, 0.115, 0.026)
@@ -1562,7 +1554,7 @@ function JTG.CreateUnitControlsTutorialActivity(session)
             optionalButtons[index] = button
             previous = button
         end
-        local optionalClose = TrackFrame(scope, CreateTutorialButton(
+        local optionalClose = JTG.ScopeTrackFrame(scope, CreateTutorialButton(
             "JTGUnitControlsOptionalClose" .. suffix,
             optional, "Close", 0.10))
         BlzFrameSetSize(optionalClose, 0.10, 0.026)
@@ -1772,7 +1764,5 @@ function JTG.CreateUnitControlsTutorialActivity(session)
 
     return activity
 end
-
-
 
 

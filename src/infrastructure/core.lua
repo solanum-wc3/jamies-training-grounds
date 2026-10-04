@@ -76,44 +76,174 @@ function JTG.GetActivities(category, skillRace)
 end
 
 function JTG.CreateScope(label)
-    return {label = label, disposed = false, disposers = {}, loadDisposers = {}}
+    return {
+        label = label,
+        disposed = false,
+        disposers = {},
+        loadDisposers = {},
+    }
 end
 
 function JTG.ScopeAdd(scope, disposer)
+    assert(type(scope) == "table", "Resource scope is required")
+    assert(type(disposer) == "function", "Resource disposer must be a function")
     assert(not scope.disposed, "Cannot add a resource to a disposed scope")
     table.insert(scope.disposers, disposer)
     return disposer
 end
 
+local function ScopeTrack(scope, resource, disposer, disposeOnLoad)
+    local disposed = false
+    local dispose = function()
+        if disposed then return end
+        disposed = true
+        if resource ~= nil then disposer(resource) end
+    end
+    JTG.ScopeAdd(scope, dispose)
+    if disposeOnLoad then table.insert(scope.loadDisposers, dispose) end
+    return resource
+end
+
 function JTG.ScopeTrackUnit(scope, unit)
-    JTG.ScopeAdd(scope, function()
-        if unit ~= nil then RemoveUnit(unit) end
-    end)
-    return unit
+    return ScopeTrack(scope, unit, RemoveUnit, false)
 end
 
 function JTG.ScopeTrackTimer(scope, timer)
-    local dispose = function()
-        if timer ~= nil then
-            PauseTimer(timer)
-            DestroyTimer(timer)
-        end
-    end
-    JTG.ScopeAdd(scope, dispose)
-    table.insert(scope.loadDisposers, dispose)
-    return timer
+    return ScopeTrack(scope, timer, function(value)
+        PauseTimer(value)
+        DestroyTimer(value)
+    end, true)
 end
 
 function JTG.ScopeTrackTrigger(scope, trigger)
-    local dispose = function()
-        if trigger ~= nil then
-            DisableTrigger(trigger)
-            DestroyTrigger(trigger)
+    return ScopeTrack(scope, trigger, function(value)
+        DisableTrigger(value)
+        DestroyTrigger(value)
+    end, true)
+end
+
+function JTG.ScopeTrackFrame(scope, frame)
+    return ScopeTrack(scope, frame, function(value)
+        BlzDestroyFrame(value)
+    end, false)
+end
+
+function JTG.ScopeTrackLightning(scope, lightning)
+    return ScopeTrack(scope, lightning, function(value)
+        DestroyLightning(value)
+    end, false)
+end
+
+function JTG.ScopeTrackTextTag(scope, tag)
+    return ScopeTrack(scope, tag, function(value)
+        DestroyTextTag(value)
+    end, false)
+end
+
+function JTG.ScopeTrackEffect(scope, effect)
+    return ScopeTrack(scope, effect, function(value)
+        DestroyEffect(value)
+    end, false)
+end
+
+function JTG.ScopeTrackImage(scope, image)
+    return ScopeTrack(scope, image, function(value)
+        DestroyImage(value)
+    end, false)
+end
+
+function JTG.ScopeTrackQuest(scope, quest)
+    return ScopeTrack(scope, quest, function(value)
+        DestroyQuest(value)
+    end, false)
+end
+
+function JTG.ScopeTrackDestructable(scope, destructable)
+    return ScopeTrack(scope, destructable, function(value)
+        RemoveDestructable(value)
+    end, false)
+end
+
+function JTG.ScopeTrackGroup(scope, group)
+    return ScopeTrack(scope, group, function(value)
+        DestroyGroup(value)
+    end, false)
+end
+
+function JTG.ScopeTrackFogModifier(scope, modifier)
+    return ScopeTrack(scope, modifier, function(value)
+        FogModifierStop(value)
+        DestroyFogModifier(value)
+    end, false)
+end
+
+-- Create and start a timer whose callback becomes inert as soon as its session
+-- is invalidated. The timer itself remains scope-owned and is always destroyed
+-- during cleanup. Existing exercise timing values remain unchanged.
+function JTG.StartScopedTimer(session, scope, timeout, periodic, callback)
+    assert(type(callback) == "function", "Timer callback must be a function")
+    local timer = JTG.ScopeTrackTimer(scope, CreateTimer())
+    TimerStart(timer, timeout, periodic, JTG.GuardSession(session, callback))
+    return timer
+end
+
+function JTG.ScopeRevealRect(scope, player, minX, minY, maxX, maxY)
+    local area = Rect(minX, minY, maxX, maxY)
+    SetFogStateRect(player, FOG_OF_WAR_VISIBLE, area, true)
+    local modifier = CreateFogModifierRect(player, FOG_OF_WAR_VISIBLE,
+        area, false, false)
+    FogModifierStart(modifier)
+    RemoveRect(area)
+    return JTG.ScopeTrackFogModifier(scope, modifier)
+end
+
+function JTG.ScopeRevealScene(scope, scene, player)
+    if scene == nil or scene.minX == nil then return nil end
+    return JTG.ScopeRevealRect(scope, player, scene.minX, scene.minY,
+        scene.maxX, scene.maxY)
+end
+
+function JTG.AddActivityFinalizer(session, finalizer)
+    assert(type(session) == "table", "Activity session is required")
+    assert(type(finalizer) == "function", "Activity finalizer must be a function")
+    assert(not session.finalized,
+        "Cannot add a finalizer after activity resources were disposed")
+    table.insert(session.finalizers, finalizer)
+    return finalizer
+end
+
+-- Blight applied by Undead buildings can be recreated by the engine while
+-- those buildings still exist. Register its removal in the post-disposal
+-- stage so the final clear happens after every activity-owned unit is gone.
+function JTG.ClearBlightAfterActivity(session, player, x, y, radius)
+    local clear = function()
+        SetBlight(player, x, y, radius, false)
+    end
+    JTG.AddActivityFinalizer(session, clear)
+    return clear
+end
+
+local function RunActivityFinalizers(session, reason)
+    if session == nil or session.finalized then return true end
+    session.finalized = true
+    local ok = true
+    if session.activity and session.activity.afterCleanup then
+        local success, message = pcall(session.activity.afterCleanup,
+            session.activity, session, reason)
+        if not success then
+            ok = false
+            print("JTG final cleanup warning: " .. tostring(message))
         end
     end
-    JTG.ScopeAdd(scope, dispose)
-    table.insert(scope.loadDisposers, dispose)
-    return trigger
+    for index = #session.finalizers, 1, -1 do
+        local success, message = pcall(session.finalizers[index], reason)
+        if not success then
+            ok = false
+            print("JTG final cleanup warning: " .. tostring(message))
+        end
+    end
+    session.finalizers = {}
+    return ok
 end
 
 function JTG.BorrowCamera(scope, player)
@@ -240,6 +370,7 @@ function JTG.StopActivity(reason)
     end
     if not JTG.DisposeScope(session.presentationScope) then ok = false end
     if not JTG.DisposeScope(session.scope) then ok = false end
+    if not RunActivityFinalizers(session, reason) then ok = false end
     JTG.ResetWorldFog(Player(0))
     controller.session = nil
     controller.state = "idle"
@@ -278,6 +409,8 @@ function JTG.StartActivity(id, originCategory, restartData, preservedCameraDista
         restartData = restartData,
         scope = JTG.CreateScope("activity:" .. id),
         presentationScope = JTG.CreateScope("presentation:" .. id),
+        finalizers = {},
+        finalized = false,
     }
     controller.session = session
     controller.state = "setting_up"

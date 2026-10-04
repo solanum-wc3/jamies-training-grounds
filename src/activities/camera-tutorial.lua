@@ -426,13 +426,6 @@ local IMPORTED_LAYOUT = {
     {"owtw", 3776.000, -3776.000, 270.000},
 }
 
-local function TrackFrame(scope, frame)
-    JTG.ScopeAdd(scope, function()
-        if frame ~= nil then BlzDestroyFrame(frame) end
-    end)
-    return frame
-end
-
 local function CreateTutorialButton(name, parent, label, width)
     local button = BlzCreateFrameByType("GLUETEXTBUTTON", name, parent,
         "ScriptDialogButton", 0)
@@ -572,7 +565,7 @@ function JTG.CreateCameraTutorialActivity(session)
 
     function activity:createZoomQuest(discover, silent)
         if self.zoomQuest == nil then
-            local quest = CreateQuest()
+            local quest = JTG.ScopeTrackQuest(session.scope, CreateQuest())
             QuestSetTitle(quest, "Changing Default Camera Distance")
             QuestSetDescription(quest, FormatNarration(
                 "To change the default camera distance, go to " ..
@@ -587,9 +580,6 @@ function JTG.CreateCameraTutorialActivity(session)
             QuestSetDiscovered(quest, false)
             QuestSetEnabled(quest, true)
             self.zoomQuest = quest
-            JTG.ScopeAdd(session.scope, function()
-                if quest ~= nil then DestroyQuest(quest) end
-            end)
         end
         if discover == true and not self.zoomQuestDiscovered then
             self.zoomQuestDiscovered = true
@@ -600,7 +590,7 @@ function JTG.CreateCameraTutorialActivity(session)
 
     function activity:createIdleWorkerQuest(discover, silent)
         if self.idleWorkerQuest == nil then
-            local quest = CreateQuest()
+            local quest = JTG.ScopeTrackQuest(session.scope, CreateQuest())
             QuestSetTitle(quest, "Idle Worker Double-Tap")
             QuestSetDescription(quest, FormatNarration(
                 "To make centering the camera on an idle worker require a " ..
@@ -612,9 +602,6 @@ function JTG.CreateCameraTutorialActivity(session)
             QuestSetDiscovered(quest, false)
             QuestSetEnabled(quest, true)
             self.idleWorkerQuest = quest
-            JTG.ScopeAdd(session.scope, function()
-                if quest ~= nil then DestroyQuest(quest) end
-            end)
         end
         if discover == true and not self.idleWorkerQuestDiscovered then
             self.idleWorkerQuestDiscovered = true
@@ -684,9 +671,7 @@ function JTG.CreateCameraTutorialActivity(session)
     end
 
     function activity:schedule(delay, callback)
-        local timer = JTG.ScopeTrackTimer(session.scope, CreateTimer())
-        TimerStart(timer, delay, false,
-            JTG.GuardSession(session, callback))
+        JTG.StartScopedTimer(session, session.scope, delay, false, callback)
     end
 
     function activity:provideNotificationResources()
@@ -1258,7 +1243,7 @@ function JTG.CreateCameraTutorialActivity(session)
             idleWorkerButton = BlzFrameGetChild(idleWorkerContainer, 0)
         end
         if idleWorkerButton ~= nil then
-            local idleWorkerIcon = TrackFrame(scope,
+            local idleWorkerIcon = JTG.ScopeTrackFrame(scope,
                 BlzCreateFrameByType("BACKDROP",
                     "JTGCameraIdleWorkerIcon" .. suffix,
                     idleWorkerButton, "", 0))
@@ -1278,7 +1263,7 @@ function JTG.CreateCameraTutorialActivity(session)
             buttonWidth = 0.087, buttonHeight = 0.024,
             gap = 0.001, rowStep = 0.025, left = 0.446, top = 0.575,
         }
-        local bar = TrackFrame(scope, BlzCreateFrameByType("FRAME",
+        local bar = JTG.ScopeTrackFrame(scope, BlzCreateFrameByType("FRAME",
             "JTGCameraTutorialBar" .. suffix, root, "", 0))
         BlzFrameSetSize(bar, 0.351, 0.060)
         BlzFrameSetAbsPoint(bar, FRAMEPOINT_TOPLEFT,
@@ -1294,7 +1279,7 @@ function JTG.CreateCameraTutorialActivity(session)
             {"pause", "Pause", 7},
         }
         for _, spec in ipairs(labels) do
-            local button = TrackFrame(scope, CreateTutorialButton(
+            local button = JTG.ScopeTrackFrame(scope, CreateTutorialButton(
                 "JTGCameraTutorial" .. spec[1] .. suffix, bar,
                 spec[2], toolbarLayout.buttonWidth))
             local slot = spec[3] - 1
@@ -1307,7 +1292,7 @@ function JTG.CreateCameraTutorialActivity(session)
             if label ~= nil then BlzFrameSetScale(label, 0.72) end
         end
 
-        local pauseHighlight = TrackFrame(scope, BlzCreateFrameByType("SPRITE",
+        local pauseHighlight = JTG.ScopeTrackFrame(scope, BlzCreateFrameByType("SPRITE",
             "JTGCameraTutorialPauseHighlight" .. suffix, bar, "", 0))
         BlzFrameSetSize(pauseHighlight, 0.058, 0.024)
         BlzFrameSetPoint(pauseHighlight, FRAMEPOINT_CENTER, self.frames.pause,
@@ -1326,7 +1311,7 @@ function JTG.CreateCameraTutorialActivity(session)
         -- Reuse the same authored Quest-button notification effect as the
         -- paused-load Unpause prompt. The 0.087-wide Continue button matches
         -- the dimensions for which this placement was tuned.
-        local continueHighlight = TrackFrame(scope, BlzCreateFrameByType(
+        local continueHighlight = JTG.ScopeTrackFrame(scope, BlzCreateFrameByType(
             "SPRITE", "JTGCameraTutorialContinueHighlight" .. suffix,
             bar, "", 0))
         BlzFrameSetSize(continueHighlight, 0.058, 0.024)
@@ -1340,7 +1325,7 @@ function JTG.CreateCameraTutorialActivity(session)
         BlzFrameSetLevel(self.frames.continue, 2)
         self.frames.continueHighlight = continueHighlight
 
-        local menuHighlight = TrackFrame(scope, BlzCreateFrameByType(
+        local menuHighlight = JTG.ScopeTrackFrame(scope, BlzCreateFrameByType(
             "SPRITE", "JTGCameraTutorialMenuHighlight" .. suffix,
             bar, "", 0))
         BlzFrameSetSize(menuHighlight, 0.058, 0.024)
@@ -1354,7 +1339,7 @@ function JTG.CreateCameraTutorialActivity(session)
         BlzFrameSetLevel(self.frames.menu, 2)
         self.frames.menuHighlight = menuHighlight
 
-        local optionalHighlight = TrackFrame(scope, BlzCreateFrameByType(
+        local optionalHighlight = JTG.ScopeTrackFrame(scope, BlzCreateFrameByType(
             "SPRITE", "JTGCameraTutorialOptionalHighlight" .. suffix,
             bar, "", 0))
         BlzFrameSetSize(optionalHighlight, 0.058, 0.024)
@@ -1368,48 +1353,48 @@ function JTG.CreateCameraTutorialActivity(session)
         BlzFrameSetLevel(self.frames.optionalButton, 2)
         self.frames.optionalHighlight = optionalHighlight
 
-        local objectives = TrackFrame(scope, BlzCreateFrameByType("FRAME",
+        local objectives = JTG.ScopeTrackFrame(scope, BlzCreateFrameByType("FRAME",
             "JTGCameraTutorialObjectives" .. suffix, root, "", 0))
         BlzFrameSetSize(objectives, 0.185, JTG.TutorialMenuHeight(5))
         BlzFrameSetAbsPoint(objectives, FRAMEPOINT_TOPRIGHT, 0.795, 0.500)
-        local skin = TrackFrame(scope, BlzCreateFrame("EscMenuBackdrop",
+        local skin = JTG.ScopeTrackFrame(scope, BlzCreateFrame("EscMenuBackdrop",
             objectives, 0, 600 + session.generation))
         BlzFrameSetPoint(skin, FRAMEPOINT_TOPLEFT, objectives,
             FRAMEPOINT_TOPLEFT, 0, 0)
         BlzFrameSetPoint(skin, FRAMEPOINT_BOTTOMRIGHT, objectives,
             FRAMEPOINT_BOTTOMRIGHT, 0, 0)
         BlzFrameSetEnable(skin, false)
-        local welcome = TrackFrame(scope, CreateTutorialButton(
+        local welcome = JTG.ScopeTrackFrame(scope, CreateTutorialButton(
             "JTGCameraTutorialWelcomeCheckpoint" .. suffix,
             objectives, "Welcome", 0.115))
         BlzFrameSetSize(welcome, 0.115, 0.026)
         BlzFrameSetPoint(welcome, FRAMEPOINT_TOP, objectives,
             FRAMEPOINT_TOP, 0, -0.041)
-        local movement = TrackFrame(scope, CreateTutorialButton(
+        local movement = JTG.ScopeTrackFrame(scope, CreateTutorialButton(
             "JTGCameraTutorialMovementCheckpoint" .. suffix,
             objectives, "Free Camera", 0.115))
         BlzFrameSetSize(movement, 0.115, 0.026)
         BlzFrameSetPoint(movement, FRAMEPOINT_TOP, welcome,
             FRAMEPOINT_BOTTOM, 0, -0.003)
-        local zooming = TrackFrame(scope, CreateTutorialButton(
+        local zooming = JTG.ScopeTrackFrame(scope, CreateTutorialButton(
             "JTGCameraTutorialZoomingCheckpoint" .. suffix,
             objectives, "Zooming", 0.115))
         BlzFrameSetSize(zooming, 0.115, 0.026)
         BlzFrameSetPoint(zooming, FRAMEPOINT_TOP, movement,
             FRAMEPOINT_BOTTOM, 0, -0.003)
-        local baseControl = TrackFrame(scope, CreateTutorialButton(
+        local baseControl = JTG.ScopeTrackFrame(scope, CreateTutorialButton(
             "JTGCameraTutorialBaseControlCheckpoint" .. suffix,
             objectives, "Base Camera", 0.115))
         BlzFrameSetSize(baseControl, 0.115, 0.026)
         BlzFrameSetPoint(baseControl, FRAMEPOINT_TOP, zooming,
             FRAMEPOINT_BOTTOM, 0, -0.003)
-        local armyControl = TrackFrame(scope, CreateTutorialButton(
+        local armyControl = JTG.ScopeTrackFrame(scope, CreateTutorialButton(
             "JTGCameraTutorialArmyControlCheckpoint" .. suffix,
             objectives, "Army Camera", 0.115))
         BlzFrameSetSize(armyControl, 0.115, 0.026)
         BlzFrameSetPoint(armyControl, FRAMEPOINT_TOP, baseControl,
             FRAMEPOINT_BOTTOM, 0, -0.003)
-        local close = TrackFrame(scope, CreateTutorialButton(
+        local close = JTG.ScopeTrackFrame(scope, CreateTutorialButton(
             "JTGCameraTutorialObjectivesClose" .. suffix,
             objectives, "Close", 0.10))
         BlzFrameSetSize(close, 0.10, 0.026)
@@ -1419,30 +1404,30 @@ function JTG.CreateCameraTutorialActivity(session)
 
         -- Optional tutorial branches use the same panel geometry and button
         -- arrangement as Topics, but never participate in the main sequence.
-        local optionalMenu = TrackFrame(scope, BlzCreateFrameByType("FRAME",
+        local optionalMenu = JTG.ScopeTrackFrame(scope, BlzCreateFrameByType("FRAME",
             "JTGCameraTutorialOptionalMenu" .. suffix, root, "", 0))
         BlzFrameSetSize(optionalMenu, 0.185, JTG.TutorialMenuHeight(2))
         BlzFrameSetAbsPoint(optionalMenu, FRAMEPOINT_TOPRIGHT, 0.795, 0.500)
-        local optionalSkin = TrackFrame(scope, BlzCreateFrame(
+        local optionalSkin = JTG.ScopeTrackFrame(scope, BlzCreateFrame(
             "EscMenuBackdrop", optionalMenu, 0, 700 + session.generation))
         BlzFrameSetPoint(optionalSkin, FRAMEPOINT_TOPLEFT, optionalMenu,
             FRAMEPOINT_TOPLEFT, 0, 0)
         BlzFrameSetPoint(optionalSkin, FRAMEPOINT_BOTTOMRIGHT, optionalMenu,
             FRAMEPOINT_BOTTOMRIGHT, 0, 0)
         BlzFrameSetEnable(optionalSkin, false)
-        local rotation = TrackFrame(scope, CreateTutorialButton(
+        local rotation = JTG.ScopeTrackFrame(scope, CreateTutorialButton(
             "JTGCameraTutorialOptionalRotation" .. suffix,
             optionalMenu, OPTIONAL_SECTIONS.rotation.title, 0.115))
         BlzFrameSetSize(rotation, 0.115, 0.026)
         BlzFrameSetPoint(rotation, FRAMEPOINT_TOP, optionalMenu,
             FRAMEPOINT_TOP, 0, -0.041)
-        local lockOn = TrackFrame(scope, CreateTutorialButton(
+        local lockOn = JTG.ScopeTrackFrame(scope, CreateTutorialButton(
             "JTGCameraTutorialOptionalLockOn" .. suffix,
             optionalMenu, OPTIONAL_SECTIONS.lockOn.title, 0.115))
         BlzFrameSetSize(lockOn, 0.115, 0.026)
         BlzFrameSetPoint(lockOn, FRAMEPOINT_TOP, rotation,
             FRAMEPOINT_BOTTOM, 0, -0.003)
-        local optionalClose = TrackFrame(scope, CreateTutorialButton(
+        local optionalClose = JTG.ScopeTrackFrame(scope, CreateTutorialButton(
             "JTGCameraTutorialOptionalClose" .. suffix,
             optionalMenu, "Close", 0.10))
         BlzFrameSetSize(optionalClose, 0.10, 0.026)
@@ -1834,9 +1819,8 @@ function JTG.CreateCameraTutorialActivity(session)
         self:createZoomQuest(false)
         self:createIdleWorkerQuest(false)
         SetPlayerState(CAMERA_PLAYER, PLAYER_STATE_RESOURCE_FOOD_USED, 0)
-        self.tickTimer = JTG.ScopeTrackTimer(current.scope, CreateTimer())
-        TimerStart(self.tickTimer, TICK_INTERVAL, true,
-            JTG.GuardSession(current, function() self:tick() end))
+        self.tickTimer = JTG.StartScopedTimer(current, current.scope,
+            TICK_INTERVAL, true, function() self:tick() end)
     end
 
     function activity:start()

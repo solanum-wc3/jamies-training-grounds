@@ -96,13 +96,6 @@ local TIMED_LAYOUT_ROWS = {
     [10] = {{4, 0.0}, {3, 0.5}, {3, 1.0}},
 }
 
-local function TrackFrame(scope, frame)
-    JTG.ScopeAdd(scope, function()
-        if frame ~= nil then BlzDestroyFrame(frame) end
-    end)
-    return frame
-end
-
 local function FormatBriefingText(text)
     local formatted = string.gsub(text, "{Button:%s*(.-)}",
         "|cffffcc00%1|r")
@@ -281,7 +274,7 @@ function JTG.CreateWindwalkPopActivity(session)
         }
         self.quests = {}
         for _, definition in ipairs(definitions) do
-            local quest = CreateQuest()
+            local quest = JTG.ScopeTrackQuest(session.scope, CreateQuest())
             QuestSetTitle(quest, definition.title)
             QuestSetDescription(quest, FormatBriefingText(definition.text))
             QuestSetIconPath(quest, definition.icon)
@@ -289,9 +282,6 @@ function JTG.CreateWindwalkPopActivity(session)
             QuestSetDiscovered(quest, true)
             QuestSetEnabled(quest, true)
             table.insert(self.quests, quest)
-            JTG.ScopeAdd(session.scope, function()
-                if quest ~= nil then DestroyQuest(quest) end
-            end)
         end
     end
 
@@ -311,18 +301,16 @@ function JTG.CreateWindwalkPopActivity(session)
         local size = half * 2.0
         local texture = GetOwningPlayer(unit) == Player(0) and
             JTG.UnitSquarePlayerTexture or JTG.UnitSquareEnemyTexture
-        local image = CreateImage(texture, size, size, 0,
-            GetUnitX(unit) - half, GetUnitY(unit) - half, 2,
-            0, 0, 0, 2)
+        local image = JTG.ScopeTrackImage(session.presentationScope,
+            CreateImage(texture, size, size, 0,
+                GetUnitX(unit) - half, GetUnitY(unit) - half, 2,
+                0, 0, 0, 2))
         SetImageRenderAlways(image, true)
         SetImageAboveWater(image, true, true)
         ShowImage(image, self.squaresVisible and self.presentationVisible)
         self.squareEntries[#self.squareEntries + 1] = {
             unit = unit, image = image, half = half,
         }
-        JTG.ScopeAdd(session.presentationScope, function()
-            if image ~= nil then DestroyImage(image) end
-        end)
     end
 
     function activity:createSquareOverlays()
@@ -365,13 +353,13 @@ function JTG.CreateWindwalkPopActivity(session)
 
     function activity:createResultUI()
         local gameUI = BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0)
-        self.resultBackdrop = TrackFrame(session.presentationScope,
+        self.resultBackdrop = JTG.ScopeTrackFrame(session.presentationScope,
             JTG.UI.CreateNativePanel("JTGWindwalkPopResult", gameUI, 0.32,
                 0.345))
         BlzFrameSetSize(self.resultBackdrop, 0.32, 0.345)
         BlzFrameSetAbsPoint(self.resultBackdrop, FRAMEPOINT_CENTER, 0.40,
             0.325)
-        self.resultTitle = TrackFrame(session.presentationScope,
+        self.resultTitle = JTG.ScopeTrackFrame(session.presentationScope,
             BlzCreateFrameByType("TEXT", "JTGWindwalkPopResultTitle",
                 self.resultBackdrop, "", 0))
         BlzFrameSetSize(self.resultTitle, 0.28, 0.032)
@@ -380,7 +368,7 @@ function JTG.CreateWindwalkPopActivity(session)
         BlzFrameSetTextAlignment(self.resultTitle, TEXT_JUSTIFY_MIDDLE,
             TEXT_JUSTIFY_CENTER)
         BlzFrameSetScale(self.resultTitle, 1.20)
-        self.resultDetails = TrackFrame(session.presentationScope,
+        self.resultDetails = JTG.ScopeTrackFrame(session.presentationScope,
             BlzCreateFrameByType("TEXT", "JTGWindwalkPopResultDetails",
                 self.resultBackdrop, "", 0))
         BlzFrameSetSize(self.resultDetails, 0.27, 0.070)
@@ -389,7 +377,7 @@ function JTG.CreateWindwalkPopActivity(session)
         BlzFrameSetTextAlignment(self.resultDetails, TEXT_JUSTIFY_TOP,
             TEXT_JUSTIFY_CENTER)
         local function addButton(name, label, x, y, action)
-            local button = TrackFrame(session.presentationScope,
+            local button = JTG.ScopeTrackFrame(session.presentationScope,
                 BlzCreateFrameByType("GLUETEXTBUTTON", name,
                     self.resultBackdrop, "ScriptDialogButton", 0))
             BlzFrameSetSize(button, 0.170, 0.032)
@@ -437,7 +425,7 @@ function JTG.CreateWindwalkPopActivity(session)
 
     function activity:createTimerUI()
         local gameUI = BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0)
-        self.timerFrame = TrackFrame(session.presentationScope,
+        self.timerFrame = JTG.ScopeTrackFrame(session.presentationScope,
             BlzCreateFrameByType("TEXT", "JTGWindwalkPopTimer", gameUI, "",
                 0))
         BlzFrameSetSize(self.timerFrame, 0.34, 0.055)
@@ -451,7 +439,7 @@ function JTG.CreateWindwalkPopActivity(session)
 
     function activity:createCountdownUI()
         local gameUI = BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0)
-        self.countdownFrame = TrackFrame(session.presentationScope,
+        self.countdownFrame = JTG.ScopeTrackFrame(session.presentationScope,
             BlzCreateFrameByType("TEXT", "JTGWindwalkPopCountdown", gameUI,
                 "", 0))
         BlzFrameSetSize(self.countdownFrame, 0.20, 0.08)
@@ -1340,17 +1328,7 @@ function JTG.CreateWindwalkPopActivity(session)
         SetPlayerColor(p1, ConvertPlayerColor(1))
 
         JTG.ResetWorldFog(p0)
-        local visible = Rect(current.scene.minX, current.scene.minY,
-            current.scene.maxX, current.scene.maxY)
-        SetFogStateRect(p0, FOG_OF_WAR_VISIBLE, visible, true)
-        local vision = CreateFogModifierRect(p0, FOG_OF_WAR_VISIBLE,
-            visible, false, false)
-        FogModifierStart(vision)
-        JTG.ScopeAdd(current.scope, function()
-            FogModifierStop(vision)
-            DestroyFogModifier(vision)
-        end)
-        RemoveRect(visible)
+        JTG.ScopeRevealScene(current.scope, current.scene, p0)
 
         self:createScenario()
         self:createSquareOverlays()

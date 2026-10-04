@@ -134,20 +134,6 @@ local function ResolveLaneLayout(base, orientation)
     return layout
 end
 
-local function TrackFrame(scope, frame)
-    JTG.ScopeAdd(scope, function()
-        if frame ~= nil then BlzDestroyFrame(frame) end
-    end)
-    return frame
-end
-
-local function TrackDestructable(scope, destructable)
-    JTG.ScopeAdd(scope, function()
-        if destructable ~= nil then RemoveDestructable(destructable) end
-    end)
-    return destructable
-end
-
 local function SetTrainingTreeLife(tree)
     -- JTtr is a map-owned Lordaeron Summer Tree whose object data gives it
     -- 1,000 maximum life. Set current life as well for deterministic restarts.
@@ -242,7 +228,7 @@ function JTG.CreateMiningMicroActivity(session)
     function activity:createTrainingQuests()
         self.quests = {}
         for index, data in ipairs(QUESTS) do
-            local quest = CreateQuest()
+            local quest = JTG.ScopeTrackQuest(session.scope, CreateQuest())
             local iconKey = data.icon or
                 (self.race == "human" and data.humanIcon or data.orcIcon)
             QuestSetTitle(quest, data.title)
@@ -252,9 +238,6 @@ function JTG.CreateMiningMicroActivity(session)
             QuestSetDiscovered(quest, true)
             QuestSetEnabled(quest, true)
             table.insert(self.quests, quest)
-            JTG.ScopeAdd(session.scope, function()
-                if quest ~= nil then DestroyQuest(quest) end
-            end)
         end
     end
 
@@ -304,7 +287,7 @@ function JTG.CreateMiningMicroActivity(session)
 
     function activity:createLaneCounter(lane, index)
         local gameUI = BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0)
-        lane.counterFrame = TrackFrame(session.presentationScope,
+        lane.counterFrame = JTG.ScopeTrackFrame(session.presentationScope,
             BlzCreateFrameByType("TEXT", "JTGMiningCounter" .. tostring(index),
                 gameUI, "", 0))
         BlzFrameSetSize(lane.counterFrame, 0.220, index == 2 and 0.120 or 0.105)
@@ -411,7 +394,7 @@ function JTG.CreateMiningMicroActivity(session)
             RemoveLocation(startLocation)
             self:captureMeleeStart(lane)
             if index >= 2 then
-                lane.tree = TrackDestructable(session.scope,
+                lane.tree = JTG.ScopeTrackDestructable(session.scope,
                     CreateDestructable(FourCC("JTtr"),
                         layout.treeX, layout.treeY,
                         270.0, 1.0, 0))
@@ -469,24 +452,13 @@ function JTG.CreateMiningMicroActivity(session)
         end
 
         JTG.ResetWorldFog(p0)
-        local visible = Rect(current.scene.minX, current.scene.minY,
-            current.scene.maxX, current.scene.maxY)
-        SetFogStateRect(p0, FOG_OF_WAR_VISIBLE, visible, true)
-        local vision = CreateFogModifierRect(p0, FOG_OF_WAR_VISIBLE,
-            visible, false, false)
-        FogModifierStart(vision)
-        JTG.ScopeAdd(current.scope, function()
-            FogModifierStop(vision)
-            DestroyFogModifier(vision)
-        end)
-        RemoveRect(visible)
+        JTG.ScopeRevealScene(current.scope, current.scene, p0)
 
         self.previousPlayerGold = 0
         self:createScenario()
         self:createTrainingQuests()
-        self.updateTimer = JTG.ScopeTrackTimer(current.scope, CreateTimer())
-        TimerStart(self.updateTimer, 0.10, true,
-            JTG.GuardSession(current, function() self:updateCounters() end))
+        self.updateTimer = JTG.StartScopedTimer(current, current.scope,
+            0.10, true, function() self:updateCounters() end)
     end
 
     function activity:start(current)

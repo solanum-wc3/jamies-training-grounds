@@ -39,6 +39,20 @@ Status: planned alongside the Economy tutorial.
 - Migrate existing tutorials incrementally after the common system is proven
   by the Economy tutorial.
 
+## 5. Project documentation and file cleanup
+
+Status: planned as a collaborative review.
+
+- Inventory design documents, generated files, obsolete scripts and historical
+  implementation material.
+- Agree which documents are authoritative before resolving contradictions or
+  consolidating overlapping outlines.
+- Archive useful history and remove only files that are confirmed obsolete or
+  reproducible from the maintained source.
+- Review old tutorial drafts such as `CameraTutorialScript_Current` against the
+  implemented tutorial before deciding whether to merge, archive or remove
+  them.
+
 ## Deferred: embedded CustomKeys data
 
 Keep the current generated representation. Its files are easy to replace, and

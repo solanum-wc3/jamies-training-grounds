@@ -116,27 +116,6 @@ local CUSTOM_UNITS = {
 local REFERENCE_RUNNER_ID = FourCC("Hgam")
 local REFERENCE_LANE_OFFSET = 300.0
 
-local function TrackFrame(scope, frame)
-    JTG.ScopeAdd(scope, function()
-        if frame ~= nil then BlzDestroyFrame(frame) end
-    end)
-    return frame
-end
-
-local function TrackLightning(scope, lightning)
-    JTG.ScopeAdd(scope, function()
-        if lightning ~= nil then DestroyLightning(lightning) end
-    end)
-    return lightning
-end
-
-local function TrackTextTag(scope, tag)
-    JTG.ScopeAdd(scope, function()
-        if tag ~= nil then DestroyTextTag(tag) end
-    end)
-    return tag
-end
-
 local BODY_BLOCKING_INTRO =
     "Sometimes a valid strategy is simply to stand in the way of your opponent, to stop them from getting where they are going. Be it to get more hits in on them, or to stop them from effectively doing anything.|n|n" ..
     "This exercise trains you in blocking the movement of other units. You control a Footman, and using the Move, Stop and Hold Position commands, try to stay in front of a series of units, for as long as possible.|n|n" ..
@@ -343,24 +322,23 @@ function JTG.CreateBodyBlockingActivity(session)
     end
 
     function activity:makeTimer(period, repeating, callback)
-        local timer = JTG.ScopeTrackTimer(session.scope, CreateTimer())
-        TimerStart(timer, period, repeating, JTG.GuardSession(session, callback))
-        return timer
+        return JTG.StartScopedTimer(session, session.scope, period, repeating,
+            callback)
     end
 
     function activity:createResultUI()
         local gameUI = BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0)
-        self.resultBackdrop = TrackFrame(session.presentationScope,
+        self.resultBackdrop = JTG.ScopeTrackFrame(session.presentationScope,
             JTG.UI.CreateNativePanel("JTGBodyBlockResult", gameUI, 0.42, 0.36))
         BlzFrameSetSize(self.resultBackdrop, 0.42, 0.36)
         BlzFrameSetAbsPoint(self.resultBackdrop, FRAMEPOINT_CENTER, 0.40, 0.325)
-        self.resultTitle = TrackFrame(session.presentationScope,
+        self.resultTitle = JTG.ScopeTrackFrame(session.presentationScope,
             BlzCreateFrameByType("TEXT", "JTGBodyBlockResultTitle", self.resultBackdrop, "", 0))
         BlzFrameSetSize(self.resultTitle, 0.36, 0.04)
         BlzFrameSetPoint(self.resultTitle, FRAMEPOINT_TOP, self.resultBackdrop, FRAMEPOINT_TOP, 0, -0.025)
         BlzFrameSetTextAlignment(self.resultTitle, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
         BlzFrameSetScale(self.resultTitle, 1.35)
-        self.resultDetails = TrackFrame(session.presentationScope,
+        self.resultDetails = JTG.ScopeTrackFrame(session.presentationScope,
             BlzCreateFrameByType("TEXT", "JTGBodyBlockResultDetails", self.resultBackdrop, "", 0))
         BlzFrameSetSize(self.resultDetails, 0.36, 0.155)
         BlzFrameSetPoint(self.resultDetails, FRAMEPOINT_TOP, self.resultTitle, FRAMEPOINT_BOTTOM, 0, -0.008)
@@ -368,7 +346,7 @@ function JTG.CreateBodyBlockingActivity(session)
         BlzFrameSetScale(self.resultDetails, 1.04)
         BlzFrameSetVisible(self.resultBackdrop, false)
         local function addResultButton(name, label, x, y, enabled, action)
-            local button = TrackFrame(session.presentationScope,
+            local button = JTG.ScopeTrackFrame(session.presentationScope,
                 BlzCreateFrameByType("GLUETEXTBUTTON", name, self.resultBackdrop, "ScriptDialogButton", 0))
             BlzFrameSetSize(button, 0.170, 0.034)
             BlzFrameSetPoint(button, FRAMEPOINT_TOPLEFT, self.resultBackdrop, FRAMEPOINT_TOPLEFT, x, y)
@@ -416,7 +394,7 @@ function JTG.CreateBodyBlockingActivity(session)
 
     function activity:createCountdownUI()
         local gameUI = BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0)
-        self.countdownFrame = TrackFrame(session.presentationScope,
+        self.countdownFrame = JTG.ScopeTrackFrame(session.presentationScope,
             BlzCreateFrameByType("TEXT", "JTGBodyBlockCountdown", gameUI, "", 0))
         BlzFrameSetSize(self.countdownFrame, 0.20, 0.08)
         BlzFrameSetAbsPoint(self.countdownFrame, FRAMEPOINT_CENTER, 0.40, 0.38)
@@ -428,7 +406,7 @@ function JTG.CreateBodyBlockingActivity(session)
 
     function activity:createSpeedUI()
         local gameUI = BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0)
-        self.speedFrame = TrackFrame(session.presentationScope,
+        self.speedFrame = JTG.ScopeTrackFrame(session.presentationScope,
             BlzCreateFrameByType("TEXT", "JTGBodyBlockRunnerSpeed", gameUI, "", 0))
         local scale = 1.45
         BlzFrameSetSize(self.speedFrame, 0.38 / scale, 0.040 / scale)
@@ -452,18 +430,18 @@ function JTG.CreateBodyBlockingActivity(session)
 
     function activity:createCourseMarkers()
         local y = self.laneY
-        self.startLine = TrackLightning(session.presentationScope,
+        self.startLine = JTG.ScopeTrackLightning(session.presentationScope,
             AddLightning("DRAL", false, self.startX, self.arenaMinY, self.startX, self.arenaMaxY))
-        self.finishLine = TrackLightning(session.presentationScope,
+        self.finishLine = JTG.ScopeTrackLightning(session.presentationScope,
             AddLightning("DRAL", false, self.finishX, self.arenaMinY, self.finishX, self.arenaMaxY))
         if self.startLine ~= nil then SetLightningColor(self.startLine, 0.25, 1.0, 0.25, 0.90) end
         if self.finishLine ~= nil then SetLightningColor(self.finishLine, 1.0, 0.20, 0.20, 0.90) end
-        self.startTag = TrackTextTag(session.presentationScope, CreateTextTag())
+        self.startTag = JTG.ScopeTrackTextTag(session.presentationScope, CreateTextTag())
         table.insert(self.courseTags, self.startTag)
         SetTextTagText(self.startTag, "|cff80ff80START|r", 0.032)
         SetTextTagPos(self.startTag, self.startX - 120, y + 440, 20)
         SetTextTagPermanent(self.startTag, true)
-        self.finishTag = TrackTextTag(session.presentationScope, CreateTextTag())
+        self.finishTag = JTG.ScopeTrackTextTag(session.presentationScope, CreateTextTag())
         table.insert(self.courseTags, self.finishTag)
         SetTextTagText(self.finishTag, "|cffff5555FINISH|r", 0.032)
         SetTextTagPos(self.finishTag, self.finishX - 130, y + 440, 20)
@@ -1078,7 +1056,7 @@ function JTG.CreateBodyBlockingActivity(session)
         self.arenaMinY = scene.minY
         self.arenaMaxY = scene.maxY
 
-        local quest = CreateQuest()
+        local quest = JTG.ScopeTrackQuest(current.scope, CreateQuest())
         QuestSetTitle(quest, "On Pathfinding and Movement")
         QuestSetDescription(quest, BODY_BLOCKING_QUEST_TEXT)
         QuestSetIconPath(quest,
@@ -1086,8 +1064,6 @@ function JTG.CreateBodyBlockingActivity(session)
         QuestSetRequired(quest, false)
         QuestSetDiscovered(quest, true)
         QuestSetEnabled(quest, true)
-        JTG.ScopeAdd(current.scope, function() DestroyQuest(quest) end)
-
         JTG.BorrowCamera(current.scope, Player(0))
         local oldTime = GetFloatGameState(GAME_STATE_TIME_OF_DAY)
         JTG.ScopeAdd(current.scope, function() SetFloatGameState(GAME_STATE_TIME_OF_DAY, oldTime) end)
@@ -1106,16 +1082,7 @@ function JTG.CreateBodyBlockingActivity(session)
         SetFloatGameState(GAME_STATE_TIME_OF_DAY, 12)
 
         JTG.ResetWorldFog(p0)
-        local visible = Rect(scene.minX, scene.minY, scene.maxX, scene.maxY)
-        SetFogStateRect(p0, FOG_OF_WAR_VISIBLE, visible, true)
-        local vision = CreateFogModifierRect(p0, FOG_OF_WAR_VISIBLE,
-            visible, false, false)
-        FogModifierStart(vision)
-        JTG.ScopeAdd(current.scope, function()
-            FogModifierStop(vision)
-            DestroyFogModifier(vision)
-        end)
-        RemoveRect(visible)
+        JTG.ScopeRevealScene(current.scope, scene, p0)
         self:createCountdownUI()
         self:createSpeedUI()
         self:createResultUI()

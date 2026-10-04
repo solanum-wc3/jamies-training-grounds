@@ -294,13 +294,6 @@ local function FormatNarration(text)
     return formatted
 end
 
-local function TrackFrame(scope, frame)
-    JTG.ScopeAdd(scope, function()
-        if frame ~= nil then BlzDestroyFrame(frame) end
-    end)
-    return frame
-end
-
 local function CreateTutorialButton(name, parent, label, width)
     local button = BlzCreateFrameByType("GLUETEXTBUTTON", name, parent,
         "ScriptDialogButton", 0)
@@ -331,9 +324,8 @@ function JTG.CreateHotkeySetupTutorialActivity(session)
     }
 
     function activity:makeTimer(period, repeating, callback)
-        local timer = JTG.ScopeTrackTimer(session.scope, CreateTimer())
-        TimerStart(timer, period, repeating, JTG.GuardSession(session, callback))
-        return timer
+        return JTG.StartScopedTimer(session, session.scope, period, repeating,
+            callback)
     end
 
     function activity:registerClick(button, action, soundKind)
@@ -530,7 +522,7 @@ function JTG.CreateHotkeySetupTutorialActivity(session)
             buttonWidth = 0.087, gap = 0.001, rowStep = 0.025,
             left = 0.446, top = 0.575,
         }
-        local bar = TrackFrame(scope, BlzCreateFrameByType("FRAME",
+        local bar = JTG.ScopeTrackFrame(scope, BlzCreateFrameByType("FRAME",
             "JTGHotkeyTutorialBar" .. suffix, root, "", 0))
         BlzFrameSetSize(bar, 0.351, 0.060)
         BlzFrameSetAbsPoint(bar, FRAMEPOINT_TOPLEFT, layout.left, layout.top)
@@ -541,7 +533,7 @@ function JTG.CreateHotkeySetupTutorialActivity(session)
             {"pause", "Pause", 7}, {"export", "Export", 8},
         }
         for _, spec in ipairs(labels) do
-            local button = TrackFrame(scope, CreateTutorialButton(
+            local button = JTG.ScopeTrackFrame(scope, CreateTutorialButton(
                 "JTGHotkeyTutorial" .. spec[1] .. suffix, bar, spec[2],
                 layout.buttonWidth))
             local slot = spec[3] - 1
@@ -555,7 +547,7 @@ function JTG.CreateHotkeySetupTutorialActivity(session)
         end
 
         local function createHighlight(key)
-            local highlight = TrackFrame(scope, BlzCreateFrameByType("SPRITE",
+            local highlight = JTG.ScopeTrackFrame(scope, BlzCreateFrameByType("SPRITE",
                 "JTGHotkey" .. key .. "Highlight" .. suffix, bar, "", 0))
             BlzFrameSetSize(highlight, 0.058, 0.024)
             BlzFrameSetPoint(highlight, FRAMEPOINT_CENTER, self.frames[key],
@@ -576,7 +568,7 @@ function JTG.CreateHotkeySetupTutorialActivity(session)
             JTG.ScopeAdd(scope, JTG.UI.RegisterPauseHighlight(pauseHighlight))
         end
 
-        local arrow = TrackFrame(scope, BlzCreateFrameByType("BACKDROP",
+        local arrow = JTG.ScopeTrackFrame(scope, BlzCreateFrameByType("BACKDROP",
             "JTGHotkeyCommandArrow" .. suffix, root, "", 0))
         BlzFrameSetSize(arrow, 0.078, 0.078)
         BlzFrameSetTexture(arrow, "JTGMenu\\TutorialArrowDown.dds", 0, true)
@@ -585,11 +577,11 @@ function JTG.CreateHotkeySetupTutorialActivity(session)
         BlzFrameSetVisible(arrow, false)
         self.frames.arrow = arrow
 
-        local topics = TrackFrame(scope, BlzCreateFrameByType("FRAME",
+        local topics = JTG.ScopeTrackFrame(scope, BlzCreateFrameByType("FRAME",
             "JTGHotkeyTopics" .. suffix, root, "", 0))
         BlzFrameSetSize(topics, 0.185, JTG.TutorialMenuHeight(#TOPICS))
         BlzFrameSetAbsPoint(topics, FRAMEPOINT_TOPRIGHT, 0.795, 0.500)
-        local skin = TrackFrame(scope, BlzCreateFrame("EscMenuBackdrop",
+        local skin = JTG.ScopeTrackFrame(scope, BlzCreateFrame("EscMenuBackdrop",
             topics, 0, 980 + session.generation))
         BlzFrameSetPoint(skin, FRAMEPOINT_TOPLEFT, topics,
             FRAMEPOINT_TOPLEFT, 0, 0)
@@ -601,7 +593,7 @@ function JTG.CreateHotkeySetupTutorialActivity(session)
         local topicButtons = {}
         local previous = nil
         for index, topic in ipairs(TOPICS) do
-            local button = TrackFrame(scope, CreateTutorialButton(
+            local button = JTG.ScopeTrackFrame(scope, CreateTutorialButton(
                 "JTGHotkeyTopic" .. index .. suffix, topics,
                 topic.label, 0.125))
             BlzFrameSetSize(button, 0.125, 0.026)
@@ -615,7 +607,7 @@ function JTG.CreateHotkeySetupTutorialActivity(session)
             topicButtons[index] = button
             previous = button
         end
-        local close = TrackFrame(scope, CreateTutorialButton(
+        local close = JTG.ScopeTrackFrame(scope, CreateTutorialButton(
             "JTGHotkeyTopicsClose" .. suffix, topics, "Close", 0.10))
         BlzFrameSetSize(close, 0.10, 0.026)
         BlzFrameSetPoint(close, FRAMEPOINT_BOTTOM, topics,
@@ -734,34 +726,23 @@ function JTG.CreateHotkeySetupTutorialActivity(session)
             {"hcas", 4768, 3392}, {"ofrt", 4832, 3392},
             {"unp2", 4896, 3392}, {"etoe", 4960, 3392},
         }
-        local hiddenHalls = {}
         for _, spec in ipairs(hidden) do
-            local unit = CreateUnit(HOTKEY_PLAYER, FourCC(spec[1]),
-                spec[2], spec[3], 0)
+            local unit = JTG.ScopeTrackUnit(current.scope,
+                CreateUnit(HOTKEY_PLAYER, FourCC(spec[1]),
+                    spec[2], spec[3], 0))
             ShowUnit(unit, false)
             SetUnitPathing(unit, false)
             SetUnitInvulnerable(unit, true)
-            table.insert(hiddenHalls, unit)
             table.insert(self.units, unit)
         end
         -- The hidden Undead hall is created only to unlock shop buttons.
         -- Clear its blight after Warcraft has applied the building terrain, then
         -- remove the halls before clearing it again during activity cleanup.
-        local function clearHiddenBlight()
-            SetBlight(HOTKEY_PLAYER, 4896, 3392, 1024, false)
-        end
+        local clearHiddenBlight = JTG.ClearBlightAfterActivity(current,
+            HOTKEY_PLAYER, 4896, 3392, 1024)
         clearHiddenBlight()
-        local blightTimer = JTG.ScopeTrackTimer(current.scope, CreateTimer())
-        TimerStart(blightTimer, 0.10, false,
-            JTG.GuardSession(current, clearHiddenBlight))
-        JTG.ScopeAdd(current.scope, function()
-            for _, unit in ipairs(hiddenHalls) do
-                if unit ~= nil and GetUnitTypeId(unit) ~= 0 then
-                    RemoveUnit(unit)
-                end
-            end
-            clearHiddenBlight()
-        end)
+        JTG.StartScopedTimer(current, current.scope, 0.10, false,
+            clearHiddenBlight)
         SetPlayerState(HOTKEY_PLAYER, PLAYER_STATE_RESOURCE_FOOD_USED, 0)
         self:makeTimer(TICK_INTERVAL, true, function() self:tick() end)
     end

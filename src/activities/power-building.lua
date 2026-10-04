@@ -49,20 +49,6 @@ local function FormatQuestText(text)
     return string.gsub(text, "{Term:%s*(.-)}", "|cffff9933%1|r")
 end
 
-local function TrackFrame(scope, frame)
-    JTG.ScopeAdd(scope, function()
-        if frame ~= nil then BlzDestroyFrame(frame) end
-    end)
-    return frame
-end
-
-local function TrackTextTag(scope, tag)
-    JTG.ScopeAdd(scope, function()
-        if tag ~= nil then DestroyTextTag(tag) end
-    end)
-    return tag
-end
-
 local function FormatTime(seconds)
     local tenths = math.floor(seconds * 10.0 + 0.5)
     local secondsPart = math.floor(tenths / 10)
@@ -321,7 +307,7 @@ function JTG.CreatePowerBuildingActivity(session)
     end
 
     function activity:createLaneTag(lane, index)
-        lane.tag = TrackTextTag(session.presentationScope, CreateTextTag())
+        lane.tag = JTG.ScopeTrackTextTag(session.presentationScope, CreateTextTag())
         SetTextTagPermanent(lane.tag, true)
         SetTextTagVisibility(lane.tag, true)
         SetTextTagPos(lane.tag, lane.x - 150.0, lane.y + 330.0, 45.0)
@@ -360,7 +346,7 @@ function JTG.CreatePowerBuildingActivity(session)
         local p0 = Player(0)
         JTG.BorrowCamera(current.scope, p0)
 
-        local quest = CreateQuest()
+        local quest = JTG.ScopeTrackQuest(current.scope, CreateQuest())
         QuestSetTitle(quest, "Some Math")
         QuestSetDescription(quest, FormatQuestText(POWER_BUILDING_QUEST_TEXT))
         QuestSetIconPath(quest,
@@ -368,8 +354,6 @@ function JTG.CreatePowerBuildingActivity(session)
         QuestSetRequired(quest, false)
         QuestSetDiscovered(quest, true)
         QuestSetEnabled(quest, true)
-        JTG.ScopeAdd(current.scope, function() DestroyQuest(quest) end)
-
         local resourceGold = {}
         local resourceLumber = {}
         local playerControllers = {}
@@ -415,23 +399,12 @@ function JTG.CreatePowerBuildingActivity(session)
         end
 
         JTG.ResetWorldFog(p0)
-        local visible = Rect(scene.minX, scene.minY, scene.maxX, scene.maxY)
-        SetFogStateRect(p0, FOG_OF_WAR_VISIBLE, visible, true)
-        local vision = CreateFogModifierRect(p0, FOG_OF_WAR_VISIBLE,
-            visible, false, false)
-        FogModifierStart(vision)
-        JTG.ScopeAdd(current.scope, function()
-            FogModifierStop(vision)
-            DestroyFogModifier(vision)
-        end)
-        RemoveRect(visible)
+        JTG.ScopeRevealScene(current.scope, scene, p0)
 
-        self.captureTimer = JTG.ScopeTrackTimer(current.scope, CreateTimer())
-        TimerStart(self.captureTimer, 0.05, true,
-            JTG.GuardSession(current, function() self:captureTick() end))
-        self.updateTimer = JTG.ScopeTrackTimer(current.scope, CreateTimer())
-        TimerStart(self.updateTimer, 0.10, true,
-            JTG.GuardSession(current, function() self:updateTick() end))
+        self.captureTimer = JTG.StartScopedTimer(current, current.scope,
+            0.05, true, function() self:captureTick() end)
+        self.updateTimer = JTG.StartScopedTimer(current, current.scope,
+            0.10, true, function() self:updateTick() end)
         self:createScenario()
     end
 
