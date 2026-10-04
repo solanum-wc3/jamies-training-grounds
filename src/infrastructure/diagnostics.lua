@@ -52,6 +52,13 @@ local function CreateProbeFactory(unitId, label)
                     lifecycle.presentationDisposed + 1
             end)
 
+            -- Removed unit handles can retain their type ID until Warcraft
+            -- finishes the current callback. Register this sentinel before
+            -- the unit so reverse disposal reaches it immediately after the
+            -- unit remover, without treating stale handle metadata as life.
+            JTG.ScopeAdd(current.scope, function()
+                self.unitDisposed = true
+            end)
             self.unit = JTG.ScopeTrackUnit(current.scope,
                 CreateUnit(PLAYER, FourCC(unitId),
                     current.scene.centerX, current.scene.centerY, 270))
@@ -102,9 +109,9 @@ local function CreateProbeFactory(unitId, label)
                 table.insert(lifecycle.failures,
                     label .. " afterCleanup ran before scope disposal")
             end
-            if GetUnitTypeId(self.unit) ~= 0 then
+            if not self.unitDisposed then
                 table.insert(lifecycle.failures,
-                    label .. " afterCleanup found its unit alive")
+                    label .. " unit disposer did not complete")
             end
         end
 
