@@ -2,6 +2,16 @@
 -- a scope; the map owns navigation, registry data and the controller itself.
 JTG = JTG or {}
 
+JTG.UnitSquarePlayerTexture = "JTGOverlay\\UnitSquaresPlayer.dds"
+JTG.UnitSquareEnemyTexture = "JTGOverlay\\UnitSquaresEnemy.dds"
+
+-- Calibration found one stable display adjustment per 16-unit collision
+-- category. Keeping this category-based lets future units inherit the correct
+-- overlay without a unit-ID table.
+function JTG.UnitObstructionHalfSize(collision)
+    return math.floor((collision or 0) / 16) * 16 + 12
+end
+
 -- Tutorial checkpoint panels share a 0.026-high button, 0.003 spacing, the
 -- established 0.041 top inset and a dedicated footer for Close. Growing the
 -- frame from this count keeps later checkpoints from colliding with Close.
@@ -26,6 +36,7 @@ function JTG.RegisterActivity(descriptor)
     assert(JTG.Registry.byId[descriptor.id] == nil, "Duplicate activity ID: " .. descriptor.id)
     descriptor.status = descriptor.status or "planned"
     descriptor.capabilities = descriptor.capabilities or {}
+    descriptor.registrationOrder = #JTG.Registry.ordered + 1
     JTG.Registry.byId[descriptor.id] = descriptor
     table.insert(JTG.Registry.ordered, descriptor)
     return descriptor
@@ -46,6 +57,11 @@ function JTG.GetActivities(category, skillRace)
             table.insert(result, descriptor)
         end
     end
+    table.sort(result, function(left, right)
+        local leftOrder = left.menuOrder or (10000 + left.registrationOrder)
+        local rightOrder = right.menuOrder or (10000 + right.registrationOrder)
+        return leftOrder < rightOrder
+    end)
     return result
 end
 
@@ -341,7 +357,8 @@ function JTG.ResetActivity()
     -- coordinates get one frame for Warcraft to retire the old footprints.
     -- Rebuilding directly in the click callback can otherwise make the next
     -- setup inherit stale placement or collision state.
-    if id == "skills.gold_mine" or id == "skills.windwalk" then
+    if id == "skills.gold_mine" or id == "skills.windwalk" or
+            id == "skills.surround" then
         return JTG.StartActivityAfterCleanup(id, category, restartData,
             cameraDistance, "reset")
     end
@@ -367,6 +384,42 @@ function JTG.RotateActivity()
     end
     return JTG.StartActivityAfterCleanup(session.id,
         JTG.Controller.lastCategory, restartData, cameraDistance, "rotate")
+end
+
+function JTG.ToggleActivitySetups()
+    local session = JTG.Controller.session
+    if session == nil or session.activity == nil or
+            session.activity.toggleSetups == nil then return false end
+    local ok, message = pcall(session.activity.toggleSetups, session.activity)
+    if not ok then
+        print("JTG setup-menu warning: " .. tostring(message))
+        return false
+    end
+    return true
+end
+
+function JTG.NextActivityStage()
+    local session = JTG.Controller.session
+    if session == nil or session.activity == nil or
+            session.activity.nextStage == nil then return false end
+    local ok, result = pcall(session.activity.nextStage, session.activity)
+    if not ok then
+        print("JTG next-stage warning: " .. tostring(result))
+        return false
+    end
+    return result == true
+end
+
+function JTG.ToggleActivitySquares()
+    local session = JTG.Controller.session
+    if session == nil or session.activity == nil or
+            session.activity.toggleSquares == nil then return false end
+    local ok, message = pcall(session.activity.toggleSquares, session.activity)
+    if not ok then
+        print("JTG square-overlay warning: " .. tostring(message))
+        return false
+    end
+    return true
 end
 
 function JTG.LastRunnerActivity()

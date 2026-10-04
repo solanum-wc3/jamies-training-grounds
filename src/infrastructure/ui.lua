@@ -32,7 +32,22 @@ UI.ToolbarLayout = {
     rowStep = TOOLBAR_ROW_STEP,
     left = TOOLBAR_LEFT,
     top = TOOLBAR_TOP,
+    slots = {
+        menu = 1, back = 2, topics = 3, optional = 4,
+        continue = 5, next = 5, restart = 6, pause = 7,
+        setups = 3, rotate = 8, squares = 8,
+    },
 }
+
+function UI.PlaceToolbarButton(button, slot, bar)
+    local index = math.max(1, math.min(8, slot or 1)) - 1
+    local column = index % 4
+    local row = math.floor(index / 4)
+    BlzFrameClearAllPoints(button)
+    BlzFrameSetPoint(button, FRAMEPOINT_TOPLEFT, bar, FRAMEPOINT_TOPLEFT,
+        column * (TOOLBAR_BUTTON_WIDTH + TOOLBAR_BUTTON_GAP),
+        -row * TOOLBAR_ROW_STEP)
+end
 local PARAGRAPH_SCALE = 1.18
 local CATALOGUE_BUTTON_WIDTH = 0.190
 local CATALOGUE_BUTTON_HEIGHT = 0.052
@@ -794,12 +809,22 @@ function UI.ShowToolbar(capabilities)
     if UI.pausedActivityExit then BlzFrameSetVisible(UI.pausedActivityExit, false) end
     BlzFrameSetText(UI.toolbarButtons.restart, "Redo")
     BlzFrameSetText(UI.toolbarButtons.menu, "Menu")
+    BlzFrameSetText(UI.toolbarButtons.lastRunner, "Back")
     UI.clickActions[GetHandleId(UI.toolbarButtons.menu)] = JTG.OpenTrainingMenu
     BlzFrameSetVisible(UI.toolbarButtons.restart, caps.restart == true)
     BlzFrameSetVisible(UI.toolbarButtons.menu, caps.menu ~= false)
     BlzFrameSetVisible(UI.toolbarButtons.lastRunner, caps.lastRunner == true)
     BlzFrameSetVisible(UI.toolbarButtons.pause, caps.pause == true)
     BlzFrameSetVisible(UI.toolbarButtons.rotate, caps.rotate == true)
+    BlzFrameSetVisible(UI.toolbarButtons.setups, caps.setups == true)
+    BlzFrameSetVisible(UI.toolbarButtons.next, caps.next == true)
+    BlzFrameSetVisible(UI.toolbarButtons.squares, caps.squares == true)
+    BlzFrameSetEnable(UI.toolbarButtons.next, caps.next == true)
+    BlzFrameSetAlpha(UI.toolbarButtons.next, caps.next == true and 255 or 145)
+    BlzFrameSetEnable(UI.toolbarButtons.squares, caps.squares == true)
+    BlzFrameSetAlpha(UI.toolbarButtons.squares,
+        caps.squares == true and 255 or 145)
+    BlzFrameSetText(UI.toolbarButtons.squares, "Squares")
     RefreshPauseButton()
     BlzFrameSetVisible(UI.toolbar, true)
     UI.LayoutToolbar()
@@ -810,6 +835,18 @@ function UI.SetLastRunnerEnabled(enabled)
     if UI.toolbarButtons.lastRunner == nil then return end
     BlzFrameSetEnable(UI.toolbarButtons.lastRunner, enabled == true)
     BlzFrameSetAlpha(UI.toolbarButtons.lastRunner, enabled and 255 or 145)
+end
+
+function UI.SetNextEnabled(enabled)
+    if UI.toolbarButtons.next == nil then return end
+    BlzFrameSetEnable(UI.toolbarButtons.next, enabled == true)
+    BlzFrameSetAlpha(UI.toolbarButtons.next, enabled and 255 or 145)
+end
+
+function UI.SetSquaresActive(active)
+    if UI.toolbarButtons.squares == nil then return end
+    BlzFrameSetText(UI.toolbarButtons.squares,
+        active == true and "Squares: On" or "Squares")
 end
 
 function UI.ShowPausedActivityToolbar()
@@ -1380,15 +1417,11 @@ end
 
 local function CreateToolbar()
     local bar = BlzCreateFrameByType("FRAME", "JTGActivityToolbar", GAME_UI, "", 0)
-    -- Toolbars share two left-aligned rows beginning below the left edge of
-    -- the gold resource window. Both row and column gaps are half a button.
-    BlzFrameSetSize(bar, 0.285, 0.060)
+    -- Every exercise uses the same fixed two-by-four control grid.
+    BlzFrameSetSize(bar, 0.351, 0.060)
     BlzFrameSetAbsPoint(bar, FRAMEPOINT_TOPLEFT,
         TOOLBAR_LEFT, TOOLBAR_TOP)
     UI.toolbar = bar
-
-    local topRow = {}
-    local bottomRow = {}
 
     local function toolbarButton(name, label)
         local button = CreateButton(name, bar, label,
@@ -1402,20 +1435,20 @@ local function CreateToolbar()
     AttachTooltip(restart, "Cleanly reset the current activity and begin it again.", "left")
     RegisterClick(restart, JTG.ResetActivity)
     UI.toolbarButtons.restart = restart
-    table.insert(bottomRow, restart)
+    UI.PlaceToolbarButton(restart, 6, bar)
     local menu = toolbarButton("JTGToolbarMenu", "Menu")
     AttachTooltip(menu, "Change this exercise's configuration or return to the training menus.", "left")
     RegisterClick(menu, JTG.OpenTrainingMenu)
     UI.toolbarButtons.menu = menu
-    table.insert(topRow, menu)
+    UI.PlaceToolbarButton(menu, 1, bar)
 
-    local lastRunner = toolbarButton("JTGToolbarLastRunner", "Last Runner")
+    local lastRunner = toolbarButton("JTGToolbarLastRunner", "Back")
     AttachTooltip(lastRunner, "Restart the exercise against the previous runner.", "left")
     BlzFrameSetEnable(lastRunner, false)
     BlzFrameSetAlpha(lastRunner, 145)
     RegisterClick(lastRunner, JTG.LastRunnerActivity)
     UI.toolbarButtons.lastRunner = lastRunner
-    table.insert(bottomRow, lastRunner)
+    UI.PlaceToolbarButton(lastRunner, 2, bar)
 
     local rotate = toolbarButton("JTGToolbarRotate", "Rotate")
     AttachTooltip(rotate,
@@ -1423,7 +1456,29 @@ local function CreateToolbar()
         "left")
     RegisterClick(rotate, JTG.RotateActivity)
     UI.toolbarButtons.rotate = rotate
-    table.insert(bottomRow, rotate)
+    UI.PlaceToolbarButton(rotate, 8, bar)
+
+    local setups = toolbarButton("JTGToolbarSetups", "Setups")
+    AttachTooltip(setups,
+        "Choose another unit setup for this exercise.", "left")
+    RegisterClick(setups, JTG.ToggleActivitySetups)
+    UI.toolbarButtons.setups = setups
+    UI.PlaceToolbarButton(setups, 3, bar)
+
+    local nextStage = toolbarButton("JTGToolbarNext", "Next")
+    AttachTooltip(nextStage,
+        "Continue to the next runner or unit setup.", "left")
+    RegisterClick(nextStage, JTG.NextActivityStage)
+    UI.toolbarButtons.next = nextStage
+    UI.PlaceToolbarButton(nextStage, 5, bar)
+
+    local squares = toolbarButton("JTGToolbarSquares", "Squares")
+    AttachTooltip(squares,
+        "Show square outlines for each unit's movement-obstruction area.",
+        "left")
+    RegisterClick(squares, JTG.ToggleActivitySquares)
+    UI.toolbarButtons.squares = squares
+    UI.PlaceToolbarButton(squares, 8, bar)
 
     -- Match the aspect ratio of Warcraft's native Quest-button notification
     -- effect, which is authored for the wider upper-button-bar controls.
@@ -1451,27 +1506,8 @@ local function CreateToolbar()
     BlzFrameSetVisible(pauseHighlight, false)
     table.insert(UI.unpauseHighlights, pauseHighlight)
     BlzFrameSetLevel(pause, 2)
-    table.insert(topRow, pause)
-    UI.LayoutToolbar = function()
-        local function layoutRow(buttons, offsetY)
-            local previous = nil
-            for _, button in ipairs(buttons) do
-                BlzFrameClearAllPoints(button)
-                if BlzFrameIsVisible(button) then
-                    if previous == nil then
-                        BlzFrameSetPoint(button, FRAMEPOINT_TOPLEFT, bar,
-                            FRAMEPOINT_TOPLEFT, 0, offsetY)
-                    else
-                        BlzFrameSetPoint(button, FRAMEPOINT_LEFT, previous,
-                            FRAMEPOINT_RIGHT, TOOLBAR_BUTTON_GAP, 0)
-                    end
-                    previous = button
-                end
-            end
-        end
-        layoutRow(topRow, 0)
-        layoutRow(bottomRow, -TOOLBAR_ROW_STEP)
-    end
+    UI.PlaceToolbarButton(pause, 7, bar)
+    UI.LayoutToolbar = function() end
     UI.LayoutToolbar()
     BlzFrameSetVisible(bar, false)
 end
@@ -1795,6 +1831,9 @@ function UI.Initialize(restoring)
     for index, category in ipairs(JTG.Categories) do CreateCategoryPanel(category, index) end
     for index, race in ipairs(JTG.SkillRaces) do CreateSkillRacePanel(race, index) end
     CreateInfoPanel("patch", "Patch Notes",
+        "|cffffcc00v0.0.11|r  |cffb0b0b04 October 2026|r\n" ..
+        "- Added Surrounds Skill Training\n" ..
+        "- Improved map script structure\n\n" ..
         "|cffffcc00v0.0.10|r  |cffb0b0b02 October 2026|r\n" ..
         "- Added the Hotkey Setup tutorial and CustomKeys exports.\n\n" ..
         "|cffffcc00v0.0.9|r  |cffb0b0b02 October 2026|r\n" ..

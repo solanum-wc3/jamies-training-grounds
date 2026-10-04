@@ -1286,35 +1286,25 @@ function JTG.CreateCameraTutorialActivity(session)
         self.frames.bar = bar
 
         local labels = {
-            {"menu", "Menu", "top"},
-            {"pause", "Pause", "top"},
-            {"continue", "Continue", "bottom"},
-            {"back", "Back", "bottom"},
-            {"objectivesButton", "Topics", "bottom"},
-            {"optionalButton", "Optional", "bottom"},
+            {"menu", "Menu", 1},
+            {"back", "Back", 2},
+            {"objectivesButton", "Topics", 3},
+            {"optionalButton", "Optional", 4},
+            {"continue", "Continue", 5},
+            {"pause", "Pause", 7},
         }
-        local previousTop = nil
-        local previousBottom = nil
         for _, spec in ipairs(labels) do
             local button = TrackFrame(scope, CreateTutorialButton(
                 "JTGCameraTutorial" .. spec[1] .. suffix, bar,
                 spec[2], toolbarLayout.buttonWidth))
-            local row = spec[3]
-            local previous = row == "top" and previousTop or previousBottom
-            if previous == nil then
-                local offsetY = row == "top" and 0 or
-                    -toolbarLayout.rowStep
-                BlzFrameSetPoint(button, FRAMEPOINT_TOPLEFT, bar,
-                    FRAMEPOINT_TOPLEFT, 0, offsetY)
-            else
-                BlzFrameSetPoint(button, FRAMEPOINT_LEFT, previous,
-                    FRAMEPOINT_RIGHT, toolbarLayout.gap, 0)
-            end
+            local slot = spec[3] - 1
+            BlzFrameSetPoint(button, FRAMEPOINT_TOPLEFT, bar,
+                FRAMEPOINT_TOPLEFT,
+                (slot % 4) * (toolbarLayout.buttonWidth + toolbarLayout.gap),
+                -math.floor(slot / 4) * toolbarLayout.rowStep)
             self.frames[spec[1]] = button
             local label = BlzFrameGetChild(button, 4)
             if label ~= nil then BlzFrameSetScale(label, 0.72) end
-            if row == "top" then previousTop = button
-            else previousBottom = button end
         end
 
         local pauseHighlight = TrackFrame(scope, BlzCreateFrameByType("SPRITE",

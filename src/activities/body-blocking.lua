@@ -46,7 +46,7 @@ local TRAINING_ROSTERS = {
     },
     nightelf = {
         {FourCC("ewsp"), "Wisp"}, {FourCC("emtg"), "Mountain Giant"},
-        {FourCC("edob"), "Druid of the Claw (Bear Form)"}, {FourCC("earc"), "Archer"},
+        {FourCC("earc"), "Archer"},
         {FourCC("esen"), "Huntress"}, {FourCC("edry"), "Dryad"},
     },
 }
@@ -97,7 +97,6 @@ local CUSTOM_UNITS = {
         {FourCC("ewsp"), "Wisp"}, {FourCC("earc"), "Archer"},
         {FourCC("esen"), "Huntress"}, {FourCC("ebal"), "Glaive Thrower"},
         {FourCC("edry"), "Dryad"}, {FourCC("edoc"), "Druid of the Claw"},
-        {FourCC("edob"), "Druid of the Claw (Bear Form)"},
         {FourCC("edot"), "Druid of the Talon"}, {FourCC("emtg"), "Mountain Giant"},
         {FourCC("Edem"), "Demon Hunter"}, {FourCC("Ekee"), "Keeper of the Grove"},
         {FourCC("Emoo"), "Priestess of the Moon"}, {FourCC("Ewar"), "Warden"},

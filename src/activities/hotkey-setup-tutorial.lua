@@ -536,30 +536,22 @@ function JTG.CreateHotkeySetupTutorialActivity(session)
         BlzFrameSetAbsPoint(bar, FRAMEPOINT_TOPLEFT, layout.left, layout.top)
         self.frames.bar = bar
         local labels = {
-            {"menu", "Menu", "top"}, {"pause", "Pause", "top"},
-            {"export", "Export", "top"},
-            {"continue", "Continue", "bottom"},
-            {"back", "Back", "bottom"}, {"topics", "Topics", "bottom"},
+            {"menu", "Menu", 1}, {"back", "Back", 2},
+            {"topics", "Topics", 3}, {"continue", "Continue", 5},
+            {"pause", "Pause", 7}, {"export", "Export", 8},
         }
-        local previousTop, previousBottom = nil, nil
         for _, spec in ipairs(labels) do
             local button = TrackFrame(scope, CreateTutorialButton(
                 "JTGHotkeyTutorial" .. spec[1] .. suffix, bar, spec[2],
                 layout.buttonWidth))
-            local previous = spec[3] == "top" and previousTop or previousBottom
-            if previous == nil then
-                BlzFrameSetPoint(button, FRAMEPOINT_TOPLEFT, bar,
-                    FRAMEPOINT_TOPLEFT, 0,
-                    spec[3] == "top" and 0 or -layout.rowStep)
-            else
-                BlzFrameSetPoint(button, FRAMEPOINT_LEFT, previous,
-                    FRAMEPOINT_RIGHT, layout.gap, 0)
-            end
+            local slot = spec[3] - 1
+            BlzFrameSetPoint(button, FRAMEPOINT_TOPLEFT, bar,
+                FRAMEPOINT_TOPLEFT,
+                (slot % 4) * (layout.buttonWidth + layout.gap),
+                -math.floor(slot / 4) * layout.rowStep)
             self.frames[spec[1]] = button
             local label = BlzFrameGetChild(button, 4)
             if label ~= nil then BlzFrameSetScale(label, 0.72) end
-            if spec[3] == "top" then previousTop = button
-            else previousBottom = button end
         end
 
         local function createHighlight(key)
@@ -739,16 +731,23 @@ function JTG.CreateHotkeySetupTutorialActivity(session)
         -- Hidden tier-three halls satisfy shop dependencies without adding
         -- more visible buildings to the demonstration line.
         local hidden = {
-            {"hcas", 2112, 2112}, {"ofrt", 2240, 2112},
-            {"unp2", 2368, 2112}, {"etoe", 2496, 2112},
+            {"hcas", 4768, 3392}, {"ofrt", 4832, 3392},
+            {"unp2", 4896, 3392}, {"etoe", 4960, 3392},
         }
         for _, spec in ipairs(hidden) do
             local unit = JTG.ScopeTrackUnit(current.scope,
                 CreateUnit(HOTKEY_PLAYER, FourCC(spec[1]), spec[2], spec[3], 0))
             ShowUnit(unit, false)
+            SetUnitPathing(unit, false)
             SetUnitInvulnerable(unit, true)
             table.insert(self.units, unit)
         end
+        -- The hidden Undead hall is created only to unlock shop buttons.
+        -- Remove the blight it creates, both now and after activity cleanup.
+        SetBlight(HOTKEY_PLAYER, 4896, 3392, 640, false)
+        JTG.ScopeAdd(current.scope, function()
+            SetBlight(HOTKEY_PLAYER, 4896, 3392, 640, false)
+        end)
         SetPlayerState(HOTKEY_PLAYER, PLAYER_STATE_RESOURCE_FOOD_USED, 0)
         self:makeTimer(TICK_INTERVAL, true, function() self:tick() end)
     end

@@ -245,6 +245,7 @@ function JTG.CreateWindwalkPopActivity(session)
         resultDetails = nil,
         resultPrimary = nil,
         resultRetry = nil,
+        resultReplay = nil,
         resultMenu = nil,
         timerFrame = nil,
         countdownFrame = nil,
@@ -258,6 +259,9 @@ function JTG.CreateWindwalkPopActivity(session)
         breakSeen = false,
         overlapX = nil,
         overlapY = nil,
+        squaresVisible = selection.squaresVisible == true,
+        squareEntries = {},
+        presentationVisible = true,
     }
 
     function activity:createTrainingQuests()
@@ -301,12 +305,70 @@ function JTG.CreateWindwalkPopActivity(session)
         return hero
     end
 
+    function activity:addSquareOverlay(unit)
+        if unit == nil or GetUnitTypeId(unit) == 0 then return end
+        local half = JTG.UnitObstructionHalfSize(BlzGetUnitCollisionSize(unit))
+        local size = half * 2.0
+        local texture = GetOwningPlayer(unit) == Player(0) and
+            JTG.UnitSquarePlayerTexture or JTG.UnitSquareEnemyTexture
+        local image = CreateImage(texture, size, size, 0,
+            GetUnitX(unit) - half, GetUnitY(unit) - half, 2,
+            0, 0, 0, 2)
+        SetImageRenderAlways(image, true)
+        SetImageAboveWater(image, true, true)
+        ShowImage(image, self.squaresVisible and self.presentationVisible)
+        self.squareEntries[#self.squareEntries + 1] = {
+            unit = unit, image = image, half = half,
+        }
+        JTG.ScopeAdd(session.presentationScope, function()
+            if image ~= nil then DestroyImage(image) end
+        end)
+    end
+
+    function activity:createSquareOverlays()
+        self.squareEntries = {}
+        local added = {}
+        local function add(unit)
+            if unit ~= nil and not added[GetHandleId(unit)] then
+                added[GetHandleId(unit)] = true
+                self:addSquareOverlay(unit)
+            end
+        end
+        add(self.blademaster)
+        add(self.surroundee)
+        for _, unit in ipairs(self.humanArmy) do add(unit) end
+        for _, unit in ipairs(self.timedTargets) do add(unit) end
+        for _, ring in ipairs(self.timedRings) do
+            for _, unit in ipairs(ring) do add(unit) end
+        end
+        for _, unit in ipairs(self.summonedWaterElementals) do add(unit) end
+    end
+
+    function activity:updateSquareOverlays()
+        for _, entry in ipairs(self.squareEntries) do
+            if entry.unit ~= nil and GetUnitTypeId(entry.unit) ~= 0 then
+                SetImagePosition(entry.image, GetUnitX(entry.unit) - entry.half,
+                    GetUnitY(entry.unit) - entry.half, 2)
+                ShowImage(entry.image,
+                    self.squaresVisible and self.presentationVisible)
+            end
+        end
+    end
+
+    function activity:toggleSquares()
+        self.squaresVisible = not self.squaresVisible
+        self:updateSquareOverlays()
+        if JTG.UI and JTG.UI.SetSquaresActive then
+            JTG.UI.SetSquaresActive(self.squaresVisible)
+        end
+    end
+
     function activity:createResultUI()
         local gameUI = BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0)
         self.resultBackdrop = TrackFrame(session.presentationScope,
             JTG.UI.CreateNativePanel("JTGWindwalkPopResult", gameUI, 0.32,
-                0.30))
-        BlzFrameSetSize(self.resultBackdrop, 0.32, 0.30)
+                0.345))
+        BlzFrameSetSize(self.resultBackdrop, 0.32, 0.345)
         BlzFrameSetAbsPoint(self.resultBackdrop, FRAMEPOINT_CENTER, 0.40,
             0.325)
         self.resultTitle = TrackFrame(session.presentationScope,
@@ -362,8 +424,10 @@ function JTG.CreateWindwalkPopActivity(session)
             end)
         self.resultRetry = addButton("JTGWindwalkPopResultRetry", "Retry",
             0.075, -0.185, function() JTG.ResetActivity() end)
+        self.resultReplay = addButton("JTGWindwalkPopResultReplay", "Replay",
+            0.075, -0.230, function() JTG.ResetActivity() end)
         self.resultMenu = addButton("JTGWindwalkPopResultMenu", "Menu", 0.075,
-            -0.230,
+            -0.275,
             function()
                 BlzFrameSetVisible(self.resultBackdrop, false)
                 JTG.OpenTrainingMenu()
@@ -421,14 +485,18 @@ function JTG.CreateWindwalkPopActivity(session)
         end
         BlzFrameSetText(self.resultPrimary, primary)
         BlzFrameSetVisible(self.resultPrimary, showPrimary)
+        BlzFrameSetVisible(self.resultRetry, false)
         BlzFrameClearAllPoints(self.resultRetry)
+        BlzFrameClearAllPoints(self.resultReplay)
         BlzFrameClearAllPoints(self.resultMenu)
         BlzFrameSetPoint(self.resultRetry, FRAMEPOINT_TOPLEFT,
-            self.resultBackdrop, FRAMEPOINT_TOPLEFT,
-            0.075, showPrimary and -0.185 or -0.160)
+            self.resultBackdrop, FRAMEPOINT_TOPLEFT, 0.075, -0.185)
         BlzFrameSetPoint(self.resultMenu, FRAMEPOINT_TOPLEFT,
             self.resultBackdrop, FRAMEPOINT_TOPLEFT, 0.075,
             showPrimary and -0.230 or -0.205)
+        BlzFrameSetPoint(self.resultReplay, FRAMEPOINT_TOPLEFT,
+            self.resultBackdrop, FRAMEPOINT_TOPLEFT, 0.075,
+            showPrimary and -0.185 or -0.160)
         BlzFrameSetVisible(self.resultBackdrop, true)
         if self.timerFrame ~= nil then BlzFrameSetVisible(self.timerFrame, false) end
         if JTG.UI then JTG.UI.HideToolbar() end
@@ -824,6 +892,7 @@ function JTG.CreateWindwalkPopActivity(session)
             if GetSummoningUnit() == self.archmage and summoned ~= nil and
                     WATER_ELEMENTAL_UNIT_IDS[GetUnitTypeId(summoned)] then
                 table.insert(self.summonedWaterElementals, summoned)
+                self:addSquareOverlay(summoned)
             end
         end))
         JTG.ScopeAdd(session.scope, function()
@@ -1284,6 +1353,12 @@ function JTG.CreateWindwalkPopActivity(session)
         RemoveRect(visible)
 
         self:createScenario()
+        self:createSquareOverlays()
+        self.squareTimer = JTG.ScopeTrackTimer(current.scope, CreateTimer())
+        TimerStart(self.squareTimer, 0.03, true,
+            JTG.GuardSession(current, function()
+                self:updateSquareOverlays()
+            end))
         self:createTrainingQuests()
         self:createTimerUI()
         self:createCountdownUI()
@@ -1298,15 +1373,19 @@ function JTG.CreateWindwalkPopActivity(session)
                 JTG.UI.HighlightQuestButton then
             JTG.UI.HighlightQuestButton(5.0)
         end
+        if JTG.UI and JTG.UI.SetSquaresActive then
+            JTG.UI.SetSquaresActive(self.squaresVisible)
+        end
         self:startCountdown()
     end
 
     function activity:captureResetState()
         return {mode = self.mode, timedStage = self.timedStage,
-            skipQuestHighlight = true}
+            skipQuestHighlight = true, squaresVisible = self.squaresVisible}
     end
 
     function activity:restorePresentation()
+        self.presentationVisible = true
         if self.finished then
             if not self.resultPending then self:renderResultPresentation()
             elseif JTG.UI then JTG.UI.HideToolbar() end
@@ -1317,6 +1396,7 @@ function JTG.CreateWindwalkPopActivity(session)
             BlzFrameSetVisible(self.countdownFrame, true)
             if JTG.UI then
                 JTG.UI.ShowToolbar(session.descriptor.capabilities)
+                JTG.UI.SetSquaresActive(self.squaresVisible)
             end
         else
             if self.timerFrame ~= nil then
@@ -1325,11 +1405,13 @@ function JTG.CreateWindwalkPopActivity(session)
             end
             if JTG.UI then
                 JTG.UI.ShowToolbar(session.descriptor.capabilities)
+                JTG.UI.SetSquaresActive(self.squaresVisible)
             end
         end
     end
 
     function activity:hidePresentationForMenu()
+        self.presentationVisible = false
         if self.timerFrame ~= nil then BlzFrameSetVisible(self.timerFrame, false) end
         if self.countdownFrame ~= nil then
             BlzFrameSetVisible(self.countdownFrame, false)
@@ -1337,6 +1419,7 @@ function JTG.CreateWindwalkPopActivity(session)
         if self.resultBackdrop ~= nil then
             BlzFrameSetVisible(self.resultBackdrop, false)
         end
+        self:updateSquareOverlays()
     end
 
     function activity:rebuildPresentation()
@@ -1345,12 +1428,14 @@ function JTG.CreateWindwalkPopActivity(session)
         self.resultDetails = nil
         self.resultPrimary = nil
         self.resultRetry = nil
+        self.resultReplay = nil
         self.resultMenu = nil
         self.timerFrame = nil
         self.countdownFrame = nil
         self:createTimerUI()
         self:createCountdownUI()
         self:createResultUI()
+        self:createSquareOverlays()
         if self.finished then
             if not self.resultPending then self:renderResultPresentation()
             elseif JTG.UI then JTG.UI.HideToolbar() end
@@ -1371,9 +1456,11 @@ function JTG.CreateWindwalkPopActivity(session)
         self.resultDetails = nil
         self.resultPrimary = nil
         self.resultRetry = nil
+        self.resultReplay = nil
         self.resultMenu = nil
         self.timerFrame = nil
         self.countdownFrame = nil
+        self.squareEntries = {}
     end
 
     function activity:cleanup()
@@ -1398,6 +1485,7 @@ function JTG.CreateWindwalkPopActivity(session)
         self.popOriginY = nil
         self.hardMovementLocked = false
         self.hardTargetMoveSpeed = nil
+        self.squareEntries = {}
     end
 
     return activity

@@ -1446,31 +1446,23 @@ function JTG.CreateUnitControlsTutorialActivity(session)
             toolbarLayout.left, toolbarLayout.top)
         self.frames.bar = bar
         local labels = {
-            {"menu", "Menu", "top"}, {"pause", "Pause", "top"},
-            {"continue", "Continue", "bottom"},
-            {"back", "Back", "bottom"},
-            {"topicsButton", "Topics", "bottom"},
-            {"optionalButton", "Optional", "bottom"},
+            {"menu", "Menu", 1}, {"back", "Back", 2},
+            {"topicsButton", "Topics", 3},
+            {"optionalButton", "Optional", 4},
+            {"continue", "Continue", 5}, {"pause", "Pause", 7},
         }
-        local previousTop, previousBottom = nil, nil
         for _, spec in ipairs(labels) do
             local button = TrackFrame(scope, CreateTutorialButton(
                 "JTGUnitControlsTutorial" .. spec[1] .. suffix,
                 bar, spec[2], toolbarLayout.buttonWidth))
-            local previous = spec[3] == "top" and previousTop or previousBottom
-            if previous == nil then
-                BlzFrameSetPoint(button, FRAMEPOINT_TOPLEFT, bar,
-                    FRAMEPOINT_TOPLEFT, 0,
-                    spec[3] == "top" and 0 or -toolbarLayout.rowStep)
-            else
-                BlzFrameSetPoint(button, FRAMEPOINT_LEFT, previous,
-                    FRAMEPOINT_RIGHT, toolbarLayout.gap, 0)
-            end
+            local slot = spec[3] - 1
+            BlzFrameSetPoint(button, FRAMEPOINT_TOPLEFT, bar,
+                FRAMEPOINT_TOPLEFT,
+                (slot % 4) * (toolbarLayout.buttonWidth + toolbarLayout.gap),
+                -math.floor(slot / 4) * toolbarLayout.rowStep)
             self.frames[spec[1]] = button
             local label = BlzFrameGetChild(button, 4)
             if label ~= nil then BlzFrameSetScale(label, 0.72) end
-            if spec[3] == "top" then previousTop = button
-            else previousBottom = button end
         end
 
         local highlight = TrackFrame(scope, BlzCreateFrameByType("SPRITE",

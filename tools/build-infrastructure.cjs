@@ -18,7 +18,7 @@ const {
 } = req('@jamiephan/stormlib');
 const luaParser = req('luaparse');
 
-const version = 'v0.0.11-alpha19';
+const version = 'v0.0.11';
 const sourcePath = path.join(root, 'reference/foundation/Jamies-Training-Grounds-v0.0.1-alpha.5.w3x');
 const outputPath = path.join(root, `outputs/Jamies-Training-Grounds-${version}.w3x`);
 const reportPath = path.join(root, `outputs/Jamies-Training-Grounds-${version}-validation.json`);
@@ -40,6 +40,8 @@ const modulePaths = [
     'src/infrastructure/bootstrap.lua',
 ];
 const assetPaths = [
+    ['JTGOverlay\\UnitSquaresEnemy.dds', 'src/assets/overlay/UnitSquaresEnemy.dds'],
+    ['JTGOverlay\\UnitSquaresPlayer.dds', 'src/assets/overlay/UnitSquaresPlayer.dds'],
     ['JTGMenu\\BodyBlocking.dds', 'src/assets/menu/BodyBlocking.dds'],
     ['JTGMenu\\BodyBlockingBriefing.dds', 'src/assets/menu/BodyBlockingBriefing.dds'],
     ['JTGMenu\\PowerBuilding.dds', 'src/assets/menu/PowerBuilding.dds'],
@@ -120,8 +122,13 @@ const moduleBuffers = modulePaths.map(relativePath => {
     const bytes = fs.readFileSync(path.join(root, relativePath));
     return {relativePath, bytes, sha256: hash(bytes)};
 });
+// Keep each source file in its own lexical scope. Warcraft uses Lua's normal
+// limit for simultaneously active locals when it compiles war3map.lua. A flat
+// concatenation makes every file-level local live until the end of the map
+// script, so an otherwise valid new module can make Warcraft report the whole
+// map as corrupted. Exported JTG members remain global across these scopes.
 const bundle = moduleBuffers.map(module =>
-    `-- BEGIN ${module.relativePath}\n${module.bytes.toString('utf8').trim()}\n-- END ${module.relativePath}`
+    `-- BEGIN ${module.relativePath}\ndo\n${module.bytes.toString('utf8').trim()}\nend\n-- END ${module.relativePath}`
 ).join('\n\n') + '\n';
 luaParser.parse(bundle, {luaVersion: '5.3'});
 
@@ -175,10 +182,35 @@ assert(nextLua.includes('function JTG.RotateActivity()') &&
 assert(nextLua.includes('function JTG.OpenSurroundsMenu') &&
     nextLua.includes('id = "skills.surround"'),
     'Surrounds briefing is missing from the compiled map');
+assert(nextLua.includes('function JTG.CreateSurroundsActivity(session)') &&
+    nextLua.includes('JTGToolbarSetups') &&
+    nextLua.includes('JTGToolbarNext') &&
+    nextLua.includes('JTGToolbarSquares'),
+    'Surround Training activity or setup selector is missing from the compiled map');
+assert(nextLua.includes('How to Surround') &&
+    nextLua.includes('How it works...') &&
+    nextLua.includes('JTGOverlay\\\\UnitSquaresPlayer.dds') &&
+    nextLua.includes('JTGOverlay\\\\UnitSquaresEnemy.dds') &&
+    nextLua.includes('CreateImage(texture, size, size, 0') &&
+    nextLua.includes('function JTG.UnitObstructionHalfSize(collision)'),
+    'Surround Training quests or authored unit-square overlays are missing');
+assert(!nextLua.includes('Square Calibration') &&
+    !nextLua.includes('Collision Diagnostics'),
+    'Development-only Surround diagnostics remain in the release map');
 assert(nextLua.includes('function JTG.CreateWindwalkPopActivity(session)'),
     'Windwalk Pop activity factory is missing from the compiled map');
 assert(nextLua.includes('title = "Windwalk Pop"'),
     'Windwalk Pop catalogue entry is missing from the compiled map');
+assert(nextLua.includes('JTGWindwalkPopResultReplay') &&
+    nextLua.includes('squares = true'),
+    'Windwalk Pop Replay or square overlays are missing');
+assert(nextLua.includes('UI.PlaceToolbarButton(menu, 1, bar)') &&
+    nextLua.includes('UI.PlaceToolbarButton(restart, 6, bar)') &&
+    nextLua.includes('UI.PlaceToolbarButton(pause, 7, bar)') &&
+    nextLua.includes('UI.PlaceToolbarButton(squares, 8, bar)'),
+    'The standardized fixed toolbar layout is missing');
+assert(nextLua.includes('SetBlight(HOTKEY_PLAYER, 4896, 3392, 640, false)'),
+    'Hotkey Setup blight cleanup is missing');
 assert(nextLua.includes('title = "1. Camera"'),
     'Camera tutorial catalogue entry is missing from the compiled map');
 assert(nextLua.includes('EVENT_GAME_LOADED') && nextLua.includes('RestoreLoadedGame'),
@@ -332,7 +364,7 @@ try {
 assert.equal(hash(fs.readFileSync(sourcePath)), acceptedHash, 'Source foundation was modified');
 const report = {
     version,
-    purpose: 'Test the expanded Hotkey Setup tutorial and three-file export.',
+    purpose: 'Release Surrounds training and the standardized exercise interface.',
     acceptedFoundation: {
         path: path.relative(root, sourcePath).replaceAll('\\', '/'),
         sha256: acceptedHash,

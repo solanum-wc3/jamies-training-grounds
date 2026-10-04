@@ -127,11 +127,15 @@ JTG.RegisterActivity({
     id = "skills.surround",
     category = "skills",
     title = "Surrounds",
+    menuOrder = 20,
     description = "Trap a target with coordinated movement.",
     artwork = "JTGMenu\\Surrounds.dds",
     status = "available",
-    capabilities = {},
+    sceneId = "arena.south",
+    capabilities = {restart = true, menu = true, pause = true,
+        setups = true, next = true, squares = true, quests = true},
     menu = JTG.OpenSurroundsMenu,
+    factory = JTG.CreateSurroundsActivity,
 })
 
 JTG.RegisterActivity({
@@ -147,7 +151,8 @@ JTG.RegisterActivity({
     skillRaces = {"orc"},
     status = "available",
     sceneId = "arena.north",
-    capabilities = {restart = true, menu = true, pause = true, quests = true},
+    capabilities = {restart = true, menu = true, pause = true, quests = true,
+        squares = true},
     menu = JTG.OpenWindwalkPopMenu,
     factory = JTG.CreateWindwalkPopActivity,
 })
@@ -156,6 +161,7 @@ JTG.RegisterActivity({
     id = "skills.body_blocking",
     category = "skills",
     title = "Body Blocking",
+    menuOrder = 10,
     description = "Stay in front of a runner and use unit collision to delay it.",
     artwork = "JTGMenu\\BodyBlocking.dds",
     status = "available",
