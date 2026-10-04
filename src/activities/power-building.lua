@@ -93,12 +93,19 @@ function JTG.OpenPowerBuildingMenu(originCategory, pauseGame, restorePage, resto
     end
     showRoot = function()
         local choices = {}
-        for _, building in ipairs(BUILDINGS) do
+        for index, building in ipairs(BUILDINGS) do
             local unitId, unitName, workerRadius, prerequisites, goldCost, lumberCost =
                 building[1], building[2], building[3], building[4], building[5], building[6]
+            local fallbackColumn = (index - 1) % 4
+            local fallbackRow = math.floor((index - 1) / 4)
+            local commandCard = JTG.GetUnitCommandCardMetadata(unitId,
+                fallbackColumn, fallbackRow)
             table.insert(choices, {
                 label = unitName,
                 tooltip = "Compare one through ten Peasants constructing a " .. unitName .. ".",
+                icon = commandCard.icon,
+                column = commandCard.column,
+                row = commandCard.row,
                 action = function()
                     selection.buildingId = unitId
                     selection.buildingName = unitName
@@ -113,8 +120,7 @@ function JTG.OpenPowerBuildingMenu(originCategory, pauseGame, restorePage, resto
         show({
             body = POWER_BUILDING_INTRO,
             choices = choices,
-            compactChoices = true,
-            compactColumns = 4,
+            commandGridChoices = true,
             backAction = function()
                 if pauseGame then JTG.UI.ShowCategory(originCategory or "tools")
                 else releaseMenuPause(); JTG.UI.ShowCategory(originCategory or "tools") end

@@ -66,6 +66,9 @@ local BRIEFING_COMPACT_CHOICE_HEIGHT = 0.033
 local BRIEFING_IMAGE_CENTER_X = 0.167
 local BRIEFING_IMAGE_TOP_OFFSET = -0.025
 local BRIEFING_DIVIDER_BUTTON_GAP = 0.013
+local BRIEFING_COMMAND_BUTTON_SIZE = 0.043
+local BRIEFING_COMMAND_BUTTON_STEP = 0.049
+local BRIEFING_COMMAND_GRID_TOP = -0.247
 local SECTIONED_CATEGORY_LAYOUTS = {advanced = true, skills = true}
 local footerDividerCount = 0
 
@@ -1112,12 +1115,13 @@ local function RefreshActivityBriefingChoices()
     local actions = UI.activityBriefingActions or {}
     local compact = UI.activityBriefingCompact == true
     local compactColumns = UI.activityBriefingCompactColumns
+    local commandGrid = UI.activityBriefingCommandGrid == true
     UI.activityBriefingVisibleActions = {}
     for index, button in ipairs(UI.activityBriefingButtons or {}) do
         local choice = actions[index]
         UI.activityBriefingVisibleActions[index] = choice
-        BlzFrameSetVisible(button, choice ~= nil)
-        if choice ~= nil then
+        BlzFrameSetVisible(button, not commandGrid and choice ~= nil)
+        if not commandGrid and choice ~= nil then
             local x, y = BriefingChoicePoint(index, #actions, compact, compactColumns,
                 UI.activityBriefingCenterSingle)
             x = choice.x or x
@@ -1149,6 +1153,37 @@ local function RefreshActivityBriefingChoices()
                 BlzConvertColor(255, 255, 255, 255)))
         end
     end
+    for index, button in ipairs(UI.activityBriefingCommandButtons or {}) do
+        local choice = actions[index]
+        BlzFrameSetVisible(button, commandGrid and choice ~= nil)
+        if commandGrid and choice ~= nil then
+            local column = choice.column
+            local row = choice.row
+            if column == nil or row == nil then
+                column = (index - 1) % 4
+                row = math.floor((index - 1) / 4)
+            end
+            column = math.max(0, math.min(3, column))
+            row = math.max(0, math.min(2, row))
+            BlzFrameClearAllPoints(button)
+            BlzFrameSetPoint(button, FRAMEPOINT_TOP, UI.panels.activityBriefing,
+                FRAMEPOINT_TOP,
+                (column - 1.5) * BRIEFING_COMMAND_BUTTON_STEP,
+                BRIEFING_COMMAND_GRID_TOP - row * BRIEFING_COMMAND_BUTTON_STEP +
+                    (UI.activityBriefingChoiceOffsetY or 0))
+            BlzFrameSetTexture(UI.activityBriefingCommandArtwork[index],
+                choice.icon or "ReplaceableTextures\\CommandButtons\\BTNCancel.blp",
+                0, true)
+            local enabled = choice.enabled ~= false
+            BlzFrameSetEnable(button, enabled)
+            BlzFrameSetAlpha(button, enabled and 255 or 145)
+            local tooltipText = "|cffffcc00" .. (choice.label or "") .. "|r"
+            if choice.tooltip ~= nil and choice.tooltip ~= "" then
+                tooltipText = tooltipText .. "|n|cffffffff" .. choice.tooltip .. "|r"
+            end
+            BlzFrameSetText(UI.activityBriefingCommandTooltipText[index], tooltipText)
+        end
+    end
 end
 
 function UI.ShowActivityBriefing(spec)
@@ -1157,8 +1192,15 @@ function UI.ShowActivityBriefing(spec)
     local actions = spec.choices or {}
     local compact = spec.compactChoices == true
     local compactColumns = spec.compactColumns
-    local _, firstChoiceY = BriefingChoicePoint(1, math.max(1, #actions),
-        compact, compactColumns, spec.centerSingleChoice == true)
+    local commandGrid = spec.commandGridChoices == true
+    local firstChoiceY
+    if commandGrid then
+        firstChoiceY = BRIEFING_COMMAND_GRID_TOP
+    else
+        local unusedX
+        unusedX, firstChoiceY = BriefingChoicePoint(1, math.max(1, #actions),
+            compact, compactColumns, spec.centerSingleChoice == true)
+    end
     firstChoiceY = firstChoiceY + (spec.choiceOffsetY or 0)
     UI.SetGameplayMenuPaused(spec.pauseGame == true)
     SetActivityOverlayVisible(false)
@@ -1189,6 +1231,7 @@ function UI.ShowActivityBriefing(spec)
     UI.activityBriefingActions = actions
     UI.activityBriefingCompact = compact
     UI.activityBriefingCompactColumns = compactColumns
+    UI.activityBriefingCommandGrid = commandGrid
     UI.activityBriefingCenterSingle = spec.centerSingleChoice == true
     UI.activityBriefingChoiceOffsetY = spec.choiceOffsetY or 0
     UI.activityBriefingChoiceWidth = spec.choiceWidth
@@ -1604,6 +1647,33 @@ local function CreateActivityBriefingPanel()
         end)
     end
 
+    UI.activityBriefingCommandButtons = {}
+    UI.activityBriefingCommandArtwork = {}
+    UI.activityBriefingCommandTooltipText = {}
+    for index = 1, 12 do
+        local button = BlzCreateFrameByType("BUTTON",
+            "JTGActivityBriefingCommandChoice" .. index, panel, "", 0)
+        BlzFrameSetSize(button, BRIEFING_COMMAND_BUTTON_SIZE,
+            BRIEFING_COMMAND_BUTTON_SIZE)
+        BlzFrameSetPoint(button, FRAMEPOINT_TOP, panel, FRAMEPOINT_TOP, 0, -0.305)
+        local artwork = BlzCreateFrameByType("BACKDROP",
+            "JTGActivityBriefingCommandArtwork" .. index, button, "", 0)
+        BlzFrameSetAllPoints(artwork, button)
+        BlzFrameSetEnable(artwork, false)
+        local _, tooltipText = AttachTooltip(button,
+            "Building name|nCompare one through ten Peasants constructing this building.",
+            "right")
+        UI.activityBriefingCommandButtons[index] = button
+        UI.activityBriefingCommandArtwork[index] = artwork
+        UI.activityBriefingCommandTooltipText[index] = tooltipText
+        RegisterClick(button, function()
+            local choice = UI.activityBriefingVisibleActions and
+                UI.activityBriefingVisibleActions[index]
+            if choice ~= nil and choice.action ~= nil then choice.action() end
+        end)
+        BlzFrameSetVisible(button, false)
+    end
+
     local back = CreateFooterButton("JTGActivityBriefingBack", panel, "Back",
         "center", function()
         if UI.activityBriefingBackAction ~= nil then UI.activityBriefingBackAction() end
@@ -1790,6 +1860,10 @@ function UI.AbandonForLoad()
     UI.activityBriefingVisibleActions = nil
     UI.activityBriefingButtons = nil
     UI.activityBriefingTooltipText = nil
+    UI.activityBriefingCommandButtons = nil
+    UI.activityBriefingCommandArtwork = nil
+    UI.activityBriefingCommandTooltipText = nil
+    UI.activityBriefingCommandGrid = nil
     UI.currentBackAction = nil
     UI.clickTrigger = nil
     UI.escapeTrigger = nil

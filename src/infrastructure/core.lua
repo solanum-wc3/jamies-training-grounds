@@ -19,6 +19,45 @@ function JTG.TutorialMenuHeight(buttonCount)
     return 0.095 + math.max(0, buttonCount or 0) * 0.029
 end
 
+-- Read the same unit-type data Warcraft uses to place a train/build button in
+-- the command card. CustomKeys overrides are loaded into that data by the
+-- client; callers must therefore use the result for local presentation only.
+-- The temporary unit is removed in the same script turn and never participates
+-- in an activity.
+JTG.UnitCommandCardMetadata = {}
+
+function JTG.GetUnitCommandCardMetadata(unitId, fallbackColumn, fallbackRow)
+    local cached = JTG.UnitCommandCardMetadata[unitId]
+    if cached ~= nil then return cached end
+
+    local column = fallbackColumn or 0
+    local row = fallbackRow or 0
+    local icon = nil
+    local sample = CreateUnit(Player(PLAYER_NEUTRAL_PASSIVE), unitId,
+        GetRectMinX(bj_mapInitialPlayableArea) + 64.0,
+        GetRectMinY(bj_mapInitialPlayableArea) + 64.0, 270.0)
+    if sample ~= nil then
+        ShowUnit(sample, false)
+        local reportedColumn = BlzGetUnitIntegerField(sample,
+            ConvertUnitIntegerField(FourCC("ubpx")))
+        local reportedRow = BlzGetUnitIntegerField(sample,
+            ConvertUnitIntegerField(FourCC("ubpy")))
+        local reportedIcon = BlzGetUnitStringField(sample,
+            ConvertUnitStringField(FourCC("uico")))
+        if reportedColumn >= 0 and reportedColumn <= 3 and
+                reportedRow >= 0 and reportedRow <= 2 then
+            column = reportedColumn
+            row = reportedRow
+        end
+        if reportedIcon ~= nil and reportedIcon ~= "" then icon = reportedIcon end
+        RemoveUnit(sample)
+    end
+
+    cached = {column = column, row = row, icon = icon}
+    JTG.UnitCommandCardMetadata[unitId] = cached
+    return cached
+end
+
 JTG.Registry = {byId = {}, ordered = {}}
 JTG.Scenes = {}
 JTG.BootstrapInitializers = {}

@@ -19,7 +19,7 @@ const {
 const luaParser = req('luaparse');
 
 const version = 'v0.1.0';
-const alpha = 'alpha6';
+const alpha = 'alpha7';
 const modeArgument = process.argv.find(argument => argument.startsWith('--mode='));
 const buildMode = modeArgument ? modeArgument.slice('--mode='.length) : 'release';
 assert(['release', 'development'].includes(buildMode),
@@ -170,6 +170,10 @@ assert(nextLua.includes('function JTG.CreatePowerBuildingActivity(session)'),
     'Power Building activity factory is missing from the compiled map');
 assert(nextLua.includes('id = "tools.power_building"'),
     'Power Building catalogue registration is missing from the compiled map');
+assert(nextLua.includes('function JTG.GetUnitCommandCardMetadata(') &&
+    nextLua.includes('commandGridChoices = true') &&
+    nextLua.includes('JTGActivityBriefingCommandChoice'),
+    'Reusable command-card briefing grid is missing from the compiled map');
 assert(nextLua.includes('function JTG.CreateCameraTutorialActivity(session)'),
     'Camera tutorial activity factory is missing from the compiled map');
 assert(nextLua.includes('function JTG.CreateUnitControlsTutorialActivity(session)'),

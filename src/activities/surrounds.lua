@@ -716,13 +716,13 @@ function JTG.CreateSurroundsActivity(session)
             },
             {
                 title = "How it works...",
-                icon = "ReplaceableTextures\\CommandButtons\\BTNPatrol.blp",
+                icon = "ReplaceableTextures\\CommandButtons\\BTNHeroLevelUp.blp",
                 text = JTG.SurroundHowItWorksQuestText,
                 required = false,
             },
             {
                 title = "Tip: Mixed Selections",
-                icon = "ReplaceableTextures\\CommandButtons\\BTNFormation.blp",
+                icon = "ReplaceableTextures\\CommandButtons\\BTNMove.blp",
                 text = JTG.SurroundMixedSelectionsQuestText,
                 required = false,
             },
