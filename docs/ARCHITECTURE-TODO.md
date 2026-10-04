@@ -14,8 +14,8 @@ Status: implemented and verified in game.
 
 ## 2. Shared activity lifecycle
 
-Status: implemented; the expanded automated lifecycle check awaits an in-game
-run.
+Status: implemented and verified in game with the development-build automated
+lifecycle check.
 
 - The controller now runs semantic cleanup, disposes presentation and gameplay
   resources, and then runs a guaranteed final cleanup stage.
