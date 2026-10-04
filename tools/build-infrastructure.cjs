@@ -209,8 +209,10 @@ assert(nextLua.includes('UI.PlaceToolbarButton(menu, 1, bar)') &&
     nextLua.includes('UI.PlaceToolbarButton(pause, 7, bar)') &&
     nextLua.includes('UI.PlaceToolbarButton(squares, 8, bar)'),
     'The standardized fixed toolbar layout is missing');
-assert(nextLua.includes('SetBlight(HOTKEY_PLAYER, 4896, 3392, 640, false)'),
+assert(nextLua.includes('SetBlight(HOTKEY_PLAYER, 4896, 3392, 1024, false)'),
     'Hotkey Setup blight cleanup is missing');
+assert(nextLua.includes('centerSingleChoice = true'),
+    'Centered single-choice activity menus are missing');
 assert(nextLua.includes('title = "1. Camera"'),
     'Camera tutorial catalogue entry is missing from the compiled map');
 assert(nextLua.includes('EVENT_GAME_LOADED') && nextLua.includes('RestoreLoadedGame'),

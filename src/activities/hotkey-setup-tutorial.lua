@@ -734,19 +734,33 @@ function JTG.CreateHotkeySetupTutorialActivity(session)
             {"hcas", 4768, 3392}, {"ofrt", 4832, 3392},
             {"unp2", 4896, 3392}, {"etoe", 4960, 3392},
         }
+        local hiddenHalls = {}
         for _, spec in ipairs(hidden) do
-            local unit = JTG.ScopeTrackUnit(current.scope,
-                CreateUnit(HOTKEY_PLAYER, FourCC(spec[1]), spec[2], spec[3], 0))
+            local unit = CreateUnit(HOTKEY_PLAYER, FourCC(spec[1]),
+                spec[2], spec[3], 0)
             ShowUnit(unit, false)
             SetUnitPathing(unit, false)
             SetUnitInvulnerable(unit, true)
+            table.insert(hiddenHalls, unit)
             table.insert(self.units, unit)
         end
         -- The hidden Undead hall is created only to unlock shop buttons.
-        -- Remove the blight it creates, both now and after activity cleanup.
-        SetBlight(HOTKEY_PLAYER, 4896, 3392, 640, false)
+        -- Clear its blight after Warcraft has applied the building terrain, then
+        -- remove the halls before clearing it again during activity cleanup.
+        local function clearHiddenBlight()
+            SetBlight(HOTKEY_PLAYER, 4896, 3392, 1024, false)
+        end
+        clearHiddenBlight()
+        local blightTimer = JTG.ScopeTrackTimer(current.scope, CreateTimer())
+        TimerStart(blightTimer, 0.10, false,
+            JTG.GuardSession(current, clearHiddenBlight))
         JTG.ScopeAdd(current.scope, function()
-            SetBlight(HOTKEY_PLAYER, 4896, 3392, 640, false)
+            for _, unit in ipairs(hiddenHalls) do
+                if unit ~= nil and GetUnitTypeId(unit) ~= 0 then
+                    RemoveUnit(unit)
+                end
+            end
+            clearHiddenBlight()
         end)
         SetPlayerState(HOTKEY_PLAYER, PLAYER_STATE_RESOURCE_FOOD_USED, 0)
         self:makeTimer(TICK_INTERVAL, true, function() self:tick() end)

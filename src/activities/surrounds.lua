@@ -244,6 +244,7 @@ function JTG.OpenSurroundsMenu(originCategory, pauseGame, restorePage,
                 {label = "Start Training", primary = true,
                     action = showRaces},
             },
+            centerSingleChoice = true,
             backAction = function()
                 if pauseGame then JTG.UI.ShowCategory(originCategory or "skills")
                 else JTG.UI.ShowCategory(originCategory or "skills") end
