@@ -856,6 +856,7 @@ function JTG.CreateBodyBlockingActivity(session)
         local hasReplay = self.replaySamples ~= nil and #self.replaySamples > 0
         JTG.UI.ShowResultCard(self.resultCard, {
             title = self.resultTitleText,
+            tone = self.resultTone,
             details = self.resultDetailsText or "",
             actions = {
                 replay = {enabled = hasReplay},
@@ -887,8 +888,10 @@ function JTG.CreateBodyBlockingActivity(session)
             self.raceComplete = self.runnerIndex >= #TRAINING_ROSTERS[self.race]
         end
         self.resultTitleText = self.raceComplete and
-            "|cffffcc00" .. string.upper(self.race) .. " ROSTER COMPLETE|r" or
-            (maxed and "|cff80ff80MAXIMUM DELAY!|r" or "|cffffcc00RUN COMPLETE|r")
+            (string.upper(self.race) .. " ROSTER COMPLETE") or
+            (maxed and "MAXIMUM DELAY!" or "RUN COMPLETE")
+        self.resultTone = self.raceComplete and "neutral" or
+            (maxed and "success" or "neutral")
         local nextText = self.mode == "training" and
             '|cffccccccPress |r|cffd7bd6aNext Runner|r|cffcccccc to advance!|r' or
             'Press "Redo" to retry this custom matchup.'

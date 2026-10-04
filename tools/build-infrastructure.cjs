@@ -19,7 +19,7 @@ const {
 const luaParser = req('luaparse');
 
 const version = 'v0.1.0';
-const alpha = 'alpha3';
+const alpha = 'alpha4';
 const modeArgument = process.argv.find(argument => argument.startsWith('--mode='));
 const buildMode = modeArgument ? modeArgument.slice('--mode='.length) : 'release';
 assert(['release', 'development'].includes(buildMode),
@@ -227,6 +227,7 @@ assert(nextLua.includes('title = "Windwalk Pop"'),
     'Windwalk Pop catalogue entry is missing from the compiled map');
 assert(nextLua.includes('function UI.CreateResultCard(session, options)') &&
     nextLua.includes('function JTG.ActivateResultAction(action)') &&
+    nextLua.includes('RESULT_TITLE_COLORS') &&
     nextLua.includes('name = "JTGWindwalkPopResult"') &&
     nextLua.includes('name = "JTGSurroundResult"') &&
     nextLua.includes('name = "JTGBodyBlockResult"') &&

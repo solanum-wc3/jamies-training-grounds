@@ -680,6 +680,11 @@ local RESULT_ACTION_ORDER = {"replay", "retry", "next", "menu"}
 local RESULT_ACTION_LABELS = {
     replay = "Replay", retry = "Retry", next = "Next", menu = "Menu",
 }
+local RESULT_TITLE_COLORS = {
+    success = "|cff80ff80",
+    failure = "|cffff6060",
+    neutral = "|cffffcc00",
+}
 local resultCardCount = 0
 
 -- Result cards own presentation only. Activities provide the title, details,
@@ -757,7 +762,10 @@ function UI.ShowResultCard(card, presentation)
     presentation = presentation or {}
     card.busy = false
     card.actions = presentation.actions or {}
-    BlzFrameSetText(card.title, presentation.title or "")
+    local titleColor = RESULT_TITLE_COLORS[presentation.tone or "neutral"] or
+        RESULT_TITLE_COLORS.neutral
+    BlzFrameSetText(card.title,
+        titleColor .. (presentation.title or "") .. "|r")
     BlzFrameSetText(card.details, presentation.details or "")
 
     local visible = {}

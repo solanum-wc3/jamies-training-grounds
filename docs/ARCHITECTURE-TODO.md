@@ -28,7 +28,8 @@ lifecycle check.
 
 ## 3. Shared result cards and exercise controls
 
-Status: implemented; awaiting in-game verification.
+Status: implemented. The shared behavior was verified in game; result headings
+now use shared semantic colors.
 
 - One shared result-card component owns layout, sizing, button order, click
   safety, focus release and presentation cleanup.

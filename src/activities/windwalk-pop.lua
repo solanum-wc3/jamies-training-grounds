@@ -416,6 +416,7 @@ function JTG.CreateWindwalkPopActivity(session)
         end
         JTG.UI.ShowResultCard(self.resultCard, {
             title = self.resultTitleText or "",
+            tone = self.resultKind,
             details = self.resultDetailsText or "",
             actions = {
                 replay = {},

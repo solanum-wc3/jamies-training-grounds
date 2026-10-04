@@ -39,9 +39,11 @@ The menu selects activities but does not contain their gameplay logic.
 
 Completed exercises present their outcome through one shared result-card
 component. The shared layer owns its layout, action order, click handling,
-keyboard-focus release and cleanup. Each exercise supplies its text and decides
-what progression means; common Replay, Retry and Menu actions use controller
-defaults where no exercise-specific behavior is required.
+keyboard-focus release, semantic heading colors and cleanup. Successful results
+use green headings, failures use red, and ordinary completion uses gold. Each
+exercise supplies its text and decides what progression means; common Replay,
+Retry and Menu actions use controller defaults where no exercise-specific
+behavior is required.
 
 ## Shared interface
 

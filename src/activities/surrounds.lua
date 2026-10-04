@@ -446,6 +446,7 @@ function JTG.CreateSurroundsActivity(session)
         if self.resultCard == nil or self.resultTitleText == nil then return end
         JTG.UI.ShowResultCard(self.resultCard, {
             title = self.resultTitleText,
+            tone = self.resultTone,
             details = self.resultDetailsText or "",
             visible = visible ~= false,
             actions = {
@@ -612,7 +613,8 @@ function JTG.CreateSurroundsActivity(session)
         self:setSetupsOpen(false)
         local _, list = self:currentSetup()
         if success then
-            self.resultTitleText = "|cff80ff80SURROUND COMPLETE|r"
+            self.resultTitleText = "SURROUND COMPLETE"
+            self.resultTone = "success"
             if self.runnerIndex == 1 then
                 self.resultAction = "next_round"
                 self.resultPrimaryLabel = "Next Round"
@@ -632,7 +634,8 @@ function JTG.CreateSurroundsActivity(session)
         else
             self.resultAction = "retry"
             self.resultPrimaryLabel = "Retry"
-            self.resultTitleText = "|cffff6060RUNNER ESCAPED|r"
+            self.resultTitleText = "RUNNER ESCAPED"
+            self.resultTone = "failure"
             self.resultDetailsText = reason or
                 "The runner reached the finish line."
         end
