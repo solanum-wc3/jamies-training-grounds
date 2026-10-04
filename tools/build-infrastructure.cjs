@@ -19,7 +19,7 @@ const {
 const luaParser = req('luaparse');
 
 const version = 'v0.1.0';
-const alpha = 'alpha5';
+const alpha = 'alpha6';
 const modeArgument = process.argv.find(argument => argument.startsWith('--mode='));
 const buildMode = modeArgument ? modeArgument.slice('--mode='.length) : 'release';
 assert(['release', 'development'].includes(buildMode),

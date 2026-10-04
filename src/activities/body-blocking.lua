@@ -289,6 +289,7 @@ function JTG.CreateBodyBlockingActivity(session)
         running = false,
         finished = false,
         advancePending = false,
+        nextRunnerRequested = false,
         elapsed = 0.0,
         addedDelay = 0.0,
         collisionCount = 0,
@@ -470,6 +471,9 @@ function JTG.CreateBodyBlockingActivity(session)
             JTG.UI.HideActivityBriefing()
             JTG.UI.ShowToolbar(session.descriptor.capabilities)
             JTG.UI.SetLastRunnerEnabled(self.mode == "training" and self.runnerIndex > 1)
+            JTG.UI.SetNextText("Next Runner")
+            JTG.UI.SetNextEnabled(self.mode == "training" and
+                self.runnerIndex < #TRAINING_ROSTERS[self.race])
         end
         self:createCourseMarkers()
 
@@ -734,7 +738,12 @@ function JTG.CreateBodyBlockingActivity(session)
         self:setOverlayVisible(true)
         self.replayPosition = 1.0
         self:applyReplaySample(self.replaySamples[1])
-        if JTG.UI then JTG.UI.ShowToolbar(session.descriptor.capabilities) end
+        if JTG.UI then
+            JTG.UI.ShowToolbar(session.descriptor.capabilities)
+            JTG.UI.SetNextText("Next Runner")
+            JTG.UI.SetNextEnabled(self.mode == "training" and
+                self.runnerIndex < #TRAINING_ROSTERS[self.race])
+        end
         self.replayTimer = self:makeTimer(0.025, true, function()
             if self.locallyPaused or not self.replaying then return end
             self.replayPosition = self.replayPosition + 0.5
@@ -917,7 +926,12 @@ function JTG.CreateBodyBlockingActivity(session)
     function activity:restorePresentation()
         if self.replaying then
             BlzFrameSetVisible(self.resultBackdrop, false)
-            if JTG.UI then JTG.UI.ShowToolbar(session.descriptor.capabilities) end
+            if JTG.UI then
+                JTG.UI.ShowToolbar(session.descriptor.capabilities)
+                JTG.UI.SetNextText("Next Runner")
+                JTG.UI.SetNextEnabled(self.mode == "training" and
+                    self.runnerIndex < #TRAINING_ROSTERS[self.race])
+            end
         elseif self.finished then
             self:setOverlayVisible(false)
             self:renderResultPresentation()
@@ -926,6 +940,9 @@ function JTG.CreateBodyBlockingActivity(session)
             self:setOverlayVisible(true)
             JTG.UI.ShowToolbar(session.descriptor.capabilities)
             JTG.UI.SetLastRunnerEnabled(self.mode == "training" and self.runnerIndex > 1)
+            JTG.UI.SetNextText("Next Runner")
+            JTG.UI.SetNextEnabled(self.mode == "training" and
+                self.runnerIndex < #TRAINING_ROSTERS[self.race])
         end
     end
 
@@ -1054,7 +1071,8 @@ function JTG.CreateBodyBlockingActivity(session)
     function activity:captureResetState()
         local nextIndex = self.runnerIndex
         local routeTemplate = self.routeTemplate
-        if self.mode == "training" and self.advancePending then
+        if self.mode == "training" and (self.nextRunnerRequested or
+                (self.advancePending and not self.replaying)) then
             local roster = TRAINING_ROSTERS[self.race]
             nextIndex = nextIndex + 1
             if nextIndex > #roster then nextIndex = 1 end
@@ -1067,6 +1085,16 @@ function JTG.CreateBodyBlockingActivity(session)
             raceResults = self.raceResults,
             routeTemplate = routeTemplate,
         }
+    end
+
+    function activity:nextStage()
+        if self.mode ~= "training" or
+                self.runnerIndex >= #TRAINING_ROSTERS[self.race] then
+            return false
+        end
+        self.nextRunnerRequested = true
+        JTG.ResetActivity()
+        return true
     end
 
     function activity:captureLastRunnerState()

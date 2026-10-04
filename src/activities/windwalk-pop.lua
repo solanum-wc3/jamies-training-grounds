@@ -158,6 +158,7 @@ function JTG.OpenWindwalkPopMenu(originCategory, pauseGame, restorePage,
                 {label = "Hard Mode", primary = true,
                     action = function() launch("hard") end},
                 {label = "Timed Training", primary = true,
+                    x = 0,
                     action = function() launch("timed") end},
             }
             backAction = function() showBriefing("root") end
@@ -186,11 +187,6 @@ function JTG.OpenWindwalkPopMenu(originCategory, pauseGame, restorePage,
             pageId = page,
             restoreData = selection,
         }
-        if page == "modes" then
-            spec.compactChoices = true
-            spec.compactColumns = 3
-            spec.choiceOffsetY = -0.079
-        end
         if pauseGame then
             spec.resumeAction = resumeCurrentRun
             spec.exitAction = function()

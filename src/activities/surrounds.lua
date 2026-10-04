@@ -54,6 +54,15 @@ JTG.SurroundHowItWorksQuestText =
     "straight up and down or side to side, compared to moving diagonally.\n\n" ..
     "Press the {Button: Squares} button to display these squares."
 
+JTG.SurroundMixedSelectionsQuestText =
+    "Be careful when controlling units of different types in the same " ..
+    "selection!\n" ..
+    "Even without {Term: Formation movement}, the units can slightly " ..
+    "interfere with each other when it comes to movement behavior.\n" ..
+    "This is probably because of differences in size and turn rate.\n\n" ..
+    "For this reason, surrounds tend to work more consistently when using " ..
+    "only units of one type, or at least of similar size."
+
 local RACES = {
     {key = "human", label = "Human"},
     {key = "orc", label = "Orc"},
@@ -221,8 +230,8 @@ function JTG.OpenSurroundsMenu(originCategory, pauseGame, restorePage,
             choices = {
                 {label = "Start Training", primary = true,
                     action = showRaces},
+                {label = "Custom", enabled = false},
             },
-            centerSingleChoice = true,
             backAction = function()
                 if pauseGame then JTG.UI.ShowCategory(originCategory or "skills")
                 else JTG.UI.ShowCategory(originCategory or "skills") end
@@ -709,6 +718,12 @@ function JTG.CreateSurroundsActivity(session)
                 title = "How it works...",
                 icon = "ReplaceableTextures\\CommandButtons\\BTNPatrol.blp",
                 text = JTG.SurroundHowItWorksQuestText,
+                required = false,
+            },
+            {
+                title = "Tip: Mixed Selections",
+                icon = "ReplaceableTextures\\CommandButtons\\BTNFormation.blp",
+                text = JTG.SurroundMixedSelectionsQuestText,
                 required = false,
             },
         }

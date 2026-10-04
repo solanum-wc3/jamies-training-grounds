@@ -356,7 +356,7 @@ local function CreateIllustratedCategoryCard(name, parent, category)
         status = "available",
     }
     local frame, button, art = CreateIllustratedCard(name, parent, descriptor,
-        0.25, 0.088, 0.169, 0.082, 0.120, 0.84, 0.020)
+        0.25, 0.088, 0.169, 0.082, 0.120, 1.0, 0.020)
     BlzFrameClearAllPoints(art)
     BlzFrameSetPoint(art, FRAMEPOINT_CENTER, button, FRAMEPOINT_CENTER,
         0.0585, 0)
@@ -979,6 +979,7 @@ function UI.ShowToolbar(capabilities)
     BlzFrameSetText(UI.toolbarButtons.restart, "Redo")
     BlzFrameSetText(UI.toolbarButtons.menu, "Menu")
     BlzFrameSetText(UI.toolbarButtons.lastRunner, "Back")
+    BlzFrameSetText(UI.toolbarButtons.next, "Next")
     UI.clickActions[GetHandleId(UI.toolbarButtons.menu)] = JTG.OpenTrainingMenu
     BlzFrameSetVisible(UI.toolbarButtons.restart, caps.restart == true)
     BlzFrameSetVisible(UI.toolbarButtons.menu, caps.menu ~= false)
@@ -1067,6 +1068,12 @@ function UI.SetNextEnabled(enabled)
     BlzFrameSetAlpha(UI.toolbarButtons.next, enabled and 255 or 145)
 end
 
+function UI.SetNextText(text)
+    if UI.toolbarButtons.next ~= nil then
+        BlzFrameSetText(UI.toolbarButtons.next, text or "Next")
+    end
+end
+
 function UI.SetSquaresActive(active)
     if UI.toolbarButtons.squares == nil then return end
     BlzFrameSetText(UI.toolbarButtons.squares,
@@ -1113,6 +1120,8 @@ local function RefreshActivityBriefingChoices()
         if choice ~= nil then
             local x, y = BriefingChoicePoint(index, #actions, compact, compactColumns,
                 UI.activityBriefingCenterSingle)
+            x = choice.x or x
+            y = choice.y or y
             y = y + (UI.activityBriefingChoiceOffsetY or 0)
             BlzFrameClearAllPoints(button)
             BlzFrameSetPoint(button, FRAMEPOINT_TOP, UI.panels.activityBriefing,
