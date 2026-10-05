@@ -1062,6 +1062,17 @@ function JTG.CreateWindwalkPopActivity(session)
                 end
             end))
         IssuePointOrder(self.surroundee, "move", escapeX, escapeY)
+        local disengageTimer = JTG.ScopeTrackTimer(session.scope,
+            CreateTimer())
+        TimerStart(disengageTimer, 0.75, false,
+            JTG.GuardSession(session, function()
+                if self.finished then return end
+                PauseUnit(self.blademaster, false)
+                IssuePointOrder(self.blademaster, "move",
+                    centerX - 500.0, centerY)
+                IssuePointOrder(self.surroundee, "move",
+                    centerX + 500.0, centerY)
+            end))
     end
 
     function activity:startCounterplayAttempt(centerX, centerY)
@@ -1095,10 +1106,17 @@ function JTG.CreateWindwalkPopActivity(session)
                             GetUnitX(self.surroundee)
                         local dy = GetUnitY(self.blademaster) -
                             GetUnitY(self.surroundee)
-                        if dx * dx + dy * dy > 75.0 * 75.0 and
+                        if dx * dx + dy * dy > 24.0 * 24.0 and
+                                enteredTicks < 30 and
+                                enteredTicks % 2 == 0 then
+                            IssuePointOrder(self.blademaster, "move",
+                                GetUnitX(self.surroundee),
+                                GetUnitY(self.surroundee))
+                        end
+                        if dx * dx + dy * dy > 24.0 * 24.0 and
                                 enteredTicks < 30 then return end
                         PauseTimer(enterTimer)
-                        if dx * dx + dy * dy > 75.0 * 75.0 then
+                        if dx * dx + dy * dy > 24.0 * 24.0 then
                             -- No overlap means no pop is possible. Test
                             -- whether the TC is still trapped without letting
                             -- the Blademaster chase a distant target.
@@ -1153,8 +1171,13 @@ function JTG.CreateWindwalkPopActivity(session)
                                         "stage to try again.")
                                     return
                                 end
-                                IssueImmediateOrder(self.blademaster,
-                                    "holdposition")
+                                -- Do not issue another order after Wind Walk
+                                -- ends. Any command to either overlapping unit
+                                -- can resolve their restored collision, and the
+                                -- TC's escape order must be the one that does
+                                -- so. Pausing prevents the attack order from
+                                -- turning into a chase without changing orders.
+                                PauseUnit(self.blademaster, true)
                                 self:startCounterplayResolution(centerX,
                                     centerY)
                             end))
