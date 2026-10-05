@@ -303,7 +303,6 @@ function JTG.CreateWindwalkPopActivity(session)
         countdownTimer = nil,
         countdownValue = 3,
         countdownActive = false,
-        counterplayOrderLock = nil,
         counterplayArmy = {},
         exerciseStarted = false,
         squaresVisible = selection.squaresVisible == true,
@@ -356,7 +355,8 @@ function JTG.CreateWindwalkPopActivity(session)
         local size = half * 2.0
         local centerX = JTG.UnitObstructionGridCenter(GetUnitX(unit))
         local centerY = JTG.UnitObstructionGridCenter(GetUnitY(unit))
-        local texture = GetOwningPlayer(unit) == Player(0) and
+        local texture = (GetOwningPlayer(unit) == Player(0) or
+            self:isCounterplayArmyUnit(unit)) and
             JTG.UnitSquarePlayerTexture or JTG.UnitSquareEnemyTexture
         local image = JTG.ScopeTrackImage(session.presentationScope,
             CreateImage(texture, size, size, 0,
@@ -600,28 +600,24 @@ function JTG.CreateWindwalkPopActivity(session)
         return unit ~= nil and self.counterplayArmy[GetHandleId(unit)] == true
     end
 
-    function activity:installCounterplayOrderLock()
+    function activity:prepareCounterplayArmy()
         if self.mode ~= "counterplay" then return end
         self.counterplayArmy = {}
         for _, unit in ipairs(self.humanArmy) do
             self.counterplayArmy[GetHandleId(unit)] = true
+            SetUnitOwner(unit, Player(PLAYER_NEUTRAL_PASSIVE), true)
         end
-        local trigger = JTG.ScopeTrackTrigger(session.scope, CreateTrigger())
-        self.counterplayOrderLock = trigger
-        TriggerRegisterPlayerUnitEvent(trigger, Player(0),
-            EVENT_PLAYER_UNIT_ISSUED_ORDER, nil)
-        TriggerRegisterPlayerUnitEvent(trigger, Player(0),
-            EVENT_PLAYER_UNIT_ISSUED_POINT_ORDER, nil)
-        TriggerRegisterPlayerUnitEvent(trigger, Player(0),
-            EVENT_PLAYER_UNIT_ISSUED_TARGET_ORDER, nil)
-        TriggerAddAction(trigger, function()
-            local unit = GetTriggerUnit()
-            if not self.countdownActive or
-                    not self:isCounterplayArmyUnit(unit) then return end
-            DisableTrigger(trigger)
-            IssueImmediateOrder(unit, "stop")
-            EnableTrigger(trigger)
-        end)
+    end
+
+    function activity:releaseCounterplayArmy()
+        if self.mode ~= "counterplay" then return end
+        for _, unit in ipairs(self.humanArmy) do
+            SetUnitOwner(unit, Player(0), true)
+        end
+        if GetLocalPlayer() == Player(0) then
+            ClearSelection()
+            for _, unit in ipairs(self.humanArmy) do SelectUnit(unit, true) end
+        end
     end
 
     function activity:pauseTrainingUnits()
@@ -670,18 +666,12 @@ function JTG.CreateWindwalkPopActivity(session)
         local moveCount = 0
         local function issueFormationOrder()
             moveCount = moveCount + 1
-            if self.counterplayOrderLock ~= nil then
-                DisableTrigger(self.counterplayOrderLock)
-            end
             for _, unit in ipairs(self.humanArmy) do
                 if moveCount <= 4 then
                     IssueTargetOrder(unit, "move", self.surroundee)
                 else
                     IssueTargetOrder(unit, "attack", self.surroundee)
                 end
-            end
-            if self.counterplayOrderLock ~= nil then
-                EnableTrigger(self.counterplayOrderLock)
             end
             if self.mode == "counterplay" and moveCount == 3 then
                 PauseUnit(self.surroundee, false)
@@ -704,6 +694,7 @@ function JTG.CreateWindwalkPopActivity(session)
         if self.exerciseStarted or self.finished then return end
         self.exerciseStarted = true
         self.countdownActive = false
+        self:releaseCounterplayArmy()
         self:setTrainingUnitsPaused(false)
         local centerX = session.scene.centerX
         local centerY = session.scene.centerY
@@ -1209,9 +1200,7 @@ function JTG.CreateWindwalkPopActivity(session)
 
         if GetLocalPlayer() == p0 then
             ClearSelection()
-            if self.mode == "counterplay" then
-                for _, unit in ipairs(self.humanArmy) do SelectUnit(unit, true) end
-            else
+            if self.mode ~= "counterplay" then
                 SelectUnit(self.blademaster, true)
             end
         end
@@ -1242,7 +1231,7 @@ function JTG.CreateWindwalkPopActivity(session)
         JTG.ScopeRevealScene(current.scope, current.scene, p0)
 
         self:createScenario()
-        self:installCounterplayOrderLock()
+        self:prepareCounterplayArmy()
         self:createSquareOverlays()
         self.squareTimer = JTG.ScopeTrackTimer(current.scope, CreateTimer())
         TimerStart(self.squareTimer, 0.03, true,
@@ -1383,7 +1372,6 @@ function JTG.CreateWindwalkPopActivity(session)
         self.timedRings = {}
         self.timedPending = {}
         self.timedCompleted = 0
-        self.counterplayOrderLock = nil
         self.counterplayArmy = {}
         self.popOriginX = nil
         self.popOriginY = nil

@@ -32,6 +32,8 @@ local BUILDINGS = {
         "BTNGryphonAviary.blp", 1, 2},
 }
 
+local BLACKSMITH_ID = FourCC("hbla")
+
 local BUILD_OFFSETS = {
     {0.0, 0.0}, {128.0, 0.0}, {-128.0, 0.0},
     {0.0, 128.0}, {0.0, -128.0},
@@ -161,6 +163,7 @@ function JTG.CreatePowerBuildingActivity(session)
         workers = {},
         readyCount = 0,
         completeCount = 0,
+        bugQuest = nil,
         elapsed = 0.0,
         captureElapsed = 0.0,
         released = false,
@@ -322,6 +325,12 @@ function JTG.CreatePowerBuildingActivity(session)
             end
             self:updateLaneTag(index)
         end
+        if self.completeCount >= 10 and self.buildingId == BLACKSMITH_ID and
+                self.bugQuest ~= nil and
+                not IsQuestDiscovered(self.bugQuest) then
+            QuestSetDiscovered(self.bugQuest, true)
+            QuestSetEnabled(self.bugQuest, true)
+        end
     end
 
     function activity:setPaused(paused)
@@ -375,7 +384,7 @@ function JTG.CreatePowerBuildingActivity(session)
         QuestSetDescription(quest, FormatQuestText(POWER_BUILDING_QUEST_TEXT))
         QuestSetIconPath(quest,
             "ReplaceableTextures\\CommandButtons\\BTNBasicStruct.blp")
-        QuestSetRequired(quest, false)
+        QuestSetRequired(quest, true)
         QuestSetDiscovered(quest, true)
         QuestSetEnabled(quest, true)
         local bugQuest = JTG.ScopeTrackQuest(current.scope, CreateQuest())
@@ -385,8 +394,9 @@ function JTG.CreatePowerBuildingActivity(session)
         QuestSetIconPath(bugQuest,
             "ReplaceableTextures\\CommandButtons\\BTNSelfDestruct.blp")
         QuestSetRequired(bugQuest, false)
-        QuestSetDiscovered(bugQuest, true)
+        QuestSetDiscovered(bugQuest, false)
         QuestSetEnabled(bugQuest, true)
+        self.bugQuest = bugQuest
         local resourceGold = {}
         local resourceLumber = {}
         local playerControllers = {}
@@ -474,6 +484,7 @@ function JTG.CreatePowerBuildingActivity(session)
         if JTG.UI then JTG.UI.HideActivityBriefing() end
         self.lanes = {}
         self.workers = {}
+        self.bugQuest = nil
     end
 
     return activity
