@@ -598,39 +598,10 @@ function JTG.CreateBodyBlockingActivity(session)
                 self.startX + 650, self.laneY - 450, 90, self.blockerId))
         SetUnitInvulnerable(self.blocker, true)
         self:createSquareOverlays()
-        -- Keep player ownership and selection through the countdown, but use a
-        -- zero movement speed so orders can turn the Footman without letting it
-        -- travel before the visible GO cue.
-        self.blockerMoveSpeed = GetUnitMoveSpeed(self.blocker)
-        SetUnitMoveSpeed(self.blocker, 0)
-        PauseUnit(self.blocker, false)
-        self.countdownLockX = GetUnitX(self.blocker)
-        self.countdownLockY = GetUnitY(self.blocker)
-        if GetLocalPlayer() == Player(0) then
-            ClearSelection()
-            SelectUnit(self.blocker, true)
-            EnableUserControl(true)
-            EnableUserUI(true)
-        end
+        -- Neutral ownership makes pre-countdown commands impossible without
+        -- repeatedly correcting the unit's position or orders.
+        SetUnitOwner(self.blocker, Player(PLAYER_NEUTRAL_PASSIVE), true)
         self.countdownActive = true
-        self.countdownOrderTrigger = JTG.ScopeTrackTrigger(session.scope, CreateTrigger())
-        TriggerRegisterPlayerUnitEvent(self.countdownOrderTrigger, Player(0),
-            EVENT_PLAYER_UNIT_ISSUED_POINT_ORDER, nil)
-        TriggerAddAction(self.countdownOrderTrigger, function()
-            if not self.countdownActive or GetTriggerUnit() ~= self.blocker then return end
-            local dx = GetOrderPointX() - GetUnitX(self.blocker)
-            local dy = GetOrderPointY() - GetUnitY(self.blocker)
-            -- Warcraft clamps zero move speed to a small positive minimum.
-            -- Cancel the movement immediately while retaining the requested turn.
-            IssueImmediateOrder(self.blocker, "stop")
-            SetUnitFacingTimed(self.blocker, math.deg(Atan2(dy, dx)), 0)
-        end)
-        self.countdownLockTimer = self:makeTimer(0.03, true, function()
-            if not self.locallyPaused and self.countdownActive and self.blocker ~= nil then
-                SetUnitX(self.blocker, self.countdownLockX)
-                SetUnitY(self.blocker, self.countdownLockY)
-            end
-        end)
         if JTG.UI then JTG.UI.SetRestartText("Redo") end
         self.countdownValue = 3
         BlzFrameSetText(self.countdownFrame, "|cffffcc003|r")
@@ -650,12 +621,17 @@ function JTG.CreateBodyBlockingActivity(session)
         PauseTimer(self.countdownTimer)
         self.countdownValue = 0
         self.countdownActive = false
-        if self.countdownLockTimer ~= nil then PauseTimer(self.countdownLockTimer) end
         BlzFrameSetText(self.countdownFrame, "|cff80ff80GO!|r")
         SetUnitAnimation(self.starter, "attack")
         QueueUnitAnimation(self.starter, "stand")
-        SetUnitMoveSpeed(self.blocker, self.blockerMoveSpeed)
+        SetUnitOwner(self.blocker, Player(0), true)
         PauseUnit(self.blocker, false)
+        if GetLocalPlayer() == Player(0) then
+            ClearSelection()
+            SelectUnit(self.blocker, true)
+            EnableUserControl(true)
+            EnableUserUI(true)
+        end
         self:beginRun()
         self:makeTimer(0.65, false, function() BlzFrameSetVisible(self.countdownFrame, false) end)
     end
@@ -805,7 +781,6 @@ function JTG.CreateBodyBlockingActivity(session)
         if self.replaying or self.replaySamples == nil or #self.replaySamples == 0 then return end
         BlzFrameSetVisible(self.resultBackdrop, false)
         self.countdownActive = false
-        if self.countdownLockTimer ~= nil then PauseTimer(self.countdownLockTimer) end
         PauseUnit(self.blocker, false)
         PauseUnit(self.runner, false)
         PauseUnit(self.referenceRunner, false)

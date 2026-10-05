@@ -712,7 +712,7 @@ function JTG.CreateWindwalkPopActivity(session)
             -- completed surround before the automated pop begins.
             local adjustmentTimer = JTG.ScopeTrackTimer(session.scope,
                 CreateTimer())
-            TimerStart(adjustmentTimer, 2.0, false,
+            TimerStart(adjustmentTimer, 3.0, false,
                 JTG.GuardSession(session, function()
                     self:startCounterplayAttempt(centerX, centerY)
                 end))
@@ -1107,25 +1107,31 @@ function JTG.CreateWindwalkPopActivity(session)
                             self:startCounterplayResolution(centerX, centerY)
                             return
                         end
-                        local attackTarget = nil
-                        local nearestDistance = nil
-                        for _, unit in ipairs(self.humanArmy) do
-                            local targetDx = GetUnitX(unit) -
-                                GetUnitX(self.blademaster)
-                            local targetDy = GetUnitY(unit) -
-                                GetUnitY(self.blademaster)
-                            local distance = targetDx * targetDx +
-                                targetDy * targetDy
-                            if nearestDistance == nil or
-                                    distance < nearestDistance then
-                                nearestDistance = distance
-                                attackTarget = unit
-                            end
-                        end
-                        if attackTarget ~= nil then
-                            IssueTargetOrder(self.blademaster, "attack",
-                                attackTarget)
-                        end
+                        IssueImmediateOrder(self.blademaster, "stop")
+                        local attackDelay = JTG.ScopeTrackTimer(session.scope,
+                            CreateTimer())
+                        TimerStart(attackDelay, 0.10, false,
+                            JTG.GuardSession(session, function()
+                                local attackTarget = nil
+                                local nearestDistance = nil
+                                for _, unit in ipairs(self.humanArmy) do
+                                    local targetDx = GetUnitX(unit) -
+                                        GetUnitX(self.blademaster)
+                                    local targetDy = GetUnitY(unit) -
+                                        GetUnitY(self.blademaster)
+                                    local distance = targetDx * targetDx +
+                                        targetDy * targetDy
+                                    if nearestDistance == nil or
+                                            distance < nearestDistance then
+                                        nearestDistance = distance
+                                        attackTarget = unit
+                                    end
+                                end
+                                if attackTarget ~= nil then
+                                    IssueTargetOrder(self.blademaster, "attack",
+                                        attackTarget)
+                                end
+                            end))
                         local visibilityTicks = 0
                         local visibilityTimer = JTG.ScopeTrackTimer(
                             session.scope, CreateTimer())
@@ -1134,7 +1140,7 @@ function JTG.CreateWindwalkPopActivity(session)
                                 visibilityTicks = visibilityTicks + 1
                                 if IsUnitInvisible(self.blademaster,
                                         Player(0)) and
-                                        visibilityTicks < 25 then return end
+                                        visibilityTicks < 28 then return end
                                 PauseTimer(visibilityTimer)
                                 if IsUnitInvisible(self.blademaster,
                                         Player(0)) then
