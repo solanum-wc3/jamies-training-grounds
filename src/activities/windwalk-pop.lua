@@ -1067,7 +1067,6 @@ function JTG.CreateWindwalkPopActivity(session)
         TimerStart(disengageTimer, 0.75, false,
             JTG.GuardSession(session, function()
                 if self.finished then return end
-                PauseUnit(self.blademaster, false)
                 IssuePointOrder(self.blademaster, "move",
                     centerX - 500.0, centerY)
                 IssuePointOrder(self.surroundee, "move",
@@ -1171,13 +1170,10 @@ function JTG.CreateWindwalkPopActivity(session)
                                         "stage to try again.")
                                     return
                                 end
-                                -- Do not issue another order after Wind Walk
-                                -- ends. Any command to either overlapping unit
-                                -- can resolve their restored collision, and the
-                                -- TC's escape order must be the one that does
-                                -- so. Pausing prevents the attack order from
-                                -- turning into a chase without changing orders.
-                                PauseUnit(self.blademaster, true)
+                                -- Keep the attack order that ended Wind Walk.
+                                -- A new command to the Blademaster would make
+                                -- him resolve the overlap first; the TC's move
+                                -- must be the first new command after reveal.
                                 self:startCounterplayResolution(centerX,
                                     centerY)
                             end))

@@ -2258,6 +2258,12 @@ function UI.Initialize(restoring)
         end
     end
     CreateInfoPanel("patch", "Patch Notes",
+        "|cffffcc00v0.1.0|r  |cffb0b0b05 October 2026|r\n" ..
+        "- Added custom Surrounds training and expanded Windwalk Pop.\n" ..
+        "- Added unit-obstruction and navigation-grid visualization.\n" ..
+        "- Standardized exercise controls, result cards and briefing menus.\n" ..
+        "- Added separate development tools and shared activity cleanup.\n" ..
+        "- Standardized Mining Micro and expanded Power Building.\n\n" ..
         "|cffffcc00v0.0.11|r  |cffb0b0b04 October 2026|r\n" ..
         "- Added Surrounds Skill Training\n" ..
         "- Improved map script structure\n\n" ..
