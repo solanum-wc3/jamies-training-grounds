@@ -303,6 +303,8 @@ function JTG.CreateWindwalkPopActivity(session)
         countdownTimer = nil,
         countdownValue = 3,
         countdownActive = false,
+        counterplayOrderLock = nil,
+        counterplayArmy = {},
         exerciseStarted = false,
         squaresVisible = selection.squaresVisible == true,
         squareGridVisible = selection.squareGridVisible == true,
@@ -594,6 +596,34 @@ function JTG.CreateWindwalkPopActivity(session)
         end
     end
 
+    function activity:isCounterplayArmyUnit(unit)
+        return unit ~= nil and self.counterplayArmy[GetHandleId(unit)] == true
+    end
+
+    function activity:installCounterplayOrderLock()
+        if self.mode ~= "counterplay" then return end
+        self.counterplayArmy = {}
+        for _, unit in ipairs(self.humanArmy) do
+            self.counterplayArmy[GetHandleId(unit)] = true
+        end
+        local trigger = JTG.ScopeTrackTrigger(session.scope, CreateTrigger())
+        self.counterplayOrderLock = trigger
+        TriggerRegisterPlayerUnitEvent(trigger, Player(0),
+            EVENT_PLAYER_UNIT_ISSUED_ORDER, nil)
+        TriggerRegisterPlayerUnitEvent(trigger, Player(0),
+            EVENT_PLAYER_UNIT_ISSUED_POINT_ORDER, nil)
+        TriggerRegisterPlayerUnitEvent(trigger, Player(0),
+            EVENT_PLAYER_UNIT_ISSUED_TARGET_ORDER, nil)
+        TriggerAddAction(trigger, function()
+            local unit = GetTriggerUnit()
+            if not self.countdownActive or
+                    not self:isCounterplayArmyUnit(unit) then return end
+            DisableTrigger(trigger)
+            IssueImmediateOrder(unit, "stop")
+            EnableTrigger(trigger)
+        end)
+    end
+
     function activity:pauseTrainingUnits()
         self:setTrainingUnitsPaused(true)
     end
@@ -640,12 +670,18 @@ function JTG.CreateWindwalkPopActivity(session)
         local moveCount = 0
         local function issueFormationOrder()
             moveCount = moveCount + 1
+            if self.counterplayOrderLock ~= nil then
+                DisableTrigger(self.counterplayOrderLock)
+            end
             for _, unit in ipairs(self.humanArmy) do
                 if moveCount <= 4 then
                     IssueTargetOrder(unit, "move", self.surroundee)
                 else
                     IssueTargetOrder(unit, "attack", self.surroundee)
                 end
+            end
+            if self.counterplayOrderLock ~= nil then
+                EnableTrigger(self.counterplayOrderLock)
             end
             if self.mode == "counterplay" and moveCount == 3 then
                 PauseUnit(self.surroundee, false)
@@ -681,7 +717,14 @@ function JTG.CreateWindwalkPopActivity(session)
             self:updateTimerUI()
             BlzFrameSetVisible(self.timerFrame, true)
         else
-            self:startCounterplayAttempt(centerX, centerY)
+            -- Give the player a brief window after GO to loosen or tighten the
+            -- completed surround before the automated pop begins.
+            local adjustmentTimer = JTG.ScopeTrackTimer(session.scope,
+                CreateTimer())
+            TimerStart(adjustmentTimer, 2.0, false,
+                JTG.GuardSession(session, function()
+                    self:startCounterplayAttempt(centerX, centerY)
+                end))
         end
     end
 
@@ -982,12 +1025,11 @@ function JTG.CreateWindwalkPopActivity(session)
             end))
     end
 
-    function activity:startCounterplayResolution()
+    function activity:startCounterplayResolution(centerX, centerY)
         local originX = GetUnitX(self.surroundee)
         local originY = GetUnitY(self.surroundee)
-        local previousX, previousY = originX, originY
         local elapsed = 0.0
-        local stillTime = 0.0
+        local escapeX, escapeY = centerX + 350.0, centerY
         local resolutionTimer = JTG.ScopeTrackTimer(session.scope,
             CreateTimer())
         TimerStart(resolutionTimer, 0.05, true,
@@ -997,37 +1039,38 @@ function JTG.CreateWindwalkPopActivity(session)
                 local x, y = GetUnitX(self.surroundee),
                     GetUnitY(self.surroundee)
                 local totalDx, totalDy = x - originX, y - originY
-                if totalDx * totalDx + totalDy * totalDy >= 300.0 * 300.0 then
+                if totalDx * totalDx + totalDy * totalDy >= 100.0 * 100.0 then
                     PauseTimer(resolutionTimer)
                     self:finish("failure", "TAUREN CHIEFTAIN ESCAPED",
-                        "The Tauren Chieftain moved 300 units away from the " ..
-                        "surround.")
+                        "The Tauren Chieftain escaped the surround after the " ..
+                        "Windwalk Pop.")
                     return
                 end
-                if elapsed <= 4.0 then
-                    local dx, dy = x - previousX, y - previousY
-                    if dx * dx + dy * dy <= 1.0 then
-                        stillTime = stillTime + 0.05
-                    else
-                        stillTime = 0.0
-                    end
-                    if stillTime >= 2.0 then
+                for _, unit in ipairs(self.humanArmy) do
+                    local dx, dy = GetUnitX(unit) - centerX,
+                        GetUnitY(unit) - centerY
+                    if dx * dx + dy * dy >= 500.0 * 500.0 then
                         PauseTimer(resolutionTimer)
-                        self:finish("success", "COUNTERPLAY SUCCESSFUL",
-                            "The Tauren Chieftain remained trapped after the " ..
-                            "Windwalk Pop.")
+                        self:finish("failure", "SURROUND BROKEN",
+                            "A surrounding unit moved too far from the " ..
+                            "encounter before the escape attempt finished.")
                         return
                     end
                 end
-                if elapsed >= 4.0 then
+                -- Repeat a fixed ground order so combat acquisition cannot
+                -- turn the test into a chase after one of the player's units.
+                if math.floor(elapsed * 20.0 + 0.5) % 5 == 0 then
+                    IssuePointOrder(self.surroundee, "move", escapeX, escapeY)
+                end
+                if elapsed >= 3.0 then
                     PauseTimer(resolutionTimer)
                     self:finish("success", "COUNTERPLAY SUCCESSFUL",
                         "The Tauren Chieftain remained trapped after the " ..
                         "Windwalk Pop.")
                     return
                 end
-                previousX, previousY = x, y
             end))
+        IssuePointOrder(self.surroundee, "move", escapeX, escapeY)
     end
 
     function activity:startCounterplayAttempt(centerX, centerY)
@@ -1062,11 +1105,35 @@ function JTG.CreateWindwalkPopActivity(session)
                         local dy = GetUnitY(self.blademaster) -
                             GetUnitY(self.surroundee)
                         if dx * dx + dy * dy > 75.0 * 75.0 and
-                                enteredTicks < 50 then return end
+                                enteredTicks < 30 then return end
                         PauseTimer(enterTimer)
-                        if self.humanArmy[1] ~= nil then
+                        if dx * dx + dy * dy > 75.0 * 75.0 then
+                            -- No overlap means no pop is possible. Test
+                            -- whether the TC is still trapped without letting
+                            -- the Blademaster chase a distant target.
+                            IssueImmediateOrder(self.blademaster,
+                                "holdposition")
+                            self:startCounterplayResolution(centerX, centerY)
+                            return
+                        end
+                        local attackTarget = nil
+                        local nearestDistance = nil
+                        for _, unit in ipairs(self.humanArmy) do
+                            local targetDx = GetUnitX(unit) -
+                                GetUnitX(self.blademaster)
+                            local targetDy = GetUnitY(unit) -
+                                GetUnitY(self.blademaster)
+                            local distance = targetDx * targetDx +
+                                targetDy * targetDy
+                            if nearestDistance == nil or
+                                    distance < nearestDistance then
+                                nearestDistance = distance
+                                attackTarget = unit
+                            end
+                        end
+                        if attackTarget ~= nil then
                             IssueTargetOrder(self.blademaster, "attack",
-                                self.humanArmy[1])
+                                attackTarget)
                         end
                         local visibilityTicks = 0
                         local visibilityTimer = JTG.ScopeTrackTimer(
@@ -1076,24 +1143,23 @@ function JTG.CreateWindwalkPopActivity(session)
                                 visibilityTicks = visibilityTicks + 1
                                 if IsUnitInvisible(self.blademaster,
                                         Player(0)) and
-                                        visibilityTicks < 200 then return end
+                                        visibilityTicks < 25 then return end
                                 PauseTimer(visibilityTimer)
-                                self:startCounterplayResolution()
-                                IssuePointOrder(self.surroundee, "move",
-                                    centerX + 350.0, centerY)
-                                local jointMoveTimer = JTG.ScopeTrackTimer(
-                                    session.scope, CreateTimer())
-                                TimerStart(jointMoveTimer, 0.50, false,
-                                    JTG.GuardSession(session, function()
-                                        local escapingUnits = CreateGroup()
-                                        GroupAddUnit(escapingUnits,
-                                            self.surroundee)
-                                        GroupAddUnit(escapingUnits,
-                                            self.blademaster)
-                                        GroupPointOrder(escapingUnits, "move",
-                                            centerX + 350.0, centerY)
-                                        DestroyGroup(escapingUnits)
-                                    end))
+                                if IsUnitInvisible(self.blademaster,
+                                        Player(0)) then
+                                    IssueImmediateOrder(self.blademaster,
+                                        "holdposition")
+                                    self:finish("failure",
+                                        "POP ATTEMPT FAILED",
+                                        "The automated Blademaster could not " ..
+                                        "end Wind Walk cleanly. Redo this " ..
+                                        "stage to try again.")
+                                    return
+                                end
+                                IssueImmediateOrder(self.blademaster,
+                                    "holdposition")
+                                self:startCounterplayResolution(centerX,
+                                    centerY)
                             end))
                     end))
             end))
@@ -1122,6 +1188,9 @@ function JTG.CreateWindwalkPopActivity(session)
             PrepareHero(self.surroundee,
                 {{SHOCKWAVE_ID, 2}, {ENDURANCE_AURA_ID, 1}})
             UnitAddItemById(self.surroundee, CROWN_OF_KINGS_ID)
+            -- Counterplay tests displacement, not the computer player's
+            -- target acquisition. Prevent the TC from chasing surrounders.
+            UnitRemoveAbility(self.surroundee, FourCC("Aatk"))
             IssueImmediateOrder(self.surroundee, "holdposition")
             self:createCourseArmy(p1, centerX, centerY)
         elseif self.mode == "timed" then
@@ -1173,6 +1242,7 @@ function JTG.CreateWindwalkPopActivity(session)
         JTG.ScopeRevealScene(current.scope, current.scene, p0)
 
         self:createScenario()
+        self:installCounterplayOrderLock()
         self:createSquareOverlays()
         self.squareTimer = JTG.ScopeTrackTimer(current.scope, CreateTimer())
         TimerStart(self.squareTimer, 0.03, true,
@@ -1313,6 +1383,8 @@ function JTG.CreateWindwalkPopActivity(session)
         self.timedRings = {}
         self.timedPending = {}
         self.timedCompleted = 0
+        self.counterplayOrderLock = nil
+        self.counterplayArmy = {}
         self.popOriginX = nil
         self.popOriginY = nil
         self.squareEntries = {}

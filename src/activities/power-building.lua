@@ -56,6 +56,16 @@ local POWER_BUILDING_QUEST_TEXT =
     "percentages are less accurate: there is a lot of rounding error involved, " ..
     "depending on the building's respective gold and lumber costs and build time."
 
+local POWER_BUILDING_BUG_QUEST_TEXT =
+    "There is one major exception to the 15% cost rule. The Blacksmith " ..
+    "costs 22.5% extra lumber per worker. This is because technically power " ..
+    "building costs the same as repairing, and the repair cost of the " ..
+    "Blacksmith is not 40 Lumber, but 60.|n|n" ..
+    "Here is what happened: In 2022, Blizzard reduced the building's lumber " ..
+    "cost from 60 to 50. In 2023, they reduced it to 40. What they forgot " ..
+    "to reduce was its repair cost.|n|n" ..
+    "Well. Little history lesson..."
+
 local function FormatQuestText(text)
     return string.gsub(text, "{Term:%s*(.-)}", "|cffff9933%1|r")
 end
@@ -368,6 +378,15 @@ function JTG.CreatePowerBuildingActivity(session)
         QuestSetRequired(quest, false)
         QuestSetDiscovered(quest, true)
         QuestSetEnabled(quest, true)
+        local bugQuest = JTG.ScopeTrackQuest(current.scope, CreateQuest())
+        QuestSetTitle(bugQuest, "Found a Bug")
+        QuestSetDescription(bugQuest,
+            FormatQuestText(POWER_BUILDING_BUG_QUEST_TEXT))
+        QuestSetIconPath(bugQuest,
+            "ReplaceableTextures\\CommandButtons\\BTNSelfDestruct.blp")
+        QuestSetRequired(bugQuest, false)
+        QuestSetDiscovered(bugQuest, true)
+        QuestSetEnabled(bugQuest, true)
         local resourceGold = {}
         local resourceLumber = {}
         local playerControllers = {}
