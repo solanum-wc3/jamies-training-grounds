@@ -1,71 +1,35 @@
 # Architecture work list
 
-This is a loose planning list. Each package should receive its own playable
-build and commit so Warcraft-specific regressions remain easy to isolate.
+This is the maintained loose planning list. Completed implementation plans and runtime checklists live in [`archive/`](archive/README.md).
 
-## 1. Development and release builds
+## Completed for v0.1.0
 
-Status: implemented and verified in game.
+- **Development and release builds:** release maps omit developer tools; development maps include clearly separated diagnostics.
+- **Automated lifecycle check:** verifies start, reset, replacement, exit, resource disposal, final cleanup and stale callbacks.
+- **Shared activity lifecycle:** common ownership and cleanup cover gameplay and presentation resources, borrowed state and guarded timers.
+- **Shared result cards and exercise controls:** common action dispatch, toolbar positions, result layouts and semantic heading colors.
+- **Shared briefing and catalogue layouts:** common title, body, artwork, divider, choice and footer positioning; shared General / Race Specific menus.
+- **First documentation cleanup:** current guidance was updated; completed plans, old checklists and the implemented Camera draft were archived.
 
-- Release builds omit development tools and diagnostic commands entirely.
-- Development builds include the diagnostic module and are clearly marked.
-- The development-only automated lifecycle check covers start, reset,
-  replacement, exit, resource disposal and stale callbacks.
+## Next architectural package
 
-## 2. Shared activity lifecycle
-
-Status: implemented and verified in game with the development-build automated
-lifecycle check.
-
-- The controller now runs semantic cleanup, disposes presentation and gameplay
-  resources, and then runs a guaranteed final cleanup stage.
-- Shared ownership helpers cover units, timers, triggers, frames, images,
-  markers, quests, destructables, fog and borrowed state.
-- Shared timers automatically stop stale callbacks while retaining every
-  exercise's existing timing values.
-- Hotkey Setup uses final cleanup to remove blight after its hidden dependency
-  buildings have been removed.
-
-## 3. Shared result cards and exercise controls
-
-Status: implemented. The shared behavior was verified in game; result headings
-now use shared semantic colors.
-
-- One shared result-card component owns layout, sizing, button order, click
-  safety, focus release and presentation cleanup.
-- One shared action dispatcher provides common Replay, Retry and Menu behavior
-  while allowing each exercise to define what progression means.
-- Body Blocking, Surrounds and Windwalk Pop now use the shared result card.
-- Activity briefing pages share title, body, artwork, divider, choice-button and
-  footer positioning, with explicit overrides available for exceptional pages.
-- Advanced Play and Skill Training share the General / Race Specific catalogue
-  structure and race-submenu builder.
-
-## 4. Shared tutorial system
+### Shared tutorial system
 
 Status: planned alongside the Economy tutorial.
 
-- Share page progression, narration, checkpoints, Topics, Continue, Back,
-  Pause, Menu, save/load presentation rebuilding and cleanup.
-- Migrate existing tutorials incrementally after the common system is proven
-  by the Economy tutorial.
+- Share page progression, narration, checkpoints, Topics, Continue, Back, Pause, Menu, save/load presentation rebuilding and cleanup.
+- Prove the system with the Economy tutorial.
+- Migrate existing tutorials incrementally after the common system is stable.
 
-## 5. Project documentation and file cleanup
+## Later consolidation candidates
 
-Status: planned as a collaborative review.
+- Review exercise-specific timers for common countdown and elapsed-time helpers.
+- Review cleanup code after more activities use the shared lifecycle; extract only patterns that remain genuinely identical.
+- Add reusable selectors for future unit, building and hero-selection pages based on the Power Building and Custom Surrounds grids.
+- Add a reusable guided camera-tour system if competitive-map lessons are pursued.
+- Extend automated lifecycle coverage when new shared resource types appear.
 
-- Inventory design documents, generated files, obsolete scripts and historical
-  implementation material.
-- Agree which documents are authoritative before resolving contradictions or
-  consolidating overlapping outlines.
-- Archive useful history and remove only files that are confirmed obsolete or
-  reproducible from the maintained source.
-- Review old tutorial drafts such as `CameraTutorialScript_Current` against the
-  implemented tutorial before deciding whether to merge, archive or remove
-  them.
+## Deferred
 
-## Deferred: embedded CustomKeys data
-
-Keep the current generated representation. Its files are easy to replace, and
-reducing its embedded size offers too little benefit to justify complicating
-that workflow.
+- **Embedded CustomKeys data:** keep the current replaceable generated representation.
+- **Long-term player statistics:** keep Player Stats unavailable until a separately versioned persistence design has clear player value and migration rules.

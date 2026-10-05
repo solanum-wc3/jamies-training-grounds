@@ -1,6 +1,6 @@
 # Design material
 
-This directory holds tutorial scripts, annotated interface screenshots, map-layout sketches, and activity specifications.
+This directory holds maintained editable design sources. It currently contains menu-card compositions and obstruction-square artwork; future tutorial scripts, annotated screenshots and map-layout sketches may also live here.
 
 A tutorial specification should describe:
 
@@ -10,4 +10,3 @@ A tutorial specification should describe:
 - Continue, Back, and checkpoint behavior;
 - reset and cleanup expectations;
 - any information worth preserving between sessions.
-

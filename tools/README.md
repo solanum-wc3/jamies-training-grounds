@@ -13,10 +13,10 @@ pnpm install --frozen-lockfile
 pnpm run build:release
 ```
 
-The release map contains no developer commands or diagnostic activities. Test
-builds carry an incrementing alpha name, with `-dev` identifying the matching
-development build. Build
-the clearly marked internal test map with:
+The release map contains no developer commands or diagnostic activities. The
+matching internal build uses the same version with a `-dev` suffix. During
+development, the version may additionally carry an incrementing alpha suffix.
+Build the development map with:
 
 ```text
 pnpm run build:development
@@ -24,7 +24,9 @@ pnpm run build:development
 
 In the development map, enter `-diag-lifecycle` while no activity is active to
 automatically check start, reset, activity replacement, exit, resource disposal
-post-disposal final cleanup and stale-callback protection. Enter `-diag-status` for the latest result or
+post-disposal final cleanup and stale-callback protection. Collision diagnostic
+commands are also development-only and are documented in
+`docs/COLLISION-OBSTRUCTION-RESEARCH.md`. Enter `-diag-status` for the latest result or
 `-diag-cancel` to stop a running check. `pnpm run build:all` produces and
 validates both variants. The older `build:infrastructure` command remains an
 alias for the release build.
@@ -34,5 +36,7 @@ The current reproducibility check uses Node.js 24 and pnpm 11. The two direct de
 `extract-legacy-menu-assets.cjs` reads the authoritative v0.92 map without modifying it and extracts the exact custom textures and frame definitions used by its training-path and course-card menus. It refuses an archive whose SHA-256 differs from the recorded source. The extracted files and their manifest live under `reference/legacy/menu-assets/`.
 
 `prepare-menu-art.py` converts editable transparent successor artwork into power-of-two DXT5 textures while preserving separate background, artwork, border, text, and hover layers. Run it before packaging whenever a source image changes.
+
+`prepare-surround-overlays.py` converts the editable player and enemy obstruction-square PNG files under `design/overlays/` into packaged DXT5 textures. The navigation-dot and fine-grid PNG/DDS pairs are maintained under `src/assets/overlay/` because they are direct authored map assets.
 
 Temporary investigation files remain in `work/` and are excluded from version control. Generated maps and validation reports remain in `outputs/`.

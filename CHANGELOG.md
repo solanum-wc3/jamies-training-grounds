@@ -2,6 +2,36 @@
 
 This file records player-visible changes in tested project versions. Development reasoning belongs in commit messages and `docs/decisions/`.
 
+## v0.1.0 — Training and shared-system milestone (2026-10-05)
+
+- Added Surrounds Skill Training with standard and custom unit compositions.
+- Expanded Windwalk Pop with racial Hard Mode and Counterplay courses.
+- Added obstruction-square, snap-point and navigation-grid visualization to relevant exercises.
+- Standardized exercise controls, result cards, briefing pages and race-specific catalogues.
+- Separated public release builds from development builds and added automated lifecycle and collision diagnostics.
+- Standardized Mining Micro arena geometry and expanded the Power Building selector.
+
+## v0.0.11 — Surrounds (2026-10-04)
+
+- Added Surrounds Skill Training.
+- Improved map script structure.
+
+## v0.0.10 — Hotkey Setup (2026-10-02)
+
+- Added the Hotkey Setup tutorial and CustomKeys exports.
+
+## v0.0.9 — Windwalk Pop (2026-10-02)
+
+- Added Windwalk Pop training, Hard Mode and Counterplay.
+
+## v0.0.8 — Unit Controls (2026-10-01)
+
+- Added the Unit Controls tutorial and optional tutorial topics.
+
+## v0.0.7 — Mining Micro (2026-09-29)
+
+- Added Mining Micro training for Human and Orc workers.
+
 ## v0.0.6 — Camera tutorial (2026-09-29)
 
 - Added the Camera tutorial, covering essential camera controls and navigation.

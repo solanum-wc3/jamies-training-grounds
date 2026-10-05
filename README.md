@@ -1,37 +1,46 @@
 # Jamie's Training Grounds
 
-Jamie’s Training Grounds is a Warcraft III teaching and practice map. The successor project will combine beginner tutorials with focused exercises for advanced mechanics.
+Jamie’s Training Grounds is a Warcraft III teaching and practice map. It combines beginner tutorials, mechanical exercises, demonstrations and reference material in one map with a shared interface.
 
-## Current status
+## Current release
 
-The successor map now has an accepted playable foundation based on Twisted Meadows. A reusable northeastern practice district contains two connected empty arenas, while terrain and placed objects outside that district remain preserved. The map uses one player slot with a selectable race, the native Warcraft III interface and Quest window, normal fog of war, and no melee starting army or victory conditions.
+The current tested release is `v0.1.0`. It includes:
 
-The current release is `v0.0.6`. It includes the shared menu and activity lifecycle, Body Blocking, Power Building, save/load restoration, race-specific Skill Training catalogues, and the first beginner module: Camera. The Camera tutorial teaches movement, zoom, base and army navigation through player-paced narration, guided demonstrations, checkpoints, Topics and Quest references.
+- Camera, Unit Controls and Hotkey Setup tutorials;
+- Body Blocking, Mining Micro, Surrounds and Windwalk Pop training;
+- the Power Building demonstration;
+- shared menus, briefing pages, toolbars, result cards and activity cleanup;
+- save/load restoration across supported menus and activities;
+- separate release and development builds;
+- development-only lifecycle and collision diagnostics;
+- collision-square, snap-point and navigation-grid visualization in relevant exercises.
 
-Version 0.92 of the inherited map remains the behavioral reference while its shared interface and exercise systems are documented and redesigned for modular migration.
-
-Architecture work is recorded in the [legacy source analysis](docs/LEGACY-ANALYSIS.md), [modular infrastructure plan](docs/INFRASTRUCTURE-PLAN.md), [menu port specification](docs/MENU-AND-INFRASTRUCTURE-PORT.md), and [Body Blocking migration notes](docs/BODY-BLOCKING-MIGRATION.md). The shared layer provides four category catalogues, Patch Notes, Credits, a disabled Player Stats placeholder, per-activity ownership, shared controls, and hidden lifecycle diagnostics.
-
-Later beginner subjects include unit controls, economy, base construction, heroes, creeping, combat, unit and damage types, and technology.
+The map is built on the accepted `v0.0.1-alpha.5` Twisted Meadows foundation. The source foundation and historical references remain unchanged; current map behavior is implemented through the maintained modules under `src/`.
 
 ## Design direction
 
-- Keep the native Warcraft III interface usable, including the Quest window.
-- Use simple reusable arenas for exercises that do not require realistic terrain.
-- Use decorated areas where tutorials should resemble ordinary matches.
-- Give every activity explicit setup, start, reset, cleanup, and exit behavior.
+- Keep Warcraft III’s native interface and Quest window usable.
+- Use reusable arenas where terrain is incidental.
+- Use decorated match-like areas where terrain is part of the lesson.
+- Give every activity explicit setup, start, reset, cleanup and exit behavior.
 - Present essential instruction as player-paced text. Audio remains optional.
-- Preserve the inherited map until migrated exercises have been compared and verified.
+- Keep release builds free of developer tools while retaining reproducible development builds for diagnostics.
 
-## Repository layout
+## Repository guide
 
-- `docs/` — architecture, project decisions, and contributor guidance
-- `design/` — tutorial scripts, layouts, and specifications
-- `reference/` — preserved historical maps and associated notes
-- `src/` — editable map scripts
-- `tools/` — reproducible unpacking, validation, and build utilities
-- `outputs/` — generated playable test maps and validation reports; excluded from version control
+- [`docs/`](docs/README.md) — current architecture, research, decisions and an archive of completed plans
+- `design/` — editable source artwork and future design material
+- `reference/` — immutable historical maps, accepted foundations and extracted reference assets
+- `src/` — authoritative Lua modules, data and packaged assets
+- `tools/` — reproducible build and asset-preparation utilities
+- `outputs/` — generated maps and validation reports; excluded from version control
+- `work/` — temporary investigation material; excluded from version control
 
-## Version history
+## Building
 
-Commits should describe one coherent change. Significant decisions record the intended behavior, Warcraft III constraints, alternatives considered, and the reason for the chosen approach. Tested playable milestones will receive version tags and matching changelog entries.
+```text
+pnpm install --frozen-lockfile
+pnpm run build:all
+```
+
+This produces `outputs/Jamies-Training-Grounds-v0.1.0.w3x` and `outputs/Jamies-Training-Grounds-v0.1.0-dev.w3x`. See [`tools/README.md`](tools/README.md) for diagnostics and build details.

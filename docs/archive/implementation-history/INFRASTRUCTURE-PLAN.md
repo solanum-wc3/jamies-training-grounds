@@ -79,7 +79,7 @@ The supplied draft is now the camera tutorial content master: five sections, ten
 
 Before implementation, verify client-dependent claims marked by the draft or implied by it: default camera distance versus the tutorial’s scripted 1650-unit scene distance, F5 reset behavior, Insert/Delete rotation, Backspace ordering, Space notification behavior, tilde/idle-worker behavior, F1–F3 hero binding, control-group camera centering, and Ctrl+C lock-on. The draft should remain usable if these defaults differ: show command names first, defaults second, and keep Continue available as the fallback.
 
-Separate lesson completion from profile storage. Start with in-memory completion and preferences behind a small interface. The eventual saved envelope should include a schema version and stable activity IDs. The [legacy analysis](LEGACY-ANALYSIS.md) identifies a schema-10 integer format, older-schema readers and preload-based storage. Codec, storage transport and import policy still need dedicated design and fixtures. Use a separate successor save path; unsupported or corrupt data should return an explicit result without overwriting the original.
+Separate lesson completion from profile storage. Start with in-memory completion and preferences behind a small interface. The eventual saved envelope should include a schema version and stable activity IDs. The [legacy analysis](../research/LEGACY-ANALYSIS.md) identifies a schema-10 integer format, older-schema readers and preload-based storage. Codec, storage transport and import policy still need dedicated design and fixtures. Use a separate successor save path; unsupported or corrupt data should return an explicit result without overwriting the original.
 
 ## Build and editor integration
 
