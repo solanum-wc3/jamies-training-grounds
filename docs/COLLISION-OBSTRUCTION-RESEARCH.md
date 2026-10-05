@@ -93,5 +93,6 @@ circles are separate visual systems and need not remain centered on it.
   both influence command stopping distances, in addition to unit movement and
   turning behavior.
 
-The original diagnostic source is retained in development-only modules and is
-excluded from release builds.
+The diagnostic source is retained in development-only modules and is excluded
+from release builds. The four original Warcraft III exports used during this
+investigation are preserved under [`reference/diagnostics/data/`](../reference/diagnostics/data/), together with checksums and format notes.

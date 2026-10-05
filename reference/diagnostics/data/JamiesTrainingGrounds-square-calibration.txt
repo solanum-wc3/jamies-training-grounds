@@ -1,0 +1,215 @@
+function PreloadFiles takes nothing returns nothing
+
+	call PreloadStart()
+	call Preload( "")
+Jamie's Training Grounds square display calibration
+//" )
+	call Preload( "")
+unit_types=63 measurements=126
+//" )
+	call Preload( "")
+recommended_half_width_padding=11.961
+//" )
+	call Preload( "")
+middle_80_percent=11.234,12.713
+//" )
+	call Preload( "")
+formula=displayed side = 2 * (floor(collision size / 16) * 16 + padding)
+//" )
+	call Preload( "")
+race,rawcode,name,collision_size,collision_step,NE_min_Q,SW_min_Q,effective_half_width,padding
+//" )
+	call Preload( "")
+human,hpea,Peasant,16.000,16.000,58.469,56.385,28.713,12.713
+//" )
+	call Preload( "")
+human,hmil,Militia,16.000,16.000,58.469,56.392,28.715,12.715
+//" )
+	call Preload( "")
+human,hfoo,Footman,31.000,16.000,58.565,49.793,27.090,11.090
+//" )
+	call Preload( "")
+human,hrif,Rifleman,32.000,32.000,87.853,86.881,43.683,11.683
+//" )
+	call Preload( "")
+human,hkni,Knight,32.000,32.000,88.744,86.874,43.905,11.905
+//" )
+	call Preload( "")
+human,hmpr,Priest,16.000,16.000,58.450,56.392,28.710,12.710
+//" )
+	call Preload( "")
+human,hsor,Sorceress,16.000,16.000,58.450,56.392,28.710,12.710
+//" )
+	call Preload( "")
+human,hspt,Spell Breaker,31.000,16.000,58.565,49.793,27.090,11.090
+//" )
+	call Preload( "")
+human,hmtm,Mortar Team,32.000,32.000,88.744,86.874,43.905,11.905
+//" )
+	call Preload( "")
+human,hmtt,Siege Engine,48.000,48.000,117.489,118.435,58.981,10.981
+//" )
+	call Preload( "")
+human,Hpal,Paladin,32.000,32.000,87.853,86.881,43.683,11.683
+//" )
+	call Preload( "")
+human,Hamg,Archmage,32.000,32.000,88.744,86.874,43.905,11.905
+//" )
+	call Preload( "")
+human,Hmkg,Mountain King,32.000,32.000,87.856,86.794,43.663,11.663
+//" )
+	call Preload( "")
+human,Hblm,Blood Mage,32.000,32.000,88.769,86.479,43.812,11.812
+//" )
+	call Preload( "")
+orc,opeo,Peon,16.000,16.000,58.111,57.076,28.797,12.797
+//" )
+	call Preload( "")
+orc,ogru,Grunt,32.000,32.000,88.799,87.047,43.961,11.961
+//" )
+	call Preload( "")
+orc,ohun,Headhunter,32.000,32.000,88.799,87.047,43.961,11.961
+//" )
+	call Preload( "")
+orc,otbk,Berserker,32.000,32.000,87.880,86.794,43.668,11.668
+//" )
+	call Preload( "")
+orc,ocat,Demolisher,48.000,48.000,118.915,118.022,59.234,11.234
+//" )
+	call Preload( "")
+orc,orai,Raider,32.000,32.000,89.470,87.009,44.120,12.120
+//" )
+	call Preload( "")
+orc,okod,Kodo Beast,48.000,48.000,120.473,117.964,59.609,11.609
+//" )
+	call Preload( "")
+orc,oshm,Shaman,16.000,16.000,58.111,57.076,28.797,12.797
+//" )
+	call Preload( "")
+orc,odoc,Witch Doctor,16.000,16.000,58.111,56.421,28.633,12.633
+//" )
+	call Preload( "")
+orc,ospw,Spirit Walker,32.000,32.000,89.470,87.009,44.120,12.120
+//" )
+	call Preload( "")
+orc,otau,Tauren,48.000,48.000,120.473,117.964,59.609,11.609
+//" )
+	call Preload( "")
+orc,Obla,Blademaster,32.000,32.000,88.799,87.047,43.961,11.961
+//" )
+	call Preload( "")
+orc,Ofar,Far Seer,32.000,32.000,90.143,86.909,44.263,12.263
+//" )
+	call Preload( "")
+orc,Otch,Tauren Chieftain,32.000,32.000,89.915,86.638,44.138,12.138
+//" )
+	call Preload( "")
+orc,Oshd,Shadow Hunter,32.000,32.000,89.915,86.638,44.138,12.138
+//" )
+	call Preload( "")
+undead,uaco,Acolyte,16.000,16.000,58.367,56.421,28.697,12.697
+//" )
+	call Preload( "")
+undead,ugho,Ghoul,31.000,16.000,58.938,49.712,27.163,11.163
+//" )
+	call Preload( "")
+undead,ucry,Crypt Fiend,32.000,32.000,87.880,87.047,43.732,11.732
+//" )
+	call Preload( "")
+undead,uabo,Abomination,48.000,48.000,120.473,117.964,59.609,11.609
+//" )
+	call Preload( "")
+undead,umtw,Meat Wagon,48.000,48.000,117.390,118.022,58.853,10.853
+//" )
+	call Preload( "")
+undead,unec,Necromancer,16.000,16.000,58.111,57.076,28.797,12.797
+//" )
+	call Preload( "")
+undead,uban,Banshee,16.000,16.000,58.111,57.076,28.797,12.797
+//" )
+	call Preload( "")
+undead,ushd,Shade,16.000,16.000,58.367,56.421,28.697,12.697
+//" )
+	call Preload( "")
+undead,uobs,Obsidian Statue,32.000,32.000,88.769,86.768,43.884,11.884
+//" )
+	call Preload( "")
+undead,Udea,Death Knight,32.000,32.000,88.769,86.768,43.884,11.884
+//" )
+	call Preload( "")
+undead,Udre,Dreadlord,32.000,32.000,88.769,86.768,43.884,11.884
+//" )
+	call Preload( "")
+undead,Ulic,Lich,32.000,32.000,90.095,87.009,44.276,12.276
+//" )
+	call Preload( "")
+undead,Ucrl,Crypt Lord,32.000,32.000,89.470,87.009,44.120,12.120
+//" )
+	call Preload( "")
+nightelf,ewsp,Wisp,16.000,16.000,58.111,57.076,28.797,12.797
+//" )
+	call Preload( "")
+nightelf,earc,Archer,32.000,32.000,88.799,87.047,43.961,11.961
+//" )
+	call Preload( "")
+nightelf,esen,Huntress,32.000,32.000,88.799,87.047,43.961,11.961
+//" )
+	call Preload( "")
+nightelf,ebal,Glaive Thrower,48.000,48.000,117.519,118.464,58.996,10.996
+//" )
+	call Preload( "")
+nightelf,edry,Dryad,32.000,32.000,88.769,86.768,43.884,11.884
+//" )
+	call Preload( "")
+nightelf,edoc,Druid of the Claw,32.000,32.000,87.880,86.794,43.668,11.668
+//" )
+	call Preload( "")
+nightelf,edot,Druid of the Talon,16.000,16.000,58.367,56.421,28.697,12.697
+//" )
+	call Preload( "")
+nightelf,emtg,Mountain Giant,48.000,48.000,118.915,118.022,59.234,11.234
+//" )
+	call Preload( "")
+nightelf,Edem,Demon Hunter,32.000,32.000,89.470,87.009,44.120,12.120
+//" )
+	call Preload( "")
+nightelf,Ekee,Keeper of the Grove,32.000,32.000,90.143,86.909,44.263,12.263
+//" )
+	call Preload( "")
+nightelf,Emoo,Priestess of the Moon,32.000,32.000,90.143,86.909,44.263,12.263
+//" )
+	call Preload( "")
+nightelf,Ewar,Warden,32.000,32.000,90.143,87.075,44.304,12.304
+//" )
+	call Preload( "")
+neutral,Nngs,Naga Sea Witch,32.000,32.000,87.880,86.794,43.668,11.668
+//" )
+	call Preload( "")
+neutral,Nbrn,Dark Ranger,32.000,32.000,87.880,86.662,43.635,11.635
+//" )
+	call Preload( "")
+neutral,Npbm,Pandaren Brewmaster,32.000,32.000,89.190,86.654,43.961,11.961
+//" )
+	call Preload( "")
+neutral,Nbst,Beastmaster,32.000,32.000,90.006,86.523,44.132,12.132
+//" )
+	call Preload( "")
+neutral,Nplh,Pit Lord,32.000,32.000,90.006,87.013,44.255,12.255
+//" )
+	call Preload( "")
+neutral,Nfir,Firelord,32.000,32.000,87.982,86.653,43.659,11.659
+//" )
+	call Preload( "")
+neutral,Ntin,Goblin Tinker,32.000,32.000,88.397,86.653,43.763,11.763
+//" )
+	call Preload( "")
+neutral,Nalc,Goblin Alchemist,32.000,32.000,88.397,87.155,43.888,11.888
+//" )
+	call Preload( "")
+neutral,Npal,Forsaken Paladin,32.000,32.000,88.397,87.155,43.888,11.888
+//" )
+	call PreloadEnd( 0.0 )
+
+endfunction
+
+

@@ -11,3 +11,4 @@
 *.mdx binary
 *.wav binary
 *.mp3 binary
+reference/diagnostics/data/*.txt -text

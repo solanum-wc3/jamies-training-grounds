@@ -6,6 +6,9 @@
 - [`ARCHITECTURE-TODO.md`](ARCHITECTURE-TODO.md) — loose architecture backlog and completed packages
 - [`COLLISION-OBSTRUCTION-RESEARCH.md`](COLLISION-OBSTRUCTION-RESEARCH.md) — evidence behind the obstruction and navigation overlays
 - [`PROJECT-FILES.md`](PROJECT-FILES.md) — what each file group owns and which retained files still need a human decision
+- [`BUILD-AND-TEST.md`](BUILD-AND-TEST.md) — clean-checkout setup, map installation and validation
+- [`ACTIVITIES.md`](ACTIVITIES.md) — implemented player-facing content and its source ownership
+- [`ADDING-AN-ACTIVITY.md`](ADDING-AN-ACTIVITY.md) — contributor workflow for adding content safely
 - [`FOUNDATION-ACCEPTANCE.md`](FOUNDATION-ACCEPTANCE.md) — immutable foundation acceptance record
 - [`decisions/`](decisions/) — architectural decisions that remain relevant
 

@@ -44,3 +44,11 @@ pnpm run build:all
 ```
 
 This produces `outputs/Jamies-Training-Grounds-v0.1.0.w3x` and `outputs/Jamies-Training-Grounds-v0.1.0-dev.w3x`. See [`tools/README.md`](tools/README.md) for diagnostics and build details.
+
+## Further documentation
+
+- [Build, installation and testing](docs/BUILD-AND-TEST.md)
+- [Implemented activity catalogue](docs/ACTIVITIES.md)
+- [Adding a new activity](docs/ADDING-AN-ACTIVITY.md)
+- [Architecture overview](docs/ARCHITECTURE.md)
+- [Collision and pathfinding research](docs/COLLISION-OBSTRUCTION-RESEARCH.md)
