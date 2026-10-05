@@ -2,7 +2,9 @@
 JTG = JTG or {}
 JTG.UI = {
     panels = {}, categoryButtons = {}, catalogueRows = {}, toolbarButtons = {},
-    clickActions = {}, clickSounds = {}, clickTrigger = nil, browsingActivity = false,
+    clickActions = {}, clickSounds = {}, clickTrigger = nil,
+    rightClickActions = {}, rightClickTrigger = nil, hoverTrigger = nil,
+    hoveredRightClickFrame = nil, browsingActivity = false,
     nativeHiddenFrames = {}, tooltips = {},
     epoch = 0, currentView = {kind = "root"},
 }
@@ -707,6 +709,10 @@ local function RegisterClick(frame, action, soundKind)
     BlzTriggerRegisterFrameEvent(UI.clickTrigger, frame, FRAMEEVENT_CONTROL_CLICK)
 end
 
+local function RegisterRightClick(frame, action)
+    UI.rightClickActions[GetHandleId(frame)] = action
+end
+
 local RESULT_ACTION_ORDER = {"replay", "retry", "next", "menu"}
 local RESULT_ACTION_LABELS = {
     replay = "Replay", retry = "Retry", next = "Next", menu = "Menu",
@@ -1116,6 +1122,13 @@ local function RefreshActivityBriefingChoices()
     local compact = UI.activityBriefingCompact == true
     local compactColumns = UI.activityBriefingCompactColumns
     local commandGrid = UI.activityBriefingCommandGrid == true
+    local commandColumns = UI.activityBriefingCommandColumns or 4
+    local commandRows = UI.activityBriefingCommandRows or 3
+    local commandSize = UI.activityBriefingCommandSize or
+        BRIEFING_COMMAND_BUTTON_SIZE
+    local commandStep = UI.activityBriefingCommandStep or commandSize
+    local commandTop = UI.activityBriefingCommandTop or
+        BRIEFING_COMMAND_GRID_TOP
     UI.activityBriefingVisibleActions = {}
     for index, button in ipairs(UI.activityBriefingButtons or {}) do
         local choice = actions[index]
@@ -1135,10 +1148,24 @@ local function RefreshActivityBriefingChoices()
                     BRIEFING_COMPACT_CHOICE_WIDTH) or BRIEFING_CHOICE_WIDTH
             local defaultHeight = compact and BRIEFING_COMPACT_CHOICE_HEIGHT or
                 BRIEFING_CHOICE_HEIGHT
-            BlzFrameSetSize(button,
-                choice.width or UI.activityBriefingChoiceWidth or defaultWidth,
-                choice.height or UI.activityBriefingChoiceHeight or defaultHeight)
+            local choiceWidth = choice.width or UI.activityBriefingChoiceWidth or
+                defaultWidth
+            local choiceHeight = choice.height or UI.activityBriefingChoiceHeight or
+                defaultHeight
+            BlzFrameSetSize(button, choiceWidth, choiceHeight)
             BlzFrameSetText(button, choice.label)
+            local artwork = UI.activityBriefingChoiceArtwork[index]
+            BlzFrameSetVisible(artwork, choice.icon ~= nil)
+            if choice.icon ~= nil then
+                local artworkSize = choice.iconSize or
+                    choiceHeight * 1.2 * (choice.iconScale or 1.0)
+                BlzFrameClearAllPoints(artwork)
+                BlzFrameSetSize(artwork, artworkSize, artworkSize)
+                BlzFrameSetPoint(artwork, FRAMEPOINT_CENTER, button,
+                    FRAMEPOINT_CENTER,
+                    choice.iconOffsetX or choiceWidth * 0.221 + 0.003, 0)
+                BlzFrameSetTexture(artwork, choice.icon, 0, true)
+            end
             local label = FindButtonText(button)
             if label ~= nil then
                 BlzFrameSetScale(label, choice.scale or
@@ -1155,6 +1182,7 @@ local function RefreshActivityBriefingChoices()
     end
     for index, button in ipairs(UI.activityBriefingCommandButtons or {}) do
         local choice = actions[index]
+        UI.activityBriefingVisibleActions[index] = choice
         BlzFrameSetVisible(button, commandGrid and choice ~= nil)
         if commandGrid and choice ~= nil then
             local column = choice.column
@@ -1163,13 +1191,15 @@ local function RefreshActivityBriefingChoices()
                 column = (index - 1) % 4
                 row = math.floor((index - 1) / 4)
             end
-            column = math.max(0, math.min(3, column))
-            row = math.max(0, math.min(2, row))
+            column = math.max(0, math.min(commandColumns - 1, column))
+            row = math.max(0, math.min(commandRows - 1, row))
             BlzFrameClearAllPoints(button)
+            BlzFrameSetSize(button, choice.size or commandSize,
+                choice.size or commandSize)
             BlzFrameSetPoint(button, FRAMEPOINT_TOP, UI.panels.activityBriefing,
                 FRAMEPOINT_TOP,
-                (column - 1.5) * BRIEFING_COMMAND_BUTTON_STEP,
-                BRIEFING_COMMAND_GRID_TOP - row * BRIEFING_COMMAND_BUTTON_STEP +
+                (column - (commandColumns - 1) * 0.5) * commandStep,
+                commandTop - row * commandStep +
                     (UI.activityBriefingChoiceOffsetY or 0))
             BlzFrameSetTexture(UI.activityBriefingCommandArtwork[index],
                 choice.icon or "ReplaceableTextures\\CommandButtons\\BTNCancel.blp",
@@ -1195,7 +1225,7 @@ function UI.ShowActivityBriefing(spec)
     local commandGrid = spec.commandGridChoices == true
     local firstChoiceY
     if commandGrid then
-        firstChoiceY = BRIEFING_COMMAND_GRID_TOP
+        firstChoiceY = spec.commandGridTop or BRIEFING_COMMAND_GRID_TOP
     else
         local unusedX
         unusedX, firstChoiceY = BriefingChoicePoint(1, math.max(1, #actions),
@@ -1232,6 +1262,11 @@ function UI.ShowActivityBriefing(spec)
     UI.activityBriefingCompact = compact
     UI.activityBriefingCompactColumns = compactColumns
     UI.activityBriefingCommandGrid = commandGrid
+    UI.activityBriefingCommandColumns = spec.commandGridColumns
+    UI.activityBriefingCommandRows = spec.commandGridRows
+    UI.activityBriefingCommandSize = spec.commandGridButtonSize
+    UI.activityBriefingCommandStep = spec.commandGridStep
+    UI.activityBriefingCommandTop = spec.commandGridTop
     UI.activityBriefingCenterSingle = spec.centerSingleChoice == true
     UI.activityBriefingChoiceOffsetY = spec.choiceOffsetY or 0
     UI.activityBriefingChoiceWidth = spec.choiceWidth
@@ -1242,6 +1277,31 @@ function UI.ShowActivityBriefing(spec)
     BlzFrameSetTextColor(UI.activityBriefingBack, BlzConvertColor(255, 255, 255, 255))
     UI.activityBriefingResumeAction = spec.resumeAction
     UI.activityBriefingExitAction = spec.exitAction or JTG.ExitActivityFromMenu
+    UI.activityBriefingPrimaryAction = spec.primaryAction
+    local showPrimary = spec.primaryAction ~= nil or spec.primaryLabel ~= nil
+    BlzFrameSetVisible(UI.activityBriefingPrimary, showPrimary)
+    if showPrimary then
+        BlzFrameSetText(UI.activityBriefingPrimary,
+            spec.primaryLabel or "Begin")
+        local enabled = spec.primaryEnabled ~= false
+        BlzFrameSetEnable(UI.activityBriefingPrimary, enabled)
+        BlzFrameSetAlpha(UI.activityBriefingPrimary, enabled and 255 or 145)
+        BlzFrameSetTextColor(UI.activityBriefingPrimary, enabled and
+            BlzConvertColor(255, 255, 204, 0) or
+            BlzConvertColor(255, 145, 145, 145))
+        BlzFrameClearAllPoints(UI.activityBriefingBack)
+        BlzFrameSetPoint(UI.activityBriefingBack, FRAMEPOINT_BOTTOMLEFT,
+            panel, FRAMEPOINT_BOTTOMLEFT, MENU_FOOTER_SIDE_INSET,
+            MENU_FOOTER_BUTTON_Y)
+        BlzFrameClearAllPoints(UI.activityBriefingPrimary)
+        BlzFrameSetPoint(UI.activityBriefingPrimary,
+            FRAMEPOINT_BOTTOMRIGHT, panel, FRAMEPOINT_BOTTOMRIGHT,
+            -MENU_FOOTER_SIDE_INSET, MENU_FOOTER_BUTTON_Y)
+    else
+        BlzFrameClearAllPoints(UI.activityBriefingBack)
+        BlzFrameSetPoint(UI.activityBriefingBack, FRAMEPOINT_BOTTOM, panel,
+            FRAMEPOINT_BOTTOM, 0, MENU_FOOTER_BUTTON_Y)
+    end
     BlzFrameSetVisible(UI.activityBriefingResume, spec.resumeAction ~= nil)
     BlzFrameSetVisible(UI.activityBriefingExit, spec.resumeAction ~= nil)
     BlzFrameSetVisible(panel, true)
@@ -1652,12 +1712,18 @@ local function CreateActivityBriefingPanel()
     BlzFrameSetEnable(UI.activityBriefingBody, false)
 
     UI.activityBriefingButtons = {}
+    UI.activityBriefingChoiceArtwork = {}
     UI.activityBriefingTooltipText = {}
     for index = 1, 15 do
         local button = CreateButton("JTGActivityBriefingChoice" .. index, panel,
             "", BRIEFING_CHOICE_WIDTH, BRIEFING_CHOICE_HEIGHT)
         BlzFrameSetPoint(button, FRAMEPOINT_TOP, panel, FRAMEPOINT_TOP, 0, -0.305)
+        local artwork = BlzCreateFrameByType("BACKDROP",
+            "JTGActivityBriefingChoiceArtwork" .. index, button, "", 0)
+        BlzFrameSetEnable(artwork, false)
+        BlzFrameSetVisible(artwork, false)
         UI.activityBriefingButtons[index] = button
+        UI.activityBriefingChoiceArtwork[index] = artwork
         RegisterClick(button, function()
             local choice = UI.activityBriefingVisibleActions and UI.activityBriefingVisibleActions[index]
             if choice ~= nil and choice.action ~= nil then choice.action() end
@@ -1667,7 +1733,7 @@ local function CreateActivityBriefingPanel()
     UI.activityBriefingCommandButtons = {}
     UI.activityBriefingCommandArtwork = {}
     UI.activityBriefingCommandTooltipText = {}
-    for index = 1, 12 do
+    for index = 1, 72 do
         local button = BlzCreateFrameByType("BUTTON",
             "JTGActivityBriefingCommandChoice" .. index, panel, "", 0)
         BlzFrameSetSize(button, BRIEFING_COMMAND_BUTTON_SIZE,
@@ -1688,6 +1754,13 @@ local function CreateActivityBriefingPanel()
                 UI.activityBriefingVisibleActions[index]
             if choice ~= nil and choice.action ~= nil then choice.action() end
         end)
+        RegisterRightClick(button, function()
+            local choice = UI.activityBriefingVisibleActions and
+                UI.activityBriefingVisibleActions[index]
+            if choice ~= nil and choice.rightAction ~= nil then
+                choice.rightAction()
+            end
+        end)
         BlzFrameSetVisible(button, false)
     end
 
@@ -1696,6 +1769,15 @@ local function CreateActivityBriefingPanel()
         if UI.activityBriefingBackAction ~= nil then UI.activityBriefingBackAction() end
     end, "return")
     UI.activityBriefingBack = back
+
+    local primary = CreateFooterButton("JTGActivityBriefingPrimary", panel,
+        "Begin", "right", function()
+        if UI.activityBriefingPrimaryAction ~= nil then
+            UI.activityBriefingPrimaryAction()
+        end
+    end)
+    UI.activityBriefingPrimary = primary
+    BlzFrameSetVisible(primary, false)
 
     local exit = CreateFooterButton("JTGActivityBriefingExit", panel, "Exit",
         "left", function()
@@ -1773,7 +1855,7 @@ local function CreateToolbar()
 
     local squares = toolbarButton("JTGToolbarSquares", "Squares")
     AttachTooltip(squares,
-        "Show square outlines for each unit's movement-obstruction area.",
+        "Display unit obstruction areas, snap points and the finer grid.",
         "left")
     RegisterClick(squares, JTG.ToggleActivitySquares)
     UI.toolbarButtons.squares = squares
@@ -1851,7 +1933,8 @@ function UI.AbandonForLoad()
         DestroyTimer(UI.nativeMenuMonitor)
     end
     local triggers = {
-        UI.clickTrigger, UI.escapeTrigger, UI.nativeMenuTrigger,
+        UI.clickTrigger, UI.rightClickTrigger, UI.hoverTrigger, UI.escapeTrigger,
+        UI.nativeMenuTrigger,
         UI.nativeKeyTrigger, UI.nativeCloseTrigger, UI.nativeLoadTrigger,
     }
     for _, trigger in ipairs(triggers) do
@@ -1871,11 +1954,14 @@ function UI.AbandonForLoad()
     UI.toolbarButtons = {}
     UI.clickActions = {}
     UI.clickSounds = {}
+    UI.rightClickActions = {}
+    UI.hoveredRightClickFrame = nil
     UI.tooltips = {}
     UI.nativeHiddenFrames = {}
     UI.activityBriefingActions = nil
     UI.activityBriefingVisibleActions = nil
     UI.activityBriefingButtons = nil
+    UI.activityBriefingChoiceArtwork = nil
     UI.activityBriefingTooltipText = nil
     UI.activityBriefingCommandButtons = nil
     UI.activityBriefingCommandArtwork = nil
@@ -1883,6 +1969,8 @@ function UI.AbandonForLoad()
     UI.activityBriefingCommandGrid = nil
     UI.currentBackAction = nil
     UI.clickTrigger = nil
+    UI.rightClickTrigger = nil
+    UI.hoverTrigger = nil
     UI.escapeTrigger = nil
     UI.nativeMenuTrigger = nil
     UI.nativeKeyTrigger = nil
@@ -2042,6 +2130,32 @@ function UI.Initialize(restoring)
                 ReleaseKeyboardFocusAfterClick()
             end)
         end
+    end)
+    UI.hoverTrigger = CreateTrigger()
+    TriggerAddAction(UI.hoverTrigger, function()
+        local frame = BlzGetTriggerFrame()
+        if BlzGetTriggerFrameEvent() == FRAMEEVENT_MOUSE_ENTER then
+            UI.hoveredRightClickFrame = frame
+        elseif UI.hoveredRightClickFrame == frame then
+            UI.hoveredRightClickFrame = nil
+        end
+    end)
+    UI.rightClickTrigger = CreateTrigger()
+    TriggerRegisterPlayerEvent(UI.rightClickTrigger, Player(0),
+        EVENT_PLAYER_MOUSE_DOWN)
+    TriggerAddAction(UI.rightClickTrigger, function()
+        if BlzGetTriggerPlayerMouseButton() ~= MOUSE_BUTTON_TYPE_RIGHT then
+            return
+        end
+        local clickedFrame = UI.hoveredRightClickFrame
+        if clickedFrame == nil then return end
+        local action = UI.rightClickActions[GetHandleId(clickedFrame)]
+        if action == nil then return end
+        PlayButtonSound("return")
+        ReleaseFrameFocus(clickedFrame)
+        action()
+        ReleaseFrameFocus(clickedFrame)
+        ReleaseKeyboardFocusAfterClick()
     end)
     UI.escapeTrigger = CreateTrigger()
     BlzTriggerRegisterPlayerKeyEvent(UI.escapeTrigger, Player(0), OSKEY_ESCAPE, 0, true)

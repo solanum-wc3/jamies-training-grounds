@@ -170,7 +170,7 @@ JTG.RegisterActivity({
     status = "available",
     sceneId = "arena.south",
     capabilities = {restart = true, menu = true, lastRunner = true,
-        next = true, pause = true, quests = true},
+        next = true, pause = true, squares = true, quests = true},
     menu = JTG.OpenBodyBlockingMenu,
     factory = JTG.CreateBodyBlockingActivity,
 })

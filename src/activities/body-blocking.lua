@@ -26,7 +26,11 @@ local BODY_BLOCKING_QUEST_TEXT =
     "So a blocked unit has to wait for new movement instructions, and then " ..
     "turn on the spot to start moving along the new path.|n|n" ..
     "In the time this takes, a keen-eyed player can predict where the new " ..
-    "path is going to go, and move their blocker into position again."
+    "path is going to go, and move their blocker into position again.|n|n" ..
+    "Press the |cffffcc00Squares|r button to display the areas that units " ..
+    "obstruct. These areas snap to a 32x32 in-game unit grid, so they do not " ..
+    "move seamlessly like the units do. You can also display the snap points " ..
+    "and a finer 8x8 grid."
 
 local TRAINING_ROSTERS = {
     human = {
@@ -52,14 +56,21 @@ local TRAINING_ROSTERS = {
 }
 
 local RACE_CHOICES = {
-    {key = "human", label = "Human"}, {key = "orc", label = "Orc"},
-    {key = "nightelf", label = "Night Elf"}, {key = "undead", label = "Undead"},
+    {key = "human", label = "Human",
+        artwork = "UI\\Glues\\Loading\\Backgrounds\\Campaigns\\HumanSymbol.dds"},
+    {key = "orc", label = "Orc",
+        artwork = "UI\\Glues\\Loading\\Backgrounds\\Campaigns\\OrcSymbol.dds"},
+    {key = "nightelf", label = "Night Elf",
+        artwork = "UI\\Glues\\Loading\\Backgrounds\\Campaigns\\NightElfSymbol.dds"},
+    {key = "undead", label = "Undead",
+        artwork = "UI\\Glues\\Loading\\Backgrounds\\Campaigns\\UndeadSymbol.dds"},
 }
 
 local CUSTOM_RACE_CHOICES = {
-    {key = "human", label = "Human"}, {key = "orc", label = "Orc"},
-    {key = "nightelf", label = "Night Elf"}, {key = "undead", label = "Undead"},
-    {key = "neutral", label = "Neutral"},
+    RACE_CHOICES[1], RACE_CHOICES[2], RACE_CHOICES[3], RACE_CHOICES[4],
+    {key = "neutral", label = "Neutral",
+        artwork = "ReplaceableTextures\\CommandButtons\\BTNTavern.blp",
+        iconScale = 0.6},
 }
 
 -- Standard ground rosters plus heroes. Flying forms and flying units are
@@ -185,7 +196,9 @@ function JTG.OpenBodyBlockingMenu(originCategory, pauseGame, restorePage, restor
         local choices = {}
         for _, race in ipairs(RACE_CHOICES) do
             local key, label = race.key, race.label
-            table.insert(choices, {label = label, tooltip = "Practice against " .. label .. " units.",
+            table.insert(choices, {label = label, icon = race.artwork,
+                iconScale = race.iconScale,
+                tooltip = "Practice against " .. label .. " units.",
                 action = function()
                     selection.race = key
                     selection.runnerIndex = 1
@@ -209,7 +222,9 @@ function JTG.OpenBodyBlockingMenu(originCategory, pauseGame, restorePage, restor
         local choices = {}
         for _, race in ipairs(CUSTOM_RACE_CHOICES) do
             local key, label = race.key, race.label
-            table.insert(choices, {label = label, tooltip = "Choose a " .. label .. " runner.",
+            table.insert(choices, {label = label, icon = race.artwork,
+                iconScale = race.iconScale,
+                tooltip = "Choose a " .. label .. " runner.",
                 action = function() selection.race = key; showCustomRunner() end})
         end
         show({body = "Choose the race of the runner you want to block.", choices = choices,
@@ -234,7 +249,8 @@ function JTG.OpenBodyBlockingMenu(originCategory, pauseGame, restorePage, restor
         local choices = {}
         for _, race in ipairs(CUSTOM_RACE_CHOICES) do
             local key, label = race.key, race.label
-            table.insert(choices, {label = label,
+            table.insert(choices, {label = label, icon = race.artwork,
+                iconScale = race.iconScale,
                 action = function() selection.blockerRace = key; showCustomBlocker() end})
         end
         show({body = "Choose the race of the unit you want to control.", choices = choices,
@@ -306,6 +322,12 @@ function JTG.CreateBodyBlockingActivity(session)
         streakLevel = 0,
         raceResults = {},
         routeTemplate = nil,
+        squaresVisible = false,
+        squareGridVisible = false,
+        squareEntries = {},
+        navigationDotsImages = {},
+        navigationGridImages = {},
+        presentationVisible = true,
     }
 
     local carry = session.restartData
@@ -320,6 +342,62 @@ function JTG.CreateBodyBlockingActivity(session)
         activity.blockerName = carry.blockerName or "Footman"
         activity.raceResults = carry.raceResults or {}
         activity.routeTemplate = carry.routeTemplate
+        activity.squaresVisible = carry.squaresVisible == true
+        activity.squareGridVisible = carry.squareGridVisible == true
+    end
+
+    function activity:addSquareOverlay(unit, texture)
+        if unit == nil then return end
+        local half = JTG.UnitObstructionHalfSize(BlzGetUnitCollisionSize(unit))
+        local centerX = JTG.UnitObstructionGridCenter(GetUnitX(unit))
+        local centerY = JTG.UnitObstructionGridCenter(GetUnitY(unit))
+        local image = JTG.ScopeTrackImage(session.presentationScope,
+            CreateImage(texture, half * 2.0, half * 2.0, 0,
+                centerX - half, centerY - half, 2, 0, 0, 0, 2))
+        SetImageRenderAlways(image, true)
+        SetImageAboveWater(image, true, true)
+        self.squareEntries[#self.squareEntries + 1] = {
+            unit = unit, image = image, half = half,
+        }
+    end
+
+    function activity:updateSquareOverlays()
+        local visible = self.squaresVisible and self.presentationVisible
+        JTG.ShowNavigationGrid(self.navigationGridImages,
+            self.squareGridVisible and self.presentationVisible)
+        for _, entry in ipairs(self.squareEntries) do
+            if entry.unit ~= nil and GetUnitTypeId(entry.unit) ~= 0 then
+                local centerX = JTG.UnitObstructionGridCenter(GetUnitX(entry.unit))
+                local centerY = JTG.UnitObstructionGridCenter(GetUnitY(entry.unit))
+                SetImagePosition(entry.image, centerX - entry.half,
+                    centerY - entry.half, 2)
+                ShowImage(entry.image, visible)
+            end
+        end
+        JTG.ShowNavigationGrid(self.navigationDotsImages, visible)
+    end
+
+    function activity:createSquareOverlays()
+        self.squareEntries = {}
+        self:addSquareOverlay(self.blocker, JTG.UnitSquarePlayerTexture)
+        self:addSquareOverlay(self.runner, JTG.UnitSquareEnemyTexture)
+        self:updateSquareOverlays()
+    end
+
+    function activity:toggleSquares()
+        if not self.squaresVisible then
+            self.squaresVisible = true
+            self.squareGridVisible = false
+        elseif not self.squareGridVisible then
+            self.squareGridVisible = true
+        else
+            self.squaresVisible = false
+            self.squareGridVisible = false
+        end
+        self:updateSquareOverlays()
+        if JTG.UI and JTG.UI.SetSquaresActive then
+            JTG.UI.SetSquaresActive(self.squaresVisible)
+        end
     end
 
     function activity:makeTimer(period, repeating, callback)
@@ -474,6 +552,7 @@ function JTG.CreateBodyBlockingActivity(session)
             JTG.UI.SetNextText("Next Runner")
             JTG.UI.SetNextEnabled(self.mode == "training" and
                 self.runnerIndex < #TRAINING_ROSTERS[self.race])
+            JTG.UI.SetSquaresActive(self.squaresVisible)
         end
         self:createCourseMarkers()
 
@@ -518,6 +597,7 @@ function JTG.CreateBodyBlockingActivity(session)
             BlzCreateUnitWithSkin(Player(0), self.blockerId,
                 self.startX + 650, self.laneY - 450, 90, self.blockerId))
         SetUnitInvulnerable(self.blocker, true)
+        self:createSquareOverlays()
         -- Keep player ownership and selection through the countdown, but use a
         -- zero movement speed so orders can turn the Footman without letting it
         -- travel before the visible GO cue.
@@ -740,6 +820,7 @@ function JTG.CreateBodyBlockingActivity(session)
         self:applyReplaySample(self.replaySamples[1])
         if JTG.UI then
             JTG.UI.ShowToolbar(session.descriptor.capabilities)
+            JTG.UI.SetSquaresActive(self.squaresVisible)
             JTG.UI.SetNextText("Next Runner")
             JTG.UI.SetNextEnabled(self.mode == "training" and
                 self.runnerIndex < #TRAINING_ROSTERS[self.race])
@@ -924,6 +1005,8 @@ function JTG.CreateBodyBlockingActivity(session)
     end
 
     function activity:restorePresentation()
+        self.presentationVisible = true
+        self:updateSquareOverlays()
         if self.replaying then
             BlzFrameSetVisible(self.resultBackdrop, false)
             if JTG.UI then
@@ -939,6 +1022,7 @@ function JTG.CreateBodyBlockingActivity(session)
         elseif JTG.UI then
             self:setOverlayVisible(true)
             JTG.UI.ShowToolbar(session.descriptor.capabilities)
+            JTG.UI.SetSquaresActive(self.squaresVisible)
             JTG.UI.SetLastRunnerEnabled(self.mode == "training" and self.runnerIndex > 1)
             JTG.UI.SetNextText("Next Runner")
             JTG.UI.SetNextEnabled(self.mode == "training" and
@@ -947,6 +1031,8 @@ function JTG.CreateBodyBlockingActivity(session)
     end
 
     function activity:hidePresentationForMenu()
+        self.presentationVisible = false
+        self:updateSquareOverlays()
         self:setOverlayVisible(false)
         if self.resultBackdrop ~= nil then
             BlzFrameSetVisible(self.resultBackdrop, false)
@@ -963,6 +1049,11 @@ function JTG.CreateBodyBlockingActivity(session)
         self.startTag = nil
         self.finishTag = nil
         self.courseTags = {}
+        self.squareEntries = {}
+        self.navigationGridImages = JTG.CreateNavigationGridOverlay(
+            session.presentationScope, session.scene)
+        self.navigationDotsImages = JTG.CreateNavigationDotsOverlay(
+            session.presentationScope, session.scene)
         self:createCountdownUI()
         self:createSpeedUI()
         self:createResultUI()
@@ -986,6 +1077,8 @@ function JTG.CreateBodyBlockingActivity(session)
         else
             self:setOverlayVisible(true)
         end
+        self.presentationVisible = true
+        self:createSquareOverlays()
     end
 
     function activity:discardPresentationForLoad()
@@ -1001,6 +1094,18 @@ function JTG.CreateBodyBlockingActivity(session)
         self.startTag = nil
         self.finishTag = nil
         self.courseTags = {}
+        for _, entry in ipairs(self.squareEntries or {}) do
+            if entry.image ~= nil then DestroyImage(entry.image) end
+        end
+        for _, image in ipairs(self.navigationGridImages or {}) do
+            DestroyImage(image)
+        end
+        for _, image in ipairs(self.navigationDotsImages or {}) do
+            DestroyImage(image)
+        end
+        self.squareEntries = {}
+        self.navigationGridImages = {}
+        self.navigationDotsImages = {}
     end
 
     function activity:failRun()
@@ -1027,6 +1132,12 @@ function JTG.CreateBodyBlockingActivity(session)
         self.laneY = scene.centerY
         self.arenaMinY = scene.minY
         self.arenaMaxY = scene.maxY
+        self.navigationGridImages = JTG.CreateNavigationGridOverlay(
+            session.presentationScope, scene)
+        self.navigationDotsImages = JTG.CreateNavigationDotsOverlay(
+            session.presentationScope, scene)
+        self.squareUpdateTimer = self:makeTimer(0.03, true,
+            function() self:updateSquareOverlays() end)
 
         local quest = JTG.ScopeTrackQuest(current.scope, CreateQuest())
         QuestSetTitle(quest, "On Pathfinding and Movement")
@@ -1084,6 +1195,8 @@ function JTG.CreateBodyBlockingActivity(session)
             blockerId = self.blockerId, blockerName = self.blockerName,
             raceResults = self.raceResults,
             routeTemplate = routeTemplate,
+            squaresVisible = self.squaresVisible,
+            squareGridVisible = self.squareGridVisible,
         }
     end
 

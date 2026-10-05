@@ -1,6 +1,6 @@
 -- Windwalk Pop: use Wind Walk's native loss and restoration of collision to
 -- displace a surrounded Orc unit. The normal setup teaches the isolated
--- mechanic; Hard Mode and Counterplay stage a small two-army encounter.
+-- mechanic; Hard Mode and Counterplay run randomized four-stage racial courses.
 JTG = JTG or {}
 
 local WINDWALK_POP_INTRO =
@@ -27,10 +27,17 @@ local WINDWALK_POP_QUEST_TEXT =
     "3. When the Blademaster is exactly on it, use a {Term: Stop} or " ..
     "{Term: Hold Position} command.\n" ..
     "4. Attack one of the surrounding units.\n" ..
-    "5. Select the surrounded unit you want to save, and have it move " ..
-    "somewhere.\n\n" ..
+    "5. Select the surrounded unit and give it any command. Move, Attack, " ..
+    "Hold Position, Stop, Patrol and ability commands all make it regain " ..
+    "collision with the Blademaster.\n\n" ..
     "If executed correctly, the surrounded unit will pop out of the " ..
-    "surround.\n\n" ..
+    "surround. An ability can be particularly useful here. For example, a " ..
+    "Tauren Chieftain can use War Stomp immediately after the pop to prevent " ..
+    "a chase.\n\n" ..
+    "Press the {Button: Squares} button to display the areas that units " ..
+    "obstruct. These areas snap to a 32x32 in-game unit grid, so they do not " ..
+    "move seamlessly like the units do. You can also display the snap points " ..
+    "and a finer 8x8 grid.\n\n" ..
     "Of course, now the Blademaster is surrounded, so you should not do " ..
     "this when he does not have enough mana for two Wind Walks."
 
@@ -40,7 +47,15 @@ local COUNTERPLAY_QUEST_TEXT =
     "To do this, you need to see it coming.\n\n" ..
     "If you now loosen the surround a bit, so the surrounded unit is still " ..
     "trapped, but so there is enough space for it and the Blademaster, the " ..
-    "Windwalk Pop will instead also trap the Blademaster in the surround."
+    "Windwalk Pop will instead also trap the Blademaster in the surround.\n\n" ..
+    "A Windwalk pop may also be made impossible if there is simply no room " ..
+    "to displace the surrounded unit to. This can be the case particularly " ..
+    "in a very tight surround with 8 units: one unit on every side and " ..
+    "every corner.\n\n" ..
+    "Press the {Button: Squares} button to display the areas that units " ..
+    "obstruct. These areas snap to a 32x32 in-game unit grid, so they do not " ..
+    "move seamlessly like the units do. You can also display the snap points " ..
+    "and a finer 8x8 grid."
 
 local BLADEMASTER_ID = FourCC("Obla")
 local GRUNT_ID = FourCC("ogru")
@@ -56,23 +71,23 @@ local TAUREN_ID = FourCC("otau")
 local SHADOW_HUNTER_ID = FourCC("Oshd")
 local RIFLEMAN_ID = FourCC("hrif")
 local SPELL_BREAKER_ID = FourCC("hspt")
+local TROLL_BERSERKER_ID = FourCC("otbk")
+local GHOUL_ID = FourCC("ugho")
+local DEATH_KNIGHT_ID = FourCC("Udea")
+local ABOMINATION_ID = FourCC("uabo")
+local NECROMANCER_ID = FourCC("unec")
+local LICH_ID = FourCC("Ulic")
+local HUNTRESS_ID = FourCC("esen")
+local DEMON_HUNTER_ID = FourCC("Edem")
+local DRYAD_ID = FourCC("edry")
+local DRUID_OF_THE_CLAW_ID = FourCC("edoc")
+local KEEPER_OF_THE_GROVE_ID = FourCC("Ekee")
 local CROWN_OF_KINGS_ID = FourCC("ckng")
-local WATER_ELEMENTAL_UNIT_IDS = {
-    [FourCC("hwat")] = true,
-    [FourCC("hwt2")] = true,
-    [FourCC("hwt3")] = true,
-}
 
 local WINDWALK_ID = FourCC("AOwk")
 local CRITICAL_STRIKE_ID = FourCC("AOcr")
-local WAR_STOMP_ID = FourCC("AOws")
 local SHOCKWAVE_ID = FourCC("AOsh")
 local ENDURANCE_AURA_ID = FourCC("AOae")
-local WATER_ELEMENTAL_ID = FourCC("AHwe")
-local BRILLIANCE_AURA_ID = FourCC("AHab")
-local STORM_BOLT_ID = FourCC("AHtb")
-local STORM_BOLT_BUFF_ID = FourCC("BHtb")
-local THUNDER_CLAP_ID = FourCC("AHtc")
 local TIMED_TARGET_IDS = {
     GRUNT_ID, GRUNT_ID, HEADHUNTER_ID, HEADHUNTER_ID, RAIDER_ID,
     KODO_ID, SPIRIT_WALKER_ID, TAUREN_ID, SHADOW_HUNTER_ID,
@@ -95,6 +110,51 @@ local TIMED_LAYOUT_ROWS = {
     [9] = {{3, 0.0}, {3, 0.5}, {3, 0.0}},
     [10] = {{4, 0.0}, {3, 0.5}, {3, 1.0}},
 }
+
+local COURSE_SETUPS = {
+    {
+        id = "human", title = "Human",
+        units = {FOOTMAN_ID, MOUNTAIN_KING_ID, SPELL_BREAKER_ID,
+            RIFLEMAN_ID, FOOTMAN_ID, RIFLEMAN_ID, SPELL_BREAKER_ID,
+        },
+    },
+    {
+        id = "orc", title = "Orc",
+        units = {GRUNT_ID, BLADEMASTER_ID, TAUREN_ID,
+            TROLL_BERSERKER_ID, GRUNT_ID, TROLL_BERSERKER_ID,
+            TAUREN_ID},
+    },
+    {
+        id = "undead", title = "Undead",
+        units = {GHOUL_ID, DEATH_KNIGHT_ID, GHOUL_ID, GHOUL_ID,
+            ABOMINATION_ID, NECROMANCER_ID, GHOUL_ID},
+    },
+    {
+        id = "nightelf", title = "Night Elf",
+        units = {HUNTRESS_ID, DEMON_HUNTER_ID, HUNTRESS_ID, DRYAD_ID,
+            DRUID_OF_THE_CLAW_ID, DRYAD_ID, DRUID_OF_THE_CLAW_ID,
+        },
+    },
+}
+
+local function IsCourseMode(mode)
+    return mode == "hard" or mode == "counterplay"
+end
+
+local function CopyArray(source)
+    local result = {}
+    for index = 1, 4 do result[index] = (source or {})[index] end
+    return result
+end
+
+local function CreateRandomCourseOrder()
+    local order = {1, 2, 3, 4}
+    for index = #order, 2, -1 do
+        local other = GetRandomInt(1, index)
+        order[index], order[other] = order[other], order[index]
+    end
+    return order
+end
 
 local function FormatBriefingText(text)
     local formatted = string.gsub(text, "{Button:%s*(.-)}",
@@ -137,6 +197,11 @@ function JTG.OpenWindwalkPopMenu(originCategory, pauseGame, restorePage,
             mode = mode,
             skipQuestHighlight = returningFromRun,
         }
+        if IsCourseMode(mode) then
+            restartData.courseOrder = CreateRandomCourseOrder()
+            restartData.courseStage = 1
+            restartData.courseResults = {}
+        end
         if JTG.Controller.session ~= nil then
             JTG.StartActivityAfterCleanup("skills.windwalk",
                 originCategory or "skills", restartData, nil,
@@ -203,13 +268,16 @@ end
 
 function JTG.CreateWindwalkPopActivity(session)
     local selection = session.restartData or {}
+    local selectedMode = selection.mode or "normal"
+    local courseOrder = CopyArray(selection.courseOrder)
+    if IsCourseMode(selectedMode) and #courseOrder ~= #COURSE_SETUPS then
+        courseOrder = CreateRandomCourseOrder()
+    end
     local activity = {
-        mode = selection.mode or "normal",
+        mode = selectedMode,
         blademaster = nil,
         surroundee = nil,
         humanArmy = {},
-        archmage = nil,
-        summonedWaterElementals = {},
         quests = {},
         highlightQuestOnStart = selection.skipQuestHighlight ~= true,
         timedStage = math.max(1, math.min(10, selection.timedStage or 1)),
@@ -219,10 +287,10 @@ function JTG.CreateWindwalkPopActivity(session)
         timedCompleted = 0,
         popOriginX = nil,
         popOriginY = nil,
-        hardMovementLocked = false,
-        hardTargetMoveSpeed = nil,
-        timedCurrent = 1,
         timedRemaining = 5.0,
+        courseOrder = courseOrder,
+        courseStage = math.max(1, math.min(4, selection.courseStage or 1)),
+        courseResults = CopyArray(selection.courseResults),
         finished = false,
         resultPending = false,
         resultKind = nil,
@@ -236,13 +304,8 @@ function JTG.CreateWindwalkPopActivity(session)
         countdownValue = 3,
         countdownActive = false,
         exerciseStarted = false,
-        detectorArmed = false,
-        windwalkSeen = false,
-        overlapSeen = false,
-        breakSeen = false,
-        overlapX = nil,
-        overlapY = nil,
         squaresVisible = selection.squaresVisible == true,
+        squareGridVisible = selection.squareGridVisible == true,
         squareEntries = {},
         presentationVisible = true,
     }
@@ -289,11 +352,13 @@ function JTG.CreateWindwalkPopActivity(session)
         if unit == nil or GetUnitTypeId(unit) == 0 then return end
         local half = JTG.UnitObstructionHalfSize(BlzGetUnitCollisionSize(unit))
         local size = half * 2.0
+        local centerX = JTG.UnitObstructionGridCenter(GetUnitX(unit))
+        local centerY = JTG.UnitObstructionGridCenter(GetUnitY(unit))
         local texture = GetOwningPlayer(unit) == Player(0) and
             JTG.UnitSquarePlayerTexture or JTG.UnitSquareEnemyTexture
         local image = JTG.ScopeTrackImage(session.presentationScope,
             CreateImage(texture, size, size, 0,
-                GetUnitX(unit) - half, GetUnitY(unit) - half, 2,
+                centerX - half, centerY - half, 2,
                 0, 0, 0, 2))
         SetImageRenderAlways(image, true)
         SetImageAboveWater(image, true, true)
@@ -319,26 +384,98 @@ function JTG.CreateWindwalkPopActivity(session)
         for _, ring in ipairs(self.timedRings) do
             for _, unit in ipairs(ring) do add(unit) end
         end
-        for _, unit in ipairs(self.summonedWaterElementals) do add(unit) end
     end
 
     function activity:updateSquareOverlays()
+        JTG.ShowNavigationGrid(self.navigationGridImages,
+            self.squareGridVisible and self.presentationVisible)
         for _, entry in ipairs(self.squareEntries) do
             if entry.unit ~= nil and GetUnitTypeId(entry.unit) ~= 0 then
-                SetImagePosition(entry.image, GetUnitX(entry.unit) - entry.half,
-                    GetUnitY(entry.unit) - entry.half, 2)
+                local centerX = JTG.UnitObstructionGridCenter(GetUnitX(entry.unit))
+                local centerY = JTG.UnitObstructionGridCenter(GetUnitY(entry.unit))
+                SetImagePosition(entry.image, centerX - entry.half,
+                    centerY - entry.half, 2)
                 ShowImage(entry.image,
                     self.squaresVisible and self.presentationVisible)
             end
         end
+        -- Draw snap points last so they remain legible over both the fine
+        -- grid and the colored obstruction squares.
+        JTG.ShowNavigationGrid(self.navigationDotsImages,
+            self.squaresVisible and self.presentationVisible)
     end
 
     function activity:toggleSquares()
-        self.squaresVisible = not self.squaresVisible
+        if not self.squaresVisible then
+            self.squaresVisible = true
+            self.squareGridVisible = false
+        elseif not self.squareGridVisible then
+            self.squareGridVisible = true
+        else
+            self.squaresVisible = false
+            self.squareGridVisible = false
+        end
         self:updateSquareOverlays()
         if JTG.UI and JTG.UI.SetSquaresActive then
             JTG.UI.SetSquaresActive(self.squaresVisible)
         end
+    end
+
+    function activity:currentCourseSetup()
+        return COURSE_SETUPS[self.courseOrder[self.courseStage]]
+    end
+
+    function activity:captureCourseState(stage)
+        return {
+            mode = self.mode,
+            courseOrder = CopyArray(self.courseOrder),
+            courseStage = stage or self.courseStage,
+            courseResults = CopyArray(self.courseResults),
+            skipQuestHighlight = true,
+            squaresVisible = self.squaresVisible,
+            squareGridVisible = self.squareGridVisible,
+        }
+    end
+
+    function activity:openCourseStage(stage, reason)
+        if not IsCourseMode(self.mode) or stage < 1 or stage > 4 then
+            return false
+        end
+        return JTG.StartActivityAfterCleanup(session.id,
+            JTG.Controller.lastCategory, self:captureCourseState(stage), nil,
+            reason or "windwalk-course-stage")
+    end
+
+    function activity:nextStage()
+        if not IsCourseMode(self.mode) or self.courseStage >= 4 then
+            return false
+        end
+        return self:openCourseStage(self.courseStage + 1,
+            "windwalk-course-next")
+    end
+
+    function activity:captureLastRunnerState()
+        if not IsCourseMode(self.mode) or self.courseStage <= 1 then return nil end
+        return self:captureCourseState(self.courseStage - 1)
+    end
+
+    function activity:toolbarCapabilities()
+        if not IsCourseMode(self.mode) then
+            return session.descriptor.capabilities
+        end
+        local capabilities = {}
+        for key, value in pairs(session.descriptor.capabilities or {}) do
+            capabilities[key] = value
+        end
+        capabilities.next = true
+        capabilities.lastRunner = true
+        return capabilities
+    end
+
+    function activity:refreshCourseToolbar()
+        if not JTG.UI or not IsCourseMode(self.mode) then return end
+        JTG.UI.SetLastRunnerEnabled(self.courseStage > 1)
+        JTG.UI.SetNextEnabled(self.courseStage < 4)
     end
 
     activity.resultActions = {
@@ -349,8 +486,18 @@ function JTG.CreateWindwalkPopActivity(session)
                 else
                     self.timedStage = 1
                 end
+                JTG.ResetActivity()
+            elseif IsCourseMode(self.mode) then
+                if self.courseStage < 4 then
+                    self:openCourseStage(self.courseStage + 1,
+                        "windwalk-course-result-next")
+                else
+                    self.courseResults = {}
+                    self:openCourseStage(1, "windwalk-course-restart")
+                end
+            else
+                JTG.ResetActivity()
             end
-            JTG.ResetActivity()
         end,
     }
 
@@ -393,21 +540,30 @@ function JTG.CreateWindwalkPopActivity(session)
     end
 
     function activity:updateTimerUI()
-        if self.timerFrame == nil or self.mode ~= "timed" then return end
-        BlzFrameSetText(self.timerFrame, "|cffffcc00Stage " ..
-            tostring(self.timedStage) .. "|r   Freed " ..
-            tostring(self.timedCompleted) .. "/" .. tostring(self.timedStage) ..
-            "   |cffffcc00" .. string.format("%.1f", math.max(0,
-                self.timedRemaining)) .. "|r")
+        if self.timerFrame == nil then return end
+        if self.mode == "timed" then
+            BlzFrameSetText(self.timerFrame, "|cffffcc00Stage " ..
+                tostring(self.timedStage) .. "|r   Freed " ..
+                tostring(self.timedCompleted) .. "/" ..
+                tostring(self.timedStage) .. "   |cffffcc00" ..
+                string.format("%.1f", math.max(0, self.timedRemaining)) ..
+                "|r")
+        elseif IsCourseMode(self.mode) then
+            local setup = self:currentCourseSetup()
+            BlzFrameSetText(self.timerFrame, "|cffffcc00Stage " ..
+                tostring(self.courseStage) .. "/4|r   " .. setup.title)
+        end
     end
 
     function activity:renderResultPresentation()
         if self.resultCard == nil then return end
-        local showPrimary = self.mode == "timed" and
-            self.resultKind == "success"
+        local showPrimary = (self.mode == "timed" and
+            self.resultKind == "success") or IsCourseMode(self.mode)
         local primary = "Next"
-        if showPrimary then
+        if self.mode == "timed" and showPrimary then
             primary = self.timedStage < 10 and "Next Stage" or "Restart Course"
+        elseif IsCourseMode(self.mode) then
+            primary = self.courseStage < 4 and "Next Stage" or "Restart Course"
         end
         JTG.UI.ShowResultCard(self.resultCard, {
             title = self.resultTitleText or "",
@@ -479,6 +635,35 @@ function JTG.CreateWindwalkPopActivity(session)
             end))
     end
 
+    function activity:startCourseCountdownFormation()
+        for _, unit in ipairs(self.humanArmy) do PauseUnit(unit, false) end
+        local moveCount = 0
+        local function issueFormationOrder()
+            moveCount = moveCount + 1
+            for _, unit in ipairs(self.humanArmy) do
+                if moveCount <= 4 then
+                    IssueTargetOrder(unit, "move", self.surroundee)
+                else
+                    IssueTargetOrder(unit, "attack", self.surroundee)
+                end
+            end
+            if self.mode == "counterplay" and moveCount == 3 then
+                PauseUnit(self.surroundee, false)
+                IssuePointOrder(self.surroundee, "move",
+                    GetUnitX(self.surroundee) + 500.0,
+                    GetUnitY(self.surroundee) - 300.0)
+            end
+            return moveCount >= 5
+        end
+        issueFormationOrder()
+        local moveTimer = JTG.ScopeTrackTimer(session.scope, CreateTimer())
+        TimerStart(moveTimer, 0.60, true,
+            JTG.GuardSession(session, function()
+                if not issueFormationOrder() then return end
+                PauseTimer(moveTimer)
+            end))
+    end
+
     function activity:beginExercise()
         if self.exerciseStarted or self.finished then return end
         self.exerciseStarted = true
@@ -490,15 +675,13 @@ function JTG.CreateWindwalkPopActivity(session)
             self:startBasicSurround()
             self:startPopDetection()
         elseif self.mode == "hard" then
-            self:lockHardTargetMovement(5.0)
-            self:stageHardSurround(centerX, centerY)
             self:startPopDetection()
         elseif self.mode == "timed" then
             self:startPopDetection()
             self:updateTimerUI()
             BlzFrameSetVisible(self.timerFrame, true)
         else
-            self:stageCounterplay(centerX, centerY)
+            self:startCounterplayAttempt(centerX, centerY)
         end
     end
 
@@ -527,6 +710,7 @@ function JTG.CreateWindwalkPopActivity(session)
         self.countdownValue = 3
         self:setTrainingUnitsPaused(true)
         if self.mode == "timed" then self:startTimedCountdownFormation() end
+        if IsCourseMode(self.mode) then self:startCourseCountdownFormation() end
         BlzFrameSetText(self.countdownFrame, "|cffffcc003|r")
         BlzFrameSetVisible(self.countdownFrame, true)
         self.countdownTimer = JTG.ScopeTrackTimer(session.scope,
@@ -539,9 +723,33 @@ function JTG.CreateWindwalkPopActivity(session)
         if self.finished then return end
         self.finished = true
         self.resultPending = true
-        self.resultKind = kind
-        self.resultTitleText = title
-        self.resultDetailsText = details
+        if IsCourseMode(self.mode) then
+            local setup = self:currentCourseSetup()
+            self.courseResults[self.courseStage] = kind
+            if self.courseStage >= 4 then
+                local successes = 0
+                for index = 1, 4 do
+                    if self.courseResults[index] == "success" then
+                        successes = successes + 1
+                    end
+                end
+                self.resultKind = successes == 4 and "success" or "failure"
+                self.resultTitleText = "COURSE COMPLETE"
+                self.resultDetailsText = setup.title .. ": " .. title ..
+                    "|nYou completed " .. tostring(successes) ..
+                    " of 4 stages successfully."
+            else
+                self.resultKind = kind
+                self.resultTitleText = title
+                self.resultDetailsText = "Stage " ..
+                    tostring(self.courseStage) .. "/4 - " .. setup.title ..
+                    "|n" .. details
+            end
+        else
+            self.resultKind = kind
+            self.resultTitleText = title
+            self.resultDetailsText = details
+        end
         self:pauseTrainingUnits()
         if self.timerFrame ~= nil then BlzFrameSetVisible(self.timerFrame, false) end
         if JTG.UI then JTG.UI.HideToolbar() end
@@ -551,53 +759,6 @@ function JTG.CreateWindwalkPopActivity(session)
                 self.resultPending = false
                 self:renderResultPresentation()
             end))
-    end
-
-    function activity:currentSurrounders()
-        if self.mode == "timed" then
-            return self.timedRings[self.timedCurrent] or {}
-        end
-        return self.humanArmy
-    end
-
-    function activity:countClosedSides()
-        local target = self.surroundee
-        if target == nil or GetUnitTypeId(target) == 0 then return 0 end
-        local tx, ty = GetUnitX(target), GetUnitY(target)
-        local occupied = {false, false, false, false}
-        for _, unit in ipairs(self:currentSurrounders()) do
-            if unit ~= nil and GetUnitTypeId(unit) ~= 0 and
-                    GetWidgetLife(unit) > 0.405 then
-                local dx, dy = GetUnitX(unit) - tx, GetUnitY(unit) - ty
-                if dx * dx + dy * dy <= 150.0 * 150.0 then
-                    if math.abs(dx) >= math.abs(dy) then
-                        occupied[dx >= 0 and 1 or 2] = true
-                    else
-                        occupied[dy >= 0 and 3 or 4] = true
-                    end
-                end
-            end
-        end
-        local count = 0
-        for index = 1, 4 do if occupied[index] then count = count + 1 end end
-        return count
-    end
-
-    function activity:isCurrentSurrounder(candidate)
-        for _, unit in ipairs(self:currentSurrounders()) do
-            if candidate == unit then return true end
-        end
-        return false
-    end
-
-    function activity:resetPopAttempt()
-        self.windwalkSeen = false
-        self.overlapSeen = false
-        self.breakSeen = false
-        self.overlapX = nil
-        self.overlapY = nil
-        self.detectorArmed = self.mode == "timed" or
-            self:countClosedSides() == 4
     end
 
     function activity:markPoppedUnit(unit)
@@ -761,7 +922,6 @@ function JTG.CreateWindwalkPopActivity(session)
             end
             self.timedRings[index] = ring
         end
-        self.timedCurrent = 1
         self.timedRemaining = 5.0
         self.timedPending = {}
         self.timedCompleted = 0
@@ -771,52 +931,21 @@ function JTG.CreateWindwalkPopActivity(session)
             GetUnitY(self.surroundee)
         self:createBlademaster(Player(0), firstX - 360.0, firstY - 240.0,
             45.0)
-        self:resetPopAttempt()
     end
 
-    function activity:createHumanArmy(owner, centerX, centerY)
-        local specifications = {
-            {ARCHMAGE_ID, -190.0, -300.0, 90.0},
-            {MOUNTAIN_KING_ID, 190.0, -300.0, 90.0},
-            {FOOTMAN_ID, -285.0, -245.0, 90.0},
-            {FOOTMAN_ID, 285.0, -245.0, 90.0},
-            {RIFLEMAN_ID, -95.0, -340.0, 90.0},
-            {RIFLEMAN_ID, 95.0, -340.0, 90.0},
-            {SPELL_BREAKER_ID, -190.0, -245.0, 90.0},
-            {SPELL_BREAKER_ID, 190.0, -245.0, 90.0},
-        }
+    function activity:createCourseArmy(owner, centerX, centerY)
+        local setup = self:currentCourseSetup()
         self.humanArmy = {}
-        self.archmage = nil
-        self.summonedWaterElementals = {}
-        self.mountainKing = nil
-        for _, spec in ipairs(specifications) do
+        local radius = 300.0
+        for index, unitId in ipairs(setup.units) do
+            local angle = (index - 1) * bj_PI * 0.25
+            local x = centerX + radius * Sin(angle)
+            local y = centerY + radius * Cos(angle)
+            local facing = math.deg(Atan2(centerY - y, centerX - x))
             local unit = JTG.ScopeTrackUnit(session.scope,
-                BlzCreateUnitWithSkin(owner, spec[1], centerX + spec[2],
-                    centerY + spec[3], spec[4], spec[1]))
-            if spec[1] == ARCHMAGE_ID then
-                PrepareHero(unit,
-                    {{WATER_ELEMENTAL_ID, 2}, {BRILLIANCE_AURA_ID, 1}})
-                self.archmage = unit
-            elseif spec[1] == MOUNTAIN_KING_ID then
-                PrepareHero(unit, {{STORM_BOLT_ID, 2}, {THUNDER_CLAP_ID, 1}})
-                self.mountainKing = unit
-            end
+                BlzCreateUnitWithSkin(owner, unitId, x, y, facing, unitId))
             table.insert(self.humanArmy, unit)
         end
-
-        local summonTrigger = JTG.ScopeTrackTrigger(session.scope,
-            CreateTrigger())
-        TriggerRegisterPlayerUnitEvent(summonTrigger, owner,
-            EVENT_PLAYER_UNIT_SUMMON, nil)
-        TriggerAddAction(summonTrigger, JTG.GuardSession(session, function()
-            local summoned = GetSummonedUnit()
-            if GetSummoningUnit() == self.archmage and summoned ~= nil and
-                    WATER_ELEMENTAL_UNIT_IDS[GetUnitTypeId(summoned)] then
-                JTG.ScopeTrackUnit(session.scope, summoned)
-                table.insert(self.summonedWaterElementals, summoned)
-                self:addSquareOverlay(summoned)
-            end
-        end))
     end
 
     function activity:formBasicSurround(centerX, centerY)
@@ -850,229 +979,6 @@ function JTG.CreateWindwalkPopActivity(session)
                     end
                 end
                 if formationStep > 5 then PauseTimer(timer) end
-            end))
-    end
-
-    function activity:adjustOpenCardinalSides()
-        local tcX = GetUnitX(self.surroundee)
-        local tcY = GetUnitY(self.surroundee)
-        local sides = {
-            {name = "east", x = 1.0, y = 0.0, occupied = false},
-            {name = "west", x = -1.0, y = 0.0, occupied = false},
-            {name = "north", x = 0.0, y = 1.0, occupied = false},
-            {name = "south", x = 0.0, y = -1.0, occupied = false},
-        }
-        local available = {}
-        for _, unit in ipairs(self.humanArmy) do
-            local dx = GetUnitX(unit) - tcX
-            local dy = GetUnitY(unit) - tcY
-            local assigned = false
-            if dx >= 45.0 and dx <= 110.0 and math.abs(dy) <= 65.0 then
-                sides[1].occupied = true
-                assigned = true
-            elseif dx <= -45.0 and dx >= -110.0 and
-                    math.abs(dy) <= 65.0 then
-                sides[2].occupied = true
-                assigned = true
-            elseif dy >= 45.0 and dy <= 110.0 and
-                    math.abs(dx) <= 65.0 then
-                sides[3].occupied = true
-                assigned = true
-            elseif dy <= -45.0 and dy >= -110.0 and
-                    math.abs(dx) <= 65.0 then
-                sides[4].occupied = true
-                assigned = true
-            end
-            if not assigned then table.insert(available, unit) end
-        end
-
-        local moved = false
-        local contactOffset = 80.0
-        for _, side in ipairs(sides) do
-            if not side.occupied and #available > 0 then
-                local targetX = tcX + side.x * contactOffset
-                local targetY = tcY + side.y * contactOffset
-                local bestIndex = 1
-                local bestDistance = nil
-                for index, unit in ipairs(available) do
-                    local dx = GetUnitX(unit) - targetX
-                    local dy = GetUnitY(unit) - targetY
-                    local distance = dx * dx + dy * dy
-                    if bestDistance == nil or distance < bestDistance then
-                        bestDistance = distance
-                        bestIndex = index
-                    end
-                end
-                local unit = table.remove(available, bestIndex)
-                IssuePointOrder(unit, "move", targetX, targetY)
-                moved = true
-            end
-        end
-        return moved
-    end
-
-    function activity:orderHumanArmyToAttack()
-        local army = CreateGroup()
-        for _, unit in ipairs(self.humanArmy) do
-            GroupAddUnit(army, unit)
-        end
-        GroupTargetOrder(army, "attack", self.surroundee)
-        DestroyGroup(army)
-    end
-
-    function activity:waitForHumanArmyStill(callback)
-        local previous = {}
-        for index, unit in ipairs(self.humanArmy) do
-            previous[index] = {x = GetUnitX(unit), y = GetUnitY(unit)}
-        end
-        local stableTicks = 0
-        local stillTimer = JTG.ScopeTrackTimer(session.scope, CreateTimer())
-        TimerStart(stillTimer, 0.10, true,
-            JTG.GuardSession(session, function()
-                local allStill = true
-                for index, unit in ipairs(self.humanArmy) do
-                    local x = GetUnitX(unit)
-                    local y = GetUnitY(unit)
-                    local dx = x - previous[index].x
-                    local dy = y - previous[index].y
-                    if dx * dx + dy * dy > 1.0 then allStill = false end
-                    previous[index].x = x
-                    previous[index].y = y
-                end
-                if allStill then stableTicks = stableTicks + 1
-                else stableTicks = 0 end
-                if stableTicks >= 1 then
-                    PauseTimer(stillTimer)
-                    callback()
-                end
-            end))
-    end
-
-    function activity:beginHardAttack()
-        self:orderHumanArmyToAttack()
-        local groundAttackTimer = JTG.ScopeTrackTimer(session.scope,
-            CreateTimer())
-        TimerStart(groundAttackTimer, 1.00, false,
-            JTG.GuardSession(session, function()
-                local targetX = GetUnitX(self.surroundee)
-                local targetY = GetUnitY(self.surroundee)
-                local army = CreateGroup()
-                for _, unit in ipairs(self.humanArmy) do
-                    GroupAddUnit(army, unit)
-                end
-                GroupPointOrder(army, "attack", targetX, targetY)
-                DestroyGroup(army)
-            end))
-    end
-
-    function activity:finishHardSurround()
-        local moved = self:adjustOpenCardinalSides()
-        if moved then
-            self:waitForHumanArmyStill(function()
-                self:beginHardAttack()
-            end)
-        else
-            self:beginHardAttack()
-        end
-    end
-
-    function activity:beginHardSurrounding()
-        local moveCount = 0
-        local function issueMoveOrders()
-            moveCount = moveCount + 1
-            for _, unit in ipairs(self.humanArmy) do
-                IssueTargetOrder(unit, "move", self.surroundee)
-            end
-            return moveCount >= 5
-        end
-
-        issueMoveOrders()
-        local moveTimer = JTG.ScopeTrackTimer(session.scope, CreateTimer())
-        TimerStart(moveTimer, 0.15, true,
-            JTG.GuardSession(session, function()
-                if issueMoveOrders() then
-                    PauseTimer(moveTimer)
-                    self:finishHardSurround()
-                end
-            end))
-    end
-
-    function activity:stageHardSurround(centerX, centerY)
-        local function beginPositioning()
-            local tcX = GetUnitX(self.surroundee)
-            local tcY = GetUnitY(self.surroundee)
-            for _, unit in ipairs(self.humanArmy) do
-                IssuePointOrder(unit, "move", tcX, tcY + 600.0)
-            end
-
-            local approachTimer = JTG.ScopeTrackTimer(session.scope,
-                CreateTimer())
-            TimerStart(approachTimer, 0.03, true,
-                JTG.GuardSession(session, function()
-                    local liveTcY = GetUnitY(self.surroundee)
-                    for _, unit in ipairs(self.humanArmy) do
-                        if GetUnitY(unit) >= liveTcY + 250.0 then
-                            PauseTimer(approachTimer)
-                            self:beginHardSurrounding()
-                            return
-                        end
-                    end
-                end))
-        end
-
-        IssueTargetOrder(self.mountainKing, "thunderbolt", self.surroundee)
-        local stunPollTicks = 0
-        local stunTimer = JTG.ScopeTrackTimer(session.scope, CreateTimer())
-        TimerStart(stunTimer, 0.03, true,
-            JTG.GuardSession(session, function()
-                stunPollTicks = stunPollTicks + 1
-                if GetUnitAbilityLevel(self.surroundee,
-                        STORM_BOLT_BUFF_ID) > 0 or stunPollTicks >= 100 then
-                    PauseTimer(stunTimer)
-                    beginPositioning()
-                end
-            end))
-    end
-
-    function activity:lockHardTargetMovement(duration)
-        local target = self.surroundee
-        self.hardMovementLocked = true
-        self.hardTargetMoveSpeed = GetUnitMoveSpeed(target)
-        local lockX, lockY = GetUnitX(target), GetUnitY(target)
-        SetUnitMoveSpeed(target, 0)
-
-        local orderTrigger = JTG.ScopeTrackTrigger(session.scope,
-            CreateTrigger())
-        TriggerRegisterPlayerUnitEvent(orderTrigger, Player(0),
-            EVENT_PLAYER_UNIT_ISSUED_POINT_ORDER, nil)
-        TriggerAddAction(orderTrigger, JTG.GuardSession(session, function()
-            if not self.hardMovementLocked or GetTriggerUnit() ~= target then
-                return
-            end
-            local dx = GetOrderPointX() - GetUnitX(target)
-            local dy = GetOrderPointY() - GetUnitY(target)
-            IssueImmediateOrder(target, "stop")
-            SetUnitFacingTimed(target, math.deg(Atan2(dy, dx)), 0)
-        end))
-
-        local lockTimer = JTG.ScopeTrackTimer(session.scope, CreateTimer())
-        TimerStart(lockTimer, 0.03, true,
-            JTG.GuardSession(session, function()
-                if not self.hardMovementLocked then
-                    PauseTimer(lockTimer)
-                    return
-                end
-                SetUnitX(target, lockX)
-                SetUnitY(target, lockY)
-            end))
-
-        local releaseTimer = JTG.ScopeTrackTimer(session.scope, CreateTimer())
-        TimerStart(releaseTimer, duration, false,
-            JTG.GuardSession(session, function()
-                self.hardMovementLocked = false
-                PauseTimer(lockTimer)
-                SetUnitMoveSpeed(target, self.hardTargetMoveSpeed)
-                IssueImmediateOrder(target, "holdposition")
             end))
     end
 
@@ -1113,22 +1019,36 @@ function JTG.CreateWindwalkPopActivity(session)
                         return
                     end
                 end
+                if elapsed >= 4.0 then
+                    PauseTimer(resolutionTimer)
+                    self:finish("success", "COUNTERPLAY SUCCESSFUL",
+                        "The Tauren Chieftain remained trapped after the " ..
+                        "Windwalk Pop.")
+                    return
+                end
                 previousX, previousY = x, y
             end))
     end
 
-    function activity:stageCounterplay(centerX, centerY)
-        local radius = 108.0
-        for index, unit in ipairs(self.humanArmy) do
-            local angle = (index - 1) * bj_PI * 0.25
-            SetUnitPosition(unit, centerX + radius * Cos(angle),
-                centerY + radius * Sin(angle))
-            IssueTargetOrder(unit, "attack", self.surroundee)
-        end
-        local beginTimer = JTG.ScopeTrackTimer(session.scope, CreateTimer())
-        TimerStart(beginTimer, 3.0, false,
+    function activity:startCounterplayAttempt(centerX, centerY)
+        IssueImmediateOrder(self.blademaster, "windwalk")
+        local windwalkTicks = 0
+        local windwalkTimer = JTG.ScopeTrackTimer(session.scope, CreateTimer())
+        TimerStart(windwalkTimer, 0.05, true,
             JTG.GuardSession(session, function()
-                IssueImmediateOrder(self.blademaster, "windwalk")
+                windwalkTicks = windwalkTicks + 1
+                if not IsUnitInvisible(self.blademaster, Player(0)) then
+                    if windwalkTicks == 40 then
+                        IssueImmediateOrder(self.blademaster, "windwalk")
+                    elseif windwalkTicks >= 80 then
+                        PauseTimer(windwalkTimer)
+                        self:finish("failure", "WIND WALK FAILED",
+                            "The automated Blademaster could not activate " ..
+                            "Wind Walk. Redo this stage to try again.")
+                    end
+                    return
+                end
+                PauseTimer(windwalkTimer)
                 IssuePointOrder(self.blademaster, "move",
                     GetUnitX(self.surroundee), GetUnitY(self.surroundee))
                 local enteredTicks = 0
@@ -1141,45 +1061,40 @@ function JTG.CreateWindwalkPopActivity(session)
                             GetUnitX(self.surroundee)
                         local dy = GetUnitY(self.blademaster) -
                             GetUnitY(self.surroundee)
-                        if dx * dx + dy * dy <= 75.0 * 75.0 or
-                                enteredTicks >= 50 then
-                            PauseTimer(enterTimer)
-                            if self.humanArmy[1] ~= nil then
-                                IssueTargetOrder(self.blademaster, "attack",
-                                    self.humanArmy[1])
-                            end
-                            local visibilityTicks = 0
-                            local visibilityTimer = JTG.ScopeTrackTimer(
-                                session.scope, CreateTimer())
-                            TimerStart(visibilityTimer, 0.03, true,
-                                JTG.GuardSession(session, function()
-                                    visibilityTicks = visibilityTicks + 1
-                                    if IsUnitInvisible(self.blademaster,
-                                            Player(0)) and
-                                            visibilityTicks < 200 then
-                                        return
-                                    end
-                                    PauseTimer(visibilityTimer)
-                                    self:startCounterplayResolution()
-                                    IssuePointOrder(self.surroundee, "move",
-                                        centerX + 350.0, centerY)
-                                    local jointMoveTimer =
-                                        JTG.ScopeTrackTimer(session.scope,
-                                            CreateTimer())
-                                    TimerStart(jointMoveTimer, 0.50, false,
-                                        JTG.GuardSession(session, function()
-                                            local escapingUnits = CreateGroup()
-                                            GroupAddUnit(escapingUnits,
-                                                self.surroundee)
-                                            GroupAddUnit(escapingUnits,
-                                                self.blademaster)
-                                            GroupPointOrder(escapingUnits,
-                                                "move", centerX + 350.0,
-                                                centerY)
-                                            DestroyGroup(escapingUnits)
-                                        end))
-                                end))
+                        if dx * dx + dy * dy > 75.0 * 75.0 and
+                                enteredTicks < 50 then return end
+                        PauseTimer(enterTimer)
+                        if self.humanArmy[1] ~= nil then
+                            IssueTargetOrder(self.blademaster, "attack",
+                                self.humanArmy[1])
                         end
+                        local visibilityTicks = 0
+                        local visibilityTimer = JTG.ScopeTrackTimer(
+                            session.scope, CreateTimer())
+                        TimerStart(visibilityTimer, 0.03, true,
+                            JTG.GuardSession(session, function()
+                                visibilityTicks = visibilityTicks + 1
+                                if IsUnitInvisible(self.blademaster,
+                                        Player(0)) and
+                                        visibilityTicks < 200 then return end
+                                PauseTimer(visibilityTimer)
+                                self:startCounterplayResolution()
+                                IssuePointOrder(self.surroundee, "move",
+                                    centerX + 350.0, centerY)
+                                local jointMoveTimer = JTG.ScopeTrackTimer(
+                                    session.scope, CreateTimer())
+                                TimerStart(jointMoveTimer, 0.50, false,
+                                    JTG.GuardSession(session, function()
+                                        local escapingUnits = CreateGroup()
+                                        GroupAddUnit(escapingUnits,
+                                            self.surroundee)
+                                        GroupAddUnit(escapingUnits,
+                                            self.blademaster)
+                                        GroupPointOrder(escapingUnits, "move",
+                                            centerX + 350.0, centerY)
+                                        DestroyGroup(escapingUnits)
+                                    end))
+                            end))
                     end))
             end))
     end
@@ -1200,7 +1115,7 @@ function JTG.CreateWindwalkPopActivity(session)
             self:formBasicSurround(centerX, centerY)
         elseif self.mode == "hard" then
             -- The Blademaster is created first so he always occupies F1.
-            self:createBlademaster(p0, centerX - 730.0, centerY - 80.0, 0.0)
+            self:createBlademaster(p0, centerX - 500.0, centerY, 0.0)
             self.surroundee = JTG.ScopeTrackUnit(session.scope,
                 BlzCreateUnitWithSkin(p0, TAUREN_CHIEFTAIN_ID, centerX,
                     centerY, 270.0, TAUREN_CHIEFTAIN_ID))
@@ -1208,7 +1123,7 @@ function JTG.CreateWindwalkPopActivity(session)
                 {{SHOCKWAVE_ID, 2}, {ENDURANCE_AURA_ID, 1}})
             UnitAddItemById(self.surroundee, CROWN_OF_KINGS_ID)
             IssueImmediateOrder(self.surroundee, "holdposition")
-            self:createHumanArmy(p1, centerX, centerY)
+            self:createCourseArmy(p1, centerX, centerY)
         elseif self.mode == "timed" then
             self:createTimedScenario(centerX, centerY)
         else
@@ -1219,8 +1134,8 @@ function JTG.CreateWindwalkPopActivity(session)
                 {{SHOCKWAVE_ID, 2}, {ENDURANCE_AURA_ID, 1}})
             UnitAddItemById(self.surroundee, CROWN_OF_KINGS_ID)
             IssueImmediateOrder(self.surroundee, "holdposition")
-            self:createBlademaster(p1, centerX - 430.0, centerY - 80.0, 0.0)
-            self:createHumanArmy(p0, centerX, centerY)
+            self:createBlademaster(p1, centerX - 500.0, centerY, 0.0)
+            self:createCourseArmy(p0, centerX, centerY)
         end
 
         if GetLocalPlayer() == p0 then
@@ -1234,6 +1149,7 @@ function JTG.CreateWindwalkPopActivity(session)
     end
 
     function activity:setup(current)
+        self.scene = current.scene
         local p0 = Player(0)
         local p1 = Player(1)
         JTG.BorrowCamera(current.scope, p0)
@@ -1264,6 +1180,11 @@ function JTG.CreateWindwalkPopActivity(session)
                 self:updateSquareOverlays()
             end))
         self:createTrainingQuests()
+        self.navigationGridImages = JTG.CreateNavigationGridOverlay(
+            session.presentationScope, current.scene)
+        self.navigationDotsImages = JTG.CreateNavigationDotsOverlay(
+            session.presentationScope, current.scene)
+        self:updateSquareOverlays()
         self:createTimerUI()
         self:createCountdownUI()
         self:createResultUI()
@@ -1280,12 +1201,22 @@ function JTG.CreateWindwalkPopActivity(session)
         if JTG.UI and JTG.UI.SetSquaresActive then
             JTG.UI.SetSquaresActive(self.squaresVisible)
         end
+        if IsCourseMode(self.mode) then
+            self:updateTimerUI()
+            BlzFrameSetVisible(self.timerFrame, true)
+            JTG.UI.ShowToolbar(self:toolbarCapabilities())
+            self:refreshCourseToolbar()
+        end
         self:startCountdown()
     end
 
     function activity:captureResetState()
+        if IsCourseMode(self.mode) then
+            return self:captureCourseState(self.courseStage)
+        end
         return {mode = self.mode, timedStage = self.timedStage,
-            skipQuestHighlight = true, squaresVisible = self.squaresVisible}
+            skipQuestHighlight = true, squaresVisible = self.squaresVisible,
+            squareGridVisible = self.squareGridVisible}
     end
 
     function activity:restorePresentation()
@@ -1298,18 +1229,25 @@ function JTG.CreateWindwalkPopActivity(session)
                 ("|cffffcc00" .. tostring(self.countdownValue) .. "|r") or
                 "|cff80ff80GO!|r")
             BlzFrameSetVisible(self.countdownFrame, true)
+            if IsCourseMode(self.mode) then
+                self:updateTimerUI()
+                BlzFrameSetVisible(self.timerFrame, true)
+            end
             if JTG.UI then
-                JTG.UI.ShowToolbar(session.descriptor.capabilities)
+                JTG.UI.ShowToolbar(self:toolbarCapabilities())
                 JTG.UI.SetSquaresActive(self.squaresVisible)
+                self:refreshCourseToolbar()
             end
         else
             if self.timerFrame ~= nil then
-                BlzFrameSetVisible(self.timerFrame, self.mode == "timed")
+                BlzFrameSetVisible(self.timerFrame,
+                    self.mode == "timed" or IsCourseMode(self.mode))
                 self:updateTimerUI()
             end
             if JTG.UI then
-                JTG.UI.ShowToolbar(session.descriptor.capabilities)
+                JTG.UI.ShowToolbar(self:toolbarCapabilities())
                 JTG.UI.SetSquaresActive(self.squaresVisible)
+                self:refreshCourseToolbar()
             end
         end
     end
@@ -1329,6 +1267,10 @@ function JTG.CreateWindwalkPopActivity(session)
         self.resultBackdrop = nil
         self.timerFrame = nil
         self.countdownFrame = nil
+        self.navigationGridImages = JTG.CreateNavigationGridOverlay(
+            session.presentationScope, self.scene)
+        self.navigationDotsImages = JTG.CreateNavigationDotsOverlay(
+            session.presentationScope, self.scene)
         self:createTimerUI()
         self:createCountdownUI()
         self:createResultUI()
@@ -1341,7 +1283,11 @@ function JTG.CreateWindwalkPopActivity(session)
                 ("|cffffcc00" .. tostring(self.countdownValue) .. "|r") or
                 "|cff80ff80GO!|r")
             BlzFrameSetVisible(self.countdownFrame, true)
-        elseif self.mode == "timed" then
+            if IsCourseMode(self.mode) then
+                self:updateTimerUI()
+                BlzFrameSetVisible(self.timerFrame, true)
+            end
+        elseif self.mode == "timed" or IsCourseMode(self.mode) then
             self:updateTimerUI()
             BlzFrameSetVisible(self.timerFrame, true)
         end
@@ -1353,6 +1299,8 @@ function JTG.CreateWindwalkPopActivity(session)
         self.timerFrame = nil
         self.countdownFrame = nil
         self.squareEntries = {}
+        self.navigationGridImages = {}
+        self.navigationDotsImages = {}
     end
 
     function activity:cleanup()
@@ -1360,9 +1308,6 @@ function JTG.CreateWindwalkPopActivity(session)
         self.blademaster = nil
         self.surroundee = nil
         self.humanArmy = {}
-        self.archmage = nil
-        self.summonedWaterElementals = {}
-        self.mountainKing = nil
         self.quests = {}
         self.timedTargets = {}
         self.timedRings = {}
@@ -1370,8 +1315,6 @@ function JTG.CreateWindwalkPopActivity(session)
         self.timedCompleted = 0
         self.popOriginX = nil
         self.popOriginY = nil
-        self.hardMovementLocked = false
-        self.hardTargetMoveSpeed = nil
         self.squareEntries = {}
     end
 

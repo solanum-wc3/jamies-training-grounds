@@ -97,16 +97,25 @@ local STARTING_MINE_GOLD = 12500
 local TRAINING_TREE_LIFE = 1000.0
 local ARENA_CENTER_X = 4864.0
 local ARENA_CENTER_Y = 6016.0
--- Twisted Meadows' top-left start is (-3584, 4480), with its closest mine at
--- (-4096, 5056): the mine is exactly 512 left and 576 above the start.
--- Its nearest tree in the top-right lumber line is 192 right and 704 above
--- the start, which supplies the matching realistic tree offset used below.
-local LANE_LAYOUT = {
-    {startX = 3840.0, startY = 5824.0, mineX = 3328.0, mineY = 6400.0},
-    {startX = 4992.0, startY = 5824.0, mineX = 4480.0, mineY = 6400.0,
-        treeX = 5184.0, treeY = 6528.0},
-    {startX = 6144.0, startY = 5824.0, mineX = 5632.0, mineY = 6400.0,
-        treeX = 6336.0, treeY = 6528.0},
+-- Every lane is an exact copy of one mine-anchored Twisted Meadows layout.
+-- Keeping the mines fixed and rotating all other pieces together avoids the
+-- small placement corrections made by Warcraft's melee-start generator.
+local MINE_ANCHORS = {
+    {x = 3456.0, y = 5888.0},
+    {x = 4864.0, y = 5888.0},
+    {x = 6272.0, y = 5888.0},
+}
+local HALL_OFFSET = {x = 512.0, y = -576.0}
+local TREE_OFFSET = {x = 704.0, y = 128.0}
+-- Five evenly spaced workers sit on the mine-to-hall line used by a normal
+-- melee opening. Their order is stable; worker 1 becomes the lumber worker in
+-- the two four-worker comparison lanes.
+local WORKER_OFFSETS = {
+    {x = 117.0, y = -324.0},
+    {x = 165.0, y = -282.0},
+    {x = 213.0, y = -239.0},
+    {x = 261.0, y = -197.0},
+    {x = 309.0, y = -154.0},
 }
 
 local function RotateOffset(x, y, orientation)
@@ -116,20 +125,27 @@ local function RotateOffset(x, y, orientation)
     return x, y
 end
 
-local function ResolveLaneLayout(base, orientation)
-    local mineOffsetX, mineOffsetY = RotateOffset(
-        base.mineX - base.startX, base.mineY - base.startY, orientation)
+local function ResolveLaneLayout(anchor, orientation)
+    local hallOffsetX, hallOffsetY = RotateOffset(
+        HALL_OFFSET.x, HALL_OFFSET.y, orientation)
+    local treeOffsetX, treeOffsetY = RotateOffset(
+        TREE_OFFSET.x, TREE_OFFSET.y, orientation)
     local layout = {
-        startX = base.startX,
-        startY = base.startY,
-        mineX = base.startX + mineOffsetX,
-        mineY = base.startY + mineOffsetY,
+        mineX = anchor.x,
+        mineY = anchor.y,
+        hallX = anchor.x + hallOffsetX,
+        hallY = anchor.y + hallOffsetY,
+        treeX = anchor.x + treeOffsetX,
+        treeY = anchor.y + treeOffsetY,
+        workers = {},
     }
-    if base.treeX ~= nil then
-        local treeOffsetX, treeOffsetY = RotateOffset(
-            base.treeX - base.startX, base.treeY - base.startY, orientation)
-        layout.treeX = base.startX + treeOffsetX
-        layout.treeY = base.startY + treeOffsetY
+    for index, offset in ipairs(WORKER_OFFSETS) do
+        local workerOffsetX, workerOffsetY = RotateOffset(
+            offset.x, offset.y, orientation)
+        layout.workers[index] = {
+            x = anchor.x + workerOffsetX,
+            y = anchor.y + workerOffsetY,
+        }
     end
     return layout
 end
@@ -300,31 +316,6 @@ function JTG.CreateMiningMicroActivity(session)
         self:updateLaneCounter(index)
     end
 
-    function activity:captureMeleeStart(lane)
-        local group = CreateGroup()
-        GroupEnumUnitsInRange(group, lane.startX, lane.startY, 700.0, nil)
-        while true do
-            local unit = FirstOfGroup(group)
-            if unit == nil then break end
-            GroupRemoveUnit(group, unit)
-            if GetOwningPlayer(unit) == lane.owner then
-                local unitType = GetUnitTypeId(unit)
-                if unitType == race.hall then
-                    lane.hall = JTG.ScopeTrackUnit(session.scope, unit)
-                elseif unitType == race.worker then
-                    table.insert(lane.workers,
-                        JTG.ScopeTrackUnit(session.scope, unit))
-                end
-            end
-        end
-        DestroyGroup(group)
-        table.sort(lane.workers, function(left, right)
-            return GetUnitX(left) > GetUnitX(right)
-        end)
-        assert(lane.hall ~= nil, "Melee start did not create a main building")
-        assert(#lane.workers == 5, "Melee start did not create five workers")
-    end
-
     function activity:issueOpeningOrders()
         -- Match an ordinary opening first, then redirect only the rightmost
         -- worker in the middle and right comparisons to lumber.
@@ -342,38 +333,10 @@ function JTG.CreateMiningMicroActivity(session)
     function activity:createScenario()
         local owners = {Player(1), Player(0), Player(2)}
         local miningWorkers = {5, 4, 4}
-
-        local previousStarts = {}
         for index = 1, 3 do
-            local layout = ResolveLaneLayout(LANE_LAYOUT[index], self.orientation)
-            local owner = owners[index]
-            local startIndex = GetPlayerId(owner)
-            previousStarts[index] = {
-                startIndex = startIndex,
-                x = GetStartLocationX(startIndex),
-                y = GetStartLocationY(startIndex),
-                assigned = GetPlayerStartLocation(owner),
-            }
-            DefineStartLocation(startIndex, layout.startX, layout.startY)
-            SetPlayerStartLocation(owner, startIndex)
-        end
-        JTG.ScopeBorrow(session.scope, function()
-            for index = 1, 3 do
-                local owner = owners[index]
-                local previous = previousStarts[index]
-                DefineStartLocation(previous.startIndex, previous.x, previous.y)
-                SetPlayerStartLocation(owner, previous.assigned)
-            end
-        end)
-
-        -- Mines must exist before Warcraft resolves the closest mine for each
-        -- start. No workers or halls exist yet, so their fixed footprints are
-        -- never displaced by the other exercise units.
-        for index = 1, 3 do
-            local layout = ResolveLaneLayout(LANE_LAYOUT[index], self.orientation)
+            local layout = ResolveLaneLayout(MINE_ANCHORS[index], self.orientation)
             local lane = {
-                owner = owners[index], startX = layout.startX,
-                startY = layout.startY,
+                owner = owners[index],
                 mineX = layout.mineX, mineY = layout.mineY,
                 miningWorkers = miningWorkers[index], workers = {},
             }
@@ -381,24 +344,20 @@ function JTG.CreateMiningMicroActivity(session)
                 CreateUnit(Player(PLAYER_NEUTRAL_PASSIVE), FourCC("ngol"),
                     lane.mineX, lane.mineY, 270.0))
             SetResourceAmount(lane.mine, STARTING_MINE_GOLD)
-            self.lanes[index] = lane
-        end
-
-        for index = 1, 3 do
-            local layout = ResolveLaneLayout(LANE_LAYOUT[index], self.orientation)
-            local lane = self.lanes[index]
-            local startLocation = Location(lane.startX, lane.startY)
-            MeleeStartingUnitsForPlayer(race.race, lane.owner,
-                startLocation, false)
-            RemoveLocation(startLocation)
-            self:captureMeleeStart(lane)
-            if index >= 2 then
-                lane.tree = JTG.ScopeTrackDestructable(session.scope,
-                    CreateDestructable(FourCC("JTtr"),
-                        layout.treeX, layout.treeY,
-                        270.0, 1.0, 0))
-                SetTrainingTreeLife(lane.tree)
+            lane.hall = JTG.ScopeTrackUnit(session.scope,
+                CreateUnit(lane.owner, race.hall,
+                    layout.hallX, layout.hallY, 270.0))
+            for _, workerPosition in ipairs(layout.workers) do
+                table.insert(lane.workers, JTG.ScopeTrackUnit(session.scope,
+                    CreateUnit(lane.owner, race.worker,
+                        workerPosition.x, workerPosition.y, 90.0)))
             end
+            lane.tree = JTG.ScopeTrackDestructable(session.scope,
+                CreateDestructable(FourCC("JTtr"),
+                    layout.treeX, layout.treeY,
+                    270.0, 1.0, 0))
+            SetTrainingTreeLife(lane.tree)
+            self.lanes[index] = lane
         end
         for index, lane in ipairs(self.lanes) do self:createLaneCounter(lane, index) end
         ClearSelection()

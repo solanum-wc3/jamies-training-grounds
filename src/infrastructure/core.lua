@@ -4,12 +4,65 @@ JTG = JTG or {}
 
 JTG.UnitSquarePlayerTexture = "JTGOverlay\\UnitSquaresPlayer.dds"
 JTG.UnitSquareEnemyTexture = "JTGOverlay\\UnitSquaresEnemy.dds"
+JTG.NavigationDotsTexture = "JTGOverlay\\32x32NavigationGridDots.dds"
+JTG.NavigationGridTexture = "JTGOverlay\\8x8NavigationGrid.dds"
 
--- Calibration found one stable display adjustment per 16-unit collision
--- category. Keeping this category-based lets future units inherit the correct
--- overlay without a unit-ID table.
+-- Collision-aware placement probing found three effective footprint widths:
+-- 48, 80 and 112 for collision categories 16/31, 32 and 48. Footprints are
+-- anchored to the center of the containing 32-unit world-grid cell.
 function JTG.UnitObstructionHalfSize(collision)
-    return math.floor((collision or 0) / 16) * 16 + 12
+    return math.floor((collision or 0) / 16) * 16 + 8
+end
+
+function JTG.UnitObstructionGridCenter(coordinate)
+    return math.floor((coordinate or 0) / 32) * 32 + 16
+end
+
+function JTG.CreateNavigationOverlay(scope, scene, texture)
+    local images = {}
+    if scene == nil then return images end
+    local tileSize = 1024.0
+    -- Slightly overlap adjacent terrain-projected images so camera
+    -- perspective cannot expose a seam between otherwise contiguous tiles.
+    -- Tile origins still advance by exactly 1024 world units.
+    local renderSize = tileSize + 1.0
+    local minX = math.floor(scene.minX / tileSize) * tileSize
+    local minY = math.floor(scene.minY / tileSize) * tileSize
+    local maxX = math.ceil(scene.maxX / tileSize) * tileSize
+    local maxY = math.ceil(scene.maxY / tileSize) * tileSize
+    local x = minX
+    while x < maxX do
+        local y = minY
+        while y < maxY do
+            local image = JTG.ScopeTrackImage(scope,
+                CreateImage(texture,
+                    renderSize, renderSize, 0, x, y, 1,
+                    0, 0, 0, 2))
+            SetImageRenderAlways(image, true)
+            SetImageAboveWater(image, true, true)
+            ShowImage(image, false)
+            images[#images + 1] = image
+            y = y + tileSize
+        end
+        x = x + tileSize
+    end
+    return images
+end
+
+function JTG.CreateNavigationDotsOverlay(scope, scene)
+    return JTG.CreateNavigationOverlay(scope, scene,
+        JTG.NavigationDotsTexture)
+end
+
+function JTG.CreateNavigationGridOverlay(scope, scene)
+    return JTG.CreateNavigationOverlay(scope, scene,
+        JTG.NavigationGridTexture)
+end
+
+function JTG.ShowNavigationGrid(images, visible)
+    for _, image in ipairs(images or {}) do
+        ShowImage(image, visible == true)
+    end
 end
 
 -- Tutorial checkpoint panels share a 0.026-high button, 0.003 spacing, the
@@ -583,6 +636,10 @@ function JTG.LastRunnerActivity()
     local cameraDistance = nil
     if GetLocalPlayer() == Player(0) then
         cameraDistance = GetCameraField(CAMERA_FIELD_TARGET_DISTANCE)
+    end
+    if id == "skills.windwalk" then
+        return JTG.StartActivityAfterCleanup(id, category, restartData,
+            cameraDistance, "last-runner")
     end
     JTG.StopActivity("last-runner")
     return JTG.StartActivity(id, category, restartData, cameraDistance)
