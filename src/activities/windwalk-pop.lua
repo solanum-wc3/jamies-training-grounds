@@ -71,17 +71,25 @@ local TAUREN_ID = FourCC("otau")
 local SHADOW_HUNTER_ID = FourCC("Oshd")
 local RIFLEMAN_ID = FourCC("hrif")
 local SPELL_BREAKER_ID = FourCC("hspt")
+local KNIGHT_ID = FourCC("hkni")
+local SORCERESS_ID = FourCC("hsor")
+local PRIEST_ID = FourCC("hmpr")
 local TROLL_BERSERKER_ID = FourCC("otbk")
+local SHAMAN_ID = FourCC("oshm")
 local GHOUL_ID = FourCC("ugho")
 local DEATH_KNIGHT_ID = FourCC("Udea")
 local ABOMINATION_ID = FourCC("uabo")
 local NECROMANCER_ID = FourCC("unec")
 local LICH_ID = FourCC("Ulic")
+local CRYPT_FIEND_ID = FourCC("ucry")
+local BANSHEE_ID = FourCC("uban")
 local HUNTRESS_ID = FourCC("esen")
 local DEMON_HUNTER_ID = FourCC("Edem")
 local DRYAD_ID = FourCC("edry")
 local DRUID_OF_THE_CLAW_ID = FourCC("edoc")
 local KEEPER_OF_THE_GROVE_ID = FourCC("Ekee")
+local ARCHER_ID = FourCC("earc")
+local DRUID_OF_THE_TALON_ID = FourCC("edot")
 local CROWN_OF_KINGS_ID = FourCC("ckng")
 
 local WINDWALK_ID = FourCC("AOwk")
@@ -117,22 +125,45 @@ local COURSE_SETUPS = {
         units = {FOOTMAN_ID, MOUNTAIN_KING_ID, SPELL_BREAKER_ID,
             RIFLEMAN_ID, FOOTMAN_ID, RIFLEMAN_ID, SPELL_BREAKER_ID,
         },
+        hardReplacements = {
+            [1] = {KNIGHT_ID}, [3] = {SORCERESS_ID, PRIEST_ID},
+            [4] = {KNIGHT_ID, SORCERESS_ID}, [5] = {KNIGHT_ID},
+            [6] = {PRIEST_ID}, [7] = {SORCERESS_ID, PRIEST_ID},
+        },
     },
     {
         id = "orc", title = "Orc",
         units = {GRUNT_ID, BLADEMASTER_ID, TAUREN_ID,
             TROLL_BERSERKER_ID, GRUNT_ID, TROLL_BERSERKER_ID,
             TAUREN_ID},
+        hardReplacements = {
+            [1] = {RAIDER_ID, SHAMAN_ID},
+            [3] = {SPIRIT_WALKER_ID}, [4] = {RAIDER_ID, SHAMAN_ID},
+            [5] = {RAIDER_ID}, [6] = {SHAMAN_ID},
+            [7] = {SPIRIT_WALKER_ID},
+        },
     },
     {
         id = "undead", title = "Undead",
         units = {GHOUL_ID, DEATH_KNIGHT_ID, GHOUL_ID, GHOUL_ID,
             ABOMINATION_ID, NECROMANCER_ID, GHOUL_ID},
+        hardReplacements = {
+            [1] = {CRYPT_FIEND_ID}, [3] = {BANSHEE_ID},
+            [4] = {CRYPT_FIEND_ID}, [5] = {CRYPT_FIEND_ID, BANSHEE_ID},
+            [6] = {BANSHEE_ID}, [7] = {CRYPT_FIEND_ID},
+        },
     },
     {
         id = "nightelf", title = "Night Elf",
         units = {HUNTRESS_ID, DEMON_HUNTER_ID, HUNTRESS_ID, DRYAD_ID,
             DRUID_OF_THE_CLAW_ID, DRYAD_ID, DRUID_OF_THE_CLAW_ID,
+        },
+        hardReplacements = {
+            [1] = {ARCHER_ID}, [3] = {ARCHER_ID},
+            [4] = {DRUID_OF_THE_TALON_ID},
+            [5] = {ARCHER_ID, DRUID_OF_THE_TALON_ID},
+            [6] = {DRUID_OF_THE_TALON_ID},
+            [7] = {ARCHER_ID, DRUID_OF_THE_TALON_ID},
         },
     },
 }
@@ -181,7 +212,8 @@ function JTG.OpenWindwalkPopMenu(originCategory, pauseGame, restorePage,
         selection[key] = value
     end
     for key, value in pairs(restoreData or {}) do selection[key] = value end
-    local page = restorePage == "modes" and "modes" or "root"
+    local page = (restorePage == "modes" or restorePage == "counterplay") and
+        restorePage or "root"
 
     local function releaseMenuPause()
         if JTG.UI then JTG.UI.SetGameplayMenuPaused(false) end
@@ -190,11 +222,13 @@ function JTG.OpenWindwalkPopMenu(originCategory, pauseGame, restorePage,
         releaseMenuPause()
         JTG.ResumeActivity()
     end
-    local function launch(mode)
+    local function launch(mode, counterplayDifficulty)
         releaseMenuPause()
         selection.mode = mode
+        selection.counterplayDifficulty = counterplayDifficulty
         local restartData = {
             mode = mode,
+            counterplayDifficulty = counterplayDifficulty,
             skipQuestHighlight = returningFromRun,
         }
         if IsCourseMode(mode) then
@@ -227,12 +261,20 @@ function JTG.OpenWindwalkPopMenu(originCategory, pauseGame, restorePage,
                     action = function() launch("timed") end},
             }
             backAction = function() showBriefing("root") end
+        elseif page == "counterplay" then
+            choices = {
+                {label = "Normal Mode", primary = true,
+                    action = function() launch("counterplay", "normal") end},
+                {label = "Hard Mode", primary = true,
+                    action = function() launch("counterplay", "hard") end},
+            }
+            backAction = function() showBriefing("root") end
         else
             choices = {
                 {label = "Start Training", primary = true,
                     action = function() showBriefing("modes") end},
                 {label = "Counterplay", primary = false,
-                    action = function() launch("counterplay") end},
+                    action = function() showBriefing("counterplay") end},
             }
             backAction = function() JTG.UI.ShowSkillRace("orc") end
         end
@@ -275,6 +317,7 @@ function JTG.CreateWindwalkPopActivity(session)
     end
     local activity = {
         mode = selectedMode,
+        counterplayDifficulty = selection.counterplayDifficulty or "normal",
         blademaster = nil,
         surroundee = nil,
         humanArmy = {},
@@ -431,6 +474,7 @@ function JTG.CreateWindwalkPopActivity(session)
     function activity:captureCourseState(stage)
         return {
             mode = self.mode,
+            counterplayDifficulty = self.counterplayDifficulty,
             courseOrder = CopyArray(self.courseOrder),
             courseStage = stage or self.courseStage,
             courseResults = CopyArray(self.courseResults),
@@ -683,7 +727,7 @@ function JTG.CreateWindwalkPopActivity(session)
                 end
                 local dx = GetUnitX(self.surroundee) - originX
                 local dy = GetUnitY(self.surroundee) - originY
-                if dx * dx + dy * dy >= 128.0 * 128.0 then
+                if dx * dx + dy * dy >= 250.0 * 250.0 then
                     PauseTimer(failureTimer)
                     self.counterplayPressureActive = false
                     self:finish("failure", "SURROUND FAILED",
@@ -1058,10 +1102,35 @@ function JTG.CreateWindwalkPopActivity(session)
         local setup = self:currentCourseSetup()
         self.humanArmy = {}
         local radius = 300.0
-        for index, unitId in ipairs(setup.units) do
+        local units = {}
+        for index, unitId in ipairs(setup.units) do units[index] = unitId end
+        local varied = self.mode == "counterplay" and
+            self.counterplayDifficulty == "hard"
+        if varied then
+            local candidates = {}
+            for index, replacements in pairs(setup.hardReplacements or {}) do
+                if replacements ~= nil and #replacements > 0 then
+                    candidates[#candidates + 1] = index
+                end
+            end
+            local replacementCount = math.min(#candidates,
+                GetRandomInt(1, 2))
+            for _ = 1, replacementCount do
+                local candidateIndex = GetRandomInt(1, #candidates)
+                local unitIndex = table.remove(candidates, candidateIndex)
+                local replacements = setup.hardReplacements[unitIndex]
+                units[unitIndex] = replacements[GetRandomInt(1, #replacements)]
+            end
+        end
+        for index, unitId in ipairs(units) do
             local angle = (index - 1) * bj_PI * 0.25
-            local x = centerX + radius * Sin(angle)
-            local y = centerY + radius * Cos(angle)
+            local spawnRadius = radius
+            if varied then
+                angle = angle + GetRandomReal(-0.105, 0.105)
+                spawnRadius = radius + GetRandomReal(-24.0, 24.0)
+            end
+            local x = centerX + spawnRadius * Sin(angle)
+            local y = centerY + spawnRadius * Cos(angle)
             local facing = math.deg(Atan2(centerY - y, centerX - x))
             local unit = JTG.ScopeTrackUnit(session.scope,
                 BlzCreateUnitWithSkin(owner, unitId, x, y, facing, unitId))
@@ -1118,7 +1187,7 @@ function JTG.CreateWindwalkPopActivity(session)
                 local x, y = GetUnitX(self.surroundee),
                     GetUnitY(self.surroundee)
                 local totalDx, totalDy = x - originX, y - originY
-                if totalDx * totalDx + totalDy * totalDy >= 100.0 * 100.0 then
+                if totalDx * totalDx + totalDy * totalDy > 250.0 * 250.0 then
                     PauseTimer(resolutionTimer)
                     self:finish("failure", "TAUREN CHIEFTAIN ESCAPED",
                         "The Tauren Chieftain escaped the surround after the " ..
@@ -1388,6 +1457,7 @@ function JTG.CreateWindwalkPopActivity(session)
             return self:captureCourseState(self.courseStage)
         end
         return {mode = self.mode, timedStage = self.timedStage,
+            counterplayDifficulty = self.counterplayDifficulty,
             skipQuestHighlight = true, squaresVisible = self.squaresVisible,
             squareGridVisible = self.squareGridVisible}
     end

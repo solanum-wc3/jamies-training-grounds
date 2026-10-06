@@ -713,9 +713,10 @@ local function RegisterRightClick(frame, action)
     UI.rightClickActions[GetHandleId(frame)] = action
 end
 
-local RESULT_ACTION_ORDER = {"replay", "retry", "next", "menu"}
+local RESULT_ACTION_ORDER = {"replay", "retry", "next", "menu", "hide"}
 local RESULT_ACTION_LABELS = {
     replay = "Replay", retry = "Retry", next = "Next", menu = "Menu",
+    hide = "Hide",
 }
 local RESULT_TITLE_COLORS = {
     success = "|cff80ff80",
@@ -780,6 +781,7 @@ function UI.CreateResultCard(session, options)
                     state.enabled == false then return end
             card.busy = true
             BlzFrameSetVisible(card.panel, false)
+            if actionName == "hide" then return end
             JTG.ActivateResultAction(actionName)
         end)
     end
@@ -799,6 +801,7 @@ function UI.ShowResultCard(card, presentation)
     presentation = presentation or {}
     card.busy = false
     card.actions = presentation.actions or {}
+    if card.actions.hide == nil then card.actions.hide = {} end
     local titleColor = RESULT_TITLE_COLORS[presentation.tone or "neutral"] or
         RESULT_TITLE_COLORS.neutral
     BlzFrameSetText(card.title,
