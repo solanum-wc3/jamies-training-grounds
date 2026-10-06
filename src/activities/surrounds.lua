@@ -1117,7 +1117,7 @@ function JTG.CreateSurroundsActivity(session)
             details = self.resultDetailsText or "",
             visible = visible ~= false,
             actions = {
-                replay = {},
+                retry = {},
                 next = self.resultAction ~= "retry" and
                     {label = self.resultPrimaryLabel or "Next"} or nil,
                 menu = {},

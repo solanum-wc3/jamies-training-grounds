@@ -715,7 +715,7 @@ end
 
 local RESULT_ACTION_ORDER = {"replay", "retry", "next", "menu", "hide"}
 local RESULT_ACTION_LABELS = {
-    replay = "Replay", retry = "Retry", next = "Next", menu = "Menu",
+    replay = "Replay", retry = "Redo", next = "Next", menu = "Menu",
     hide = "Hide",
 }
 local RESULT_TITLE_COLORS = {
@@ -781,7 +781,6 @@ function UI.CreateResultCard(session, options)
                     state.enabled == false then return end
             card.busy = true
             BlzFrameSetVisible(card.panel, false)
-            if actionName == "hide" then return end
             JTG.ActivateResultAction(actionName)
         end)
     end
@@ -1410,7 +1409,7 @@ end
 
 local function CreateCategoryPanel(category, categoryIndex)
     local shell = CreateStandardMenuShell("JTGCategoryPanel" .. categoryIndex,
-        category.title, category.summary, -0.087)
+        category.title, category.description or category.summary, -0.087)
     local panel = shell.panel
     local sectioned = UsesSectionedCatalogue(category.id)
     UI.panels["category_" .. category.id] = panel

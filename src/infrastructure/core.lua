@@ -646,8 +646,8 @@ function JTG.LastRunnerActivity()
 end
 
 -- Result cards share their controls, while each activity decides what a
--- replay, retry or next step means for its own rules. Menu, Replay and Retry have
--- useful common defaults; activities override only the actions that differ.
+-- replay, redo or next step means for its own rules. Replay is reserved for
+-- recorded playback; Redo resets the current exercise.
 function JTG.ActivateResultAction(action)
     local session = JTG.Controller.session
     if session == nil or session.activity == nil then return false end
@@ -663,8 +663,15 @@ function JTG.ActivateResultAction(action)
     end
     if action == "menu" then
         return JTG.OpenTrainingMenu()
-    elseif action == "retry" or action == "replay" then
+    elseif action == "retry" then
         return JTG.ResetActivity()
+    elseif action == "hide" then
+        if activity.restoreToolbarAfterResultHide ~= nil then
+            activity:restoreToolbarAfterResultHide()
+        elseif JTG.UI ~= nil then
+            JTG.UI.ShowToolbar(session.descriptor.capabilities)
+        end
+        return true
     end
     return false
 end

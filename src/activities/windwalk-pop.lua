@@ -525,6 +525,13 @@ function JTG.CreateWindwalkPopActivity(session)
         JTG.UI.SetNextEnabled(self.courseStage < 4)
     end
 
+    function activity:restoreToolbarAfterResultHide()
+        if not JTG.UI then return end
+        JTG.UI.ShowToolbar(self:toolbarCapabilities())
+        JTG.UI.SetSquaresActive(self.squaresVisible)
+        self:refreshCourseToolbar()
+    end
+
     activity.resultActions = {
         next = function(self)
             if self.mode == "timed" and self.resultKind == "success" then
@@ -617,7 +624,7 @@ function JTG.CreateWindwalkPopActivity(session)
             tone = self.resultKind,
             details = self.resultDetailsText or "",
             actions = {
-                replay = {},
+                retry = {},
                 next = showPrimary and {label = primary} or nil,
                 menu = {},
             },

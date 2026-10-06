@@ -2,10 +2,18 @@
 JTG = JTG or {}
 
 JTG.Categories = {
-    {id = "learn", title = "Learn to Play", summary = "Warcraft III controls and fundamentals.", artwork = "JTGMenu\\LearnToPlay.dds"},
-    {id = "advanced", title = "Advanced Play", summary = "Competitive strategy, planning and decision-making.", artwork = "JTGMenu\\AdvancedPlay.dds"},
-    {id = "skills", title = "Skill Training", summary = "Focused exercises for mechanical skills.", artwork = "JTGMenu\\SkillTraining.dds"},
-    {id = "tools", title = "Tools & Extras", summary = "Analysis tools, demonstrations, quizzes and games.", artwork = "JTGMenu\\ToolsExtras.dds"},
+    {id = "learn", title = "Learn to Play", summary = "Warcraft III controls and fundamentals.",
+        description = "This series of tutorials will teach you the fundamentals of Warcraft III controls and gameplay. If you are new to the game, this is a good place to start!",
+        artwork = "JTGMenu\\LearnToPlay.dds"},
+    {id = "advanced", title = "Advanced Play", summary = "Competitive strategy, planning and decision-making.",
+        description = "This series of tutorials will teach you about more advanced and specific aspects of Warcraft III. Once you know the absolute fundamentals, this is where you should continue, if you want to play in multiplayer.",
+        artwork = "JTGMenu\\AdvancedPlay.dds"},
+    {id = "skills", title = "Skill Training", summary = "Focused exercises for specific mechanical skills.",
+        description = "These are focused exercises to practice very specific mechanical skills. You should have a grasp of the fundamentals before you practice them.",
+        artwork = "JTGMenu\\SkillTraining.dds"},
+    {id = "tools", title = "Tools & Extras", summary = "Analysis tools, demonstrations, quizzes and games.",
+        description = "This section contains analysis tools, demonstrations, quizzes and games.",
+        artwork = "JTGMenu\\ToolsExtras.dds"},
 }
 
 JTG.Races = {
@@ -32,8 +40,8 @@ JTG.RegisterScene({
 })
 
 local planned = {
-    {"learn.economy", "learn", "Workers & Resources", "Gather resources and keep workers productive."},
-    {"learn.base", "learn", "Build Your Base", "Place and construct the buildings you need."},
+    {"learn.economy", "learn", "4. The Economy", "Learn how to gather and manage your resources."},
+    {"learn.base", "learn", "5. Building your Base", "Construct buildings and advance through technology."},
     {"learn.units", "learn", "Units & Food", "Train an army and manage the food limit."},
     {"learn.heroes", "learn", "Heroes & Levels", "Learn hero growth, skills and revival."},
     {"learn.creeping", "learn", "Creeping & Items", "Fight neutral camps and use their rewards."},
@@ -99,7 +107,7 @@ JTG.RegisterActivity({
     id = "learn.hotkey_setup",
     category = "learn",
     title = "3. Hotkey Setup",
-    description = "Compare hotkey layouts and export editable QWERTY or QWERTZ bindings.",
+    description = "Learn how to use and customize your hotkey layout.",
     artwork = "JTGMenu\\HotkeySetup.dds",
     artworkWidth = 0.08625,
     artworkHeight = 0.048,
@@ -131,7 +139,7 @@ JTG.RegisterActivity({
     category = "skills",
     title = "Surrounds",
     menuOrder = 20,
-    description = "Trap a target with coordinated movement.",
+    description = "Stop a unit completely through collision, by surrounding it with your own.",
     artwork = "JTGMenu\\Surrounds.dds",
     status = "available",
     sceneId = "arena.south",
@@ -145,7 +153,7 @@ JTG.RegisterActivity({
     id = "skills.windwalk",
     category = "skills",
     title = "Windwalk Pop",
-    description = "Use Wind Walk collision to free a surrounded Grunt.",
+    description = "Use Wind Walk to free surrounded units.",
     artwork = "JTGMenu\\WindwalkPop.dds",
     artworkWidth = 0.15223,
     artworkHeight = 0.048,
@@ -165,7 +173,7 @@ JTG.RegisterActivity({
     category = "skills",
     title = "Body Blocking",
     menuOrder = 10,
-    description = "Stay in front of a runner and use unit collision to delay it.",
+    description = "Slow down a unit through collision, by having one of your own stay in front of it.",
     artwork = "JTGMenu\\BodyBlocking.dds",
     status = "available",
     sceneId = "arena.south",
