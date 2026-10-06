@@ -304,6 +304,7 @@ function JTG.CreateWindwalkPopActivity(session)
         countdownValue = 3,
         countdownActive = false,
         counterplayArmy = {},
+        counterplayPressureActive = false,
         exerciseStarted = false,
         squaresVisible = selection.squaresVisible == true,
         squareGridVisible = selection.squareGridVisible == true,
@@ -620,6 +621,90 @@ function JTG.CreateWindwalkPopActivity(session)
         end
     end
 
+    function activity:startCounterplayPressure(centerX, centerY)
+        self.counterplayPressureActive = true
+        local originX = GetUnitX(self.surroundee)
+        local originY = GetUnitY(self.surroundee)
+        local phase = "attack"
+        local lastX = originX
+        local lastY = originY
+        local stillTicks = 0
+        local function nearestSurrounder()
+            local nearest = nil
+            local nearestDistance = nil
+            for _, unit in ipairs(self.humanArmy) do
+                local dx = GetUnitX(unit) - GetUnitX(self.surroundee)
+                local dy = GetUnitY(unit) - GetUnitY(self.surroundee)
+                local distance = dx * dx + dy * dy
+                if nearestDistance == nil or distance < nearestDistance then
+                    nearest = unit
+                    nearestDistance = distance
+                end
+            end
+            return nearest
+        end
+        local function issueAttack()
+            phase = "attack"
+            local target = nearestSurrounder()
+            if target ~= nil then
+                IssueTargetOrder(self.surroundee, "attack", target)
+            end
+        end
+        local function issueMove()
+            phase = "move"
+            stillTicks = 0
+            lastX = GetUnitX(self.surroundee)
+            lastY = GetUnitY(self.surroundee)
+            IssuePointOrder(self.surroundee, "move",
+                centerX + 500.0, centerY - 300.0)
+        end
+        local damageTrigger = JTG.ScopeTrackTrigger(session.scope,
+            CreateTrigger())
+        for _, unit in ipairs(self.humanArmy) do
+            TriggerRegisterUnitEvent(damageTrigger, unit,
+                EVENT_UNIT_DAMAGED)
+        end
+        TriggerAddAction(damageTrigger,
+            JTG.GuardSession(session, function()
+                if not self.counterplayPressureActive or phase ~= "attack" then
+                    return
+                end
+                if GetEventDamageSource() ~= self.surroundee or
+                        GetEventDamage() <= 0.0 then return end
+                issueMove()
+            end))
+        issueAttack()
+        local failureTimer = JTG.ScopeTrackTimer(session.scope, CreateTimer())
+        TimerStart(failureTimer, 0.05, true,
+            JTG.GuardSession(session, function()
+                if self.finished or not self.counterplayPressureActive then
+                    PauseTimer(failureTimer)
+                    return
+                end
+                local dx = GetUnitX(self.surroundee) - originX
+                local dy = GetUnitY(self.surroundee) - originY
+                if dx * dx + dy * dy >= 128.0 * 128.0 then
+                    PauseTimer(failureTimer)
+                    self.counterplayPressureActive = false
+                    self:finish("failure", "SURROUND FAILED",
+                        "The Tauren Chieftain escaped before the Blademaster " ..
+                        "began the Windwalk Pop.")
+                    return
+                end
+                if phase ~= "move" then return end
+                local stepX = GetUnitX(self.surroundee) - lastX
+                local stepY = GetUnitY(self.surroundee) - lastY
+                if stepX * stepX + stepY * stepY >= 1.0 then
+                    stillTicks = 0
+                    lastX = GetUnitX(self.surroundee)
+                    lastY = GetUnitY(self.surroundee)
+                    return
+                end
+                stillTicks = stillTicks + 1
+                if stillTicks >= 10 then issueAttack() end
+            end))
+    end
+
     function activity:pauseTrainingUnits()
         self:setTrainingUnitsPaused(true)
     end
@@ -708,12 +793,14 @@ function JTG.CreateWindwalkPopActivity(session)
             self:updateTimerUI()
             BlzFrameSetVisible(self.timerFrame, true)
         else
+            self:startCounterplayPressure(centerX, centerY)
             -- Give the player a brief window after GO to loosen or tighten the
             -- completed surround before the automated pop begins.
             local adjustmentTimer = JTG.ScopeTrackTimer(session.scope,
                 CreateTimer())
             TimerStart(adjustmentTimer, 3.0, false,
                 JTG.GuardSession(session, function()
+                    if self.finished then return end
                     self:startCounterplayAttempt(centerX, centerY)
                 end))
         end
@@ -1017,6 +1104,7 @@ function JTG.CreateWindwalkPopActivity(session)
     end
 
     function activity:startCounterplayResolution(centerX, centerY)
+        PauseUnit(self.surroundee, false)
         local originX = GetUnitX(self.surroundee)
         local originY = GetUnitY(self.surroundee)
         local elapsed = 0.0
@@ -1075,6 +1163,10 @@ function JTG.CreateWindwalkPopActivity(session)
     end
 
     function activity:startCounterplayAttempt(centerX, centerY)
+        self.counterplayPressureActive = false
+        -- Stop the alternating test orders without issuing another unit order.
+        -- The TC is released only when its post-pop move is ready.
+        PauseUnit(self.surroundee, true)
         IssueImmediateOrder(self.blademaster, "windwalk")
         local windwalkTicks = 0
         local windwalkTimer = JTG.ScopeTrackTimer(session.scope, CreateTimer())
@@ -1204,9 +1296,6 @@ function JTG.CreateWindwalkPopActivity(session)
             PrepareHero(self.surroundee,
                 {{SHOCKWAVE_ID, 2}, {ENDURANCE_AURA_ID, 1}})
             UnitAddItemById(self.surroundee, CROWN_OF_KINGS_ID)
-            -- Counterplay tests displacement, not the computer player's
-            -- target acquisition. Prevent the TC from chasing surrounders.
-            UnitRemoveAbility(self.surroundee, FourCC("Aatk"))
             IssueImmediateOrder(self.surroundee, "holdposition")
             self:createCourseArmy(p1, centerX, centerY)
         elseif self.mode == "timed" then
@@ -1398,6 +1487,7 @@ function JTG.CreateWindwalkPopActivity(session)
         self.timedPending = {}
         self.timedCompleted = 0
         self.counterplayArmy = {}
+        self.counterplayPressureActive = false
         self.popOriginX = nil
         self.popOriginY = nil
         self.squareEntries = {}
