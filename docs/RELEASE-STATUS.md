@@ -26,3 +26,9 @@ Generated maps and reports are ignored by Git. Preserve the distributed beta1 ar
 For future releases, test only changed behavior and relevant interruption paths after automated checks pass. Repeat broad acceptance when shared lifecycle, navigation or persistence changes justify it.
 
 Maintenance verification on 10 October 2026: obsolete Camera quest textures and their preparation/package entries were removed. All remaining packaged assets have runtime references. Isolated release/development builds passed all nine checks, all 21 regression files passed, and artwork preparation passed its DXT5 decode check. The distributed beta1 map hash was unchanged.
+
+## Public download convention
+
+The repository is public and `v0.1.2-beta1` is published as a GitHub Release. Its attached `Jamies-Training-Grounds.w3x` is the preserved release artifact, verified against the public download.
+
+The fixed link is [Download the latest non-alpha map](https://github.com/solanum-wc3/jamies-training-grounds/releases/latest/download/Jamies-Training-Grounds.w3x). Each future non-alpha release must attach the public map under that exact filename and become GitHub's latest release. Beta versions qualify for this link and are published as ordinary GitHub Releases while retaining their beta version names. Alpha versions must be marked as pre-releases, which GitHub excludes from `/releases/latest`. Upload the map before publishing a release so the fixed link has its asset available.

@@ -1,5 +1,7 @@
 # Jamie's Training Grounds
 
+[Download the latest non-alpha map](https://github.com/solanum-wc3/jamies-training-grounds/releases/latest/download/Jamies-Training-Grounds.w3x) · [Release notes](https://github.com/solanum-wc3/jamies-training-grounds/releases/latest)
+
 Jamie’s Training Grounds is a Warcraft III teaching and practice map. Guided tutorials introduce the essentials, while focused exercises let players repeat and explore mechanical skills.
 
 ## Current release
