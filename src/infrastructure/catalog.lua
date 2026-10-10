@@ -64,13 +64,21 @@ local planned = {
     {"skills.peon_micro", "skills", "Peon Micro", "Practice Peon movement and survival under pressure.", "JTGMenu\\PeonMicro.dds", {"orc"}},
     {"skills.wisp_micro", "skills", "Wisp Micro", "Practice Wisp movement and survival under pressure.", "JTGMenu\\WispMicro.dds", {"nightelf"}},
     {"skills.zeppelin", "skills", "Zeppelin Micro", "Load, unload and protect transported units.", "JTGMenu\\ZeppelinMicro.dds"},
-    {"skills.reflex", "skills", "Reflex Training", "React quickly and accurately to visual targets.", "JTGMenu\\ReflexTraining.dds"},
 
     {"tools.demo", "tools", "Demo Mode", "Explore units and mechanics freely.", "JTGMenu\\DemoMode.dds"},
     {"tools.hotkeys", "tools", "Hotkey Trainer", "Learn command-card and inventory hotkeys.", "JTGMenu\\HotkeyTraining.dds"},
     {"tools.quiz", "tools", "Warcraft III Quiz", "Test knowledge of units and mechanics."},
     {"tools.compare", "tools", "Unit Comparison", "Compare unit statistics and interactions.", "JTGMenu\\UnitComparison.dds"},
 }
+
+JTG.RegisterActivity({
+    id = "skills.reflex", category = "skills", title = "Reflex Training",
+    description = "Explore a moving crowd of Human ground units.",
+    artwork = "JTGMenu\\ReflexTraining.dds", status = "available", sceneId = "arena.south",
+    cameraDistance = 1650,
+    capabilities = {restart = true, menu = true, pause = true, quests = false},
+    menu = JTG.OpenReflexTrainingMenu, factory = JTG.CreateReflexTrainingActivity,
+})
 
 JTG.RegisterActivity({
     id = "skills.bat_splitter", category = "skills", title = "Bat Splitting",

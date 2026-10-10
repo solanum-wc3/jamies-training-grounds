@@ -17,6 +17,10 @@ Current baseline: **v0.1.2-beta1** (10 October 2026). Archived reports describe 
 - [Collision research](COLLISION-OBSTRUCTION-RESEARCH.md)
 - [Foundation acceptance](FOUNDATION-ACCEPTANCE.md) and [decisions](decisions/)
 
+## Current development
+
+[Reflex Training prototype](REFLEX-TRAINING.md) describes the v0.1.3-alpha1 crowd stage and its native test focus. It is newer than the published beta1 baseline.
+
 ## Editable work and inventories
 
 [Economy script work file](ECONOMY-TUTORIAL-SCRIPT-WORK.md) remains available for author edits. [Tutorial text review](TUTORIAL-TEXT-REVIEW.md), [Bat Splitting text review](BAT-SPLITTING-TEXT-REVIEW.md), [Gargoyle Surround text review](GARGOYLE-SURROUND-TEXT-REVIEW.md), [Dodging tooltip review](DODGING-TOOLTIP-REVIEW.md), [Surrounds ability audit](SURROUNDS-ABILITY-AUDIT.md) and [timing inventory](DODGE-TIMING-INVENTORY.md) are working or generated snapshots. Editing them does not automatically update the map; maintained JSON/Lua remains authoritative.

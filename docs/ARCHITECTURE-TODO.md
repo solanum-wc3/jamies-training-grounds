@@ -29,3 +29,5 @@ Baseline: v0.1.2-beta1. Historical implementation audits are in the [0.1.2 archi
 ## Next content candidates
 
 User direction, 11 October 2026: Heroes requires the user's script before implementation. Reflex Training (expanded beyond the legacy map) and Unit Comparison are the preferred next training candidates; either or both may be chosen. Scope and mechanics are not decided yet. Combat Micro is postponed because it needs substantial research. The Economy spelling pass is complete in source; no new alpha or public release was requested for it.
+
+Reflex's first crowd prototype is implemented in v0.1.3-alpha1; see [prototype and test focus](REFLEX-TRAINING.md). Tune screen coverage and independent native movement before adding recognition challenges or scoring. Unit Comparison remains a candidate, not started.

@@ -17,6 +17,7 @@ GROUPS = [
     ['camera-welcome-arrow', 'unit-controls-checkpoints'],
     ['tutorial-layout-workspace', 'economy-tutorial'],
     ['training-countdown'],
+    ['reflex-training'],
     ['native-log-handoff'],
     ['dodge-timing'],
     ['dodge-timing-batch'],

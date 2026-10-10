@@ -18,7 +18,7 @@ const {
 } = req('@jamiephan/stormlib');
 const luaParser = req('luaparse');
 
-const version = 'v0.1.2-beta1';
+const version = 'v0.1.3-alpha1';
 const modeArgument = process.argv.find(argument => argument.startsWith('--mode='));
 const buildMode = modeArgument ? modeArgument.slice('--mode='.length) : 'release';
 assert(['release', 'development'].includes(buildMode),
@@ -55,6 +55,7 @@ const sharedModulePaths = [
     'src/activities/windwalk-pop.lua',
     'src/activities/body-blocking.lua',
     'src/activities/bat-splitting.lua',
+    'src/activities/reflex-training.lua',
     'src/activities/missile-dodging.lua',
     'src/activities/power-building.lua',
     'src/infrastructure/catalog.lua',
