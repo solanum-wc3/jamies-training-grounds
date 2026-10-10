@@ -1,0 +1,1418 @@
+[
+  {
+    "lines": [
+      "{Heading: WELCOME}",
+      "Welcome to the Economy Tutorial!",
+      "This time we are taking a look at the different resources you have to manage when playing Warcraft III.",
+      "",
+      "Once you are done reading a section and playing around with whichever mechanic you learn, press the {Button: Continue} or {Button: Next} button to move on!"
+    ],
+    "wait": true,
+    "checkpoint": "welcome",
+    "action": "welcome",
+    "sectionEnd": true,
+    "sourceStop": 1,
+    "id": "economy.welcome",
+    "restore": {
+      "race": 1,
+      "buildings": [],
+      "removed": [],
+      "shade": false
+    }
+  },
+  {
+    "lines": [
+      "{Heading: WORKERS}",
+      "The backbone of your economy are your worker units.",
+      "Every race has their own workers, which all function a little differently.",
+      "",
+      "All of them construct {Term: Buildings} and harvest {Term: Gold}, and almost of them also harvest {Term: Lumber} - The two main resources of Warcraft III.",
+      "They are also all produced at the race's main building."
+    ],
+    "wait": true,
+    "checkpoint": "workers",
+    "action": "workers",
+    "sectionEnd": true,
+    "sourceStop": 2,
+    "id": "economy.workers",
+    "restore": {
+      "race": 1,
+      "buildings": [],
+      "removed": [],
+      "shade": false
+    }
+  },
+  {
+    "lines": [
+      "{Heading: PEASANTS}",
+      "These are {Term: Peasants}. They are the Human worker unit.",
+      "Peasants can gather {Term: Gold} by running back and forth between a {Term: Gold Mine} and the Human player's {Term: Main Building}."
+    ],
+    "wait": true,
+    "checkpoint": "peasants",
+    "action": "human-gold",
+    "sectionEnd": false,
+    "sourceStop": 3,
+    "id": "economy.human-gold",
+    "restore": {
+      "race": 1,
+      "buildings": [],
+      "removed": [],
+      "shade": false
+    }
+  },
+  {
+    "lines": [
+      "A mine can be manned by up to five Peasants, and each peasant gathers 10 Gold every five seconds.",
+      "So a full gold mine can bring in {Green Font: 10 Gold per second, or 600 Gold per minute}. No more."
+    ],
+    "wait": true,
+    "checkpoint": "peasants",
+    "action": "text-3",
+    "sectionEnd": false,
+    "sourceStop": 3,
+    "id": "economy.text-3",
+    "restore": {
+      "race": 1,
+      "buildings": [],
+      "removed": [],
+      "shade": false
+    }
+  },
+  {
+    "lines": [
+      "This is true for all races.",
+      "It also means that the only way to raise your gold mining capacity, is finding new gold mines and building {Term: Expansions} there.",
+      "Expansions are smaller bases you create during play. They will be covered in later tutorials."
+    ],
+    "wait": true,
+    "checkpoint": "peasants",
+    "action": "this-is-true-for-all-races",
+    "sectionEnd": false,
+    "sourceStop": 4,
+    "id": "economy.this-is-true-for-all-races",
+    "restore": {
+      "race": 1,
+      "buildings": [],
+      "removed": [],
+      "shade": false
+    }
+  },
+  {
+    "lines": [
+      "Peasants can also gather {Term: Lumber} by hacking at trees and carrying the lumber back to the Human player's {Term: Main Building} or their {Term: Lumber Mill}.",
+      "They require 11 seconds to gather 10 Lumber, which they then need to carry back.",
+      "Since trees only hold 50 Lumber until they are felled, these trips can vary a lot in length, so a precise rate is not as easy to calculate."
+    ],
+    "wait": true,
+    "checkpoint": "peasants",
+    "action": "human-lumber",
+    "sectionEnd": false,
+    "sourceStop": 5,
+    "id": "economy.human-lumber",
+    "restore": {
+      "race": 1,
+      "buildings": [],
+      "removed": [],
+      "shade": false
+    }
+  },
+  {
+    "lines": [
+      "As a rule of thumb however, a Human player will eventually want to have {Green Font: 8 Peasants gathering Lumber} in their main base.",
+      "Humans can research {Term: Lumber Harvesting}, which raises the Lumber carrying capacity of Peasants to 20 and later 30, cutting down on walking time."
+    ],
+    "wait": true,
+    "checkpoint": "peasants",
+    "action": "text-5",
+    "sectionEnd": false,
+    "sourceStop": 5,
+    "id": "economy.text-5",
+    "restore": {
+      "race": 1,
+      "buildings": [],
+      "removed": [],
+      "shade": false
+    }
+  },
+  {
+    "lines": [
+      "Worker units are very vulnerable.",
+      "Peasants especially, since they are out in the open when gathering and building."
+    ],
+    "wait": true,
+    "checkpoint": "peasants",
+    "action": "worker-units-are-very-vulnerable",
+    "sectionEnd": false,
+    "sourceStop": 6,
+    "id": "economy.worker-units-are-very-vulnerable",
+    "restore": {
+      "race": 1,
+      "buildings": [],
+      "removed": [],
+      "shade": false
+    }
+  },
+  {
+    "lines": [
+      "To protect themselves and their base, Peasants can be drafted into the {Term: Militia}.",
+      "This happens through a {Term: Call to Arms}, either individually, or at the main building. It lasts 42.5 seconds.",
+      "",
+      "While part of the Militia, they are almost as strong as a Human's basic worker unit, the {Term: Footman}, and gain a lot of movement speed."
+    ],
+    "wait": true,
+    "checkpoint": "peasants",
+    "action": "text-6",
+    "sectionEnd": false,
+    "sourceStop": 6,
+    "id": "economy.text-6",
+    "restore": {
+      "race": 1,
+      "buildings": [],
+      "removed": [],
+      "shade": false
+    }
+  },
+  {
+    "lines": [
+      "Your base is being attacked.",
+      "Select your Town Hall and use the {Term: Call fo Arms} command to form the {Term: Militia}!"
+    ],
+    "wait": true,
+    "checkpoint": "peasants",
+    "action": "human-defense",
+    "sectionEnd": false,
+    "sourceStop": 7,
+    "id": "economy.human-defense",
+    "restore": {
+      "race": 1,
+      "buildings": [],
+      "removed": [],
+      "shade": false
+    }
+  },
+  {
+    "lines": [
+      "You can dissolve the {Term: Militia} through the {Term: Back to Work} command.",
+      "",
+      "Since a {Term: Call to Arms} at the main building calls every Peasant in the entire base, this will completely stop your resource production.",
+      "",
+      "For this reason, it is recommended to only ever call Peasants into the Militia by selecting them and giving them the {Term: Call to Arms} command individually."
+    ],
+    "wait": true,
+    "checkpoint": "peasants",
+    "action": "human-return-to-work",
+    "sectionEnd": false,
+    "sourceStop": 8,
+    "id": "economy.human-return-to-work",
+    "restore": {
+      "race": 1,
+      "buildings": [],
+      "removed": [],
+      "shade": false
+    }
+  },
+  {
+    "lines": [
+      "All worker units can {Term: Repair} buildings and mechanical units.",
+      "Repairing damage takes 1.5 times as long as it takes to build that much of the building.",
+      "It also costs 35% of the Gold and Lumber it cost to build that part of the building."
+    ],
+    "wait": true,
+    "checkpoint": "peasants",
+    "action": "human-damage-hall",
+    "sectionEnd": false,
+    "sourceStop": 9,
+    "id": "economy.human-damage-hall",
+    "restore": {
+      "race": 1,
+      "buildings": [],
+      "removed": [],
+      "shade": false,
+      "hallHealth": 0.8
+    }
+  },
+  {
+    "lines": [
+      "Your Town Hall is damaged.",
+      "Select some of your Peasants and have them repair it by {Input: right-clicking it}!"
+    ],
+    "wait": true,
+    "checkpoint": "peasants",
+    "action": "human-repair",
+    "sectionEnd": false,
+    "sourceStop": 9,
+    "id": "economy.human-repair",
+    "restore": {
+      "race": 1,
+      "buildings": [],
+      "removed": [],
+      "shade": false,
+      "hallHealth": 0.8
+    }
+  },
+  {
+    "lines": [
+      "Peasants have another unique feature.",
+      "They can help each other in constructing buildings, speeding up the build time for some extra Gold and Lumber.",
+      "This is called {Term: Power Building}.",
+      "",
+      "You can see a demonstration of this in {Menu: Tools & Extras}."
+    ],
+    "wait": true,
+    "checkpoint": "peasants",
+    "action": "peasants-have-another-unique-feature",
+    "sectionEnd": false,
+    "sourceStop": 10,
+    "id": "economy.peasants-have-another-unique-feature",
+    "restore": {
+      "race": 1,
+      "buildings": [],
+      "removed": [],
+      "shade": false
+    }
+  },
+  {
+    "lines": [
+      "Select a Peasant and tell it to {Input: Build} an {Term: Altar of Kings}!",
+      "Then select a few other Peasants (preferrably from those gathering Lumber) and {Input: right-click} the construction site!",
+      "They will help with the construction.",
+      "",
+      "If you want to make sure they continue to what they were doing after they are done, you can {Input: shift-queue} them back onto their gathering duty."
+    ],
+    "wait": true,
+    "checkpoint": "peasants",
+    "action": "human-build",
+    "sectionEnd": false,
+    "sourceStop": 10,
+    "id": "economy.human-build",
+    "restore": {
+      "race": 1,
+      "buildings": [],
+      "removed": [],
+      "shade": false
+    }
+  },
+  {
+    "lines": [
+      "Canceling a construction costs you 25% of its build cost.",
+      "Having the build site destroyed loses the entire build cost."
+    ],
+    "wait": true,
+    "checkpoint": "peasants",
+    "action": "construction-cost",
+    "sectionEnd": true,
+    "sourceStop": 10,
+    "id": "economy.construction-cost",
+    "restore": {
+      "race": 1,
+      "buildings": [
+        "halt"
+      ],
+      "removed": [],
+      "shade": false
+    }
+  },
+  {
+    "lines": [
+      "{Heading: PEONS}",
+      "These are {Term: Peons}. They are Orc worker units.",
+      "They behave almost the same as Peasants when it comes to Gold and Lumber."
+    ],
+    "wait": true,
+    "checkpoint": "peons",
+    "action": "orc-workers",
+    "sectionEnd": false,
+    "sourceStop": 11,
+    "id": "economy.orc-workers",
+    "restore": {
+      "race": 2,
+      "buildings": [
+        "halt"
+      ],
+      "removed": [],
+      "shade": false
+    }
+  },
+  {
+    "lines": [
+      "The main difference is that an Orc player cannot raise the Lumber carrying capacity of their Peons.",
+      "An Orc player will eventually want to have {Green Font: 7 Peons harvesting Lumber} in their base."
+    ],
+    "wait": true,
+    "checkpoint": "peons",
+    "action": "the-main-difference-is-that-an-orc-player-cannot-raise-the-lumber",
+    "sectionEnd": false,
+    "sourceStop": 12,
+    "id": "economy.the-main-difference-is-that-an-orc-player-cannot-raise-the-lumber",
+    "restore": {
+      "race": 2,
+      "buildings": [
+        "halt"
+      ],
+      "removed": [],
+      "shade": false
+    }
+  },
+  {
+    "lines": [
+      "While Peons are building, they vanish into the building site, making them invulnerable.",
+      "That is - until the building site is destroyed."
+    ],
+    "wait": true,
+    "checkpoint": "peons",
+    "action": "while-peons-are-building-they-vanish-into-the-building-site-makin",
+    "sectionEnd": false,
+    "sourceStop": 13,
+    "id": "economy.while-peons-are-building-they-vanish-into-the-building-site-makin",
+    "restore": {
+      "race": 2,
+      "buildings": [
+        "halt"
+      ],
+      "removed": [],
+      "shade": false
+    }
+  },
+  {
+    "lines": [
+      "Select a Peon (preferrably from the ones gathering lumber), and command it to {Term: Build} an {Term: Altar of Storms}."
+    ],
+    "wait": true,
+    "checkpoint": "peons",
+    "action": "orc-build",
+    "sectionEnd": false,
+    "sourceStop": 13,
+    "id": "economy.orc-build",
+    "restore": {
+      "race": 2,
+      "buildings": [
+        "halt"
+      ],
+      "removed": [],
+      "shade": false
+    }
+  },
+  {
+    "lines": [
+      "While Peons have a bit more {Term: HP} than other workers, they still die easily.",
+      "Their means of protecting themselves is assuming {Term: Battle Stations} in a nearby {Term: Orc Burrow} and throwing spears at the attacker.",
+      "Similar to Militia, calling all your Peons into the Burrows will stop your resource production, so you will want to only use as few as are needed."
+    ],
+    "wait": true,
+    "checkpoint": "peons",
+    "action": "orc-select-burrow",
+    "sectionEnd": false,
+    "sourceStop": 14,
+    "id": "economy.orc-select-burrow",
+    "restore": {
+      "race": 2,
+      "buildings": [
+        "halt",
+        "oalt"
+      ],
+      "removed": [],
+      "shade": false
+    }
+  },
+  {
+    "lines": [
+      "Select a Peon and {Input: right-click} the Orc Burrow.",
+      "The Peon will enter it.",
+      "You can call it back by {Input: selecting the Burrow and clicking its icon}."
+    ],
+    "wait": true,
+    "checkpoint": "peons",
+    "action": "orc-burrow",
+    "sectionEnd": false,
+    "sourceStop": 14,
+    "id": "economy.orc-burrow",
+    "restore": {
+      "race": 2,
+      "buildings": [
+        "halt",
+        "oalt"
+      ],
+      "removed": [],
+      "shade": false
+    }
+  },
+  {
+    "lines": [
+      "Your base is being attacked.",
+      "Call a few Peons to {Term: Battle Stations}!",
+      "",
+      "You can do this by selecting the Burrows and giving the {Term: Battle Stations} command."
+    ],
+    "wait": true,
+    "checkpoint": "peons",
+    "action": "orc-defense",
+    "sectionEnd": false,
+    "sourceStop": 15,
+    "id": "economy.orc-defense",
+    "restore": {
+      "race": 2,
+      "buildings": [
+        "halt",
+        "oalt"
+      ],
+      "removed": [],
+      "shade": false
+    }
+  },
+  {
+    "lines": [
+      "Once you are done having them defend your base, you can have them return to work with the {Term: Stand Down} command.",
+      "",
+      "Similar to {Term: Militia}, it is better to assign Peons to {Term: Battle Stations} individually, to disrupt your own economy as little as possible."
+    ],
+    "wait": true,
+    "checkpoint": "peons",
+    "action": "orc-end-defense",
+    "sectionEnd": true,
+    "sourceStop": 16,
+    "id": "economy.orc-end-defense",
+    "restore": {
+      "race": 2,
+      "buildings": [
+        "halt",
+        "oalt"
+      ],
+      "removed": [],
+      "shade": false
+    }
+  },
+  {
+    "lines": [
+      "{Heading: WISPS}",
+      "Night Elf workers are called {Term: Wisps}.",
+      "They behave very differently compared to Peasants and Peons."
+    ],
+    "wait": true,
+    "checkpoint": "wisps",
+    "action": "nightelf-workers",
+    "sectionEnd": false,
+    "sourceStop": 17,
+    "id": "economy.nightelf-workers",
+    "restore": {
+      "race": 3,
+      "buildings": [
+        "halt",
+        "oalt"
+      ],
+      "removed": [],
+      "shade": false
+    }
+  },
+  {
+    "lines": [
+      "The Night Elf main building entangles the nearby gold mine.",
+      "Wisps gather Gold in this {Term: Entangled Gold Mine}.",
+      "They do not have to walk back and forth, and while inside, are completely safe from harm."
+    ],
+    "wait": true,
+    "checkpoint": "wisps",
+    "action": "nightelf-mine-tour",
+    "sectionEnd": false,
+    "sourceStop": 18,
+    "id": "economy.nightelf-mine-tour",
+    "restore": {
+      "race": 3,
+      "buildings": [
+        "halt",
+        "oalt"
+      ],
+      "removed": [],
+      "shade": false
+    }
+  },
+  {
+    "lines": [
+      "Wisps gather Lumber at a rate of 5 per 7.5 seconds, and they do not destroy the trees when doing so.",
+      "Because of the lower gathering rate, a Night Elf player will want to have {Green Font: around 8 Wisps gathering Lumber}.",
+      "This may fluctuate up and down a bit during the game."
+    ],
+    "wait": true,
+    "checkpoint": "wisps",
+    "action": "nightelf-lumber",
+    "sectionEnd": false,
+    "sourceStop": 19,
+    "id": "economy.nightelf-lumber",
+    "restore": {
+      "race": 3,
+      "buildings": [
+        "halt",
+        "oalt"
+      ],
+      "removed": [],
+      "shade": false
+    }
+  },
+  {
+    "lines": [
+      "Like Peons, Wisps disappear into the building when they are {Term: Constructing}.",
+      "Additionally, when they finish building one of the living trees that make up many of the Night Elf buildings, they do not come out at all."
+    ],
+    "wait": true,
+    "checkpoint": "wisps",
+    "action": "like-peons-wisps-disappear-into-the-building-when-they-are-constr",
+    "sectionEnd": false,
+    "sourceStop": 20,
+    "id": "economy.like-peons-wisps-disappear-into-the-building-when-they-are-constr",
+    "restore": {
+      "race": 3,
+      "buildings": [
+        "halt",
+        "oalt"
+      ],
+      "removed": [],
+      "shade": false
+    }
+  },
+  {
+    "lines": [
+      "Select a Wisp and {Input: Build an Altar of Elders}!",
+      "Then select another and {Input: Build an Ancient of Wonders}!",
+      "",
+      "The first Wisp will return from the construction site.",
+      "The second will not, and will have to be replaced."
+    ],
+    "wait": true,
+    "checkpoint": "wisps",
+    "action": "nightelf-build",
+    "sectionEnd": false,
+    "sourceStop": 20,
+    "id": "economy.nightelf-build",
+    "restore": {
+      "race": 3,
+      "buildings": [
+        "halt",
+        "oalt"
+      ],
+      "removed": [],
+      "shade": false
+    }
+  },
+  {
+    "lines": [
+      "Aside from the ones in the {Term: Entangled Gold Mine}, Wisps are among the most vulnerable worker units.",
+      "Except for fleeing into the gold mine or into a construction site, Wisps have no great ways of dealing with attacks.",
+      "",
+      "Their only option is often run or to simply {Term: Detonate}."
+    ],
+    "wait": true,
+    "checkpoint": "wisps",
+    "action": "aside-from-the-ones-in-the-entangled-gold-mine-wisps-are-among-th",
+    "sectionEnd": false,
+    "sourceStop": 21,
+    "id": "economy.aside-from-the-ones-in-the-entangled-gold-mine-wisps-are-among-th",
+    "restore": {
+      "race": 3,
+      "buildings": [
+        "halt",
+        "oalt",
+        "eate",
+        "eden"
+      ],
+      "removed": [
+        "ewsp"
+      ],
+      "shade": false
+    }
+  },
+  {
+    "lines": [
+      "{Term: Detonate} burns 40 mana from enemy units, and deals 225 damage to enemy summons.",
+      "This also denies the enemy the {Term: XP} they would otherwise get for killing the Wisp."
+    ],
+    "wait": true,
+    "checkpoint": "wisps",
+    "action": "detonate-burns-40-mana-from-enemy-units-and-deals-225-damage-to-e",
+    "sectionEnd": false,
+    "sourceStop": 22,
+    "id": "economy.detonate-burns-40-mana-from-enemy-units-and-deals-225-damage-to-e",
+    "restore": {
+      "race": 3,
+      "buildings": [
+        "halt",
+        "oalt",
+        "eate",
+        "eden"
+      ],
+      "removed": [
+        "ewsp"
+      ],
+      "shade": false
+    }
+  },
+  {
+    "lines": [
+      "Your Wisps are being harassed by magically summoned units.",
+      "{Term: Detonate} a Wisp to protect the others!"
+    ],
+    "wait": true,
+    "checkpoint": "wisps",
+    "action": "nightelf-defense",
+    "sectionEnd": true,
+    "sourceStop": 23,
+    "id": "economy.nightelf-defense",
+    "restore": {
+      "race": 3,
+      "buildings": [
+        "halt",
+        "oalt",
+        "eate",
+        "eden"
+      ],
+      "removed": [
+        "ewsp"
+      ],
+      "shade": false
+    }
+  },
+  {
+    "lines": [
+      "{Heading: ACOLYTES}",
+      "Undead workers are called {Term: Acolytes}.",
+      "They function in a very unique way compared to other worker units.."
+    ],
+    "wait": true,
+    "checkpoint": "acolytes",
+    "action": "undead-workers",
+    "sectionEnd": false,
+    "sourceStop": 24,
+    "id": "economy.undead-workers",
+    "restore": {
+      "race": 4,
+      "buildings": [
+        "halt",
+        "oalt",
+        "eate",
+        "eden"
+      ],
+      "removed": [
+        "ewsp"
+      ],
+      "shade": false
+    }
+  },
+  {
+    "lines": [
+      "Acolytes gather {Term: Gold} in the {Term: Haunted Gold Mine}.",
+      "This is a separate building that has nothing to do with the Undead main building.",
+      "",
+      "Different from any other worker, Acolytes stand in the open while gathering gold, completely vulnerable."
+    ],
+    "wait": true,
+    "checkpoint": "acolytes",
+    "action": "undead-mine",
+    "sectionEnd": false,
+    "sourceStop": 25,
+    "id": "economy.undead-mine",
+    "restore": {
+      "race": 4,
+      "buildings": [
+        "halt",
+        "oalt",
+        "eate",
+        "eden"
+      ],
+      "removed": [
+        "ewsp"
+      ],
+      "shade": false
+    }
+  },
+  {
+    "lines": [
+      "Acolytes are also the only worker unit that does not gather {Term: Lumber} at all.",
+      "Instead this is done by the basic Undead military unit, the {Term: Ghoul}.",
+      "",
+      "Ghouls can harvest 20 {Term: Lumber} in 13.5 seconds, and an Undead player will want to have {Green Font: 3 Ghouls harvesting Lumber}.",
+      "Their gather rate can be slightly improved by the {Term: Ghoul Frenzy} research, which raises their movement speed."
+    ],
+    "wait": true,
+    "checkpoint": "acolytes",
+    "action": "undead-lumber",
+    "sectionEnd": false,
+    "sourceStop": 26,
+    "id": "economy.undead-lumber",
+    "restore": {
+      "race": 4,
+      "buildings": [
+        "halt",
+        "oalt",
+        "eate",
+        "eden"
+      ],
+      "removed": [
+        "ewsp"
+      ],
+      "shade": false
+    }
+  },
+  {
+    "lines": [
+      "Acolytes have no way of defending themselves.",
+      "Ghouls take care of this, as well as the Undead buildings' superb defensive capabilities."
+    ],
+    "wait": true,
+    "checkpoint": "acolytes",
+    "action": "acolytes-have-no-way-of-defending-themselves",
+    "sectionEnd": false,
+    "sourceStop": 27,
+    "id": "economy.acolytes-have-no-way-of-defending-themselves",
+    "restore": {
+      "race": 4,
+      "buildings": [
+        "halt",
+        "oalt",
+        "eate",
+        "eden"
+      ],
+      "removed": [
+        "ewsp"
+      ],
+      "shade": false
+    }
+  },
+  {
+    "lines": [
+      "When {Term: Summoning} buildings, an Acolyte needs only to be present once to initiate the summoning.",
+      "This way, an Undead base only ever needs the five Acolytes in the Gold Mine."
+    ],
+    "wait": true,
+    "checkpoint": "acolytes",
+    "action": "text-27",
+    "sectionEnd": false,
+    "sourceStop": 27,
+    "id": "economy.text-27",
+    "restore": {
+      "race": 4,
+      "buildings": [
+        "halt",
+        "oalt",
+        "eate",
+        "eden"
+      ],
+      "removed": [
+        "ewsp"
+      ],
+      "shade": false
+    }
+  },
+  {
+    "lines": [
+      "Select an Acolyte and command it to {Input: Build an Altar of Darkness}!",
+      "Then immediately order it to {Input: Move} back into the Goldmine."
+    ],
+    "wait": true,
+    "checkpoint": "acolytes",
+    "action": "undead-build",
+    "sectionEnd": false,
+    "sourceStop": 27,
+    "id": "economy.undead-build",
+    "restore": {
+      "race": 4,
+      "buildings": [
+        "halt",
+        "oalt",
+        "eate",
+        "eden"
+      ],
+      "removed": [
+        "ewsp"
+      ],
+      "shade": false
+    }
+  },
+  {
+    "lines": [
+      "Undead are the only race that can deconstruct their own buildings.",
+      "This is done through the Acolyte's {Term: Unsummon Building} command.",
+      "It nets the Undead player 50% of the building's original resource cost.",
+      "",
+      "{Input: Select an Acolyte and unsummon your Crypt}!"
+    ],
+    "wait": true,
+    "checkpoint": "acolytes",
+    "action": "undead-unsummon",
+    "sectionEnd": false,
+    "sourceStop": 28,
+    "id": "economy.undead-unsummon",
+    "restore": {
+      "race": 4,
+      "buildings": [
+        "halt",
+        "oalt",
+        "eate",
+        "eden",
+        "uaod"
+      ],
+      "removed": [
+        "ewsp"
+      ],
+      "shade": false
+    }
+  },
+  {
+    "lines": [
+      "Another unique feature of Acolytes is that they can be sacrificed at a {Term: Sacrificial Pit}, turning them into a {Term: Shade}.",
+      "A Shade is an invisible scout unit that reveals other invisible units.",
+      "",
+      "Select an Acolyte and {Input: right-click the Sacrificial Pit}!",
+      "",
+      "Since the sacrifice can be cancelled, this is a way to safely hide an Acolyte for a few seconds."
+    ],
+    "wait": true,
+    "checkpoint": "acolytes",
+    "action": "undead-sacrifice",
+    "sectionEnd": true,
+    "sourceStop": 29,
+    "id": "economy.undead-sacrifice",
+    "restore": {
+      "race": 4,
+      "buildings": [
+        "halt",
+        "oalt",
+        "eate",
+        "eden",
+        "uaod"
+      ],
+      "removed": [
+        "ewsp",
+        "usep"
+      ],
+      "shade": false
+    }
+  },
+  {
+    "lines": [
+      "{Heading: FOOD PRODUCTION}",
+      "Aside from {Term: Gold} and {Term: Lumber}, which can be gathered directly, there is a third Resource in Warcraft III, called {Term: Food}.",
+      "Food is produced by building specific buildings."
+    ],
+    "wait": true,
+    "checkpoint": "food",
+    "action": "food-display",
+    "sectionEnd": false,
+    "sourceStop": 30,
+    "id": "economy.food-display",
+    "restore": {
+      "race": 4,
+      "buildings": [
+        "halt",
+        "oalt",
+        "eate",
+        "eden",
+        "uaod"
+      ],
+      "removed": [
+        "ewsp",
+        "usep",
+        "uaco"
+      ],
+      "shade": true
+    }
+  },
+  {
+    "lines": [
+      "At first, this is the {Term: Main Building}.",
+      "Since the player always starts with this, it provides their starting {Term: Food Production}.",
+      "The amount of Food a Main Building produces is different by race."
+    ],
+    "wait": true,
+    "checkpoint": "food",
+    "action": "at-first-this-is-the-main-building",
+    "sectionEnd": false,
+    "sourceStop": 31,
+    "id": "economy.at-first-this-is-the-main-building",
+    "restore": {
+      "race": 4,
+      "buildings": [
+        "halt",
+        "oalt",
+        "eate",
+        "eden",
+        "uaod"
+      ],
+      "removed": [
+        "ewsp",
+        "usep",
+        "uaco"
+      ],
+      "shade": true
+    }
+  },
+  {
+    "lines": [
+      "For Night Elves and the Undead, their Main Buildings, the {Term: Tree of Life} and the {Term: Necropolis}, produce 10 Food."
+    ],
+    "wait": true,
+    "checkpoint": "food",
+    "action": "racial-food-tour",
+    "sectionEnd": false,
+    "sourceStop": 32,
+    "id": "economy.racial-food-tour",
+    "restore": {
+      "race": 4,
+      "buildings": [
+        "halt",
+        "oalt",
+        "eate",
+        "eden",
+        "uaod"
+      ],
+      "removed": [
+        "ewsp",
+        "usep",
+        "uaco"
+      ],
+      "shade": true
+    }
+  },
+  {
+    "lines": [
+      "For Orcs, their Main Building, the {Term: Great Hall}, produces 11 Food."
+    ],
+    "wait": true,
+    "checkpoint": "food",
+    "action": "orc-food",
+    "sectionEnd": false,
+    "sourceStop": 33,
+    "id": "economy.orc-food",
+    "restore": {
+      "race": 2,
+      "buildings": [
+        "halt",
+        "oalt",
+        "eate",
+        "eden",
+        "uaod"
+      ],
+      "removed": [
+        "ewsp",
+        "usep",
+        "uaco"
+      ],
+      "shade": true
+    }
+  },
+  {
+    "lines": [
+      "The Main Building of the Humans produces different amounts of Food depending on its tier.",
+      "The {Term: Town Hall} produces 12, the {Term: Keep} produces 14, and the {Term: Castle} produces 16."
+    ],
+    "wait": true,
+    "checkpoint": "food",
+    "action": "human-hall-tour",
+    "sectionEnd": false,
+    "sourceStop": 34,
+    "id": "economy.human-hall-tour",
+    "restore": {
+      "race": 1,
+      "buildings": [
+        "halt",
+        "oalt",
+        "eate",
+        "eden",
+        "uaod"
+      ],
+      "removed": [
+        "ewsp",
+        "usep",
+        "uaco"
+      ],
+      "shade": true
+    }
+  },
+  {
+    "lines": [
+      "Aside from their main building, each race has a Food building.",
+      "For Humans it is {Term: Farms}, for Orcs it is {Term: Orc Burrows}, for Night Elves it is {Term: Moon Wells}, and for Undead it is {Term: Ziggurats}.",
+      "",
+      "Each of these produce 10 Food."
+    ],
+    "wait": true,
+    "checkpoint": "food",
+    "action": "food-building-tour",
+    "sectionEnd": false,
+    "sourceStop": 35,
+    "id": "economy.food-building-tour",
+    "restore": {
+      "race": 4,
+      "buildings": [
+        "halt",
+        "oalt",
+        "eate",
+        "eden",
+        "uaod"
+      ],
+      "removed": [
+        "ewsp",
+        "usep",
+        "uaco"
+      ],
+      "shade": true
+    }
+  },
+  {
+    "lines": [
+      "Now, the question is: {Gold Font: What does Food do?}",
+      "",
+      "The answer: Nothing by itself.",
+      "Instead, {Gold Font: it limits how many units you can have} - the size of your army."
+    ],
+    "wait": true,
+    "checkpoint": "food",
+    "action": "now-the-question-is-what-does-food-do",
+    "sectionEnd": false,
+    "sourceStop": 36,
+    "id": "economy.now-the-question-is-what-does-food-do",
+    "restore": {
+      "race": 4,
+      "buildings": [
+        "halt",
+        "oalt",
+        "eate",
+        "eden",
+        "uaod"
+      ],
+      "removed": [
+        "ewsp",
+        "usep",
+        "uaco"
+      ],
+      "shade": true
+    }
+  },
+  {
+    "lines": [
+      "Workers require 1 Food, other small units require 2 or 3.",
+      "Heroes require 5, and larger units require up to 7.",
+      "All of these add up, and the total {Gold Font: cannot exceed your food production}."
+    ],
+    "wait": true,
+    "checkpoint": "food",
+    "action": "workers-require-1-food-other-small-units-require-2-or-3",
+    "sectionEnd": false,
+    "sourceStop": 38,
+    "id": "economy.workers-require-1-food-other-small-units-require-2-or-3",
+    "restore": {
+      "race": 4,
+      "buildings": [
+        "halt",
+        "oalt",
+        "eate",
+        "eden",
+        "uaod"
+      ],
+      "removed": [
+        "ewsp",
+        "usep",
+        "uaco"
+      ],
+      "shade": true
+    }
+  },
+  {
+    "lines": [
+      "When you are consuming as much food as you produce, you cannot produce more units.",
+      "This means you have {Term: Supply Blocked} yourself.",
+      "",
+      "To be able to build new units, you now have to build more food production buildings.",
+      "This takes time, and slows down your game, so it is better to {Gold Font: plan ahead!}"
+    ],
+    "wait": true,
+    "checkpoint": "food",
+    "action": "food-limit-demonstration",
+    "sectionEnd": true,
+    "sourceStop": 39,
+    "id": "economy.food-limit-demonstration",
+    "restore": {
+      "race": 4,
+      "buildings": [
+        "halt",
+        "oalt",
+        "eate",
+        "eden",
+        "uaod"
+      ],
+      "removed": [
+        "ewsp",
+        "usep",
+        "uaco"
+      ],
+      "shade": true
+    }
+  },
+  {
+    "lines": [
+      "{Heading: UPKEEP}",
+      "Food governs the last mechanic relevant to Warcraft III's economy: {Term: Upkeep}.",
+      "This mechanic limits your army size, not by not allowing you to build units, but by making you pay extra for having them."
+    ],
+    "wait": true,
+    "checkpoint": "upkeep",
+    "action": "upkeep-display",
+    "sectionEnd": false,
+    "sourceStop": 40,
+    "id": "economy.upkeep-display",
+    "restore": {
+      "race": 4,
+      "buildings": [
+        "halt",
+        "oalt",
+        "eate",
+        "eden",
+        "uaod"
+      ],
+      "removed": [
+        "ewsp",
+        "usep",
+        "uaco"
+      ],
+      "shade": true
+    }
+  },
+  {
+    "lines": [
+      "This is done through a {Gold Font: tax on all Gold income}.",
+      "Once your {Term: Food Consumption}, not production, goes past 50, you hear a notification sound, and see {Yellow Font: Low Upkeep} pop up on your screen."
+    ],
+    "wait": true,
+    "checkpoint": "upkeep",
+    "action": "low-upkeep",
+    "sectionEnd": false,
+    "sourceStop": 41,
+    "id": "economy.low-upkeep",
+    "restore": {
+      "race": 4,
+      "buildings": [
+        "halt",
+        "oalt",
+        "eate",
+        "eden",
+        "uaod"
+      ],
+      "removed": [
+        "ewsp",
+        "usep",
+        "uaco"
+      ],
+      "shade": true
+    }
+  },
+  {
+    "lines": [
+      "While you consume this much food, {Gold Font: you pay a 30% tax}.",
+      "This means each of your workers only produce 7 {Term: Gold} every 5 seconds.",
+      "",
+      "It also affects Gold you get for selling items, killing neutral enemies, and so on.",
+      "Basically it affects all ways you can receive Gold in the game. (Lumber is not affected.)"
+    ],
+    "wait": true,
+    "checkpoint": "upkeep",
+    "action": "low-upkeep-focus",
+    "sectionEnd": false,
+    "sourceStop": 42,
+    "id": "economy.low-upkeep-focus",
+    "restore": {
+      "race": 4,
+      "buildings": [
+        "halt",
+        "oalt",
+        "eate",
+        "eden",
+        "uaod"
+      ],
+      "removed": [
+        "ewsp",
+        "usep",
+        "uaco"
+      ],
+      "shade": true,
+      "foodUsed": 51
+    }
+  },
+  {
+    "lines": [
+      "Once you fall back under 51 {Term: Food Consumption}, you no longer have to pay {Term: Upkeep}.",
+      "Your hear the notification sound again, and {Green Font: No Upkeep} pops up on your screen."
+    ],
+    "wait": true,
+    "checkpoint": "upkeep",
+    "action": "no-upkeep",
+    "sectionEnd": false,
+    "sourceStop": 43,
+    "id": "economy.no-upkeep",
+    "restore": {
+      "race": 4,
+      "buildings": [
+        "halt",
+        "oalt",
+        "eate",
+        "eden",
+        "uaod"
+      ],
+      "removed": [
+        "ewsp",
+        "usep",
+        "uaco"
+      ],
+      "shade": true,
+      "foodUsed": 51
+    }
+  },
+  {
+    "lines": [
+      "Once your {Term: Food Consumption} goes past 80, you go to {Red Font: High Upkeep}.",
+      "You now {Gold Font: pay a 60% tax}."
+    ],
+    "wait": true,
+    "checkpoint": "upkeep",
+    "action": "high-upkeep",
+    "sectionEnd": false,
+    "sourceStop": 44,
+    "id": "economy.high-upkeep",
+    "restore": {
+      "race": 4,
+      "buildings": [
+        "halt",
+        "oalt",
+        "eate",
+        "eden",
+        "uaod"
+      ],
+      "removed": [
+        "ewsp",
+        "usep",
+        "uaco"
+      ],
+      "shade": true
+    }
+  },
+  {
+    "lines": [
+      "This mechanic makes it so {Yellow Font: you do not want to just grow your army as quickly as you can}.",
+      "",
+      "Growing it to 50 Food Consumption is great, and you should do it quickly, to be as strong as possible as soon as you can.",
+      "But both {Yellow Font: crossing the threshold to 51 and to 81 are serious decisions} you should only make with a goal in mind."
+    ],
+    "wait": true,
+    "checkpoint": "upkeep",
+    "action": "this-mechanic-makes-it-so-you-do-not-want-to-just-grow-your-army-",
+    "sectionEnd": false,
+    "sourceStop": 45,
+    "id": "economy.this-mechanic-makes-it-so-you-do-not-want-to-just-grow-your-army-",
+    "restore": {
+      "race": 4,
+      "buildings": [
+        "halt",
+        "oalt",
+        "eate",
+        "eden",
+        "uaod"
+      ],
+      "removed": [
+        "ewsp",
+        "usep",
+        "uaco"
+      ],
+      "shade": true,
+      "foodUsed": 81
+    }
+  },
+  {
+    "lines": [
+      "For example, you can raise your army size past 50 in anticipation for a battle.",
+      "Since you will lose some units, it will likely drop you back to below 51.",
+      "",
+      "And of course it makes sense to cross the threshold into Low or High Upkeep to attain the advantage to end the game."
+    ],
+    "wait": true,
+    "checkpoint": "upkeep",
+    "action": "for-example-you-can-raise-your-army-size-past-50-in-anticipation-",
+    "sectionEnd": false,
+    "sourceStop": 46,
+    "id": "economy.for-example-you-can-raise-your-army-size-past-50-in-anticipation-",
+    "restore": {
+      "race": 4,
+      "buildings": [
+        "halt",
+        "oalt",
+        "eate",
+        "eden",
+        "uaod"
+      ],
+      "removed": [
+        "ewsp",
+        "usep",
+        "uaco"
+      ],
+      "shade": true,
+      "foodUsed": 81
+    }
+  },
+  {
+    "lines": [
+      "{Yellow Font: What you do not ever want to do is go to 51 Food Consumption and stay there for no reason.}",
+      "",
+      "That is just wasting money.",
+      "Especially because your Gold Mines still lose 10 Gold, and will run empty eventually."
+    ],
+    "wait": true,
+    "checkpoint": "upkeep",
+    "action": "what-you-do-not-ever-want-to-do-is-go-to-51-food-consumption-and-",
+    "sectionEnd": true,
+    "sourceStop": 48,
+    "id": "economy.what-you-do-not-ever-want-to-do-is-go-to-51-food-consumption-and-",
+    "restore": {
+      "race": 4,
+      "buildings": [
+        "halt",
+        "oalt",
+        "eate",
+        "eden",
+        "uaod"
+      ],
+      "removed": [
+        "ewsp",
+        "usep",
+        "uaco"
+      ],
+      "shade": true,
+      "foodUsed": 81
+    }
+  },
+  {
+    "lines": [
+      "{Heading: END OF TUTORIAL}",
+      "This concludes the economy tutorial. Press the {Button: Menu} button to choose another tutorial!"
+    ],
+    "wait": true,
+    "checkpoint": "upkeep",
+    "action": "outro",
+    "sectionEnd": false,
+    "sourceStop": 49,
+    "terminal": true,
+    "id": "economy.outro",
+    "restore": {
+      "race": 4,
+      "buildings": [
+        "halt",
+        "oalt",
+        "eate",
+        "eden",
+        "uaod"
+      ],
+      "removed": [
+        "ewsp",
+        "usep",
+        "uaco"
+      ],
+      "shade": true,
+      "foodUsed": 81
+    }
+  }
+]

@@ -10,6 +10,23 @@ JTG.UI = {
 }
 
 local UI = JTG.UI
+-- Native summon variants use different names as well as different rawcodes.
+local SUMMON_LEVELS = {
+    hwat="1",hwt2="2",hwt3="3",
+    osw1="1",osw2="2",osw3="3",
+    o001="1",o002="2",o003="3",osp1="1",osp2="2",osp3="3",
+    ucs1="1",ucs2="2",ucs3="3",
+    nlv1="1",nlv2="2",nlv3="3",
+    nqb1="1",nqb2="2",nqb3="3",
+    ngz1="1",ngz2="2",ngz3="3",
+    nwe1="1",nwe2="2",nwe3="3",
+    ndr1="1",ndr2="2",ndr3="3",
+}
+function UI.GetSummonLevelBadge(choice)
+    return choice.badge or SUMMON_LEVELS[choice.unitRawcode] or
+        (choice.label or ""):match("Level (%d+)") or (choice.label or ""):match("Lvl (%d+)")
+end
+
 local GAME_UI = nil
 local MENU_WIDTH = 0.64
 local MENU_HEIGHT = 0.47
@@ -71,7 +88,7 @@ local BRIEFING_DIVIDER_BUTTON_GAP = 0.013
 local BRIEFING_COMMAND_BUTTON_SIZE = 0.043
 local BRIEFING_COMMAND_BUTTON_STEP = BRIEFING_COMMAND_BUTTON_SIZE
 local BRIEFING_COMMAND_GRID_TOP = -0.247
-local SECTIONED_CATEGORY_LAYOUTS = {advanced = true, skills = true}
+local SECTIONED_CATEGORY_LAYOUTS = {advanced = true}
 local footerDividerCount = 0
 
 UI.MenuLayout = {
@@ -97,6 +114,16 @@ local function SetActivityOverlayVisible(visible)
 end
 
 UI.SetActivityOverlayVisible = SetActivityOverlayVisible
+
+local function HideActivityPresentationForMenu()
+    local session = JTG.Controller and JTG.Controller.session
+    local activity = session and session.activity
+    if activity ~= nil and activity.hidePresentationForMenu ~= nil then
+        activity:hidePresentationForMenu()
+    else
+        SetActivityOverlayVisible(false)
+    end
+end
 
 local function ApplyActivityPause()
     local session = JTG.Controller and JTG.Controller.session
@@ -320,11 +347,12 @@ local function CreateIllustratedCard(name, parent, descriptor, width, height, ar
     local isAvailable = descriptor.status == "available"
     local status = isAvailable and "" or "\n|cffaaaaaaPLANNED|r"
     local button = CreateButton(name, parent,
-        "|cffffcc00" .. descriptor.title .. "|r" .. status, width, height)
+        "|cffffcc00" .. (descriptor.cardTitle or descriptor.title) .. "|r" .. status, width, height)
     local art = BlzCreateFrameByType("BACKDROP", name .. "Artwork", button, "", 0)
     BlzFrameSetTexture(art, descriptor.artwork, 0, true)
     BlzFrameSetSize(art, artWidth, artHeight)
-    BlzFrameSetPoint(art, FRAMEPOINT_RIGHT, button, FRAMEPOINT_RIGHT, -0.004, 0)
+    BlzFrameSetPoint(art, FRAMEPOINT_RIGHT, button, FRAMEPOINT_RIGHT,
+        -0.004 + (descriptor.artworkOffsetX or 0), descriptor.artworkOffsetY or 0)
     BlzFrameSetEnable(art, false)
 
     local label = FindButtonText(button)
@@ -368,15 +396,39 @@ local function CreateIllustratedCategoryCard(name, parent, category)
     return frame, button, art
 end
 
+local function WrapTooltipText(description)
+    local wrapped = {}
+    description = description:gsub("|n", "\n")
+    for line in string.gmatch(description .. "\n", "([^\n]*)\n") do
+        local current, length = "", 0
+        for word in line:gmatch("%S+") do
+            local visible = word:gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", "")
+            local wordLength = #visible
+            if length > 0 and length + 1 + wordLength > 45 then
+                table.insert(wrapped, current)
+                current, length = "", 0
+            end
+            current = current .. (length > 0 and " " or "") .. word
+            length = length + (length > 0 and 1 or 0) + wordLength
+        end
+        table.insert(wrapped, current)
+    end
+    return table.concat(wrapped, "|n")
+end
+
 local function TooltipHeight(description)
+    -- Count visible text and both supported line-break forms, rather than
+    -- treating Warcraft formatting codes as printable characters.
+    description = description:gsub("|n", "\n")
+        :gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", "")
     local lines = 0
     for line in string.gmatch(description .. "\n", "([^\n]*)\n") do
         -- Warcraft's stock tooltip text uses nearly the full interior width.
         -- This estimate only chooses the box height; the engine still performs
         -- the actual word wrapping according to the rendered font metrics.
-        lines = lines + math.max(1, math.ceil(string.len(line) / 54))
+        lines = lines + math.max(1, math.ceil(string.len(line) / 45))
     end
-    return math.max(0.030, 0.012 + lines * 0.010)
+    return math.max(0.025, 0.012 + lines * 0.009)
 end
 
 local function CreateTooltipSlice(name, parent, texture, width, height, point)
@@ -389,13 +441,15 @@ local function CreateTooltipSlice(name, parent, texture, width, height, point)
 end
 
 local function AttachTooltip(button, description, side)
+    description = WrapTooltipText(description)
     tooltipCount = tooltipCount + 1
     local tooltip = BlzCreateFrameByType("FRAME", "JTGTooltip" .. tooltipCount,
         GAME_UI, "", 0)
     local width = 0.235
     local height = TooltipHeight(description)
     BlzFrameSetSize(tooltip, width, height)
-    BlzFrameSetAbsPoint(tooltip, FRAMEPOINT_BOTTOMRIGHT, 0.728, 0.135)
+    -- Keep the top and width fixed so extra lines extend downward.
+    BlzFrameSetAbsPoint(tooltip, FRAMEPOINT_TOPRIGHT, 0.728, 0.135 + height)
     BlzFrameSetLevel(tooltip, 100)
 
     local corner = 0.008
@@ -408,11 +462,11 @@ local function AttachTooltip(button, description, side)
         innerWidth, corner, FRAMEPOINT_TOP)
     CreateTooltipSlice(prefix .. "TR", tooltip, "JTGMenu\\TooltipTR.dds",
         corner, corner, FRAMEPOINT_TOPRIGHT)
-    CreateTooltipSlice(prefix .. "Left", tooltip, "JTGMenu\\TooltipLeft.dds",
+    local left = CreateTooltipSlice(prefix .. "Left", tooltip, "JTGMenu\\TooltipLeft.dds",
         corner, innerHeight, FRAMEPOINT_LEFT)
-    CreateTooltipSlice(prefix .. "Center", tooltip, "JTGMenu\\TooltipCenter.dds",
+    local center = CreateTooltipSlice(prefix .. "Center", tooltip, "JTGMenu\\TooltipCenter.dds",
         innerWidth, innerHeight, FRAMEPOINT_CENTER)
-    CreateTooltipSlice(prefix .. "Right", tooltip, "JTGMenu\\TooltipRight.dds",
+    local right = CreateTooltipSlice(prefix .. "Right", tooltip, "JTGMenu\\TooltipRight.dds",
         corner, innerHeight, FRAMEPOINT_RIGHT)
     CreateTooltipSlice(prefix .. "BL", tooltip, "JTGMenu\\TooltipBL.dds",
         corner, corner, FRAMEPOINT_BOTTOMLEFT)
@@ -433,7 +487,24 @@ local function AttachTooltip(button, description, side)
     BlzFrameSetVisible(tooltip, false)
     BlzFrameSetTooltip(button, tooltip)
     table.insert(UI.tooltips, tooltip)
-    return tooltip, label
+    local function updateText(text)
+        text = WrapTooltipText(text)
+        -- Let the engine measure wrapped text at this fixed width; the height
+        -- estimate is retained when layout has not resolved yet (hidden frames).
+        BlzFrameSetSize(label,0.223 / tooltipTextScale,0)
+        BlzFrameSetText(label,text)
+        local renderedHeight=BlzFrameGetHeight(label)*tooltipTextScale
+        local newHeight = renderedHeight > 0 and math.max(0.025, renderedHeight + 0.012) or TooltipHeight(text)
+        BlzFrameSetSize(tooltip, width, newHeight)
+        BlzFrameSetSize(left, corner, newHeight - corner * 2)
+        BlzFrameSetSize(center, innerWidth, newHeight - corner * 2)
+        BlzFrameSetSize(right, corner, newHeight - corner * 2)
+        BlzFrameSetSize(label, 0.223 / tooltipTextScale,
+            (newHeight - 0.012) / tooltipTextScale)
+        BlzFrameSetText(label, text)
+    end
+    updateText(description)
+    return tooltip, label, updateText
 end
 
 local function HookNativeCloseButtons()
@@ -461,9 +532,8 @@ local function ApplyFullQuestTextLayout()
     local backdrop = BlzGetFrameByName("QuestDisplayBackdrop", 0)
     if display == nil or detailsTitle == nil or backdrop == nil then return end
 
-    local displayId = GetHandleId(display)
-    if UI.fullQuestTextFrameId == displayId then return end
-    UI.fullQuestTextFrameId = displayId
+    -- Warcraft may restore native anchors when the selected quest changes,
+    -- even while reusing the same frame handle. Reapply while it is visible.
 
     -- Exercise quests are reference pages rather than campaign objective
     -- checklists. Expand Warcraft's native description area through the
@@ -617,6 +687,10 @@ end
 local function StartNativeMenuMonitor()
     UI.nativeMenuMonitor = CreateTimer()
     TimerStart(UI.nativeMenuMonitor, 0.05, true, function()
+        local questDialog = BlzGetFrameByName("QuestDialog", 0)
+        if questDialog ~= nil and BlzFrameIsVisible(questDialog) then
+            ApplyFullQuestTextLayout()
+        end
         if NativeMenuIsVisible() then
             if NativeSaveLoadIsVisible() then UI.nativeSaveLoadSeen = true end
             UI.nativeCloseTicks = 0
@@ -694,6 +768,7 @@ end
 UI.ReleaseFrameFocus = ReleaseFrameFocus
 
 local function PlayButtonSound(kind)
+    if kind == false then return end
     local sound = kind == "return" and UI.returnButtonSound or UI.normalButtonSound
     if sound ~= nil then
         StopSound(sound, false, false)
@@ -702,6 +777,48 @@ local function PlayButtonSound(kind)
 end
 
 UI.PlayButtonSound = PlayButtonSound
+
+-- Opening tutorial cue, separate from the arrows used for later UI lessons.
+function UI.CreateWelcomeArrow(scope, root, target, name)
+    local arrow=JTG.ScopeTrackFrame(scope,BlzCreateFrameByType("BACKDROP",name,root,"",0))
+    BlzFrameSetSize(arrow,0.052,0.052)
+    BlzFrameSetTexture(arrow,"JTGMenu\\TutorialArrowUp.dds",0,true)
+    BlzFrameSetPoint(arrow,FRAMEPOINT_TOP,target,FRAMEPOINT_BOTTOM,0,-0.004)
+    BlzFrameSetEnable(arrow,false); BlzFrameSetLevel(arrow,30)
+    BlzFrameSetVisible(arrow,false)
+    return arrow
+end
+
+function UI.RefreshWelcomeArrow(activity)
+    local state=activity.welcomeArrowState
+    if activity.frames.welcomeArrow then
+        BlzFrameSetVisible(activity.frames.welcomeArrow,state~=nil and state.active and state.visible and
+            activity.presentationVisible and not activity.topicsOpen and not activity.optionalOpen)
+    end
+end
+
+function UI.StartWelcomeArrow(activity)
+    activity.welcomeArrowState={active=true,visible=true,elapsed=0,blinks=0}
+    UI.RefreshWelcomeArrow(activity)
+end
+
+function UI.ClearWelcomeArrow(activity)
+    activity.welcomeArrowState=nil
+    UI.RefreshWelcomeArrow(activity)
+end
+
+function UI.TickWelcomeArrow(activity, interval)
+    local state=activity.welcomeArrowState
+    if not state or not state.active or not activity.presentationVisible then return end
+    if state.blinks>=10 and state.visible then return end
+    state.elapsed=state.elapsed+interval
+    if state.elapsed>=0.35 then
+        state.elapsed=state.elapsed-0.35
+        state.visible=not state.visible
+        if not state.visible then state.blinks=state.blinks+1 end
+        UI.RefreshWelcomeArrow(activity)
+    end
+end
 
 local function RegisterClick(frame, action, soundKind)
     UI.clickActions[GetHandleId(frame)] = action
@@ -800,7 +917,6 @@ function UI.ShowResultCard(card, presentation)
     presentation = presentation or {}
     card.busy = false
     card.actions = presentation.actions or {}
-    if card.actions.hide == nil then card.actions.hide = {} end
     local titleColor = RESULT_TITLE_COLORS[presentation.tone or "neutral"] or
         RESULT_TITLE_COLORS.neutral
     BlzFrameSetText(card.title,
@@ -926,6 +1042,7 @@ function UI.HighlightQuestButton(duration)
 end
 
 function UI.ShowRoot()
+    HideActivityPresentationForMenu()
     UI.HideAllPanels()
     if UI.gameplayMenuPaused then UI.ShowPausedActivityToolbar()
     elseif not UI.browsingActivity then UI.HideToolbar() end
@@ -939,6 +1056,7 @@ function UI.ShowRoot()
 end
 
 function UI.ShowCategory(categoryId)
+    HideActivityPresentationForMenu()
     UI.HideAllPanels()
     if UI.gameplayMenuPaused then UI.ShowPausedActivityToolbar()
     elseif not UI.browsingActivity then UI.HideToolbar() end
@@ -952,6 +1070,8 @@ function UI.ShowCategory(categoryId)
 end
 
 function UI.ShowCategoryRace(categoryId, raceId)
+    HideActivityPresentationForMenu()
+    if categoryId == "skills" then UI.ShowCategory("skills"); return end
     UI.HideAllPanels()
     if UI.gameplayMenuPaused then UI.ShowPausedActivityToolbar()
     elseif not UI.browsingActivity then UI.HideToolbar() end
@@ -967,10 +1087,11 @@ function UI.ShowCategoryRace(categoryId, raceId)
 end
 
 function UI.ShowSkillRace(raceId)
-    UI.ShowCategoryRace("skills", raceId)
+    UI.ShowCategory("skills")
 end
 
 function UI.ShowInfo(which)
+    HideActivityPresentationForMenu()
     UI.HideAllPanels()
     if UI.gameplayMenuPaused then UI.ShowPausedActivityToolbar()
     elseif not UI.browsingActivity then UI.HideToolbar() end
@@ -1009,7 +1130,7 @@ function UI.ShowToolbar(capabilities)
     RefreshPauseButton()
     BlzFrameSetVisible(UI.toolbar, true)
     UI.LayoutToolbar()
-    UI.SetLastRunnerEnabled(false)
+    UI.SetLastRunnerEnabled(caps.previous == true)
 end
 
 function UI.SetLastRunnerEnabled(enabled)
@@ -1173,6 +1294,11 @@ local function RefreshActivityBriefingChoices()
                 BlzFrameSetScale(label, choice.scale or
                     UI.activityBriefingChoiceScale or (compact and 0.72 or 1.0))
             end
+            local badge=(UI.activityBriefingCommandBadges or {})[index]
+            if badge then
+                local number=UI.GetSummonLevelBadge(choice)
+                BlzFrameSetText(badge,number and ("|cffffcc00"..number.."|r") or "")
+            end
             local enabled = choice.enabled ~= false
             BlzFrameSetEnable(button, enabled)
             BlzFrameSetAlpha(button, enabled and 255 or 145)
@@ -1200,20 +1326,25 @@ local function RefreshActivityBriefingChoices()
                 choice.size or commandSize)
             BlzFrameSetPoint(button, FRAMEPOINT_TOP, UI.panels.activityBriefing,
                 FRAMEPOINT_TOP,
-                (column - (commandColumns - 1) * 0.5) * commandStep,
+                choice.x or (column - (commandColumns - 1) * 0.5) * (UI.activityBriefingCommandColumnStep or commandStep),
                 commandTop - row * commandStep +
                     (UI.activityBriefingChoiceOffsetY or 0))
             BlzFrameSetTexture(UI.activityBriefingCommandArtwork[index],
                 choice.icon or "ReplaceableTextures\\CommandButtons\\BTNCancel.blp",
                 0, true)
+            local badge=(UI.activityBriefingCommandBadges or {})[index]
+            if badge then
+                local number=UI.GetSummonLevelBadge(choice)
+                BlzFrameSetText(badge,number and ("|cffffcc00"..number.."|r") or "")
+            end
             local enabled = choice.enabled ~= false
-            BlzFrameSetEnable(button, enabled)
+            BlzFrameSetEnable(button, enabled or choice.tooltipWhenDisabled==true)
             BlzFrameSetAlpha(button, enabled and 255 or 145)
             local tooltipText = "|cffffcc00" .. (choice.label or "") .. "|r"
             if choice.tooltip ~= nil and choice.tooltip ~= "" then
-                tooltipText = tooltipText .. "|n|cffffffff" .. choice.tooltip .. "|r"
+                tooltipText = tooltipText .. "|n"..(choice.tooltipColor or "|cffffffff") .. choice.tooltip .. "|r"
             end
-            BlzFrameSetText(UI.activityBriefingCommandTooltipText[index], tooltipText)
+            UI.activityBriefingCommandTooltipUpdates[index](tooltipText)
         end
     end
 end
@@ -1221,6 +1352,7 @@ end
 function UI.ShowActivityBriefing(spec)
     local panel = UI.panels.activityBriefing
     if panel == nil then return end
+    HideActivityPresentationForMenu()
     local actions = spec.choices or {}
     local compact = spec.compactChoices == true
     local compactColumns = spec.compactColumns
@@ -1239,10 +1371,12 @@ function UI.ShowActivityBriefing(spec)
     UI.HideAllPanels()
     UI.HideToolbar()
     BlzFrameSetText(UI.activityBriefingTitle, "|cffffcc00" .. (spec.title or "") .. "|r")
+    BlzFrameSetText(UI.activityBriefingTitleSuffix,"|cffffcc00"..(spec.titleSuffix or "").."|r")
+    BlzFrameSetVisible(UI.activityBriefingTitleSuffix,spec.titleSuffix~=nil)
     BlzFrameSetText(UI.activityBriefingBody, spec.body or "")
     BlzFrameClearAllPoints(UI.activityBriefingContentDivider)
     BlzFrameSetPoint(UI.activityBriefingContentDivider, FRAMEPOINT_TOP, panel,
-        FRAMEPOINT_TOP, 0, firstChoiceY + BRIEFING_DIVIDER_BUTTON_GAP)
+        FRAMEPOINT_TOP, 0, spec.contentDividerY or (firstChoiceY + BRIEFING_DIVIDER_BUTTON_GAP))
     BlzFrameClearAllPoints(UI.activityBriefingBody)
     BlzFrameSetPoint(UI.activityBriefingBody, FRAMEPOINT_TOP,
         UI.activityBriefingTitle, FRAMEPOINT_BOTTOM, 0, -0.022)
@@ -1268,7 +1402,21 @@ function UI.ShowActivityBriefing(spec)
     UI.activityBriefingCommandRows = spec.commandGridRows
     UI.activityBriefingCommandSize = spec.commandGridButtonSize
     UI.activityBriefingCommandStep = spec.commandGridStep
+    UI.activityBriefingCommandColumnStep = spec.commandGridColumnStep
     UI.activityBriefingCommandTop = spec.commandGridTop
+    for index, frame in ipairs(UI.activityBriefingCommandHeadings or {}) do
+        local heading = (spec.commandGridHeadings or {})[index]
+        BlzFrameSetVisible(frame, heading ~= nil)
+        if heading then
+            BlzFrameSetTextAlignment(frame,TEXT_JUSTIFY_TOP,TEXT_JUSTIFY_CENTER)
+            BlzFrameSetSize(frame, heading.width or 0.16, 0.018)
+            BlzFrameSetScale(frame, heading.scale or 1)
+            BlzFrameSetText(frame, "|cffffcc00" .. heading.label .. "|r")
+            BlzFrameClearAllPoints(frame)
+            BlzFrameSetPoint(frame, FRAMEPOINT_TOPLEFT, panel, FRAMEPOINT_TOPLEFT,
+                MENU_WIDTH * 0.5 + heading.x, heading.y)
+        end
+    end
     UI.activityBriefingCenterSingle = spec.centerSingleChoice == true
     UI.activityBriefingChoiceOffsetY = spec.choiceOffsetY or 0
     UI.activityBriefingChoiceWidth = spec.choiceWidth
@@ -1416,7 +1564,10 @@ local function CreateCategoryPanel(category, categoryIndex)
     BlzFrameSetVisible(panel, false)
 
     local activities = JTG.GetActivities(category.id)
-    local maxRows = 5
+    local learn = category.id == "learn"
+    local tools = category.id == "tools"
+    local centeredColumns = learn or tools
+    local maxRows = tools and math.max(1, math.ceil(#activities / 2)) or (learn and 4 or 5)
     local generalLeft = nil
     local generalRight = nil
     for index, descriptor in ipairs(activities) do
@@ -1426,6 +1577,8 @@ local function CreateCategoryPanel(category, categoryIndex)
             column = (index - 1) % 2
             row = math.floor((index - 1) / 2)
         end
+        column = descriptor.catalogueColumn or column
+        row = descriptor.catalogueRow or row
         local name = "JTGActivity" .. categoryIndex .. "x" .. index
         local frame
         local button
@@ -1441,9 +1594,9 @@ local function CreateCategoryPanel(category, categoryIndex)
             frame = button
         end
         BlzFrameSetPoint(frame, FRAMEPOINT_TOP, panel, FRAMEPOINT_TOP,
-            -0.192 + column * 0.192,
+            centeredColumns and (-0.120 + column * 0.240) or (-0.192 + column * 0.192),
             (sectioned and -0.1522 or -0.100) -
-                row * (sectioned and 0.0562 or 0.055))
+                row * (sectioned and 0.0562 or (learn and 0.072 or 0.055)))
         if sectioned and row == 0 then
             if column == 0 then generalLeft = frame
             else generalRight = frame end
@@ -1704,6 +1857,11 @@ local function CreateActivityBriefingPanel()
     BlzFrameSetVisible(panel, false)
 
     UI.activityBriefingTitle = shell.title
+    UI.activityBriefingTitleSuffix=CreateText("JTGBriefingTitleSuffix",panel,"",0.16,0.025,TITLE_SCALE)
+    BlzFrameSetPoint(UI.activityBriefingTitleSuffix,FRAMEPOINT_LEFT,shell.title,FRAMEPOINT_CENTER,0.06,0)
+    BlzFrameSetTextAlignment(UI.activityBriefingTitleSuffix,TEXT_JUSTIFY_CENTER,TEXT_JUSTIFY_LEFT)
+    BlzFrameSetEnable(UI.activityBriefingTitleSuffix,false)
+    BlzFrameSetVisible(UI.activityBriefingTitleSuffix,false)
     UI.activityBriefingArtwork = BlzCreateFrameByType("BACKDROP", "JTGActivityBriefingArtwork", panel, "", 0)
     BlzFrameSetSize(UI.activityBriefingArtwork, 0.200, 0.098)
     BlzFrameSetPoint(UI.activityBriefingArtwork, FRAMEPOINT_TOP, panel,
@@ -1714,6 +1872,14 @@ local function CreateActivityBriefingPanel()
     BlzFrameSetEnable(UI.activityBriefingBody, false)
 
     UI.activityBriefingButtons = {}
+    UI.activityBriefingCommandHeadings = {}
+    for index = 1, 6 do
+        local frame = BlzCreateFrameByType("TEXT", "JTGBriefingGroup" .. index, panel, "", 0)
+        BlzFrameSetSize(frame, 0.16, 0.018)
+        BlzFrameSetEnable(frame, false)
+        BlzFrameSetVisible(frame, false)
+        UI.activityBriefingCommandHeadings[index] = frame
+    end
     UI.activityBriefingChoiceArtwork = {}
     UI.activityBriefingTooltipText = {}
     for index = 1, 15 do
@@ -1728,13 +1894,18 @@ local function CreateActivityBriefingPanel()
         UI.activityBriefingChoiceArtwork[index] = artwork
         RegisterClick(button, function()
             local choice = UI.activityBriefingVisibleActions and UI.activityBriefingVisibleActions[index]
-            if choice ~= nil and choice.action ~= nil then choice.action() end
+            if choice ~= nil and choice.enabled~=false and choice.action ~= nil then choice.action() end
+        end, function()
+            local choice = UI.activityBriefingVisibleActions and UI.activityBriefingVisibleActions[index]
+            return choice ~= nil and choice.enabled ~= false and "normal" or false
         end)
     end
 
     UI.activityBriefingCommandButtons = {}
     UI.activityBriefingCommandArtwork = {}
     UI.activityBriefingCommandTooltipText = {}
+    UI.activityBriefingCommandTooltipUpdates = {}
+    UI.activityBriefingCommandBadges = {}
     for index = 1, 72 do
         local button = BlzCreateFrameByType("BUTTON",
             "JTGActivityBriefingCommandChoice" .. index, panel, "", 0)
@@ -1745,21 +1916,31 @@ local function CreateActivityBriefingPanel()
             "JTGActivityBriefingCommandArtwork" .. index, button, "", 0)
         BlzFrameSetAllPoints(artwork, button)
         BlzFrameSetEnable(artwork, false)
-        local _, tooltipText = AttachTooltip(button,
-            "Building name|nCompare one through ten Peasants constructing this building.",
+        local _, tooltipText, updateTooltip = AttachTooltip(button,
+            "Unit name|nCast Point: 0.000s|nMissile speed: 0000 units/s|n|n- Matchup restriction explanation.",
             "right")
         UI.activityBriefingCommandButtons[index] = button
+        local badge=BlzCreateFrameByType("TEXT","JTGCommandBadge"..index,button,"",0)
+        BlzFrameSetSize(badge,0.012,0.012)
+        BlzFrameSetPoint(badge,FRAMEPOINT_BOTTOMRIGHT,button,FRAMEPOINT_BOTTOMRIGHT,-0.001,0.001)
+        BlzFrameSetTextAlignment(badge,TEXT_JUSTIFY_BOTTOM,TEXT_JUSTIFY_RIGHT)
+        BlzFrameSetEnable(badge,false)
+        UI.activityBriefingCommandBadges[index]=badge
         UI.activityBriefingCommandArtwork[index] = artwork
         UI.activityBriefingCommandTooltipText[index] = tooltipText
+        UI.activityBriefingCommandTooltipUpdates[index] = updateTooltip
         RegisterClick(button, function()
             local choice = UI.activityBriefingVisibleActions and
                 UI.activityBriefingVisibleActions[index]
-            if choice ~= nil and choice.action ~= nil then choice.action() end
+            if choice ~= nil and choice.enabled~=false and choice.action ~= nil then choice.action() end
+        end, function()
+            local choice = UI.activityBriefingVisibleActions and UI.activityBriefingVisibleActions[index]
+            return choice ~= nil and choice.enabled ~= false and "normal" or false
         end)
         RegisterRightClick(button, function()
             local choice = UI.activityBriefingVisibleActions and
                 UI.activityBriefingVisibleActions[index]
-            if choice ~= nil and choice.rightAction ~= nil then
+            if choice ~= nil and choice.enabled~=false and choice.rightAction ~= nil then
                 choice.rightAction()
             end
         end)
@@ -1936,7 +2117,7 @@ function UI.AbandonForLoad()
     end
     local triggers = {
         UI.clickTrigger, UI.rightClickTrigger, UI.hoverTrigger, UI.escapeTrigger,
-        UI.nativeMenuTrigger,
+        UI.nativeSystemKeyUpTrigger,
         UI.nativeKeyTrigger, UI.nativeCloseTrigger, UI.nativeLoadTrigger,
     }
     for _, trigger in ipairs(triggers) do
@@ -1966,15 +2147,17 @@ function UI.AbandonForLoad()
     UI.activityBriefingChoiceArtwork = nil
     UI.activityBriefingTooltipText = nil
     UI.activityBriefingCommandButtons = nil
+    UI.activityBriefingCommandBadges = nil
     UI.activityBriefingCommandArtwork = nil
     UI.activityBriefingCommandTooltipText = nil
+    UI.activityBriefingCommandTooltipUpdates = nil
     UI.activityBriefingCommandGrid = nil
     UI.currentBackAction = nil
     UI.clickTrigger = nil
     UI.rightClickTrigger = nil
     UI.hoverTrigger = nil
     UI.escapeTrigger = nil
-    UI.nativeMenuTrigger = nil
+    UI.nativeSystemKeyUpTrigger = nil
     UI.nativeKeyTrigger = nil
     UI.nativeCloseTrigger = nil
     UI.nativeLoadTrigger = nil
@@ -1991,6 +2174,7 @@ function UI.AbandonForLoad()
     UI.unpauseHighlightActive = false
     UI.nativeMenuOpen = false
     UI.nativeSuspendQueued = false
+    UI.nativeKeyClosed = false
     UI.nativeCloseTicks = 0
     UI.nativePausedGameplayMenu = nil
     UI.nativePausedExercise = nil
@@ -2007,6 +2191,7 @@ function UI.AbandonForLoad()
     UI.rootCredits = nil
     UI.rootPatch = nil
     UI.activityBriefingContentDivider = nil
+    UI.activityBriefingTitleSuffix = nil
     UI.activityBriefingTitle = nil
     UI.activityBriefingArtwork = nil
     UI.activityBriefingBody = nil
@@ -2153,7 +2338,9 @@ function UI.Initialize(restoring)
         if clickedFrame == nil then return end
         local action = UI.rightClickActions[GetHandleId(clickedFrame)]
         if action == nil then return end
-        PlayButtonSound("return")
+        local soundKind = UI.clickSounds[GetHandleId(clickedFrame)]
+        if type(soundKind) == "function" then soundKind = soundKind() end
+        if soundKind ~= false then PlayButtonSound("return") end
         ReleaseFrameFocus(clickedFrame)
         action()
         ReleaseFrameFocus(clickedFrame)
@@ -2197,12 +2384,13 @@ function UI.Initialize(restoring)
             return
         end
         if UI.nativeMenuOpen then
+            UI.nativeKeyClosed=BlzGetTriggerPlayerKey()==OSKEY_F10
             RestoreAfterNativeMenu()
             return
         end
+        UI.nativeKeyClosed=false
         SuspendForNativeMenu()
     end)
-    UI.nativeMenuTrigger = CreateTrigger()
     UI.nativeCloseHooks = {}
     UI.nativeCloseTrigger = CreateTrigger()
     TriggerAddAction(UI.nativeCloseTrigger, RestoreAfterNativeMenu)
@@ -2226,28 +2414,17 @@ function UI.Initialize(restoring)
     end)
     HookNativeCloseButtons()
     HookNativeLoadButtons()
-    local nativeButtons = {
-        BlzGetOriginFrame(ORIGIN_FRAME_QUEST_BUTTON, 0),
-        BlzGetOriginFrame(ORIGIN_FRAME_ALLY_BUTTON, 0),
-        BlzGetOriginFrame(ORIGIN_FRAME_CHAT_MSG_BUTTON, 0),
-    }
-    for _, button in ipairs(nativeButtons) do
-        if button ~= nil then
-            BlzTriggerRegisterFrameEvent(UI.nativeMenuTrigger, button,
-                FRAMEEVENT_CONTROL_CLICK)
-        end
-    end
-    -- The system button is intentionally not hooked: merely observing its
-    -- click prevents Warcraft from opening F10. The visibility monitor handles
-    -- the system menu after Warcraft opens it, as it already does for F10.
-    TriggerAddAction(UI.nativeMenuTrigger, function()
-        if UI.nativeMenuOpen then
-            RestoreAfterNativeMenu()
-        elseif UI.gameplayMenuPaused or UI.exercisePaused then
-            -- Timers do not advance under PauseGame, so hide synchronously.
+    -- Never register frame events on Warcraft's upper-bar buttons. Those
+    -- registrations can replace the native button behavior, including sound
+    -- and dialog activation. Observe native dialogs and hotkeys instead.
+    UI.nativeSystemKeyUpTrigger = CreateTrigger()
+    BlzTriggerRegisterPlayerKeyEvent(UI.nativeSystemKeyUpTrigger, Player(0),
+        OSKEY_F10, 0, false)
+    TriggerAddAction(UI.nativeSystemKeyUpTrigger, function()
+        if UI.nativeKeyClosed then UI.nativeKeyClosed=false;return end
+        -- F10 key release covers clients that consume its key-down event.
+        if not UI.nativeMenuOpen and (NativeMenuIsVisible() or UI.menuVisible) then
             SuspendForNativeMenu()
-        else
-            QueueNativeMenuSuspend()
         end
     end)
     CreateRootPanel()
@@ -2260,6 +2437,17 @@ function UI.Initialize(restoring)
         end
     end
     CreateInfoPanel("patch", "Patch Notes",
+        "|cffffcc00v0.1.2|r  |cffb0b0b010 October 2026|r\n" ..
+        "- Added Economy & Workers with gathering, construction and base-defense practice.\n" ..
+        "- Added Bat Splitting with three unit-count stages and daytime/nighttime modes.\n" ..
+        "- Added Dodging with projectile disjoining and Area/Devour avoidance training.\n\n" ..
+        "|cffffcc00v0.1.1|r  |cffb0b0b06 October 2026|r\n" ..
+        "- Added Gargoyle Surrounds with ten setups.\n" ..
+        "- Updated Undead Surrounds and unlocked non-hero abilities.\n" ..
+        "- Revised tutorial texts and race-selection layouts.\n" ..
+        "- Added Gargoyle Surrounds and Combat Micro artwork.\n" ..
+        "- Improved Surrounds completion detection.\n" ..
+        "- Added enemy health restoration in Windwalk Pop.\n\n" ..
         "|cffffcc00v0.1.0|r  |cffb0b0b05 October 2026|r\n" ..
         "- Added custom Surrounds training and expanded Windwalk Pop.\n" ..
         "- Added unit-obstruction and navigation-grid visualization.\n" ..

@@ -115,7 +115,7 @@ function JTG.GetActivities(category, raceId)
                 if race == raceId then matchesRace = true end
             end
         end
-        local belongsOnGeneralPage = raceId ~= nil or raceIds == nil
+        local belongsOnGeneralPage = category == "skills" or raceId ~= nil or raceIds == nil
         if descriptor.category == category and not descriptor.hidden and
                 matchesRace and belongsOnGeneralPage then
             table.insert(result, descriptor)
@@ -561,7 +561,8 @@ function JTG.ResetActivity()
     -- Rebuilding directly in the click callback can otherwise make the next
     -- setup inherit stale placement or collision state.
     if id == "skills.gold_mine" or id == "skills.windwalk" or
-            id == "skills.surround" then
+            id == "skills.surround" or id == "skills.bat_splitter" or
+            id == "skills.missile_dodging" then
         return JTG.StartActivityAfterCleanup(id, category, restartData,
             cameraDistance, "reset")
     end
@@ -627,6 +628,10 @@ end
 
 function JTG.LastRunnerActivity()
     local session = JTG.Controller.session
+    if session and session.activity and session.activity.previousStage then
+        local ok, result = pcall(session.activity.previousStage, session.activity)
+        return ok and result == true
+    end
     if session == nil or session.activity == nil or
         session.activity.captureLastRunnerState == nil then return false end
     local captured, restartData = pcall(session.activity.captureLastRunnerState,

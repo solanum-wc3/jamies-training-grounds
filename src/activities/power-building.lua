@@ -330,6 +330,9 @@ function JTG.CreatePowerBuildingActivity(session)
                 not IsQuestDiscovered(self.bugQuest) then
             QuestSetDiscovered(self.bugQuest, true)
             QuestSetEnabled(self.bugQuest, true)
+            FlashQuestDialogButton()
+            local sound = CreateSoundFromLabel("QuestNew", false, false, false, 10, 10)
+            if sound ~= nil then StartSound(sound); KillSoundWhenDone(sound) end
         end
     end
 

@@ -15,7 +15,7 @@ local TERTIARY_BASE_Y = -3904.0
 local LAYOUT_EXPORT_FILE = "JamiesTrainingGrounds-camera-layout.txt"
 local LAYOUT_EXPORT_DISPLAY_PATH =
     "Documents\\Warcraft III\\CustomMapData\\" .. LAYOUT_EXPORT_FILE
-local CAMERA_MOVE_DURATION = 1.5
+local CAMERA_MOVE_DURATION = JTG.Tutorial.cameraMoveDuration
 local TICK_INTERVAL = 0.05
 local NARRATION_DURATION = 3600.0
 local SPIKED_BARRICADES = FourCC("Rosp")
@@ -137,7 +137,7 @@ local TUTORIAL_STEPS = {
         trigger = "tertiaryBase",
         lines = {
             "Each of your bases has a main building at a different tier.",
-            "For Orcs the tier 1 building is called a Great Hall.",
+            "For Orcs, the tier 1 building is called a Great Hall.",
         },
     },
     {
@@ -163,7 +163,7 @@ local TUTORIAL_STEPS = {
             "{Heading: JUMP TO BASE}",
             "You can return to your main buildings, and cycle between them.",
             "The default key for this is {Input: Backspace}.",
-            "When doing this, the first main building the camera will jump to is the one with the highest tier, the next will be of the next highest tier.",
+            "When doing this, the first main building the camera will jump to is the one with the highest tier. The next will be of the next highest tier.",
             "If several have the same tier, the camera will jump to the oldest ones first.",
             "Try cycling through your main buildings!",
         },
@@ -326,22 +326,7 @@ local OPTIONAL_SECTIONS = {
     },
 }
 
-local function FormatNarration(text)
-    local formatted = text
-    formatted = string.gsub(formatted, "{Small Heading:%s*(.-)}",
-        "|cff00ccff%1|r")
-    formatted = string.gsub(formatted, "{Heading:%s*(.-)}",
-        "|cff00ccff%1|r")
-    formatted = string.gsub(formatted, "{Button:%s*(.-)}",
-        "|cffffcc00%1|r")
-    formatted = string.gsub(formatted, "{Input:%s*(.-)}",
-        "|cffffcc00%1|r")
-    formatted = string.gsub(formatted, "{Menu:%s*(.-)}",
-        "|cffcc66ff%1|r")
-    formatted = string.gsub(formatted, "{Term:%s*(.-)}",
-        "|cffff9933%1|r")
-    return formatted
-end
+local FormatNarration = JTG.Tutorial.FormatNarration
 
 local function StepText(step)
     return table.concat(step.lines or {}, "\n")
@@ -426,17 +411,10 @@ local IMPORTED_LAYOUT = {
     {"owtw", 3776.000, -3776.000, 270.000},
 }
 
-local function CreateTutorialButton(name, parent, label, width)
-    local button = BlzCreateFrameByType("GLUETEXTBUTTON", name, parent,
-        "ScriptDialogButton", 0)
-    BlzFrameSetSize(button, width, 0.024)
-    BlzFrameSetText(button, label)
-    return button
-end
+local CreateTutorialButton = JTG.Tutorial.CreateButton
 
 local function CreateBaseUnit(scope, owner, rawcode, x, y, facing)
-    return JTG.ScopeTrackUnit(scope,
-        CreateUnit(owner, FourCC(rawcode), x, y, facing or 270.0))
+    return JTG.Tutorial.CreateSceneUnit(scope,owner,FourCC(rawcode),x,y,facing)
 end
 
 local function RawcodeToString(rawcode)
@@ -467,23 +445,11 @@ function JTG.CreateCameraTutorialActivity(session)
         buttonEnabled = {},
         frames = {},
         actions = {},
+        arrowActive = false,
+        arrowVisible = false,
+        arrowElapsed = 0,
+        arrowBlinks = 0,
     }
-
-    function activity:registerClick(button, action, soundKind)
-        self.actions[GetHandleId(button)] = {action = action, sound = soundKind}
-        BlzTriggerRegisterFrameEvent(self.clickTrigger, button,
-            FRAMEEVENT_CONTROL_CLICK)
-    end
-
-    function activity:setButtonEnabled(button, enabled)
-        if button == nil then return end
-        self.buttonEnabled[GetHandleId(button)] = enabled == true
-        BlzFrameSetEnable(button, enabled == true)
-        BlzFrameSetAlpha(button, enabled and 255 or 145)
-        BlzFrameSetTextColor(button, enabled and
-            BlzConvertColor(255, 255, 204, 0) or
-            BlzConvertColor(255, 145, 145, 145))
-    end
 
     function activity:refreshControls()
         local frames = self.frames
@@ -511,6 +477,10 @@ function JTG.CreateCameraTutorialActivity(session)
         BlzFrameSetText(frames.pause, paused and
             "|cffffffffUnpause|r" or "|cffffcc00Pause|r")
         local menusClosed = not self.objectivesOpen and not self.optionalOpen
+        if frames.arrow ~= nil then
+            BlzFrameSetVisible(frames.arrow, self.arrowActive and self.arrowVisible and
+                self.presentationVisible and menusClosed)
+        end
         if frames.continueHighlight ~= nil then
             BlzFrameSetVisible(frames.continueHighlight,
                 canContinue and self.presentationVisible and
@@ -526,20 +496,21 @@ function JTG.CreateCameraTutorialActivity(session)
         end
     end
 
-    function activity:renderNarration()
-        ClearTextMessages()
-        if not self.presentationVisible or self.objectivesOpen or
-                self.optionalOpen then return end
-        for _, text in ipairs(self.narrationBlocks) do
-            DisplayTimedTextToPlayer(CAMERA_PLAYER, 0, 0,
-                NARRATION_DURATION, text)
-        end
+    function activity:clearArrow()
+        self.arrowActive = false
+        self.arrowVisible = false
+        self.arrowElapsed = 0
+        if self.frames.arrow ~= nil then BlzFrameSetVisible(self.frames.arrow, false) end
     end
 
-    function activity:clearNarration()
-        self.narrationBlocks = {}
-        ClearTextMessages()
+    function activity:showWelcomeArrow()
+        self.arrowActive = true
+        self.arrowVisible = true
+        self.arrowElapsed = 0
+        self.arrowBlinks = 0
+        self:refreshControls()
     end
+
 
     function activity:appendNarration(text, recordInLog)
         if text == nil or text == "" then return end
@@ -671,7 +642,7 @@ function JTG.CreateCameraTutorialActivity(session)
     end
 
     function activity:schedule(delay, callback)
-        JTG.StartScopedTimer(session, session.scope, delay, false, callback)
+        return JTG.Tutorial.ScheduleStep(session,self,delay,callback)
     end
 
     function activity:provideNotificationResources()
@@ -771,7 +742,8 @@ function JTG.CreateCameraTutorialActivity(session)
                     if trained ~= nil and
                             GetUnitTypeId(trained) == FourCC("opeo") then
                         self.demoPeon = trained
-                        self:schedule(0.10, function()
+                        -- Completion belongs to the live construction, not its narration.
+                        JTG.StartScopedTimer(session,session.scope,0.10,false,function()
                             self:orderDemoBurrow(trained)
                         end)
                     elseif trained ~= nil and
@@ -847,7 +819,8 @@ function JTG.CreateCameraTutorialActivity(session)
                 end
             end
         end)
-        self:schedule(10.0, function()
+        -- Retiring these exact spawned handles remains valid after narration.
+        JTG.StartScopedTimer(session,session.scope,10.0,false,function()
             for _, ghoul in ipairs(spawnedGhouls) do
                 if ghoul ~= nil and GetUnitTypeId(ghoul) ~= 0 then
                     KillUnit(ghoul)
@@ -926,6 +899,7 @@ function JTG.CreateCameraTutorialActivity(session)
         end
         if index == spec.groupStart then self:clearNarration() end
         self:appendNarration(StepText(spec), recordInLog ~= false)
+        if index == 1 then self:showWelcomeArrow() end
         self:runStepTrigger(spec)
         self:refreshControls()
     end
@@ -945,12 +919,13 @@ function JTG.CreateCameraTutorialActivity(session)
 
     function activity:takeCameraTo(x, y, duration)
         if GetLocalPlayer() == CAMERA_PLAYER then
-            PanCameraToTimed(x, y, duration)
+            JTG.Tutorial.MoveCamera(CAMERA_PLAYER,x,y,duration)
         end
     end
 
     function activity:moveToMainBase()
-        self:takeCameraTo(MAIN_BASE_X, MAIN_BASE_Y, CAMERA_MOVE_DURATION)
+        -- Open on the southernmost tower; later base demonstrations target the hall.
+        self:takeCameraTo(2560.0, -5376.0, CAMERA_MOVE_DURATION)
         self.cameraRemaining = CAMERA_MOVE_DURATION
         self.advanceRemaining = nil
         self.waitingForContinue = false
@@ -1159,17 +1134,11 @@ function JTG.CreateCameraTutorialActivity(session)
     end
 
     function activity:openMenu()
-        if JTG.UI == nil then return end
-        self:setPresentationVisible(false)
-        JTG.UI.SetGameplayMenuPaused(true)
-        JTG.UI.ShowActivityMenu("learn")
+        JTG.Tutorial.OpenMenu(self,"learn")
     end
 
     function activity:togglePause()
-        if JTG.UI ~= nil then
-            JTG.UI.SetExercisePaused(not JTG.UI.exercisePaused)
-        end
-        self:refreshControls()
+        JTG.Tutorial.TogglePause(self)
     end
 
     function activity:setObjectivesVisible(visible)
@@ -1259,17 +1228,6 @@ function JTG.CreateCameraTutorialActivity(session)
             self.frames.idleWorkerIcon = idleWorkerIcon
         end
 
-        local toolbarLayout = (JTG.UI and JTG.UI.ToolbarLayout) or {
-            buttonWidth = 0.087, buttonHeight = 0.024,
-            gap = 0.001, rowStep = 0.025, left = 0.446, top = 0.575,
-        }
-        local bar = JTG.ScopeTrackFrame(scope, BlzCreateFrameByType("FRAME",
-            "JTGCameraTutorialBar" .. suffix, root, "", 0))
-        BlzFrameSetSize(bar, 0.351, 0.060)
-        BlzFrameSetAbsPoint(bar, FRAMEPOINT_TOPLEFT,
-            toolbarLayout.left, toolbarLayout.top)
-        self.frames.bar = bar
-
         local labels = {
             {"menu", "Menu", 1},
             {"back", "Back", 2},
@@ -1278,80 +1236,23 @@ function JTG.CreateCameraTutorialActivity(session)
             {"continue", "Continue", 5},
             {"pause", "Pause", 7},
         }
-        for _, spec in ipairs(labels) do
-            local button = JTG.ScopeTrackFrame(scope, CreateTutorialButton(
-                "JTGCameraTutorial" .. spec[1] .. suffix, bar,
-                spec[2], toolbarLayout.buttonWidth))
-            local slot = spec[3] - 1
-            BlzFrameSetPoint(button, FRAMEPOINT_TOPLEFT, bar,
-                FRAMEPOINT_TOPLEFT,
-                (slot % 4) * (toolbarLayout.buttonWidth + toolbarLayout.gap),
-                -math.floor(slot / 4) * toolbarLayout.rowStep)
-            self.frames[spec[1]] = button
-            local label = BlzFrameGetChild(button, 4)
-            if label ~= nil then BlzFrameSetScale(label, 0.72) end
-        end
+        local bar = JTG.Tutorial.CreateToolbar(self, scope, root, "JTGCameraTutorial", suffix, labels)
+        JTG.Tutorial.CreateHighlight(self, scope, "JTGCamera", suffix, "continue")
+        JTG.Tutorial.CreateHighlight(self, scope, "JTGCamera", suffix, "menu")
+        JTG.Tutorial.CreateHighlight(self, scope, "JTGCamera", suffix, "pause")
 
-        local pauseHighlight = JTG.ScopeTrackFrame(scope, BlzCreateFrameByType("SPRITE",
-            "JTGCameraTutorialPauseHighlight" .. suffix, bar, "", 0))
-        BlzFrameSetSize(pauseHighlight, 0.058, 0.024)
-        BlzFrameSetPoint(pauseHighlight, FRAMEPOINT_CENTER, self.frames.pause,
-            FRAMEPOINT_CENTER, -0.0125, 0)
-        BlzFrameSetModel(pauseHighlight,
-            "UI\\Feedback\\QuestButton\\UI-QuestButtonOn.mdl", 0)
-        BlzFrameSetLevel(pauseHighlight, 3)
-        BlzFrameSetEnable(pauseHighlight, false)
-        BlzFrameSetVisible(pauseHighlight, false)
-        BlzFrameSetLevel(self.frames.pause, 2)
-        if JTG.UI and JTG.UI.RegisterPauseHighlight then
-            local unregister = JTG.UI.RegisterPauseHighlight(pauseHighlight)
-            JTG.ScopeBorrow(scope, unregister)
-        end
+        local arrow = JTG.ScopeTrackFrame(scope, BlzCreateFrameByType("BACKDROP",
+            "JTGCameraTutorialContinueArrow" .. suffix, root, "", 0))
+        BlzFrameSetSize(arrow, 0.052, 0.052)
+        BlzFrameSetTexture(arrow, "JTGMenu\\TutorialArrowUp.dds", 0, true)
+        BlzFrameSetPoint(arrow, FRAMEPOINT_TOP, self.frames.continue,
+            FRAMEPOINT_BOTTOM, 0, -0.004)
+        BlzFrameSetEnable(arrow, false)
+        BlzFrameSetLevel(arrow, 30)
+        BlzFrameSetVisible(arrow, false)
+        self.frames.arrow = arrow
 
-        -- Reuse the same authored Quest-button notification effect as the
-        -- paused-load Unpause prompt. The 0.087-wide Continue button matches
-        -- the dimensions for which this placement was tuned.
-        local continueHighlight = JTG.ScopeTrackFrame(scope, BlzCreateFrameByType(
-            "SPRITE", "JTGCameraTutorialContinueHighlight" .. suffix,
-            bar, "", 0))
-        BlzFrameSetSize(continueHighlight, 0.058, 0.024)
-        BlzFrameSetPoint(continueHighlight, FRAMEPOINT_CENTER,
-            self.frames.continue, FRAMEPOINT_CENTER, -0.0125, 0)
-        BlzFrameSetModel(continueHighlight,
-            "UI\\Feedback\\QuestButton\\UI-QuestButtonOn.mdl", 0)
-        BlzFrameSetLevel(continueHighlight, 3)
-        BlzFrameSetEnable(continueHighlight, false)
-        BlzFrameSetVisible(continueHighlight, false)
-        BlzFrameSetLevel(self.frames.continue, 2)
-        self.frames.continueHighlight = continueHighlight
-
-        local menuHighlight = JTG.ScopeTrackFrame(scope, BlzCreateFrameByType(
-            "SPRITE", "JTGCameraTutorialMenuHighlight" .. suffix,
-            bar, "", 0))
-        BlzFrameSetSize(menuHighlight, 0.058, 0.024)
-        BlzFrameSetPoint(menuHighlight, FRAMEPOINT_CENTER,
-            self.frames.menu, FRAMEPOINT_CENTER, -0.0125, 0)
-        BlzFrameSetModel(menuHighlight,
-            "UI\\Feedback\\QuestButton\\UI-QuestButtonOn.mdl", 0)
-        BlzFrameSetLevel(menuHighlight, 3)
-        BlzFrameSetEnable(menuHighlight, false)
-        BlzFrameSetVisible(menuHighlight, false)
-        BlzFrameSetLevel(self.frames.menu, 2)
-        self.frames.menuHighlight = menuHighlight
-
-        local optionalHighlight = JTG.ScopeTrackFrame(scope, BlzCreateFrameByType(
-            "SPRITE", "JTGCameraTutorialOptionalHighlight" .. suffix,
-            bar, "", 0))
-        BlzFrameSetSize(optionalHighlight, 0.058, 0.024)
-        BlzFrameSetPoint(optionalHighlight, FRAMEPOINT_CENTER,
-            self.frames.optionalButton, FRAMEPOINT_CENTER, -0.0125, 0)
-        BlzFrameSetModel(optionalHighlight,
-            "UI\\Feedback\\QuestButton\\UI-QuestButtonOn.mdl", 0)
-        BlzFrameSetLevel(optionalHighlight, 3)
-        BlzFrameSetEnable(optionalHighlight, false)
-        BlzFrameSetVisible(optionalHighlight, false)
-        BlzFrameSetLevel(self.frames.optionalButton, 2)
-        self.frames.optionalHighlight = optionalHighlight
+        JTG.Tutorial.CreateHighlight(self, scope, "JTGCamera", suffix, "optional", "optionalButton")
 
         local objectives = JTG.ScopeTrackFrame(scope, BlzCreateFrameByType("FRAME",
             "JTGCameraTutorialObjectives" .. suffix, root, "", 0))
@@ -1435,31 +1336,7 @@ function JTG.CreateCameraTutorialActivity(session)
             FRAMEPOINT_BOTTOM, 0, 0.025)
         self.frames.optionalMenu = optionalMenu
 
-        self.clickTrigger = JTG.ScopeTrackTrigger(scope, CreateTrigger())
-        TriggerAddAction(self.clickTrigger, function()
-            local clickedFrame = BlzGetTriggerFrame()
-            local clickedId = GetHandleId(clickedFrame)
-            local entry = self.actions[clickedId]
-            if entry == nil then return end
-            if self.buttonEnabled[clickedId] == false then return end
-            if JTG.UI and JTG.UI.PlayButtonSound then
-                local soundKind = entry.sound
-                if type(soundKind) == "function" then
-                    soundKind = soundKind()
-                end
-                JTG.UI.PlayButtonSound(soundKind)
-            end
-            if JTG.UI and JTG.UI.ReleaseFrameFocus then
-                JTG.UI.ReleaseFrameFocus(clickedFrame)
-            end
-            entry.action()
-            if JTG.UI and JTG.UI.ReleaseFrameFocus then
-                JTG.UI.ReleaseFrameFocus(clickedFrame)
-            end
-            if JTG.UI and JTG.UI.ReleaseKeyboardFocusAfterClick then
-                JTG.UI.ReleaseKeyboardFocusAfterClick()
-            end
-        end)
+        JTG.Tutorial.BindClicks(self, scope)
         self:registerClick(self.frames.continue,
             function() self:continueTutorial() end)
         self:registerClick(self.frames.menu,
@@ -1518,6 +1395,17 @@ function JTG.CreateCameraTutorialActivity(session)
     function activity:tick()
         if self.locallyPaused or self.objectivesOpen or
                 self.optionalOpen or self.optionalSection ~= nil then return end
+        if self.arrowActive and self.presentationVisible and (self.arrowBlinks < 10 or not self.arrowVisible) then
+            self.arrowElapsed = self.arrowElapsed + TICK_INTERVAL
+            if self.arrowElapsed >= 0.35 then
+                self.arrowElapsed = self.arrowElapsed - 0.35
+                self.arrowVisible = not self.arrowVisible
+                if not self.arrowVisible then
+                    self.arrowBlinks = self.arrowBlinks + 1
+                end
+                self:refreshControls()
+            end
+        end
         if self.cameraRemaining > 0.0 then
             self.cameraRemaining = math.max(0.0,
                 self.cameraRemaining - TICK_INTERVAL)
@@ -1710,7 +1598,15 @@ function JTG.CreateCameraTutorialActivity(session)
         self:installLayoutCapture()
         self.importedUnits = {}
         local assignments = {}
-        for _, placement in ipairs(IMPORTED_LAYOUT) do
+        local orderedLayout={}
+        for _,structures in ipairs({true,false}) do
+            for _,placement in ipairs(IMPORTED_LAYOUT) do
+                if IsUnitIdType(FourCC(placement[1]),UNIT_TYPE_STRUCTURE)==structures then
+                    orderedLayout[#orderedLayout+1]=placement
+                end
+            end
+        end
+        for _, placement in ipairs(orderedLayout) do
             local unit = CreateBaseUnit(session.scope, CAMERA_PLAYER,
                 placement[1], placement[2], placement[3], placement[4])
             -- Keep the tutorial army from crossing an upkeep threshold while
@@ -1870,6 +1766,7 @@ function JTG.CreateCameraTutorialActivity(session)
     end
 
     function activity:cleanup()
+        self:clearArrow()
         ClearTextMessages()
         -- Units made manually while refining the imported layout are not
         -- scope-owned. Remove only those extras here; imported units are
@@ -1889,5 +1786,6 @@ function JTG.CreateCameraTutorialActivity(session)
         self.actions = {}
     end
 
+    JTG.Tutorial.InstallRunner(activity, session, {id="learn.camera", player=CAMERA_PLAYER, steps=TUTORIAL_STEPS, entries = {"showStep", "showOptionalStep", "showCompletion", "goBack"}})
     return activity
 end

@@ -4,6 +4,8 @@
 /build/
 /node_modules/
 /.pnpm-store/
+__pycache__/
+*.pyc
 
 # Warcraft III maps are generated binaries. Reference maps may be committed.
 *.w3x

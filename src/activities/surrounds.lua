@@ -10,64 +10,101 @@ local INTRO =
     "their movement completely.\n" ..
     "This can allow you to freely finish off enemy units, especially " ..
     "important ones like heroes.\n\n" ..
-    "In this exercise you can practice using both abilities and units to " ..
-    "surround units."
+    "In this exercise you can practice surrounding units, by using your " ..
+    "own units and their abilities."
+
+local GARGOYLE_INTRO =
+    "Since Gargoyles are flying units, they do not obstruct the " ..
+    "movement of ground units. Their {Button: Stone Form} changes this: " ..
+    "once they land as statues, they occupy space like ordinary ground " ..
+    "units.\n\n" ..
+    "In this, you can practice surrounding units using Stone Form.\n\n" ..
+    "Check the {Button: Quest Log} for precise instructions!"
+
+local GARGOYLE_QUEST_TEXT =
+    "Flying Gargoyles can overlap ground units because they have no ground " ..
+    "obstruction. This changes immediately when they use {Button: Stone " ..
+    "Form}.\n\n" ..
+    "Use your hero or casters to stop or slow the target, move the Gargoyles " ..
+    "into position around all four sides, and then turn them into statues. " ..
+    "The target must be blocked in all four cardinal directions.\n\n" ..
+    "Tip: If you have selected only Gargoyles and give them a {Term: Move} " ..
+    "command on the ground, they will bunch up. If you then give them smaller " ..
+    "{Term: Move} commands nearby, four of them will form a diamond formation, " ..
+    "perfect for establishing a surround.\n\n" ..
+    "Press the {Button: Squares} button to compare the flying and Stone Form " ..
+    "states. A tiny box appears immediately once you activate Stone " ..
+    "Form, and becomes larger once the Gargoyle hits the ground. The tiny one " ..
+    "alone can be enough to box in a target, by blocking snapping points on " ..
+    "the navigation grid."
 
 JTG.SurroundHowToQuestText =
     "To surround an enemy, you have to block them in all four cardinal " ..
     "directions (right, left, up, down).\n" ..
     "This means the minimum amount of units you need for a successful " ..
     "surround, is four.\n" ..
-    "The size of your units and of the units you want to surround does not " ..
+    "The size of your units, and of the units you want to surround does not " ..
     "matter for this. Four Peasants can surround a Kodo! (You will need " ..
     "five though, in case one gets eaten!)\n\n" ..
-    "One way to do this is send one unit to each the four sides.\n" ..
-    "This is simple, but it is very hard to do in the heat of battle.\n\n" ..
+    "One way to do the surround is to individually send one unit to each " ..
+    "the four sides.\n" ..
+    "This is simple, but it is slow, and very hard to do in the heat of " ..
+    "battle.\n\n" ..
     "Another way is to select all of your units while they are already " ..
     "standing arranged around the enemy unit.\n" ..
-    "Then you spam {Term: Move} commands on the enemy, which requires using " ..
-    "the {Input: hotkey} and clicking, about four or five times in a row.\n" ..
-    "This is easier, but you have to hope for the best.\n" ..
-    "It might require you make some quick adjustments for one or two of " ..
-    "your units, to close off a side.\n\n" ..
+    "Then you use the {Term: Move} command on the enemy, about four or five " ..
+    "times in a row.\n" ..
+    "This is quicker, but you have to hope for the best, since not all sides " ..
+    "may be blocked off in the end.\n" ..
+    "It might require you make some quick adjustments for one or two of your " ..
+    "units.\n\n" ..
     "Lastly, you can purposefully arrange your units in a wide cross " ..
     "shape, meaning they are already arranged in something like the final " ..
-    "position, with one in every cardinal direction, and an empty space in " ..
+    "position: one in every cardinal direction, and an empty space in " ..
     "the middle.\n" ..
     "Then you give them a {Term: Move} command that makes them run diagonally " ..
     "across the path of the enemy unit, so the enemy unit ends up in the " ..
     "middle of the formation without displacing anyone.\n" ..
-    "Then you spam {Term: Move} commands on the enemy, which requires using " ..
-    "the {Input: hotkey} and clicking, about four or five times in a row.\n" ..
+    "Then you use the {Term: Move} command on the enemy, about four or five " ..
+    "times in a row.\n" ..
     "This has a better chance of success, but you might still have to make " ..
     "a quick adjustment or two.\n\n" ..
-    "No matter the method, this is a pretty micro intensive skill."
+    "No matter the method, this is a tricky and micro intensive skill.\n\n" ..
+    "Note: You cannot use the {Term: Attack} command to do surrounds, even " ..
+    "with melee units, as it often will not move the units close enough."
 
 JTG.SurroundHowItWorksQuestText =
     "Surrounding exploits a fundamental aspect of Warcraft III's engine.\n\n" ..
-    "Every unit blocks movement with a square-shaped area.\n" ..
+    "Every unit blocks the movement of other units with a square-shaped " ..
+    "area.\n" ..
     "Some are bigger and some are smaller, but they all have four equal " ..
     "sides.\n" ..
     "This square always faces the same direction and does not turn with " ..
     "the unit.\n\n" ..
-    "A {Term: Move} command on another unit normally stops your units before " ..
-    "these areas touch. The actual obstruction becomes important when the " ..
+    "A {Term: Move} command on another unit stops your units before these " ..
+    "areas touch, but this obstruction box becomes important when the " ..
     "surrounded unit tries to escape through a gap.\n\n" ..
     "For this reason, the unit can move through smaller spaces when moving " ..
     "straight up and down or side to side, compared to moving diagonally.\n\n" ..
     "Press the {Button: Squares} button to display the areas that units " ..
-    "obstruct.\nThese areas snap to a 32x32 in-game unit grid, so they do " ..
-    "not move seamlessly like the units do.\nYou can also display the snap " ..
-    "points and a finer 8x8 grid."
+    "obstruct. These areas snap to a grid of 32x32 in-game units, so they do " ..
+    "not move seamlessly like the units do, and they may not always be where " ..
+    "you think they are based on the model's position. You can also display " ..
+    "a finer grid of 8x8 in-game units."
 
 JTG.SurroundMixedSelectionsQuestText =
     "Be careful when controlling units of different types in the same " ..
     "selection!\n" ..
-    "Even without {Term: Formation movement}, the units can slightly " ..
-    "interfere with each other when it comes to movement behavior.\n" ..
-    "This is probably because of differences in size and turn rate.\n\n" ..
+    "Even without {Term: Formation Movement}, the units can interfere with " ..
+    "each other when it comes to movement behavior.\n" ..
+    "This is probably because of differences in size and turn rate, and what " ..
+    "seems to happen is that the smaller units start using the bigger units' " ..
+    "values for pathfinding.\n\n" ..
     "For this reason, surrounds tend to work more consistently when using " ..
-    "only units of one type, or at least of similar size."
+    "only units of one type in the same selection, or at least of similar " ..
+    "size.\n\n" ..
+    "You can try surrounding a unit with Peons and a single Kodo Beast, to " ..
+    "see this effect."
 
 local RACES = {
     {key = "human", label = "Human",
@@ -80,6 +117,9 @@ local RACES = {
         artwork = "UI\\Glues\\Loading\\Backgrounds\\Campaigns\\NightElfSymbol.dds"},
     {key = "neutral", label = "Neutral"},
 }
+
+local RACE_CHOICE_ICON_SIZE = 0.0396
+local RACE_CHOICE_ICON_OFFSET_X = 0.051
 
 -- Custom Surrounds is built on data columns so later selectors can reuse the
 -- same briefing grid without encoding a separate frame for every unit.
@@ -158,7 +198,7 @@ local CUSTOM_RACE_COLUMNS = {
             CustomUnit("Glaive Thrower", "ebal")},
         {CustomUnit("Dryad", "edry"),
             CustomUnit("Druid of the Claw (Night Elf Form)", "edoc"),
-            CustomUnit("Druid of the Claw (Bear Form)", "edob"),
+            CustomUnit("Druid of the Claw (Bear Form)", "edcm"),
             CustomUnit("Mountain Giant", "emtg")},
         {CustomUnit("Hippogryph", "ehip", false),
             CustomUnit("Hippogryph Rider", "ehpr", false),
@@ -173,8 +213,8 @@ local CUSTOM_RACE_COLUMNS = {
         {CustomUnit("Treant Level 1", "efon", true, false, "efon1"),
             CustomUnit("Treant Level 2", "efon", true, false, "efon2"),
             CustomUnit("Treant Level 3", "efon", true, false, "efon3")},
-        {CustomUnit("Avatar of Vengeance", "even"),
-            CustomUnit("Spirit of Vengeance", "espv")},
+        {CustomUnit("Avatar of Vengeance", "espv"),
+            CustomUnit("Spirit of Vengeance", "even")},
     },
     neutral = {
         {CustomUnit("Naga Sea Witch", "Nngs", true, true),
@@ -190,8 +230,8 @@ local CUSTOM_RACE_COLUMNS = {
             CustomUnit("Raging Quilbeast", "nqb3")},
         {CustomUnit("Bear", "ngz1"), CustomUnit("Raging Bear", "ngz2"),
             CustomUnit("Spirit Bear", "ngz3")},
-        {CustomUnit("Hawk", "nwe1"), CustomUnit("Thunder Hawk", "nwe2"),
-            CustomUnit("Spirit Hawk", "nwe3")},
+        {CustomUnit("Hawk", "nwe1", false), CustomUnit("Thunder Hawk", "nwe2", false),
+            CustomUnit("Spirit Hawk", "nwe3", false)},
         {CustomUnit("Lava Spawn Level 1", "nlv1"),
             CustomUnit("Lava Spawn Level 2", "nlv2"),
             CustomUnit("Lava Spawn Level 3", "nlv3")},
@@ -348,10 +388,10 @@ local CUSTOM_HERO_ABILITIES = {
         CustomAbility("Transmute", "ANtm", true, true),
     },
     Npal = {
-        CustomAbility("Righteous Fury", "ANrf"),
-        CustomAbility("Consecration", "ANcs", false),
-        CustomAbility("Sacred Aura", "ANsa", false),
-        CustomAbility("Cleansing Fire", "ANcf", true, true),
+        CustomAbility("Righteous Fury", "ANcp"),
+        CustomAbility("Consecration", "AHcr", false),
+        CustomAbility("Sacred Aura", "AHpa", false),
+        CustomAbility("Cleansing Fire", "AHcl", true, true),
     },
 }
 
@@ -401,19 +441,19 @@ local CUSTOM_UNIT_ICONS = {
     ewsp = "BTNWisp", earc = "BTNArcher", esen = "BTNHuntress",
     ebal = "BTNGlaiveThrower",
     edry = "BTNDryad", edoc = "BTNDruidOfTheClaw",
-    edob = "BTNBearForm", emtg = "BTNMountainGiant",
+    edcm = "BTNBearForm", edob = "BTNBearForm", emtg = "BTNMountainGiant",
     ehip = "BTNHippogriff", ehpr = "BTNHippogriffRider",
     edot = "BTNDruidOfTheTalon", etot = "BTNStormCrowForm",
     efdr = "BTNFaerieDragon", echm = "BTNChimaera",
     Edem = "BTNHeroDemonHunter", Ekee = "BTNKeeperOfTheGrove",
     Emoo = "BTNPriestessOfTheMoon", Ewdn = "BTNHeroWarden",
-    efon = "BTNEnt", even = "BTNAvengingWatcher",
-    espv = "BTNSpiritOfVengeance2",
+    efon = "BTNEnt", espv = "BTNAvengingWatcher",
+    even = "BTNSpiritOfVengeance2",
     Nngs = "BTNNagaSeaWitch", Nbrn = "BTNBansheeRanger",
     Npbm = "BTNPandarenBrewmaster", Nfir = "BTNHeroAvatarOfFlame",
     Nplh = "BTNPitLord", Nbst = "BTNBeastMaster",
     Ntin = "BTNHeroTinker", Nalc = "BTNHeroAlchemist",
-    Npal = "BTNHeroPaladin",
+    Npal = "BTNForsakenPaladin",
     ndr1 = "BTNSkeletonWarrior", ndr2 = "BTNSkeletonWarrior",
     ndr3 = "BTNSkeletonWarrior",
 }
@@ -423,7 +463,7 @@ local CUSTOM_UNIT_ABILITY_ICONS = {
     osw1 = "AOsf", osw2 = "AOsf", osw3 = "AOsf",
     o001 = "AOsw", o002 = "AOsw", o003 = "AOsw",
     uin1 = "AUin",
-    efon = "AEfn", even = "AEsv", etot = "Arav", espv = "Avng",
+    efon = "AEfn", espv = "AEsv", etot = "Arav", even = "Avng",
     nqb1 = "ANsq", nqb2 = "ANsq", nqb3 = "ANsq",
     ngz1 = "ANsg", ngz2 = "ANsg", ngz3 = "ANsg",
     nwe1 = "ANsw", nwe2 = "ANsw", nwe3 = "ANsw",
@@ -436,6 +476,15 @@ local function CustomUnitIcon(rawcode)
     end
     return "ReplaceableTextures\\CommandButtons\\" ..
         (CUSTOM_UNIT_ICONS[rawcode] or "BTNCancel") .. ".blp"
+end
+
+-- Shared read-only selector data for exercises that use the same unit grid.
+function JTG.GetSurroundCustomRaceColumns(race)
+    return CUSTOM_RACE_COLUMNS[race] or {}
+end
+
+function JTG.GetSurroundCustomUnitIcon(rawcode)
+    return CustomUnitIcon(rawcode)
 end
 
 local SETUPS = {
@@ -460,9 +509,9 @@ local SETUPS = {
     },
     undead = {
         {name = "Dread Lord", units = {{"Udre", 1, "AUsl"}, {"ugho", 4}}},
-        {name = "Crypt Lord", units = {{"Ucrl", 1, "AUim"}, {"ugho", 6}}},
-        {name = "Lich", units = {{"Ulic", 1, "AUfn"}, {"ugho", 5}}},
-        {name = "Necromancers", units = {{"unec", 2, {"Arai", "Auhf", "Acri"}}, {"ugho", 4}}},
+        {name = "Crypt Lord", units = {{"Ucrl", 1, "AUim"}, {"ugho", 5}}},
+        {name = "Necromancers", units = {{"unec", 2}, {"ugho", 4}}},
+        {name = "Lich", units = {{"Ulic", 1, "AUfn"}, {"ugho", 6}}},
         {name = "Frost Wyrm", units = {{"ufro", 1}, {"ugho", 5}}},
         {name = "Ghouls", units = {{"ugho", 6}}},
         {name = "Crypt Fiends", units = {{"ucry", 5}}},
@@ -475,8 +524,24 @@ local SETUPS = {
     neutral = {
         {name = "Naga Sea Witch", units = {{"Nngs", 1, "ANfa"}, {"hfoo", 5}}},
         {name = "Pandaren Brewmaster", units = {{"Npbm", 1, "ANdh"}, {"ogru", 5}}},
-        {name = "Forsaken Paladin", units = {{"Npal", 1, "ANrf"}, {"ugho", 5}}},
+        {name = "Forsaken Paladin", units = {{"Npal", 1, "ANcp"}, {"ugho", 5}}},
     },
+}
+
+local GARGOYLE_SETUPS = {
+    {name = "Dread Lord", units = {{"Udre", 1, "AUsl"}, {"ugar", 4}}},
+    {name = "Crypt Lord", units = {{"Ucrl", 1, "AUim"}, {"ugar", 5}}},
+    {name = "Necromancers",
+        units = {{"unec", 2}, {"ugar", 5}}},
+    {name = "Lich", units = {{"Ulic", 1, "AUfn"}, {"ugar", 6}}},
+    {name = "Frost Wyrm", units = {{"ufro", 1}, {"ugar", 5}}},
+    {name = "6 Gargoyles", units = {{"ugar", 6}}},
+    {name = "4 Gargoyles", units = {{"ugar", 4}}},
+    {name = "Naga Sea Witch", units = {{"Nngs", 1, "ANfa"}, {"ugar", 6}}},
+    {name = "Pandaren Brewmaster",
+        units = {{"Npbm", 1, "ANdh"}, {"ugar", 6}}},
+    {name = "Forsaken Paladin",
+        units = {{"Npal", 1, "ANcp"}, {"ugar", 6}}},
 }
 
 local RUNNERS = {
@@ -486,7 +551,6 @@ local RUNNERS = {
 
 local DISABLING_BUFFS = {
     FourCC("BHtb"), -- Storm Bolt
-    FourCC("BOhx"), -- Hex
     FourCC("BOws"), -- War Stomp
     FourCC("BUsl"), -- Sleep
     FourCC("BUim"), -- Impale
@@ -495,6 +559,7 @@ local DISABLING_BUFFS = {
 
 function JTG.FormatSurroundQuestText(text)
     local formatted = text:gsub("{Button:%s*(.-)}", "|cffffcc00%1|r")
+    formatted = formatted:gsub("{Gold Font:%s*(.-)}", "|cffffcc00%1|r")
     formatted = formatted:gsub("{Term:%s*(.-)}", "|cffff9933%1|r")
     return formatted:gsub("{Input:%s*(.-)}", "|cff80ff80%1|r")
 end
@@ -726,13 +791,12 @@ function JTG.OpenSurroundsMenu(originCategory, pauseGame, restorePage,
             local key, label = race.key, race.label
             table.insert(choices, {label = label, primary = true,
                 icon = race.artwork,
+                iconSize = RACE_CHOICE_ICON_SIZE,
+                iconOffsetX = RACE_CHOICE_ICON_OFFSET_X,
                 action = function() launch(key) end})
         end
         show({
             choices = choices,
-            compactChoices = true,
-            compactColumns = 2,
-            choiceOffsetY = -0.045,
             backAction = showRoot,
         }, "races")
     end
@@ -742,23 +806,29 @@ function JTG.OpenSurroundsMenu(originCategory, pauseGame, restorePage,
             body = "Choose up to 12 units!\n\n" .. customSummary(),
             choices = {
                 {label = "Human", primary = true, icon = RACES[1].artwork,
+                    iconSize = RACE_CHOICE_ICON_SIZE,
+                    iconOffsetX = RACE_CHOICE_ICON_OFFSET_X,
                     action = function() showCustomGrid("human") end},
                 {label = "Orc", primary = true, icon = RACES[2].artwork,
+                    iconSize = RACE_CHOICE_ICON_SIZE,
+                    iconOffsetX = RACE_CHOICE_ICON_OFFSET_X,
                     action = function() showCustomGrid("orc") end},
                 {label = "Undead", primary = true, icon = RACES[3].artwork,
+                    iconSize = RACE_CHOICE_ICON_SIZE,
+                    iconOffsetX = RACE_CHOICE_ICON_OFFSET_X,
                     action = function() showCustomGrid("undead") end},
                 {label = "Night Elf", primary = true, icon = RACES[4].artwork,
+                    iconSize = RACE_CHOICE_ICON_SIZE,
+                    iconOffsetX = RACE_CHOICE_ICON_OFFSET_X,
                     action = function() showCustomGrid("nightelf") end},
                 {label = "Neutral", primary = true,
                     icon = "ReplaceableTextures\\CommandButtons\\BTNTavern.blp",
-                    iconScale = 0.6,
+                    iconSize = RACE_CHOICE_ICON_SIZE * 0.6,
+                    iconOffsetX = RACE_CHOICE_ICON_OFFSET_X,
                     action = function() showCustomGrid("neutral") end},
                 {label = "Begin", primary = true, enabled = enough,
                     action = enough and launchCustom or nil},
             },
-            compactChoices = true,
-            compactColumns = 2,
-            choiceOffsetY = -0.010,
             hideHeadingArtwork = true,
             backAction = function()
                 clearCustomSelection()
@@ -819,6 +889,7 @@ function JTG.OpenSurroundsMenu(originCategory, pauseGame, restorePage,
                 local definition = item
                 choices[#choices + 1] = {
                     label = definition.label,
+                    unitRawcode = definition.rawcode,
                     icon = CustomUnitIcon(definition.rawcode),
                     enabled = definition.enabled,
                     column = columnIndex, row = rowIndex - 1,
@@ -896,9 +967,59 @@ function JTG.OpenSurroundsMenu(originCategory, pauseGame, restorePage,
     end
 end
 
-function JTG.CreateSurroundsActivity(session)
+function JTG.OpenGargoyleSurroundMenu(originCategory, pauseGame)
+    local function releasePause()
+        if JTG.UI then JTG.UI.SetGameplayMenuPaused(false) end
+    end
+    local function launch()
+        releasePause()
+        local data = {setupIndex = 1, runnerIndex = 1, gargoyleMode = true}
+        if JTG.Controller.session ~= nil then
+            JTG.StartActivityAfterCleanup("skills.gargoyle",
+                originCategory or "skills", data, nil, "briefing-restart")
+        else
+            JTG.StartActivity("skills.gargoyle", originCategory or "skills", data)
+        end
+    end
+    local function show()
+        local spec = {
+            title = "Gargoyle Surrounds",
+            activityId = "skills.gargoyle",
+            originCategory = originCategory or "skills",
+            body = JTG.FormatSurroundQuestText(GARGOYLE_INTRO),
+            headingArtwork = "JTGMenu\\GargoyleSurroundsBriefing.dds",
+            headingArtworkWidth = 0.176,
+            headingArtworkHeight = 0.086,
+            centerSingleChoice = true,
+            choices = {{label = "Start Training", primary = true,
+                action = launch}},
+            pageId = "root",
+            pauseGame = pauseGame == true,
+            backAction = function()
+                releasePause()
+                JTG.UI.ShowCategory(originCategory or "skills")
+            end,
+        }
+        if pauseGame then
+            spec.resumeAction = function()
+                releasePause()
+                JTG.ResumeActivity()
+            end
+            spec.exitAction = function()
+                JTG.StopActivity("menu-exit")
+                pauseGame = false
+                show()
+            end
+        end
+        JTG.UI.ShowActivityBriefing(spec)
+    end
+    show()
+end
+
+local function CreateSurroundsActivity(session, gargoyleMode)
     local data = session.restartData or {}
     local activity = {
+        gargoyleMode = gargoyleMode == true or data.gargoyleMode == true,
         race = data.race or "human",
         customArmy = data.customArmy,
         setupIndex = data.setupIndex or 1,
@@ -929,6 +1050,11 @@ function JTG.CreateSurroundsActivity(session)
     end
 
     function activity:currentSetup()
+        if self.gargoyleMode then
+            self.setupIndex = math.max(1,
+                math.min(#GARGOYLE_SETUPS, self.setupIndex))
+            return GARGOYLE_SETUPS[self.setupIndex], GARGOYLE_SETUPS
+        end
         if self.race == "custom" and self.customArmy ~= nil then
             local custom = {name = "Custom", units = self.customArmy}
             return custom, {custom}
@@ -945,6 +1071,7 @@ function JTG.CreateSurroundsActivity(session)
             squaresVisible = self.squaresVisible,
             squareGridVisible = self.squareGridVisible,
             customArmy = self.customArmy,
+            gargoyleMode = self.gargoyleMode,
         }
     end
 
@@ -1006,12 +1133,34 @@ function JTG.CreateSurroundsActivity(session)
             self.squareGridVisible and self.presentationVisible)
         for _, entry in ipairs(self.squareEntries) do
             if entry.unit ~= nil and GetUnitTypeId(entry.unit) ~= 0 then
+                local obstructionHalf = nil
+                local unitType = GetUnitTypeId(entry.unit)
+                if unitType == FourCC("ugrm") or
+                        not IsUnitType(entry.unit, UNIT_TYPE_FLYING) then
+                    local collision = BlzGetUnitCollisionSize(entry.unit)
+                    if collision > 0 then
+                        obstructionHalf = JTG.UnitObstructionHalfSize(collision)
+                    end
+                end
                 local centerX = JTG.UnitObstructionGridCenter(GetUnitX(entry.unit))
                 local centerY = JTG.UnitObstructionGridCenter(GetUnitY(entry.unit))
-                SetImagePosition(entry.image,
-                    centerX - entry.half, centerY - entry.half, 2)
-                ShowImage(entry.image,
-                    self.squaresVisible and self.presentationVisible)
+                for half, image in pairs(entry.images) do
+                    SetImagePosition(image, centerX - half, centerY - half, 2)
+                    ShowImage(image, obstructionHalf == half and
+                        self.squaresVisible and self.presentationVisible)
+                end
+                if obstructionHalf ~= nil and entry.images[obstructionHalf] == nil then
+                    local size = obstructionHalf * 2.0
+                    local image = JTG.ScopeTrackImage(session.presentationScope,
+                        CreateImage(entry.texture, size, size, 0,
+                            centerX - obstructionHalf, centerY - obstructionHalf, 2,
+                            0, 0, 0, 2))
+                    SetImageRenderAlways(image, true)
+                    SetImageAboveWater(image, true, true)
+                    entry.images[obstructionHalf] = image
+                    ShowImage(image,
+                        self.squaresVisible and self.presentationVisible)
+                end
             end
         end
         JTG.ShowNavigationGrid(self.navigationDotsImages,
@@ -1019,20 +1168,8 @@ function JTG.CreateSurroundsActivity(session)
     end
 
     function activity:addSquareOverlay(unit, texture)
-        local collision = BlzGetUnitCollisionSize(unit)
-        local half = JTG.UnitObstructionHalfSize(collision)
-        local size = half * 2.0
-        local centerX = JTG.UnitObstructionGridCenter(GetUnitX(unit))
-        local centerY = JTG.UnitObstructionGridCenter(GetUnitY(unit))
-        local image = JTG.ScopeTrackImage(session.presentationScope,
-            CreateImage(texture, size, size, 0,
-                centerX - half, centerY - half, 2,
-                0, 0, 0, 2))
-        SetImageRenderAlways(image, true)
-        SetImageAboveWater(image, true, true)
-        ShowImage(image, self.squaresVisible and self.presentationVisible)
-        local entry = {unit = unit, image = image, half = half}
-        table.insert(self.squareEntries, entry)
+        table.insert(self.squareEntries,
+            {unit = unit, texture = texture, images = {}})
     end
 
     function activity:toggleSquares()
@@ -1107,6 +1244,52 @@ function JTG.CreateSurroundsActivity(session)
             detailsHeight = 0.060, centerY = 0.33,
         })
         self.resultPanel = self.resultCard.panel
+        if self.gargoyleMode then
+            self.celebrationFrame = JTG.ScopeTrackFrame(session.presentationScope,
+                BlzCreateFrameByType("BACKDROP", "JTGSurroundCelebration",
+                    self.resultPanel, "", 0))
+            BlzFrameSetSize(self.celebrationFrame, 0.080, 0.092)
+            BlzFrameSetPoint(self.celebrationFrame, FRAMEPOINT_BOTTOMLEFT,
+                self.resultPanel, FRAMEPOINT_BOTTOMLEFT, 0, 0)
+            BlzFrameSetEnable(self.celebrationFrame, false)
+            BlzFrameSetVisible(self.celebrationFrame, false)
+        end
+    end
+
+    function activity:playCelebration()
+        local sound = CreateSound("JTGCelebration\\HotDiggedyDog.mp3",
+            false, false, false, 10, 10, "DefaultEAXON")
+        SetSoundChannel(sound, 5)
+        SetSoundVolume(sound, 100)
+        -- The imported clip is 44.1 kHz CBR without an Info/Xing frame.
+        -- Keep the requested five-second duration and normal playback pitch.
+        SetSoundPitch(sound, 1.0)
+        local durationMilliseconds = 5000
+        SetSoundDuration(sound, durationMilliseconds)
+        JTG.ScopeBorrow(session.scope, function()
+            StopSound(sound, true, false)
+        end)
+        StartSound(sound)
+        self.celebrationActive = true
+        local frameIndex = 0
+        local elapsed = 0
+        local duration = 15.0
+        BlzFrameSetTexture(self.celebrationFrame,
+            "JTGCelebration\\Doge0.dds", 0, true)
+        BlzFrameSetVisible(self.celebrationFrame, self.presentationVisible)
+        local timer
+        timer = self:makeTimer(0.1, true, function()
+            elapsed = elapsed + 0.1
+            if elapsed >= duration then
+                self.celebrationActive = false
+                BlzFrameSetVisible(self.celebrationFrame, false)
+                PauseTimer(timer)
+                return
+            end
+            frameIndex = (frameIndex + 1) % 5
+            BlzFrameSetTexture(self.celebrationFrame,
+                "JTGCelebration\\Doge" .. frameIndex .. ".dds", 0, true)
+        end)
     end
 
     function activity:renderResultPresentation(visible)
@@ -1117,6 +1300,7 @@ function JTG.CreateSurroundsActivity(session)
             details = self.resultDetailsText or "",
             visible = visible ~= false,
             actions = {
+                hide = self.resultTone == "success" and {} or nil,
                 retry = {},
                 next = self.resultAction ~= "retry" and
                     {label = self.resultPrimaryLabel or "Next"} or nil,
@@ -1196,6 +1380,10 @@ function JTG.CreateSurroundsActivity(session)
         if self.startTag ~= nil then SetTextTagVisibility(self.startTag, visible) end
         if self.finishTag ~= nil then SetTextTagVisibility(self.finishTag, visible) end
         self:updateSquareOverlays()
+        if self.celebrationFrame ~= nil then
+            BlzFrameSetVisible(self.celebrationFrame,
+                self.presentationVisible and self.celebrationActive == true)
+        end
     end
 
     function activity:spawnArmy()
@@ -1278,7 +1466,7 @@ function JTG.CreateSurroundsActivity(session)
         PauseUnit(self.runner, true)
         for _, unit in ipairs(self.army) do PauseUnit(unit, true) end
         self:setSetupsOpen(false)
-        local _, list = self:currentSetup()
+        local setup, list = self:currentSetup()
         if success then
             self.resultTitleText = "SURROUND COMPLETE"
             self.resultTone = "success"
@@ -1295,7 +1483,8 @@ function JTG.CreateSurroundsActivity(session)
             else
                 self.resultAction = "finish"
                 self.resultPrimaryLabel = "Finish"
-                self.resultDetailsText =
+                self.resultDetailsText = self.gargoyleMode and
+                    "You completed every Gargoyle setup." or
                     "You completed every " .. self.race .. " setup."
             end
         else
@@ -1310,6 +1499,10 @@ function JTG.CreateSurroundsActivity(session)
         if JTG.UI then JTG.UI.HideToolbar() end
         self:makeTimer(1.0, false, function()
             self:renderResultPresentation(self.presentationVisible)
+            if success and self.gargoyleMode and #setup.units == 1 and
+                    setup.units[1][1] == "ugar" and setup.units[1][2] == 4 then
+                self:playCelebration()
+            end
         end)
     end
 
@@ -1344,9 +1537,10 @@ function JTG.CreateSurroundsActivity(session)
             self:finish(false, "The runner crossed the finish line.")
             return
         end
+        -- Measure confinement over the whole hold window, rather than each
+        -- tick: a trapped runner may keep wiggling inside a small pocket.
         local dx, dy = x - self.previousRunnerX, y - self.previousRunnerY
-        local movement = math.sqrt(dx * dx + dy * dy)
-        self.previousRunnerX, self.previousRunnerY = x, y
+        local confined = dx * dx + dy * dy <= 32.0 * 32.0
         local disabled = false
         for _, buffId in ipairs(DISABLING_BUFFS) do
             if GetUnitAbilityLevel(self.runner, buffId) > 0 then
@@ -1356,10 +1550,11 @@ function JTG.CreateSurroundsActivity(session)
         end
         local activelyMoving = GetUnitCurrentOrder(self.runner) ==
             OrderId("move")
-        if movement <= 2.5 and activelyMoving and not disabled then
+        if confined and activelyMoving and not disabled then
             self.holdTime = self.holdTime + 0.05
         else
             self.holdTime = 0
+            self.previousRunnerX, self.previousRunnerY = x, y
         end
         self:updateStatus()
         if self.holdTime >= 3.0 then
@@ -1368,7 +1563,16 @@ function JTG.CreateSurroundsActivity(session)
     end
 
     function activity:createTrainingQuests()
-        local definitions = {
+        local definitions
+        if self.gargoyleMode then
+            definitions = {{
+                title = "Gargoyle Surrounds",
+                icon = "ReplaceableTextures\\CommandButtons\\BTNStoneForm.blp",
+                text = GARGOYLE_QUEST_TEXT,
+                required = true,
+            }}
+        else
+            definitions = {
             {
                 title = "How to Surround",
                 icon = "ReplaceableTextures\\CommandButtons\\BTNMassTeleport.blp",
@@ -1387,7 +1591,8 @@ function JTG.CreateSurroundsActivity(session)
                 text = JTG.SurroundMixedSelectionsQuestText,
                 required = false,
             },
-        }
+            }
+        end
         self.quests = {}
         for _, definition in ipairs(definitions) do
             local quest = JTG.ScopeTrackQuest(session.scope, CreateQuest())
@@ -1420,6 +1625,33 @@ function JTG.CreateSurroundsActivity(session)
         SetPlayerColor(p1, ConvertPlayerColor(1))
         SetPlayerAlliance(p0, p1, ALLIANCE_PASSIVE, false)
         SetPlayerAlliance(p1, p0, ALLIANCE_PASSIVE, false)
+
+        -- Unlock non-hero command sets in every preset and Custom selection.
+        -- Caster training has two levels; attack/armor upgrades are excluded.
+        local abilityResearch = {
+            Rhde = 1, Rhfl = 1, Rhcd = 1, Rhpt = 2, Rhst = 2,
+            Rhse = 1, Rhfc = 1, Rhrt = 1, Rhfs = 1, Rhss = 1,
+            Rhgb = 1, Rhhb = 1, Rhsb = 1, Rhri = 1, Rhan = 1, Rhlh = 2,
+            Rhpm = 1, Ropm = 1, Rupm = 1, Repm = 1,
+            Roen = 1, Rost = 2, Rowt = 2, Rowd = 2, Rows = 2,
+            Robs = 1, Rotr = 1, Ropg = 1, Rosp = 1, Robf = 1,
+            Robk = 1, Rolf = 1, Roch = 1, Rovs = 1, Ronv = 1, Rorb = 1,
+            Rusf = 1, Ruwb = 1, Rubu = 1, Rusp = 1,
+            Rune = 2, Ruba = 2, Rupc = 1, Rusm = 1, Rugf = 1,
+            Ruex = 1, Ruac = 1, Rufb = 1,
+            Redt = 2, Redc = 2, Resi = 1, Reeb = 1, Reec = 1,
+            Rehs = 1, Rers = 1, Rews = 1, Remg = 1, Resc = 1,
+            Rewh = 1, Reuv = 1, Recb = 1, Reib = 1, Remk = 1,
+            usap = 1, ehip = 1,
+        }
+        for rawcode, level in pairs(abilityResearch) do
+            local upgrade = FourCC(rawcode)
+            local oldLevel = GetPlayerTechCount(p0, upgrade, true)
+            JTG.ScopeBorrow(current.scope, function()
+                SetPlayerTechResearched(p0, upgrade, oldLevel)
+            end)
+            SetPlayerTechResearched(p0, upgrade, math.max(oldLevel, level))
+        end
 
         JTG.ResetWorldFog(p0)
         JTG.ScopeRevealScene(current.scope, current.scene, p0)
@@ -1464,10 +1696,6 @@ function JTG.CreateSurroundsActivity(session)
         if not self.skipIntro and JTG.UI and JTG.UI.HighlightQuestButton then
             JTG.UI.HighlightQuestButton(5.0)
         end
-        local setup = self:currentSetup()
-        DisplayTimedTextToPlayer(Player(0), 0, 0, 5,
-            "|cffffcc00" .. setup.name .. " vs " ..
-            RUNNERS[self.runnerIndex].name .. "|r  Close all four sides and hold.")
     end
 
     function activity:setPaused(paused)
@@ -1536,7 +1764,7 @@ function JTG.CreateSurroundsActivity(session)
         if self.startTag ~= nil then DestroyTextTag(self.startTag) end
         if self.finishTag ~= nil then DestroyTextTag(self.finishTag) end
         for _, entry in ipairs(self.squareEntries or {}) do
-            if entry.image ~= nil then DestroyImage(entry.image) end
+            for _, image in pairs(entry.images or {}) do DestroyImage(image) end
         end
         for _, image in ipairs(self.navigationGridImages or {}) do
             DestroyImage(image)
@@ -1560,4 +1788,12 @@ function JTG.CreateSurroundsActivity(session)
     end
 
     return activity
+end
+
+function JTG.CreateSurroundsActivity(session)
+    return CreateSurroundsActivity(session, false)
+end
+
+function JTG.CreateGargoyleSurroundActivity(session)
+    return CreateSurroundsActivity(session, true)
 end

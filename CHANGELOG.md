@@ -2,6 +2,22 @@
 
 This file records player-visible changes in tested project versions. Development reasoning belongs in commit messages and `docs/decisions/`.
 
+## v0.1.2 (2026-10-10)
+
+- Added Economy & Workers with gathering, construction and base-defense practice.
+- Added Bat Splitting with three unit-count stages and daytime/nighttime modes.
+- Added Dodging with projectile disjoining and Area/Devour avoidance training.
+
+## v0.1.1 — Gargoyle Surrounds (2026-10-06)
+
+- Added Gargoyle Surrounds with ten setups and Stone Form obstruction displays.
+- Updated Undead Surrounds setups and unlocked non-hero unit abilities in standard and custom Surrounds.
+- Revised tutorial and exercise texts, formatting, and race-selection layouts.
+- Added Gargoyle Surrounds and Combat Micro artwork; renamed Micro Training to Combat Micro.
+- Improved Surrounds completion detection for confined movement and slowing effects.
+- Added periodic enemy health restoration in Windwalk Pop, excluding the Hard Mode Tauren Chieftain.
+- Adjusted the Camera tutorial's opening view to the main base's southernmost tower.
+
 ## v0.1.0 — Training and shared-system milestone (2026-10-05)
 
 - Added Surrounds Skill Training with standard and custom unit compositions.

@@ -33,8 +33,8 @@ Unhotkey=E
 Buttonpos=3,2
 
 [Aam2]
-Buttonpos=1,0
-Hotkey=W
+Buttonpos=1,0]=],
+            [=[Hotkey=W
 
 [aamk]
 Buttonpos=2,2
@@ -63,8 +63,8 @@ Unhotkey=R
 Hotkey=R
 
 [Ablo]
-Buttonpos=2,0
-Hotkey=E
+Buttonpos=2,0]=],
+            [=[Hotkey=E
 Unbuttonpos=2,0
 Unhotkey=E
 
@@ -88,10 +88,10 @@ Hotkey=Q
 [Abu2]
 Buttonpos=3,0
 Hotkey=R
-Unbuttonpos=3,0]=],
-            [=[Unhotkey=R
-
-[Abu3]
+Unbuttonpos=3,0
+Unhotkey=R
+]=],
+            [=[[Abu3]
 Buttonpos=3,0
 Hotkey=R
 Unbuttonpos=3,0
@@ -116,8 +116,8 @@ Buttonpos=2,0
 Buttonpos=3,0
 Hotkey=R
 
-[acam]
-Hotkey=E
+[acam]]=],
+            [=[Hotkey=E
 
 [Acan]
 Buttonpos=0,0
@@ -146,8 +146,8 @@ Hotkey=Q
 [acbh]
 Buttonpos=2,0
 
-[acbk]
-Buttonpos=0,0
+[acbk]]=],
+            [=[Buttonpos=0,0
 Hotkey=Q
 Unbuttonpos=0,0
 
@@ -172,11 +172,11 @@ Buttonpos=1,0
 Hotkey=W
 
 [accb]
-Buttonpos=0,0]=],
-            [=[Hotkey=W
+Buttonpos=0,0
+Hotkey=W
 
-[acch]
-Buttonpos=3,0
+[acch]]=],
+            [=[Buttonpos=3,0
 
 [accl]
 Buttonpos=0,0
@@ -202,8 +202,8 @@ Hotkey=Q
 
 [ACcw]
 Buttonpos=1,0
-Hotkey=W
-Unbuttonpos=1,0
+Hotkey=W]=],
+            [=[Unbuttonpos=1,0
 Unhotkey=W
 
 [ACcy]
@@ -229,8 +229,8 @@ Buttonpos=2,0
 Hotkey=E
 
 [acdh]
-Buttonpos=1,0
-Hotkey=W
+Buttonpos=1,0]=],
+            [=[Hotkey=W
 Researchhotkey=W
 
 [ACdm]
@@ -252,10 +252,10 @@ Hotkey=W
 Buttonpos=0,0
 Hotkey=Q
 
-[acef]]=],
-            [=[Buttonpos=3,0
-Hotkey=R
-Researchhotkey=R
+[acef]
+Buttonpos=3,0
+Hotkey=R]=],
+            [=[Researchhotkey=R
 
 [acen]
 Buttonpos=0,0
@@ -283,8 +283,8 @@ Unhotkey=Q
 Buttonpos=0,0
 Hotkey=Q
 
-[ACfn]
-Buttonpos=0,0
+[ACfn]]=],
+            [=[Buttonpos=0,0
 Hotkey=Q
 
 [acfr]
@@ -313,8 +313,8 @@ Buttonpos=2,0
 Hotkey=E
 Unbuttonpos=2,0
 Unhotkey=E
-
-[acim]
+]=],
+            [=[[acim]
 Buttonpos=1,0
 Hotkey=W
 Unbuttonpos=1,0
@@ -335,14 +335,14 @@ Unbuttonpos=2,0
 Unhotkey=E
 
 [Acmg]
-Buttonpos=1,0]=],
-            [=[Hotkey=W
+Buttonpos=1,0
+Hotkey=W
 
 [acmi]
 Buttonpos=3,2
 
-[acmo]
-Buttonpos=0,0
+[acmo]]=],
+            [=[Buttonpos=0,0
 Hotkey=Q
 
 [Acn2]
@@ -370,8 +370,8 @@ Unbuttonpos=0,0
 
 [Acpf]
 Buttonpos=3,0
-Hotkey=R
-Unbuttonpos=3,0
+Hotkey=R]=],
+            [=[Unbuttonpos=3,0
 Unhotkey=R
 
 [acps]
@@ -399,8 +399,8 @@ Buttonpos=3,0
 Hotkey=R
 
 [Acri]
-Buttonpos=2,0
-Hotkey=E
+Buttonpos=2,0]=],
+            [=[Hotkey=E
 
 [acrj]
 Buttonpos=1,0
@@ -421,15 +421,15 @@ Unhotkey=Q
 
 [acs7]
 Buttonpos=2,0
-Hotkey=E]=],
-            [=[Researchhotkey=E
+Hotkey=E
+Researchhotkey=E
 
 [acs9]
 Buttonpos=3,0
 Hotkey=R
 
-[ACsa]
-Buttonpos=1,0
+[ACsa]]=],
+            [=[Buttonpos=1,0
 Hotkey=W
 Unbuttonpos=1,0
 Unhotkey=W
@@ -455,8 +455,8 @@ Hotkey=W
 
 [ACsw]
 Buttonpos=0,0
-Hotkey=Q
-Unbuttonpos=0,0
+Hotkey=Q]=],
+            [=[Unbuttonpos=0,0
 
 [act2]
 Buttonpos=1,0
@@ -484,8 +484,8 @@ Buttonpos=2,0
 Buttonpos=3,2
 
 [acwb]
-Buttonpos=1,0
-Unbuttonpos=1,0
+Buttonpos=1,0]=],
+            [=[Unbuttonpos=1,0
 
 [acwe]
 Buttonpos=2,0
@@ -507,13 +507,13 @@ Buttonpos=0,0
 Hotkey=Q
 Unbuttonpos=0,0
 Unhotkey=Q
-]=],
-            [=[[Adev]
+
+[Adev]
 Buttonpos=0,0
 Hotkey=Q
 
-[Adis]
-Buttonpos=1,0
+[Adis]]=],
+            [=[Buttonpos=1,0
 Hotkey=W
 
 [Adri]
@@ -541,7 +541,8 @@ Hotkey=Q
 
 [AEah]
 Buttonpos=2,0
-Researchhotkey=E
+Researchhotkey=E]=],
+            [=[
 
 [AEar]
 Buttonpos=2,0
@@ -568,8 +569,8 @@ Researchhotkey=Q
 Buttonpos=2,0
 Researchhotkey=E
 
-[AEfk]
-Buttonpos=0,0
+[AEfk]]=],
+            [=[Buttonpos=0,0
 Hotkey=Q
 Researchhotkey=Q
 
@@ -587,14 +588,14 @@ Buttonpos=2,0
 [AEim]
 Buttonpos=1,0
 Hotkey=W
-Researchhotkey=W]=],
-            [=[Unbuttonpos=1,0
+Researchhotkey=W
+Unbuttonpos=1,0
 Unhotkey=W
 
 [AEmb]
 Buttonpos=0,0
-Hotkey=Q
-Researchhotkey=Q
+Hotkey=Q]=],
+            [=[Researchhotkey=Q
 
 [AEme]
 Buttonpos=3,0
@@ -623,8 +624,8 @@ Hotkey=X
 Buttonpos=0,0
 Hotkey=Q
 
-[AEsf]
-Buttonpos=3,0
+[AEsf]]=],
+            [=[Buttonpos=3,0
 Hotkey=R
 Researchhotkey=R
 
@@ -650,8 +651,8 @@ Buttonpos=3,0
 Hotkey=R
 Researchhotkey=R
 
-[Aetf]
-Hotkey=F
+[Aetf]]=],
+            [=[Hotkey=F
 Unhotkey=F
 
 [AEtq]
@@ -669,15 +670,15 @@ Hotkey=Q
 Unbuttonpos=0,0
 Unhotkey=Q
 
-[afac]]=],
-            [=[Hotkey=R
+[afac]
+Hotkey=R
 MerchantAvailable=1
 
 [Afae]
 Buttonpos=0,0
 Hotkey=Q
-Unbuttonpos=0,0
-Unhotkey=Q
+Unbuttonpos=0,0]=],
+            [=[Unhotkey=Q
 
 [Afak]
 Buttonpos=1,0
@@ -704,8 +705,8 @@ Buttonpos=3,2
 [Afzy]
 Buttonpos=2,0
 Hotkey=E
-Unbuttonpos=2,0
-Unhotkey=Q
+Unbuttonpos=2,0]=],
+            [=[Unhotkey=Q
 
 [Agra]
 Buttonpos=1,0
@@ -733,8 +734,8 @@ Researchhotkey=E
 Buttonpos=2,0
 Researchhotkey=E
 
-[AHad]
-Buttonpos=2,0
+[AHad]]=],
+            [=[Buttonpos=2,0
 Researchhotkey=E
 
 [AHal]
@@ -748,8 +749,8 @@ Researchhotkey=W
 [Ahar]
 Buttonpos=2,0
 Hotkey=E
-Unbuttonpos=2,0]=],
-            [=[Unhotkey=E
+Unbuttonpos=2,0
+Unhotkey=E
 
 [AHas]
 Hotkey=E
@@ -758,8 +759,8 @@ Researchhotkey=E
 [AHav]
 Buttonpos=3,0
 Hotkey=R
-Researchhotkey=R
-Unhotkey=R
+Researchhotkey=R]=],
+            [=[Unhotkey=R
 
 [AHb1]
 Hotkey=W
@@ -785,8 +786,8 @@ Researchhotkey=E
 Buttonpos=1,0
 Hotkey=W
 Researchhotkey=W
-
-[ahbu]
+]=],
+            [=[[ahbu]
 Buttonpos=0,0
 
 [AHbz]
@@ -811,8 +812,8 @@ Buttonpos=1,0
 Hotkey=W
 Researchhotkey=W
 Unbuttonpos=1,0
-
-[AHch]
+]=],
+            [=[[AHch]
 Hotkey=E
 Researchhotkey=E
 
@@ -824,8 +825,8 @@ Researchhotkey=R
 
 [AHcr]
 Buttonpos=1,0
-Hotkey=W]=],
-            [=[Researchbuttonpos=1,0
+Hotkey=W
+Researchbuttonpos=1,0
 Researchhotkey=W
 
 [AHct]
@@ -834,8 +835,8 @@ Researchhotkey=R
 
 [AHdr]
 Buttonpos=2,0
-Hotkey=E
-Researchhotkey=E
+Hotkey=E]=],
+            [=[Researchhotkey=E
 
 [AHds]
 Buttonpos=1,0
@@ -860,8 +861,8 @@ Unhotkey=Q
 [AHen]
 Hotkey=W
 Researchhotkey=W
-
-[AHfa]
+]=],
+            [=[[AHfa]
 Buttonpos=1,0
 Hotkey=W
 Researchhotkey=W
@@ -886,8 +887,8 @@ Hotkey=E
 Researchhotkey=E
 
 [AHgh]
-Hotkey=R
-Researchhotkey=R
+Hotkey=R]=],
+            [=[Researchhotkey=R
 Unhotkey=R
 
 [AHgr]
@@ -899,8 +900,8 @@ Hotkey=Q
 Researchhotkey=Q
 
 [AHh2]
-Hotkey=Q]=],
-            [=[Researchhotkey=Q
+Hotkey=Q
+Researchhotkey=Q
 
 [AHh3]
 Hotkey=Q
@@ -912,8 +913,8 @@ Hotkey=Q
 Researchhotkey=Q
 
 [AHhc]
-Hotkey=W
-Researchhotkey=W
+Hotkey=W]=],
+            [=[Researchhotkey=W
 
 [AHhr]
 Hotkey=Q
@@ -939,8 +940,8 @@ Researchhotkey=E
 Hotkey=E
 Researchhotkey=E
 
-[Ahid]
-Buttonpos=2,2
+[Ahid]]=],
+            [=[Buttonpos=2,2
 Hotkey=C
 
 [AHl1]
@@ -967,8 +968,8 @@ Hotkey=Q
 Researchhotkey=Q
 
 [AHm3]
-Hotkey=Q
-Researchhotkey=Q
+Hotkey=Q]=],
+            [=[Researchhotkey=Q
 
 [AHmc]
 Hotkey=C,W
@@ -979,8 +980,8 @@ Buttonpos=3,0
 Hotkey=R
 Researchhotkey=R
 
-[AHpa]]=],
-            [=[Buttonpos=2,0
+[AHpa]
+Buttonpos=2,0
 Hotkey=E
 Researchbuttonpos=2,0
 Researchhotkey=E
@@ -992,8 +993,8 @@ Researchhotkey=Q
 [ahpe]
 Buttonpos=1,2
 
-[AHpx]
-Buttonpos=3,0
+[AHpx]]=],
+            [=[Buttonpos=3,0
 Hotkey=R
 Researchhotkey=R
 
@@ -1018,8 +1019,8 @@ Hotkey=E
 Unbuttonpos=2,0
 Unhotkey=E
 
-[AHre]
-Buttonpos=3,0
+[AHre]]=],
+            [=[Buttonpos=3,0
 Hotkey=R
 Researchhotkey=R
 
@@ -1043,8 +1044,8 @@ Hotkey=Q
 Researchhotkey=Q
 
 [AHs2]
-Hotkey=Q
-Researchhotkey=Q
+Hotkey=Q]=],
+            [=[Researchhotkey=Q
 
 [AHs3]
 Hotkey=Q
@@ -1054,8 +1055,8 @@ Researchhotkey=Q
 Buttonpos=2,2
 
 [AHsf]
-Hotkey=F,Q]=],
-            [=[Researchhotkey=F,Q
+Hotkey=F,Q
+Researchhotkey=F,Q
 
 [AHsl]
 Hotkey=R
@@ -1071,8 +1072,8 @@ Hotkey=Q
 
 [AHtb]
 Buttonpos=0,0
-Hotkey=Q
-Researchhotkey=Q
+Hotkey=Q]=],
+            [=[Researchhotkey=Q
 
 [AHtc]
 Buttonpos=1,0
@@ -1098,8 +1099,8 @@ Researchhotkey=Q
 [AHv2]
 Hotkey=Q
 Researchhotkey=Q
-
-[AHv3]
+]=],
+            [=[[AHv3]
 Hotkey=Q
 Researchhotkey=Q
 
@@ -1125,8 +1126,8 @@ Hotkey=E
 
 [AHwe]
 Buttonpos=1,0
-Hotkey=W
-Researchhotkey=W
+Hotkey=W]=],
+            [=[Researchhotkey=W
 
 [AHz1]
 Hotkey=W
@@ -1134,8 +1135,8 @@ Researchhotkey=W
 
 [AHz2]
 Hotkey=W
-Researchhotkey=W]=],
-            [=[
+Researchhotkey=W
+
 [AHz3]
 Hotkey=W
 Researchhotkey=W
@@ -1153,8 +1154,8 @@ Hotkey=E
 Unbuttonpos=2,0
 Unhotkey=E
 
-[Aivs]
-Buttonpos=1,0
+[Aivs]]=],
+            [=[Buttonpos=1,0
 Hotkey=W
 
 [ajen]
@@ -1177,8 +1178,8 @@ Buttonpos=3,2
 Hotkey=122
 MenuCommand=1
 
-[Aloa]
-Buttonpos=0,0
+[Aloa]]=],
+            [=[Buttonpos=0,0
 Hotkey=Q
 
 [Alsh]
@@ -1207,16 +1208,16 @@ Hotkey=Q
 Unbuttonpos=0,0
 Unhotkey=Q
 
-[Amfl]
-Buttonpos=1,0
+[Amfl]]=],
+            [=[Buttonpos=1,0
 Hotkey=W
 Unbuttonpos=1,0
 Unhotkey=W
 
 [amgl]
 Buttonpos=3,0
-]=],
-            [=[[Ami1]
+
+[Ami1]
 ParentId=Amil
 
 [Ami2]
@@ -1232,8 +1233,8 @@ UnhotkeyId=Ami2
 [Amil]
 Buttonpos=1,0
 Hotkey=W
-Unbuttonpos=3,2
-Unhotkey=V
+Unbuttonpos=3,2]=],
+            [=[Unhotkey=V
 UnhotkeyId=Ami1
 
 [Amls]
@@ -1258,8 +1259,8 @@ Buttonpos=1,0
 Hotkey=W
 Researchhotkey=W
 Unbuttonpos=1,0
-
-[ANbf]
+]=],
+            [=[[ANbf]
 Buttonpos=0,0
 Hotkey=Q
 Researchhotkey=Q
@@ -1283,15 +1284,15 @@ Hotkey=W
 Researchhotkey=W
 
 [ANca]
-Buttonpos=2,0
-Researchhotkey=E
+Buttonpos=2,0]=],
+            [=[Researchhotkey=E
 
 [ancf]
 Buttonpos=0,0
 Hotkey=Q
 Researchhotkey=Q
-]=],
-            [=[[ANch]
+
+[ANch]
 Buttonpos=3,0
 Hotkey=R
 Researchhotkey=R
@@ -1307,8 +1308,8 @@ Buttonpos=1,0
 Hotkey=W
 Researchhotkey=W
 
-[ANcs]
-Buttonpos=1,0
+[ANcs]]=],
+            [=[Buttonpos=1,0
 Hotkey=W
 Researchhotkey=W
 
@@ -1335,8 +1336,8 @@ Researchhotkey=R
 Buttonpos=1,2
 Hotkey= 
 
-[ANdh]
-Buttonpos=1,0
+[ANdh]]=],
+            [=[Buttonpos=1,0
 Hotkey=W
 Researchhotkey=W
 
@@ -1363,14 +1364,14 @@ Hotkey=R
 [ane2]
 Hotkey=B
 
-[ANef]
-Buttonpos=3,0
+[ANef]]=],
+            [=[Buttonpos=3,0
 Hotkey=R
 Researchhotkey=R
 
 [ANeg]
-Buttonpos=2,0]=],
-            [=[Hotkey=E
+Buttonpos=2,0
+Hotkey=E
 Researchhotkey=E
 
 [Anei]
@@ -1390,8 +1391,8 @@ Hotkey=
 Buttonpos=1,0
 Hotkey=W
 Researchhotkey=W
-Unbuttonpos=1,0
-Unhotkey=W
+Unbuttonpos=1,0]=],
+            [=[Unhotkey=W
 
 [anfb]
 Buttonpos=1,0
@@ -1416,8 +1417,8 @@ Hotkey=R
 Researchhotkey=R
 Unbuttonpos=3,0
 Unhotkey=R
-
-[ANg2]
+]=],
+            [=[[ANg2]
 Buttonpos=3,0
 Hotkey=R
 Researchhotkey=R
@@ -1439,13 +1440,13 @@ Unhotkey=Q
 
 [Anh2]
 Buttonpos=0,0
-Hotkey=Q
-Unbuttonpos=0,0
+Hotkey=Q]=],
+            [=[Unbuttonpos=0,0
 Unhotkey=Q
 
 [anha]
-Hotkey=T]=],
-            [=[Unhotkey=T
+Hotkey=T
+Unhotkey=T
 
 [ANhs]
 Buttonpos=0,0
@@ -1464,8 +1465,8 @@ Researchhotkey=Q
 
 [anhx]
 Buttonpos=1,0
-Hotkey=W
-Researchhotkey=W
+Hotkey=W]=],
+            [=[Researchhotkey=W
 
 [ANia]
 Buttonpos=2,0
@@ -1490,8 +1491,8 @@ Buttonpos=1,0
 Hotkey=W
 Researchhotkey=W
 
-[ANms]
-Buttonpos=2,0
+[ANms]]=],
+            [=[Buttonpos=2,0
 Hotkey=E
 Researchhotkey=E
 Unbuttonpos=2,0
@@ -1516,10 +1517,10 @@ Researchhotkey=Q
 
 [ANrg]
 Buttonpos=3,0
-Hotkey=R
-Researchhotkey=R
-Unbuttonpos=3,0]=],
-            [=[Unhotkey=R
+Hotkey=R]=],
+            [=[Researchhotkey=R
+Unbuttonpos=3,0
+Unhotkey=R
 
 [ANs1]
 Buttonpos=0,0
@@ -1540,8 +1541,8 @@ Researchhotkey=Q
 Buttonpos=2,0
 Hotkey=E
 Researchhotkey=E
-
-[ANsg]
+]=],
+            [=[[ANsg]
 Buttonpos=0,0
 Hotkey=Q
 Researchhotkey=Q
@@ -1565,8 +1566,8 @@ Researchhotkey=Q
 
 [ANsq]
 Buttonpos=1,0
-Hotkey=W
-Researchhotkey=W
+Hotkey=W]=],
+            [=[Researchhotkey=W
 
 [ANst]
 Buttonpos=3,0
@@ -1591,10 +1592,10 @@ Hotkey=Q
 Buttonpos=3,0
 Hotkey=R
 Researchhotkey=R
-
-[ANto]
-Buttonpos=3,0]=],
-            [=[Hotkey=R
+]=],
+            [=[[ANto]
+Buttonpos=3,0
+Hotkey=R
 Researchhotkey=R
 
 [ANvc]
@@ -1619,8 +1620,8 @@ Buttonpos=3,2
 [aobu]
 Buttonpos=0,0
 
-[AOcl]
-Buttonpos=0,0
+[AOcl]]=],
+            [=[Buttonpos=0,0
 Hotkey=Q
 Researchhotkey=Q
 
@@ -1643,8 +1644,8 @@ Buttonpos=0,0
 Hotkey=Q
 Researchhotkey=Q
 
-[AOhx]
-Buttonpos=1,0
+[AOhx]]=],
+            [=[Buttonpos=1,0
 Hotkey=W
 Researchhotkey=W
 
@@ -1669,9 +1670,9 @@ Buttonpos=3,0
 Researchhotkey=R
 
 [aos2]
-Buttonpos=0,0
-Hotkey=Q]=],
-            [=[Researchhotkey=Q
+Buttonpos=0,0]=],
+            [=[Hotkey=Q
+Researchhotkey=Q
 
 [AOsf]
 Buttonpos=2,0
@@ -1695,8 +1696,8 @@ Researchhotkey=E
 Buttonpos=2,2
 
 [AOvd]
-Buttonpos=3,0
-Hotkey=R
+Buttonpos=3,0]=],
+            [=[Hotkey=R
 Researchhotkey=R
 
 [aow2]
@@ -1720,8 +1721,8 @@ Hotkey=R
 Researchhotkey=R
 
 [Apg2]
-Buttonpos=0,0
-Hotkey=Q
+Buttonpos=0,0]=],
+            [=[Hotkey=Q
 
 [Aply]
 Buttonpos=2,0
@@ -1749,9 +1750,9 @@ Buttonpos=0,0
 Hotkey=Q
 
 [Arai]
-Buttonpos=0,0]=],
-            [=[Hotkey=Q
-Unbuttonpos=0,0
+Buttonpos=0,0
+Hotkey=Q]=],
+            [=[Unbuttonpos=0,0
 Unhotkey=Q
 
 [ARal]
@@ -1778,8 +1779,8 @@ Unbuttonpos=3,0
 Unhotkey=R
 
 [Aro1]
-Hotkey=V
-Unhotkey=V
+Hotkey=V]=],
+            [=[Unhotkey=V
 
 [Aro2]
 Hotkey=V
@@ -1807,8 +1808,8 @@ Buttonpos=1,0
 Hotkey=W
 Unbuttonpos=1,0
 Unhotkey=W
-
-[arsc]
+]=],
+            [=[[arsc]
 Hotkey=F
 
 [arsg]
@@ -1833,9 +1834,10 @@ Hotkey=R
 Unhotkey=X
 
 [arsw]
-Buttonpos=2,0]=],
-            [=[Hotkey=E
-Researchhotkey=E
+Buttonpos=2,0
+Hotkey=E
+Researchhotkey=E]=],
+            [=[
 
 [Asac]
 Hotkey=Q
@@ -1866,8 +1868,8 @@ Buttonpos=0,0
 Hotkey=Q
 Unhotkey=Q
 
-[Asdg]
-Buttonpos=0,0
+[Asdg]]=],
+            [=[Buttonpos=0,0
 Hotkey=Q
 Unhotkey=Q
 
@@ -1895,8 +1897,8 @@ Hotkey=Q
 
 [aspo]
 Buttonpos=3,2
-
-[Asps]
+]=],
+            [=[[Asps]
 Buttonpos=0,0
 Hotkey=Q
 Unbuttonpos=0,0
@@ -1918,12 +1920,12 @@ Buttonpos=2,2
 
 [Astn]
 Buttonpos=0,0
-Hotkey=Q]=],
-            [=[Unbuttonpos=0,0
+Hotkey=Q
+Unbuttonpos=0,0
 Unhotkey=Q
 UnhotkeyId=Ast1
-
-[Atau]
+]=],
+            [=[[Atau]
 Buttonpos=0,0
 Hotkey=Q
 
@@ -1948,8 +1950,8 @@ Buttonpos=2,0
 Researchhotkey=E
 
 [AUb1]
-Hotkey=W
-Researchhotkey=W
+Hotkey=W]=],
+            [=[Researchhotkey=W
 
 [AUb2]
 Hotkey=W
@@ -1973,8 +1975,8 @@ Buttonpos=0,0
 [AUcb]
 Buttonpos=2,0
 Hotkey=E
-Researchhotkey=E
-Unbuttonpos=2,0
+Researchhotkey=E]=],
+            [=[Unbuttonpos=2,0
 
 [Auco]
 Buttonpos=0,0
@@ -1995,13 +1997,13 @@ Researchhotkey=E
 [AUd3]
 Researchhotkey=E
 
-[AUdb]]=],
-            [=[Researchhotkey=E
+[AUdb]
+Researchhotkey=E
 
 [AUdc]
 Buttonpos=0,0
-Hotkey=Q
-Researchhotkey=Q
+Hotkey=Q]=],
+            [=[Researchhotkey=Q
 
 [AUdd]
 Buttonpos=3,0
@@ -2025,8 +2027,8 @@ Researchhotkey=Q
 
 [AUfu]
 Buttonpos=1,0
-Hotkey=W
-Researchhotkey=W
+Hotkey=W]=],
+            [=[Researchhotkey=W
 Unbuttonpos=1,0
 
 [augh]
@@ -2052,8 +2054,8 @@ Researchhotkey=R
 Buttonpos=0,0
 Hotkey=Q
 Researchhotkey=Q
-
-[AUin]
+]=],
+            [=[[AUin]
 Buttonpos=3,0
 Hotkey=R
 Researchhotkey=R
@@ -2070,16 +2072,16 @@ Unhotkey=W
 
 [AUl3]
 Hotkey=W
-Researchhotkey=W]=],
-            [=[Unhotkey=W
+Researchhotkey=W
+Unhotkey=W
 
 [AUla]
 Hotkey=W
 Researchhotkey=W
 Unhotkey=W
 
-[AUls]
-Buttonpos=3,0
+[AUls]]=],
+            [=[Buttonpos=3,0
 Hotkey=R
 Researchhotkey=R
 
@@ -2105,7 +2107,8 @@ Researchhotkey=Q
 
 [AUs2]
 Hotkey=Q
-Researchhotkey=Q
+Researchhotkey=Q]=],
+            [=[
 
 [AUs3]
 Hotkey=Q
@@ -2134,8 +2137,8 @@ Researchhotkey=R
 [AUv2]
 Hotkey=R
 Researchhotkey=R
-
-[AUv3]
+]=],
+            [=[[AUv3]
 Hotkey=R
 Researchhotkey=R
 
@@ -2151,8 +2154,8 @@ Researchhotkey=Q
 Hotkey=Q
 Researchhotkey=Q
 
-[AUw3]]=],
-            [=[Hotkey=Q
+[AUw3]
+Hotkey=Q
 Researchhotkey=Q
 
 [AUwc]
@@ -2160,8 +2163,8 @@ Hotkey=R
 Researchhotkey=R
 
 [AUwf]
-Hotkey=W,Q
-Researchhotkey=W,Q
+Hotkey=W,Q]=],
+            [=[Researchhotkey=W,Q
 
 [aven]
 Buttonpos=3,2
@@ -2188,8 +2191,8 @@ Hotkey=W
 Buttonpos=2,0
 Hotkey=E
 
-[awrh]
-Buttonpos=1,0
+[awrh]]=],
+            [=[Buttonpos=1,0
 Hotkey=W
 
 [Awrs]
@@ -2220,8 +2223,8 @@ MerchantAvailable=1
 [bspd]
 Hotkey=Q
 
-[capt]
-CameraCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+[capt]]=],
+            [=[CameraCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 Hotkey=67
 Modifier=Ctrl_or_Alt
 
@@ -2230,8 +2233,8 @@ Hotkey=Q
 MerchantAvailable=1
 
 [Chat]
-Hotkey=123]=],
-            [=[MenuCommand=1
+Hotkey=123
+MenuCommand=1
 
 [ciri]
 Hotkey=C
@@ -2243,8 +2246,8 @@ Hotkey=K
 [clfm]
 Hotkey=S
 MerchantAvailable=1
-
-[clnt]
+]=],
+            [=[[clnt]
 CameraCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 Hotkey=32
 
@@ -2265,8 +2268,8 @@ Hotkey=B
 
 [CmdBuildHuman]
 Hotkey=Q
-
-[cmdbuildnaga]
+]=],
+            [=[[cmdbuildnaga]
 Hotkey=W
 
 [CmdBuildNightElf]
@@ -2291,8 +2294,8 @@ Hotkey=V
 Hotkey=27
 
 [CmdHoldPos]
-Buttonpos=0,1
-Hotkey=A
+Buttonpos=0,1]=],
+            [=[Hotkey=A
 
 [CmdMove]
 Buttonpos=2,1
@@ -2305,8 +2308,8 @@ Hotkey=Z
 [CmdRally]
 Hotkey=F
 
-[CmdSelectSkill]]=],
-            [=[Buttonpos=3,2
+[CmdSelectSkill]
+Buttonpos=3,2
 Hotkey=V
 
 [CmdStop]
@@ -2318,8 +2321,8 @@ Buttonpos=1,0
 Hotkey=W
 MerchantAvailable=1
 
-[cosl]
-Hotkey=C
+[cosl]]=],
+            [=[Hotkey=C
 
 [crdt]
 Hotkey=D
@@ -2336,8 +2339,8 @@ Hotkey=8
 CtrlGroupCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 Hotkey=48
 
-[Ctr1]
-CtrlGroupCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+[Ctr1]]=],
+            [=[CtrlGroupCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 Hotkey=49
 
 [Ctr2]
@@ -2348,20 +2351,20 @@ Hotkey=50
 CtrlGroupCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 Hotkey=51
 
-[Ctr4]
-CtrlGroupCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+[Ctr4]]=],
+            [=[CtrlGroupCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 Hotkey=52
 
 [Ctr5]
 CtrlGroupCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 Hotkey=53
 
-[Ctr6]]=],
-            [=[CtrlGroupCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+[Ctr6]
+CtrlGroupCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 Hotkey=54
 
-[Ctr7]
-CtrlGroupCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+[Ctr7]]=],
+            [=[CtrlGroupCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 Hotkey=55
 
 [Ctr8]
@@ -2373,8 +2376,8 @@ CtrlGroupCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 Hotkey=57
 
 [DeGS]
-Hotkey=189
-ReplayCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+Hotkey=189]=],
+            [=[ReplayCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 
 [desc]
 Hotkey=E
@@ -2405,8 +2408,8 @@ Buttonpos=1,1
 Hotkey=S
 
 [eaow]
-Buttonpos=3,1
-Hotkey=F
+Buttonpos=3,1]=],
+            [=[Hotkey=F
 
 [earc]
 Hotkey=Q
@@ -2431,8 +2434,8 @@ Hotkey=
 [Edem]
 Buttonpos=0,0
 Hotkey=Q
-]=],
-            [=[[eden]
+
+[eden]
 Hotkey=C
 
 [edes]
@@ -2441,8 +2444,8 @@ Hotkey=E
 [edob]
 Hotkey=E
 
-[edoc]
-Hotkey=W
+[edoc]]=],
+            [=[Hotkey=W
 
 [edos]
 Hotkey=X
@@ -2466,8 +2469,8 @@ Hotkey=E
 Buttonpos=1,0
 Hotkey=W
 
-[egol]
-Hoktey=None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None
+[egol]]=],
+            [=[Hoktey=None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None
 
 [ehip]
 Hotkey=Q
@@ -2489,8 +2492,8 @@ Hotkey=X
 
 [emns]
 Hotkey=S
-
-[Emoo]
+]=],
+            [=[[Emoo]
 Buttonpos=2,0
 Hotkey=E
 
@@ -2524,11 +2527,11 @@ Hotkey=Z
 Hotkey=Z
 
 [etol]
-Buttonpos=0,2
-Hotkey=Z
+Buttonpos=0,2]=],
+            [=[Hotkey=Z
 
-[etrp]]=],
-            [=[Buttonpos=0,1
+[etrp]
+Buttonpos=0,1
 Hotkey=A
 OffensiveStructure=1
 
@@ -2554,8 +2557,8 @@ Hotkey=R
 [ewsp]
 Attackless=1
 Hotkey=Q
-
-[fgbd]
+]=],
+            [=[[fgbd]
 Hotkey=V
 MerchantAvailable=1
 
@@ -2583,8 +2586,8 @@ Hotkey=F
 
 [frgd]
 Hotkey=F
-
-[frhg]
+]=],
+            [=[[frhg]
 Hotkey=F
 
 [fwss]
@@ -2654,8 +2657,8 @@ OffensiveStructure=1
 Buttonpos=1,1
 Hotkey=S
 
-[hbla]
-Hotkey=R
+[hbla]]=],
+            [=[Hotkey=R
 
 [Hblm]
 Buttonpos=3,0
@@ -2686,8 +2689,8 @@ Hotkey=W,W
 OffensiveStructure=1
 
 [hcun]
-Hotkey=F
-MerchantAvailable=1
+Hotkey=F]=],
+            [=[MerchantAvailable=1
 
 [hdes]
 Hotkey=W
@@ -2703,9 +2706,9 @@ Hotkey=112
 GameCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 Hotkey=113
 
-[her3]]=],
-            [=[GameCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-Hotkey=114
+[her3]
+GameCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]=],
+            [=[Hotkey=114
 
 [hfoo]
 Hotkey=Q
@@ -2738,8 +2741,8 @@ Hotkey=Q
 [Hjsm]
 Hotkey=I
 
-[hkal]
-Buttonpos=3,0
+[hkal]]=],
+            [=[Buttonpos=3,0
 Hotkey=R
 
 [hkee]
@@ -2772,8 +2775,8 @@ IgnoreBuilds=1
 [Hmkg]
 Buttonpos=1,0
 Hotkey=W
-
-[hmpr]
+]=],
+            [=[[hmpr]
 Hotkey=W
 
 [hmtm]
@@ -2799,8 +2802,8 @@ Hotkey=W
 [hrtt]
 Hotkey=E
 
-[hslv]]=],
-            [=[Hotkey=Q
+[hslv]
+Hotkey=Q
 
 [hsor]
 Hotkey=Q
@@ -2809,8 +2812,8 @@ Hotkey=Q
 Hotkey=E
 
 [htow]
-Buttonpos=0,2
-Hotkey=Z
+Buttonpos=0,2]=],
+            [=[Hotkey=Z
 
 [hval]
 Hotkey=D
@@ -2834,8 +2837,8 @@ ReplayCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 Hotkey=Q
 MerchantAvailable=1
 
-[itm1]
-GameCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+[itm1]]=],
+            [=[GameCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 Hotkey=103
 
 [itm2]
@@ -2847,8 +2850,8 @@ GameCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 Hotkey=100
 
 [itm4]
-GameCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-Hotkey=101
+GameCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]=],
+            [=[Hotkey=101
 
 [itm5]
 GameCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
@@ -2861,8 +2864,8 @@ Hotkey=98
 [jpnt]
 Hotkey=J
 
-[kgal]]=],
-            [=[Hotkey=K
+[kgal]
+Hotkey=K
 
 [klmm]
 Hotkey=K
@@ -2871,8 +2874,8 @@ Hotkey=K
 Hotkey=Z
 MerchantAvailable=1
 
-[lgdh]
-Hotkey=X
+[lgdh]]=],
+            [=[Hotkey=X
 MerchantAvailable=1
 
 [lhst]
@@ -2901,8 +2904,8 @@ Modifier=Alt
 Hotkey=121
 MenuCommand=1
 
-[mgtk]
-Hotkey=K
+[mgtk]]=],
+            [=[Hotkey=K
 
 [MHlp]
 Hotkey=72
@@ -2932,8 +2935,8 @@ Hotkey=79
 MenuCommand=1
 Modifier=Alt
 
-[mort]
-Hotkey=M
+[mort]]=],
+            [=[Hotkey=M
 
 [mpng]
 GameCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
@@ -2945,12 +2948,12 @@ Hotkey=83
 MenuCommand=1
 Modifier=Alt
 
-[mvcb]]=],
-            [=[CameraCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+[mvcb]
+CameraCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 Hotkey=40
 
-[mvcf]
-CameraCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+[mvcf]]=],
+            [=[CameraCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 Hotkey=38
 
 [mvcl]
@@ -2968,7 +2971,8 @@ Hotkey=W
 Hotkey=E
 
 [nadw]
-Hotkey=Q
+Hotkey=Q]=],
+            [=[
 
 [naka]
 Buttonpos=3,0
@@ -3009,8 +3013,8 @@ Hotkey=Q
 
 [nbot]
 Hotkey=Q
-
-[Nbrn]
+]=],
+            [=[[Nbrn]
 Hotkey=S
 
 [Nbst]
@@ -3033,8 +3037,8 @@ Hotkey=E
 [nbzk]
 Hotkey=W
 
-[nbzw]]=],
-            [=[Hotkey=Q
+[nbzw]
+Hotkey=Q
 
 [ncea]
 Hotkey=Q
@@ -3048,8 +3052,8 @@ Hotkey=
 [ncg2]
 Hotkey= 
 
-[ncg3]
-Hotkey= 
+[ncg3]]=],
+            [=[Hotkey= 
 
 [ncgb]
 Hotkey= 
@@ -3088,8 +3092,8 @@ Hotkey=
 [ndru]
 Hotkey= 
 
-[ndrz]
-Hotkey= 
+[ndrz]]=],
+            [=[Hotkey= 
 
 [ndt1]
 Buttonpos=2,0
@@ -3126,8 +3130,8 @@ Hotkey=
 
 [nfgb]
 Hotkey=W,W
-
-[Nfir]
+]=],
+            [=[[Nfir]
 Hotkey=F
 
 [nfra]
@@ -3147,8 +3151,8 @@ Buttonpos=1,1
 Hotkey=S
 
 [nft2]
-Buttonpos=0,0]=],
-            [=[Hotkey=Q
+Buttonpos=0,0
+Hotkey=Q
 
 [nftb]
 Hotkey=W
@@ -3165,8 +3169,8 @@ Hotkey=E
 [ngme]
 Hotkey= 
 
-[ngnb]
-Hotkey=Q
+[ngnb]]=],
+            [=[Hotkey=Q
 
 [ngnw]
 Hotkey=W
@@ -3207,8 +3211,8 @@ Hotkey=E
 [nkol]
 Hotkey=R
 
-[nkot]
-Hotkey=Q
+[nkot]]=],
+            [=[Hotkey=Q
 
 [nmbg]
 Hotkey=Q
@@ -3249,8 +3253,8 @@ Hotkey=
 [nmr9]
 Hotkey= 
 
-[nmra]
-Hotkey= 
+[nmra]]=],
+            [=[Hotkey= 
 
 [nmrb]
 Hotkey= 
@@ -3270,8 +3274,8 @@ Hotkey=
 [nmsn]
 Hotkey=E
 
-[nndk]]=],
-            [=[Hotkey=W
+[nndk]
+Hotkey=W
 
 [nndr]
 Hotkey=E
@@ -3291,8 +3295,8 @@ Hotkey=E
 [nnsa]
 Hotkey=S
 
-[nnsg]
-Hotkey=E
+[nnsg]]=],
+            [=[Hotkey=E
 
 [nnsw]
 Hotkey=W
@@ -3331,8 +3335,8 @@ Hotkey=Z
 [npn2]
 Hotkey=T
 
-[npn3]
-Hotkey=E
+[npn3]]=],
+            [=[Hotkey=E
 
 [nqb2]
 Hotkey= 
@@ -3373,8 +3377,8 @@ Hotkey=W
 [nsog]
 Hotkey=R
 
-[nsrh]
-Hotkey=W
+[nsrh]]=],
+            [=[Hotkey=W
 
 [nssp]
 Hotkey=R
@@ -3391,8 +3395,8 @@ Hotkey=C
 [ntkh]
 Hotkey=R
 
-[ntt1]]=],
-            [=[Buttonpos=1,0
+[ntt1]
+Buttonpos=1,0
 Hotkey=W
 
 [ntx2]
@@ -3412,7 +3416,8 @@ Hotkey=E
 Hotkey=R
 
 [nzep]
-Hotkey=W
+Hotkey=W]=],
+            [=[
 
 [o002]
 Hotkey=E
@@ -3446,8 +3451,8 @@ Hotkey=E
 [ocor]
 Hotkey=Z
 
-[odef]
-Hotkey=E
+[odef]]=],
+            [=[Hotkey=E
 MerchantAvailable=1
 
 [odes]
@@ -3481,7 +3486,8 @@ Hotkey=Z
 
 [ogrh]
 Buttonpos=0,0
-Hotkey=Q
+Hotkey=Q]=],
+            [=[
 
 [ogru]
 Hotkey=Q
@@ -3497,8 +3503,8 @@ Hotkey=E
 
 [oli2]
 Hotkey=Z
-]=],
-            [=[[olig]
+
+[olig]
 Hotkey=L
 
 [opeo]
@@ -3522,8 +3528,8 @@ Hotkey=Q
 
 [osld]
 Hotkey=D
-
-[oslo]
+]=],
+            [=[[oslo]
 Hotkey=Z
 
 [ospm]
@@ -3557,8 +3563,8 @@ Hotkey=W
 Buttonpos=1,2
 Hotkey=X
 
-[oven]
-Hotkey=Z
+[oven]]=],
+            [=[Hotkey=Z
 
 [ovln]
 Buttonpos=2,2
@@ -3587,16 +3593,16 @@ MerchantAvailable=1
 Hotkey=W
 MerchantAvailable=1
 
-[penr]
-Hotkey=C
+[penr]]=],
+            [=[Hotkey=C
 MerchantAvailable=1
 
 [pghe]
 Hotkey=Q
 MerchantAvailable=1
 
-[pgin]]=],
-            [=[Hotkey=I
+[pgin]
+Hotkey=I
 
 [pgma]
 Hotkey=W
@@ -3618,8 +3624,8 @@ Hotkey=S
 [pmna]
 Hotkey=R
 MerchantAvailable=1
-
-[pnvl]
+]=],
+            [=[[pnvl]
 Buttonpos=2,1
 Hotkey=D
 
@@ -3647,8 +3653,8 @@ Hotkey=120
 MenuCommand=1
 
 [QSav]
-Hotkey=117
-MenuCommand=1
+Hotkey=117]=],
+            [=[MenuCommand=1
 
 [rag1]
 Hotkey=A
@@ -3674,14 +3680,14 @@ MerchantAvailable=1
 Hotkey=K
 
 [rat6]
-Hotkey=S
-MerchantAvailable=1
+Hotkey=S]=],
+            [=[MerchantAvailable=1
 
 [rat9]
 Hotkey=X
 MerchantAvailable=1
-]=],
-            [=[[ratc]
+
+[ratc]
 Hotkey=A
 MerchantAvailable=1
 
@@ -3704,8 +3710,8 @@ MerchantAvailable=1
 
 [rdis]
 Hotkey=D
-
-[Recb]
+]=],
+            [=[[Recb]
 Hotkey=Z
 
 [Redc]
@@ -3738,8 +3744,8 @@ MerchantAvailable=1
 Hotkey=F
 MerchantAvailable=1
 
-[rej3]
-Hotkey=Z
+[rej3]]=],
+            [=[Hotkey=Z
 MerchantAvailable=1
 
 [rej4]
@@ -3771,15 +3777,15 @@ Hotkey=C
 
 [Repm]
 Hotkey=R
-
-[Rerh]
+]=],
+            [=[[Rerh]
 Hotkey=S,S,S
 
 [Rers]
 Hotkey=C
 
-[Resc]]=],
-            [=[Hotkey=X
+[Resc]
+Hotkey=X
 
 [Resi]
 Hotkey=Z
@@ -3802,8 +3808,8 @@ Hotkey=116
 
 [Rhac]
 Hotkey=W,W,W
-
-[Rhan]
+]=],
+            [=[[Rhan]
 Hotkey=C
 
 [Rhar]
@@ -3840,8 +3846,8 @@ Hotkey=A
 
 [Rhhb]
 Hotkey=X
-
-[Rhla]
+]=],
+            [=[[Rhla]
 Hotkey=S,S,S
 
 [Rhlh]
@@ -3876,12 +3882,12 @@ Hotkey=R
 Buttonpos=2,2
 Hotkey=C
 
-[Rhst]
-Hotkey=Z,Z
+[Rhst]]=],
+            [=[Hotkey=Z,Z
 
 [rhth]
-Hotkey=W]=],
-            [=[MerchantAvailable=1
+Hotkey=W
+MerchantAvailable=1
 
 [rin1]
 Hotkey=E
@@ -3909,8 +3915,8 @@ Hotkey=Q
 [rnsb]
 Hotkey=V
 
-[rnsi]
-Hotkey=C
+[rnsi]]=],
+            [=[Hotkey=C
 
 [rnsp]
 Hotkey=R
@@ -3937,8 +3943,8 @@ Hotkey=Z
 CameraCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 Hotkey=45
 
-[rocr]
-CameraCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+[rocr]]=],
+            [=[CameraCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 Hotkey=46
 
 [Roen]
@@ -3968,10 +3974,10 @@ Hotkey=E,E
 [Rost]
 Hotkey=Z,Z
 
-[Rotr]
-Buttonpos=1,1
-Hotkey=S]=],
-            [=[
+[Rotr]]=],
+            [=[Buttonpos=1,1
+Hotkey=S
+
 [rots]
 Hotkey=R
 
@@ -4005,8 +4011,8 @@ MerchantAvailable=1
 
 [Ruac]
 Hotkey=Z
-
-[Ruar]
+]=],
+            [=[[Ruar]
 Hotkey=A,A,A
 
 [Ruba]
@@ -4044,8 +4050,8 @@ Hotkey=X
 
 [Rupm]
 Hotkey=R
-
-[Rura]
+]=],
+            [=[[Rura]
 Hotkey=W,W,W
 
 [Rusf]
@@ -4107,8 +4113,8 @@ Hotkey=W
 
 [sfog]
 Hotkey=C
-
-[shar]
+]=],
+            [=[[shar]
 Hotkey=C
 MerchantAvailable=1
 
@@ -4140,8 +4146,8 @@ Hotkey=H
 [shwd]
 Hotkey=S
 
-[sidw]
-GameCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+[sidw]]=],
+            [=[GameCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 Hotkey=220
 
 [silk]
@@ -4172,9 +4178,9 @@ Hotkey=O
 
 [sor3]
 Hotkey=O
-
-[sor4]]=],
-            [=[Hotkey=O
+]=],
+            [=[[sor4]
+Hotkey=O
 
 [sor5]
 Hotkey=O
@@ -4203,8 +4209,8 @@ Modifier=Alt
 ObserverCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 
 [spre]
-Buttonpos=2,1
-Hotkey=D
+Buttonpos=2,1]=],
+            [=[Hotkey=D
 
 [spro]
 Hotkey=A
@@ -4237,8 +4243,8 @@ Hotkey=X
 Hotkey=C
 
 [ssil]
-Hotkey=E
-MerchantAvailable=1
+Hotkey=E]=],
+            [=[MerchantAvailable=1
 
 [stel]
 Buttonpos=2,0
@@ -4275,8 +4281,8 @@ Hotkey=65
 ObserverCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 
 [TAuC]
-Hotkey=101
-ReplayCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+Hotkey=101]=],
+            [=[ReplayCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 
 [tbak]
 Hotkey=K
@@ -4303,8 +4309,8 @@ Hotkey=T
 [texp]
 Hotkey=G
 
-[tfar]
-Hotkey=F
+[tfar]]=],
+            [=[Hotkey=F
 
 [TFmv]
 GameCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
@@ -4322,10 +4328,10 @@ Hotkey=X
 Hotkey=T
 
 [THer]
-Hotkey=72
-ObserverCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-]=],
-            [=[[tint]
+Hotkey=72]=],
+            [=[ObserverCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+
+[tint]
 Hotkey=R
 
 [tkno]
@@ -4340,8 +4346,8 @@ ObserverCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 
 [TMcd]
 GameCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-Hotkey=82
-Modifier=Alt
+Hotkey=82]=],
+            [=[Modifier=Alt
 
 [tmsc]
 Hotkey=T
@@ -4361,8 +4367,8 @@ Hotkey=80
 ReplayCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 
 [TPUQ]
-Hotkey=81
-ObserverCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+Hotkey=81]=],
+            [=[ObserverCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 
 [tret]
 Hotkey=Z
@@ -4379,12 +4385,12 @@ Hotkey=D
 Hotkey=83
 ObserverCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 
-[TSFX]
-Hotkey=83
+[TSFX]]=],
+            [=[Hotkey=83
 MenuCommand=1
 Modifier=Ctrl
-]=],
-            [=[[TSta]
+
+[TSta]
 Hotkey=84
 ObserverCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 
@@ -4401,8 +4407,8 @@ Hotkey=W
 [uaco]
 Hotkey=Q
 
-[uanb]
-Hotkey=S
+[uanb]]=],
+            [=[Hotkey=S
 
 [Uany]
 Hotkey=A
@@ -4437,8 +4443,8 @@ Hotkey=
 [Udea]
 Buttonpos=0,0
 Hotkey=Q
-
-[udes]
+]=],
+            [=[[udes]
 Hotkey=E
 
 [Udre]
@@ -4474,11 +4480,11 @@ Hotkey=G
 [ugrm]
 Hotkey=A
 
-[ugrv]
-Buttonpos=2,0
+[ugrv]]=],
+            [=[Buttonpos=2,0
 Hotkey=E
-]=],
-            [=[[uktl]
+
+[uktl]
 Hotkey=V
 
 [Ulic]
@@ -4508,8 +4514,8 @@ Hotkey=E
 [usap]
 Buttonpos=0,1
 Hotkey=A
-
-[usep]
+]=],
+            [=[[usep]
 Buttonpos=1,1
 Hotkey=S
 
@@ -4540,8 +4546,8 @@ OffensiveStructure=1
 Buttonpos=1,0
 Hotkey=W
 OffensiveStructure=1
-
-[uzig]
+]=],
+            [=[[uzig]
 Buttonpos=1,0
 Hotkey=W
 
@@ -4568,10 +4574,10 @@ Hotkey=F
 MerchantAvailable=1
 
 [will]
-Hotkey=V
-MerchantAvailable=1
-]=],
-            [=[[wneg]
+Hotkey=V]=],
+            [=[MerchantAvailable=1
+
+[wneg]
 Buttonpos=2,1
 Hotkey=D
 
@@ -4595,13 +4601,14 @@ MerchantAvailable=1
 [wtlg]
 Hotkey=L
 
-[zmin]
-CameraCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+[zmin]]=],
+            [=[CameraCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 Hotkey=33
 
 [zmou]
 CameraCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 Hotkey=34
+
 ]=]
         },
     },
@@ -4636,8 +4643,8 @@ Unhotkey=E
 Buttonpos=3,2
 
 [Aam2]
-Buttonpos=1,0
-Hotkey=W
+Buttonpos=1,0]=],
+            [=[Hotkey=W
 
 [aamk]
 Buttonpos=2,2
@@ -4666,8 +4673,8 @@ Unhotkey=R
 Hotkey=R
 
 [Ablo]
-Buttonpos=2,0
-Hotkey=E
+Buttonpos=2,0]=],
+            [=[Hotkey=E
 Unbuttonpos=2,0
 Unhotkey=E
 
@@ -4691,10 +4698,10 @@ Hotkey=Q
 [Abu2]
 Buttonpos=3,0
 Hotkey=R
-Unbuttonpos=3,0]=],
-            [=[Unhotkey=R
-
-[Abu3]
+Unbuttonpos=3,0
+Unhotkey=R
+]=],
+            [=[[Abu3]
 Buttonpos=3,0
 Hotkey=R
 Unbuttonpos=3,0
@@ -4719,8 +4726,8 @@ Buttonpos=2,0
 Buttonpos=3,0
 Hotkey=R
 
-[acam]
-Hotkey=E
+[acam]]=],
+            [=[Hotkey=E
 
 [Acan]
 Buttonpos=0,0
@@ -4749,8 +4756,8 @@ Hotkey=Q
 [acbh]
 Buttonpos=2,0
 
-[acbk]
-Buttonpos=0,0
+[acbk]]=],
+            [=[Buttonpos=0,0
 Hotkey=Q
 Unbuttonpos=0,0
 
@@ -4775,11 +4782,11 @@ Buttonpos=1,0
 Hotkey=W
 
 [accb]
-Buttonpos=0,0]=],
-            [=[Hotkey=W
+Buttonpos=0,0
+Hotkey=W
 
-[acch]
-Buttonpos=3,0
+[acch]]=],
+            [=[Buttonpos=3,0
 
 [accl]
 Buttonpos=0,0
@@ -4805,8 +4812,8 @@ Hotkey=Q
 
 [ACcw]
 Buttonpos=1,0
-Hotkey=W
-Unbuttonpos=1,0
+Hotkey=W]=],
+            [=[Unbuttonpos=1,0
 Unhotkey=W
 
 [ACcy]
@@ -4832,8 +4839,8 @@ Buttonpos=2,0
 Hotkey=E
 
 [acdh]
-Buttonpos=1,0
-Hotkey=W
+Buttonpos=1,0]=],
+            [=[Hotkey=W
 Researchhotkey=W
 
 [ACdm]
@@ -4855,10 +4862,10 @@ Hotkey=W
 Buttonpos=0,0
 Hotkey=Q
 
-[acef]]=],
-            [=[Buttonpos=3,0
-Hotkey=R
-Researchhotkey=R
+[acef]
+Buttonpos=3,0
+Hotkey=R]=],
+            [=[Researchhotkey=R
 
 [acen]
 Buttonpos=0,0
@@ -4886,8 +4893,8 @@ Unhotkey=Q
 Buttonpos=0,0
 Hotkey=Q
 
-[ACfn]
-Buttonpos=0,0
+[ACfn]]=],
+            [=[Buttonpos=0,0
 Hotkey=Q
 
 [acfr]
@@ -4916,8 +4923,8 @@ Buttonpos=2,0
 Hotkey=E
 Unbuttonpos=2,0
 Unhotkey=E
-
-[acim]
+]=],
+            [=[[acim]
 Buttonpos=1,0
 Hotkey=W
 Unbuttonpos=1,0
@@ -4938,14 +4945,14 @@ Unbuttonpos=2,0
 Unhotkey=E
 
 [Acmg]
-Buttonpos=1,0]=],
-            [=[Hotkey=W
+Buttonpos=1,0
+Hotkey=W
 
 [acmi]
 Buttonpos=3,2
 
-[acmo]
-Buttonpos=0,0
+[acmo]]=],
+            [=[Buttonpos=0,0
 Hotkey=Q
 
 [Acn2]
@@ -4973,8 +4980,8 @@ Unbuttonpos=0,0
 
 [Acpf]
 Buttonpos=3,0
-Hotkey=R
-Unbuttonpos=3,0
+Hotkey=R]=],
+            [=[Unbuttonpos=3,0
 Unhotkey=R
 
 [acps]
@@ -5002,8 +5009,8 @@ Buttonpos=3,0
 Hotkey=R
 
 [Acri]
-Buttonpos=2,0
-Hotkey=E
+Buttonpos=2,0]=],
+            [=[Hotkey=E
 
 [acrj]
 Buttonpos=1,0
@@ -5024,15 +5031,15 @@ Unhotkey=Q
 
 [acs7]
 Buttonpos=2,0
-Hotkey=E]=],
-            [=[Researchhotkey=E
+Hotkey=E
+Researchhotkey=E
 
 [acs9]
 Buttonpos=3,0
 Hotkey=R
 
-[ACsa]
-Buttonpos=1,0
+[ACsa]]=],
+            [=[Buttonpos=1,0
 Hotkey=W
 Unbuttonpos=1,0
 Unhotkey=W
@@ -5058,8 +5065,8 @@ Hotkey=W
 
 [ACsw]
 Buttonpos=0,0
-Hotkey=Q
-Unbuttonpos=0,0
+Hotkey=Q]=],
+            [=[Unbuttonpos=0,0
 
 [act2]
 Buttonpos=1,0
@@ -5087,8 +5094,8 @@ Buttonpos=2,0
 Buttonpos=3,2
 
 [acwb]
-Buttonpos=1,0
-Unbuttonpos=1,0
+Buttonpos=1,0]=],
+            [=[Unbuttonpos=1,0
 
 [acwe]
 Buttonpos=2,0
@@ -5110,13 +5117,13 @@ Buttonpos=0,0
 Hotkey=Q
 Unbuttonpos=0,0
 Unhotkey=Q
-]=],
-            [=[[Adev]
+
+[Adev]
 Buttonpos=0,0
 Hotkey=Q
 
-[Adis]
-Buttonpos=1,0
+[Adis]]=],
+            [=[Buttonpos=1,0
 Hotkey=W
 
 [Adri]
@@ -5144,7 +5151,8 @@ Hotkey=Q
 
 [AEah]
 Buttonpos=2,0
-Researchhotkey=E
+Researchhotkey=E]=],
+            [=[
 
 [AEar]
 Buttonpos=2,0
@@ -5171,8 +5179,8 @@ Researchhotkey=Q
 Buttonpos=2,0
 Researchhotkey=E
 
-[AEfk]
-Buttonpos=0,0
+[AEfk]]=],
+            [=[Buttonpos=0,0
 Hotkey=Q
 Researchhotkey=Q
 
@@ -5190,14 +5198,14 @@ Buttonpos=2,0
 [AEim]
 Buttonpos=1,0
 Hotkey=W
-Researchhotkey=W]=],
-            [=[Unbuttonpos=1,0
+Researchhotkey=W
+Unbuttonpos=1,0
 Unhotkey=W
 
 [AEmb]
 Buttonpos=0,0
-Hotkey=Q
-Researchhotkey=Q
+Hotkey=Q]=],
+            [=[Researchhotkey=Q
 
 [AEme]
 Buttonpos=3,0
@@ -5226,8 +5234,8 @@ Hotkey=X
 Buttonpos=0,0
 Hotkey=Q
 
-[AEsf]
-Buttonpos=3,0
+[AEsf]]=],
+            [=[Buttonpos=3,0
 Hotkey=R
 Researchhotkey=R
 
@@ -5253,8 +5261,8 @@ Buttonpos=3,0
 Hotkey=R
 Researchhotkey=R
 
-[Aetf]
-Hotkey=F
+[Aetf]]=],
+            [=[Hotkey=F
 Unhotkey=F
 
 [AEtq]
@@ -5272,15 +5280,15 @@ Hotkey=Q
 Unbuttonpos=0,0
 Unhotkey=Q
 
-[afac]]=],
-            [=[Hotkey=R
+[afac]
+Hotkey=R
 MerchantAvailable=1
 
 [Afae]
 Buttonpos=0,0
 Hotkey=Q
-Unbuttonpos=0,0
-Unhotkey=Q
+Unbuttonpos=0,0]=],
+            [=[Unhotkey=Q
 
 [Afak]
 Buttonpos=1,0
@@ -5307,8 +5315,8 @@ Buttonpos=3,2
 [Afzy]
 Buttonpos=2,0
 Hotkey=E
-Unbuttonpos=2,0
-Unhotkey=Q
+Unbuttonpos=2,0]=],
+            [=[Unhotkey=Q
 
 [Agra]
 Buttonpos=1,0
@@ -5336,8 +5344,8 @@ Researchhotkey=E
 Buttonpos=2,0
 Researchhotkey=E
 
-[AHad]
-Buttonpos=2,0
+[AHad]]=],
+            [=[Buttonpos=2,0
 Researchhotkey=E
 
 [AHal]
@@ -5351,8 +5359,8 @@ Researchhotkey=W
 [Ahar]
 Buttonpos=2,0
 Hotkey=E
-Unbuttonpos=2,0]=],
-            [=[Unhotkey=E
+Unbuttonpos=2,0
+Unhotkey=E
 
 [AHas]
 Hotkey=E
@@ -5361,8 +5369,8 @@ Researchhotkey=E
 [AHav]
 Buttonpos=3,0
 Hotkey=R
-Researchhotkey=R
-Unhotkey=R
+Researchhotkey=R]=],
+            [=[Unhotkey=R
 
 [AHb1]
 Hotkey=W
@@ -5388,8 +5396,8 @@ Researchhotkey=E
 Buttonpos=1,0
 Hotkey=W
 Researchhotkey=W
-
-[ahbu]
+]=],
+            [=[[ahbu]
 Buttonpos=0,0
 
 [AHbz]
@@ -5414,8 +5422,8 @@ Buttonpos=1,0
 Hotkey=W
 Researchhotkey=W
 Unbuttonpos=1,0
-
-[AHch]
+]=],
+            [=[[AHch]
 Hotkey=E
 Researchhotkey=E
 
@@ -5427,8 +5435,8 @@ Researchhotkey=R
 
 [AHcr]
 Buttonpos=1,0
-Hotkey=W]=],
-            [=[Researchbuttonpos=1,0
+Hotkey=W
+Researchbuttonpos=1,0
 Researchhotkey=W
 
 [AHct]
@@ -5437,8 +5445,8 @@ Researchhotkey=R
 
 [AHdr]
 Buttonpos=2,0
-Hotkey=E
-Researchhotkey=E
+Hotkey=E]=],
+            [=[Researchhotkey=E
 
 [AHds]
 Buttonpos=1,0
@@ -5463,8 +5471,8 @@ Unhotkey=Q
 [AHen]
 Hotkey=W
 Researchhotkey=W
-
-[AHfa]
+]=],
+            [=[[AHfa]
 Buttonpos=1,0
 Hotkey=W
 Researchhotkey=W
@@ -5489,8 +5497,8 @@ Hotkey=E
 Researchhotkey=E
 
 [AHgh]
-Hotkey=R
-Researchhotkey=R
+Hotkey=R]=],
+            [=[Researchhotkey=R
 Unhotkey=R
 
 [AHgr]
@@ -5502,8 +5510,8 @@ Hotkey=Q
 Researchhotkey=Q
 
 [AHh2]
-Hotkey=Q]=],
-            [=[Researchhotkey=Q
+Hotkey=Q
+Researchhotkey=Q
 
 [AHh3]
 Hotkey=Q
@@ -5515,8 +5523,8 @@ Hotkey=Q
 Researchhotkey=Q
 
 [AHhc]
-Hotkey=W
-Researchhotkey=W
+Hotkey=W]=],
+            [=[Researchhotkey=W
 
 [AHhr]
 Hotkey=Q
@@ -5542,8 +5550,8 @@ Researchhotkey=E
 Hotkey=E
 Researchhotkey=E
 
-[Ahid]
-Buttonpos=2,2
+[Ahid]]=],
+            [=[Buttonpos=2,2
 Hotkey=C
 
 [AHl1]
@@ -5570,8 +5578,8 @@ Hotkey=Q
 Researchhotkey=Q
 
 [AHm3]
-Hotkey=Q
-Researchhotkey=Q
+Hotkey=Q]=],
+            [=[Researchhotkey=Q
 
 [AHmc]
 Hotkey=C,W
@@ -5582,8 +5590,8 @@ Buttonpos=3,0
 Hotkey=R
 Researchhotkey=R
 
-[AHpa]]=],
-            [=[Buttonpos=2,0
+[AHpa]
+Buttonpos=2,0
 Hotkey=E
 Researchbuttonpos=2,0
 Researchhotkey=E
@@ -5595,8 +5603,8 @@ Researchhotkey=Q
 [ahpe]
 Buttonpos=1,2
 
-[AHpx]
-Buttonpos=3,0
+[AHpx]]=],
+            [=[Buttonpos=3,0
 Hotkey=R
 Researchhotkey=R
 
@@ -5621,8 +5629,8 @@ Hotkey=E
 Unbuttonpos=2,0
 Unhotkey=E
 
-[AHre]
-Buttonpos=3,0
+[AHre]]=],
+            [=[Buttonpos=3,0
 Hotkey=R
 Researchhotkey=R
 
@@ -5646,8 +5654,8 @@ Hotkey=Q
 Researchhotkey=Q
 
 [AHs2]
-Hotkey=Q
-Researchhotkey=Q
+Hotkey=Q]=],
+            [=[Researchhotkey=Q
 
 [AHs3]
 Hotkey=Q
@@ -5657,8 +5665,8 @@ Researchhotkey=Q
 Buttonpos=2,2
 
 [AHsf]
-Hotkey=F,Q]=],
-            [=[Researchhotkey=F,Q
+Hotkey=F,Q
+Researchhotkey=F,Q
 
 [AHsl]
 Hotkey=R
@@ -5674,8 +5682,8 @@ Hotkey=Q
 
 [AHtb]
 Buttonpos=0,0
-Hotkey=Q
-Researchhotkey=Q
+Hotkey=Q]=],
+            [=[Researchhotkey=Q
 
 [AHtc]
 Buttonpos=1,0
@@ -5701,8 +5709,8 @@ Researchhotkey=Q
 [AHv2]
 Hotkey=Q
 Researchhotkey=Q
-
-[AHv3]
+]=],
+            [=[[AHv3]
 Hotkey=Q
 Researchhotkey=Q
 
@@ -5728,8 +5736,8 @@ Hotkey=E
 
 [AHwe]
 Buttonpos=1,0
-Hotkey=W
-Researchhotkey=W
+Hotkey=W]=],
+            [=[Researchhotkey=W
 
 [AHz1]
 Hotkey=W
@@ -5737,8 +5745,8 @@ Researchhotkey=W
 
 [AHz2]
 Hotkey=W
-Researchhotkey=W]=],
-            [=[
+Researchhotkey=W
+
 [AHz3]
 Hotkey=W
 Researchhotkey=W
@@ -5756,8 +5764,8 @@ Hotkey=E
 Unbuttonpos=2,0
 Unhotkey=E
 
-[Aivs]
-Buttonpos=1,0
+[Aivs]]=],
+            [=[Buttonpos=1,0
 Hotkey=W
 
 [ajen]
@@ -5780,8 +5788,8 @@ Buttonpos=3,2
 Hotkey=122
 MenuCommand=1
 
-[Aloa]
-Buttonpos=0,0
+[Aloa]]=],
+            [=[Buttonpos=0,0
 Hotkey=Q
 
 [Alsh]
@@ -5810,16 +5818,16 @@ Hotkey=Q
 Unbuttonpos=0,0
 Unhotkey=Q
 
-[Amfl]
-Buttonpos=1,0
+[Amfl]]=],
+            [=[Buttonpos=1,0
 Hotkey=W
 Unbuttonpos=1,0
 Unhotkey=W
 
 [amgl]
 Buttonpos=3,0
-]=],
-            [=[[Ami1]
+
+[Ami1]
 ParentId=Amil
 
 [Ami2]
@@ -5835,8 +5843,8 @@ UnhotkeyId=Ami2
 [Amil]
 Buttonpos=1,0
 Hotkey=W
-Unbuttonpos=3,2
-Unhotkey=V
+Unbuttonpos=3,2]=],
+            [=[Unhotkey=V
 UnhotkeyId=Ami1
 
 [Amls]
@@ -5861,8 +5869,8 @@ Buttonpos=1,0
 Hotkey=W
 Researchhotkey=W
 Unbuttonpos=1,0
-
-[ANbf]
+]=],
+            [=[[ANbf]
 Buttonpos=0,0
 Hotkey=Q
 Researchhotkey=Q
@@ -5886,15 +5894,15 @@ Hotkey=W
 Researchhotkey=W
 
 [ANca]
-Buttonpos=2,0
-Researchhotkey=E
+Buttonpos=2,0]=],
+            [=[Researchhotkey=E
 
 [ancf]
 Buttonpos=0,0
 Hotkey=Q
 Researchhotkey=Q
-]=],
-            [=[[ANch]
+
+[ANch]
 Buttonpos=3,0
 Hotkey=R
 Researchhotkey=R
@@ -5910,8 +5918,8 @@ Buttonpos=1,0
 Hotkey=W
 Researchhotkey=W
 
-[ANcs]
-Buttonpos=1,0
+[ANcs]]=],
+            [=[Buttonpos=1,0
 Hotkey=W
 Researchhotkey=W
 
@@ -5938,8 +5946,8 @@ Researchhotkey=R
 Buttonpos=1,2
 Hotkey= 
 
-[ANdh]
-Buttonpos=1,0
+[ANdh]]=],
+            [=[Buttonpos=1,0
 Hotkey=W
 Researchhotkey=W
 
@@ -5966,14 +5974,14 @@ Hotkey=R
 [ane2]
 Hotkey=B
 
-[ANef]
-Buttonpos=3,0
+[ANef]]=],
+            [=[Buttonpos=3,0
 Hotkey=R
 Researchhotkey=R
 
 [ANeg]
-Buttonpos=2,0]=],
-            [=[Hotkey=E
+Buttonpos=2,0
+Hotkey=E
 Researchhotkey=E
 
 [Anei]
@@ -5993,8 +6001,8 @@ Hotkey=
 Buttonpos=1,0
 Hotkey=W
 Researchhotkey=W
-Unbuttonpos=1,0
-Unhotkey=W
+Unbuttonpos=1,0]=],
+            [=[Unhotkey=W
 
 [anfb]
 Buttonpos=1,0
@@ -6019,8 +6027,8 @@ Hotkey=R
 Researchhotkey=R
 Unbuttonpos=3,0
 Unhotkey=R
-
-[ANg2]
+]=],
+            [=[[ANg2]
 Buttonpos=3,0
 Hotkey=R
 Researchhotkey=R
@@ -6042,13 +6050,13 @@ Unhotkey=Q
 
 [Anh2]
 Buttonpos=0,0
-Hotkey=Q
-Unbuttonpos=0,0
+Hotkey=Q]=],
+            [=[Unbuttonpos=0,0
 Unhotkey=Q
 
 [anha]
-Hotkey=T]=],
-            [=[Unhotkey=T
+Hotkey=T
+Unhotkey=T
 
 [ANhs]
 Buttonpos=0,0
@@ -6067,8 +6075,8 @@ Researchhotkey=Q
 
 [anhx]
 Buttonpos=1,0
-Hotkey=W
-Researchhotkey=W
+Hotkey=W]=],
+            [=[Researchhotkey=W
 
 [ANia]
 Buttonpos=2,0
@@ -6093,8 +6101,8 @@ Buttonpos=1,0
 Hotkey=W
 Researchhotkey=W
 
-[ANms]
-Buttonpos=2,0
+[ANms]]=],
+            [=[Buttonpos=2,0
 Hotkey=E
 Researchhotkey=E
 Unbuttonpos=2,0
@@ -6119,10 +6127,10 @@ Researchhotkey=Q
 
 [ANrg]
 Buttonpos=3,0
-Hotkey=R
-Researchhotkey=R
-Unbuttonpos=3,0]=],
-            [=[Unhotkey=R
+Hotkey=R]=],
+            [=[Researchhotkey=R
+Unbuttonpos=3,0
+Unhotkey=R
 
 [ANs1]
 Buttonpos=0,0
@@ -6143,8 +6151,8 @@ Researchhotkey=Q
 Buttonpos=2,0
 Hotkey=E
 Researchhotkey=E
-
-[ANsg]
+]=],
+            [=[[ANsg]
 Buttonpos=0,0
 Hotkey=Q
 Researchhotkey=Q
@@ -6168,8 +6176,8 @@ Researchhotkey=Q
 
 [ANsq]
 Buttonpos=1,0
-Hotkey=W
-Researchhotkey=W
+Hotkey=W]=],
+            [=[Researchhotkey=W
 
 [ANst]
 Buttonpos=3,0
@@ -6194,10 +6202,10 @@ Hotkey=Q
 Buttonpos=3,0
 Hotkey=R
 Researchhotkey=R
-
-[ANto]
-Buttonpos=3,0]=],
-            [=[Hotkey=R
+]=],
+            [=[[ANto]
+Buttonpos=3,0
+Hotkey=R
 Researchhotkey=R
 
 [ANvc]
@@ -6222,8 +6230,8 @@ Buttonpos=3,2
 [aobu]
 Buttonpos=0,0
 
-[AOcl]
-Buttonpos=0,0
+[AOcl]]=],
+            [=[Buttonpos=0,0
 Hotkey=Q
 Researchhotkey=Q
 
@@ -6246,8 +6254,8 @@ Buttonpos=0,0
 Hotkey=Q
 Researchhotkey=Q
 
-[AOhx]
-Buttonpos=1,0
+[AOhx]]=],
+            [=[Buttonpos=1,0
 Hotkey=W
 Researchhotkey=W
 
@@ -6272,9 +6280,9 @@ Buttonpos=3,0
 Researchhotkey=R
 
 [aos2]
-Buttonpos=0,0
-Hotkey=Q]=],
-            [=[Researchhotkey=Q
+Buttonpos=0,0]=],
+            [=[Hotkey=Q
+Researchhotkey=Q
 
 [AOsf]
 Buttonpos=2,0
@@ -6298,8 +6306,8 @@ Researchhotkey=E
 Buttonpos=2,2
 
 [AOvd]
-Buttonpos=3,0
-Hotkey=R
+Buttonpos=3,0]=],
+            [=[Hotkey=R
 Researchhotkey=R
 
 [aow2]
@@ -6323,8 +6331,8 @@ Hotkey=R
 Researchhotkey=R
 
 [Apg2]
-Buttonpos=0,0
-Hotkey=Q
+Buttonpos=0,0]=],
+            [=[Hotkey=Q
 
 [Aply]
 Buttonpos=2,0
@@ -6352,9 +6360,9 @@ Buttonpos=0,0
 Hotkey=Q
 
 [Arai]
-Buttonpos=0,0]=],
-            [=[Hotkey=Q
-Unbuttonpos=0,0
+Buttonpos=0,0
+Hotkey=Q]=],
+            [=[Unbuttonpos=0,0
 Unhotkey=Q
 
 [ARal]
@@ -6381,8 +6389,8 @@ Unbuttonpos=3,0
 Unhotkey=R
 
 [Aro1]
-Hotkey=V
-Unhotkey=V
+Hotkey=V]=],
+            [=[Unhotkey=V
 
 [Aro2]
 Hotkey=V
@@ -6410,8 +6418,8 @@ Buttonpos=1,0
 Hotkey=W
 Unbuttonpos=1,0
 Unhotkey=W
-
-[arsc]
+]=],
+            [=[[arsc]
 Hotkey=F
 
 [arsg]
@@ -6436,9 +6444,10 @@ Hotkey=R
 Unhotkey=X
 
 [arsw]
-Buttonpos=2,0]=],
-            [=[Hotkey=E
-Researchhotkey=E
+Buttonpos=2,0
+Hotkey=E
+Researchhotkey=E]=],
+            [=[
 
 [Asac]
 Hotkey=Q
@@ -6469,8 +6478,8 @@ Buttonpos=0,0
 Hotkey=Q
 Unhotkey=Q
 
-[Asdg]
-Buttonpos=0,0
+[Asdg]]=],
+            [=[Buttonpos=0,0
 Hotkey=Q
 Unhotkey=Q
 
@@ -6498,8 +6507,8 @@ Hotkey=Q
 
 [aspo]
 Buttonpos=3,2
-
-[Asps]
+]=],
+            [=[[Asps]
 Buttonpos=0,0
 Hotkey=Q
 Unbuttonpos=0,0
@@ -6521,12 +6530,12 @@ Buttonpos=2,2
 
 [Astn]
 Buttonpos=0,0
-Hotkey=Q]=],
-            [=[Unbuttonpos=0,0
+Hotkey=Q
+Unbuttonpos=0,0
 Unhotkey=Q
 UnhotkeyId=Ast1
-
-[Atau]
+]=],
+            [=[[Atau]
 Buttonpos=0,0
 Hotkey=Q
 
@@ -6551,8 +6560,8 @@ Buttonpos=2,0
 Researchhotkey=E
 
 [AUb1]
-Hotkey=W
-Researchhotkey=W
+Hotkey=W]=],
+            [=[Researchhotkey=W
 
 [AUb2]
 Hotkey=W
@@ -6576,8 +6585,8 @@ Buttonpos=0,0
 [AUcb]
 Buttonpos=2,0
 Hotkey=E
-Researchhotkey=E
-Unbuttonpos=2,0
+Researchhotkey=E]=],
+            [=[Unbuttonpos=2,0
 
 [Auco]
 Buttonpos=0,0
@@ -6598,13 +6607,13 @@ Researchhotkey=E
 [AUd3]
 Researchhotkey=E
 
-[AUdb]]=],
-            [=[Researchhotkey=E
+[AUdb]
+Researchhotkey=E
 
 [AUdc]
 Buttonpos=0,0
-Hotkey=Q
-Researchhotkey=Q
+Hotkey=Q]=],
+            [=[Researchhotkey=Q
 
 [AUdd]
 Buttonpos=3,0
@@ -6628,8 +6637,8 @@ Researchhotkey=Q
 
 [AUfu]
 Buttonpos=1,0
-Hotkey=W
-Researchhotkey=W
+Hotkey=W]=],
+            [=[Researchhotkey=W
 Unbuttonpos=1,0
 
 [augh]
@@ -6655,8 +6664,8 @@ Researchhotkey=R
 Buttonpos=0,0
 Hotkey=Q
 Researchhotkey=Q
-
-[AUin]
+]=],
+            [=[[AUin]
 Buttonpos=3,0
 Hotkey=R
 Researchhotkey=R
@@ -6673,16 +6682,16 @@ Unhotkey=W
 
 [AUl3]
 Hotkey=W
-Researchhotkey=W]=],
-            [=[Unhotkey=W
+Researchhotkey=W
+Unhotkey=W
 
 [AUla]
 Hotkey=W
 Researchhotkey=W
 Unhotkey=W
 
-[AUls]
-Buttonpos=3,0
+[AUls]]=],
+            [=[Buttonpos=3,0
 Hotkey=R
 Researchhotkey=R
 
@@ -6708,7 +6717,8 @@ Researchhotkey=Q
 
 [AUs2]
 Hotkey=Q
-Researchhotkey=Q
+Researchhotkey=Q]=],
+            [=[
 
 [AUs3]
 Hotkey=Q
@@ -6737,8 +6747,8 @@ Researchhotkey=R
 [AUv2]
 Hotkey=R
 Researchhotkey=R
-
-[AUv3]
+]=],
+            [=[[AUv3]
 Hotkey=R
 Researchhotkey=R
 
@@ -6754,8 +6764,8 @@ Researchhotkey=Q
 Hotkey=Q
 Researchhotkey=Q
 
-[AUw3]]=],
-            [=[Hotkey=Q
+[AUw3]
+Hotkey=Q
 Researchhotkey=Q
 
 [AUwc]
@@ -6763,8 +6773,8 @@ Hotkey=R
 Researchhotkey=R
 
 [AUwf]
-Hotkey=W,Q
-Researchhotkey=W,Q
+Hotkey=W,Q]=],
+            [=[Researchhotkey=W,Q
 
 [aven]
 Buttonpos=3,2
@@ -6791,8 +6801,8 @@ Hotkey=W
 Buttonpos=2,0
 Hotkey=E
 
-[awrh]
-Buttonpos=1,0
+[awrh]]=],
+            [=[Buttonpos=1,0
 Hotkey=W
 
 [Awrs]
@@ -6823,8 +6833,8 @@ MerchantAvailable=1
 [bspd]
 Hotkey=Q
 
-[capt]
-CameraCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+[capt]]=],
+            [=[CameraCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 Hotkey=67
 Modifier=Ctrl_or_Alt
 
@@ -6833,8 +6843,8 @@ Hotkey=Q
 MerchantAvailable=1
 
 [Chat]
-Hotkey=123]=],
-            [=[MenuCommand=1
+Hotkey=123
+MenuCommand=1
 
 [ciri]
 Hotkey=C
@@ -6846,8 +6856,8 @@ Hotkey=K
 [clfm]
 Hotkey=S
 MerchantAvailable=1
-
-[clnt]
+]=],
+            [=[[clnt]
 CameraCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 Hotkey=32
 
@@ -6868,8 +6878,8 @@ Hotkey=B
 
 [CmdBuildHuman]
 Hotkey=Q
-
-[cmdbuildnaga]
+]=],
+            [=[[cmdbuildnaga]
 Hotkey=W
 
 [CmdBuildNightElf]
@@ -6894,8 +6904,8 @@ Hotkey=V
 Hotkey=27
 
 [CmdHoldPos]
-Buttonpos=0,1
-Hotkey=A
+Buttonpos=0,1]=],
+            [=[Hotkey=A
 
 [CmdMove]
 Buttonpos=2,1
@@ -6908,8 +6918,8 @@ Hotkey=Y
 [CmdRally]
 Hotkey=F
 
-[CmdSelectSkill]]=],
-            [=[Buttonpos=3,2
+[CmdSelectSkill]
+Buttonpos=3,2
 Hotkey=V
 
 [CmdStop]
@@ -6921,8 +6931,8 @@ Buttonpos=1,0
 Hotkey=W
 MerchantAvailable=1
 
-[cosl]
-Hotkey=C
+[cosl]]=],
+            [=[Hotkey=C
 
 [crdt]
 Hotkey=D
@@ -6939,8 +6949,8 @@ Hotkey=8
 CtrlGroupCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 Hotkey=48
 
-[Ctr1]
-CtrlGroupCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+[Ctr1]]=],
+            [=[CtrlGroupCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 Hotkey=49
 
 [Ctr2]
@@ -6951,20 +6961,20 @@ Hotkey=50
 CtrlGroupCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 Hotkey=51
 
-[Ctr4]
-CtrlGroupCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+[Ctr4]]=],
+            [=[CtrlGroupCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 Hotkey=52
 
 [Ctr5]
 CtrlGroupCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 Hotkey=53
 
-[Ctr6]]=],
-            [=[CtrlGroupCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+[Ctr6]
+CtrlGroupCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 Hotkey=54
 
-[Ctr7]
-CtrlGroupCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+[Ctr7]]=],
+            [=[CtrlGroupCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 Hotkey=55
 
 [Ctr8]
@@ -6976,8 +6986,8 @@ CtrlGroupCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 Hotkey=57
 
 [DeGS]
-Hotkey=189
-ReplayCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+Hotkey=189]=],
+            [=[ReplayCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 
 [desc]
 Hotkey=E
@@ -7008,8 +7018,8 @@ Buttonpos=1,1
 Hotkey=S
 
 [eaow]
-Buttonpos=3,1
-Hotkey=F
+Buttonpos=3,1]=],
+            [=[Hotkey=F
 
 [earc]
 Hotkey=Q
@@ -7034,8 +7044,8 @@ Hotkey=
 [Edem]
 Buttonpos=0,0
 Hotkey=Q
-]=],
-            [=[[eden]
+
+[eden]
 Hotkey=C
 
 [edes]
@@ -7044,8 +7054,8 @@ Hotkey=E
 [edob]
 Hotkey=E
 
-[edoc]
-Hotkey=W
+[edoc]]=],
+            [=[Hotkey=W
 
 [edos]
 Hotkey=X
@@ -7069,8 +7079,8 @@ Hotkey=E
 Buttonpos=1,0
 Hotkey=W
 
-[egol]
-Hoktey=None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None
+[egol]]=],
+            [=[Hoktey=None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None
 
 [ehip]
 Hotkey=Q
@@ -7092,8 +7102,8 @@ Hotkey=X
 
 [emns]
 Hotkey=S
-
-[Emoo]
+]=],
+            [=[[Emoo]
 Buttonpos=2,0
 Hotkey=E
 
@@ -7127,11 +7137,11 @@ Hotkey=Y
 Hotkey=Y
 
 [etol]
-Buttonpos=0,2
-Hotkey=Y
+Buttonpos=0,2]=],
+            [=[Hotkey=Y
 
-[etrp]]=],
-            [=[Buttonpos=0,1
+[etrp]
+Buttonpos=0,1
 Hotkey=A
 OffensiveStructure=1
 
@@ -7157,8 +7167,8 @@ Hotkey=R
 [ewsp]
 Attackless=1
 Hotkey=Q
-
-[fgbd]
+]=],
+            [=[[fgbd]
 Hotkey=V
 MerchantAvailable=1
 
@@ -7186,8 +7196,8 @@ Hotkey=F
 
 [frgd]
 Hotkey=F
-
-[frhg]
+]=],
+            [=[[frhg]
 Hotkey=F
 
 [fwss]
@@ -7257,8 +7267,8 @@ OffensiveStructure=1
 Buttonpos=1,1
 Hotkey=S
 
-[hbla]
-Hotkey=R
+[hbla]]=],
+            [=[Hotkey=R
 
 [Hblm]
 Buttonpos=3,0
@@ -7289,8 +7299,8 @@ Hotkey=W,W
 OffensiveStructure=1
 
 [hcun]
-Hotkey=F
-MerchantAvailable=1
+Hotkey=F]=],
+            [=[MerchantAvailable=1
 
 [hdes]
 Hotkey=W
@@ -7306,9 +7316,9 @@ Hotkey=112
 GameCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 Hotkey=113
 
-[her3]]=],
-            [=[GameCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-Hotkey=114
+[her3]
+GameCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]=],
+            [=[Hotkey=114
 
 [hfoo]
 Hotkey=Q
@@ -7341,8 +7351,8 @@ Hotkey=Q
 [Hjsm]
 Hotkey=I
 
-[hkal]
-Buttonpos=3,0
+[hkal]]=],
+            [=[Buttonpos=3,0
 Hotkey=R
 
 [hkee]
@@ -7375,8 +7385,8 @@ IgnoreBuilds=1
 [Hmkg]
 Buttonpos=1,0
 Hotkey=W
-
-[hmpr]
+]=],
+            [=[[hmpr]
 Hotkey=W
 
 [hmtm]
@@ -7402,8 +7412,8 @@ Hotkey=W
 [hrtt]
 Hotkey=E
 
-[hslv]]=],
-            [=[Hotkey=Q
+[hslv]
+Hotkey=Q
 
 [hsor]
 Hotkey=Q
@@ -7412,8 +7422,8 @@ Hotkey=Q
 Hotkey=E
 
 [htow]
-Buttonpos=0,2
-Hotkey=Y
+Buttonpos=0,2]=],
+            [=[Hotkey=Y
 
 [hval]
 Hotkey=D
@@ -7437,8 +7447,8 @@ ReplayCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 Hotkey=Q
 MerchantAvailable=1
 
-[itm1]
-GameCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+[itm1]]=],
+            [=[GameCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 Hotkey=103
 
 [itm2]
@@ -7450,8 +7460,8 @@ GameCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 Hotkey=100
 
 [itm4]
-GameCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-Hotkey=101
+GameCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]=],
+            [=[Hotkey=101
 
 [itm5]
 GameCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
@@ -7464,8 +7474,8 @@ Hotkey=98
 [jpnt]
 Hotkey=J
 
-[kgal]]=],
-            [=[Hotkey=K
+[kgal]
+Hotkey=K
 
 [klmm]
 Hotkey=K
@@ -7474,8 +7484,8 @@ Hotkey=K
 Hotkey=Y
 MerchantAvailable=1
 
-[lgdh]
-Hotkey=X
+[lgdh]]=],
+            [=[Hotkey=X
 MerchantAvailable=1
 
 [lhst]
@@ -7504,8 +7514,8 @@ Modifier=Alt
 Hotkey=121
 MenuCommand=1
 
-[mgtk]
-Hotkey=K
+[mgtk]]=],
+            [=[Hotkey=K
 
 [MHlp]
 Hotkey=72
@@ -7535,8 +7545,8 @@ Hotkey=79
 MenuCommand=1
 Modifier=Alt
 
-[mort]
-Hotkey=M
+[mort]]=],
+            [=[Hotkey=M
 
 [mpng]
 GameCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
@@ -7548,12 +7558,12 @@ Hotkey=83
 MenuCommand=1
 Modifier=Alt
 
-[mvcb]]=],
-            [=[CameraCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+[mvcb]
+CameraCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 Hotkey=40
 
-[mvcf]
-CameraCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+[mvcf]]=],
+            [=[CameraCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 Hotkey=38
 
 [mvcl]
@@ -7571,7 +7581,8 @@ Hotkey=W
 Hotkey=E
 
 [nadw]
-Hotkey=Q
+Hotkey=Q]=],
+            [=[
 
 [naka]
 Buttonpos=3,0
@@ -7612,8 +7623,8 @@ Hotkey=Q
 
 [nbot]
 Hotkey=Q
-
-[Nbrn]
+]=],
+            [=[[Nbrn]
 Hotkey=S
 
 [Nbst]
@@ -7636,8 +7647,8 @@ Hotkey=E
 [nbzk]
 Hotkey=W
 
-[nbzw]]=],
-            [=[Hotkey=Q
+[nbzw]
+Hotkey=Q
 
 [ncea]
 Hotkey=Q
@@ -7651,8 +7662,8 @@ Hotkey=
 [ncg2]
 Hotkey= 
 
-[ncg3]
-Hotkey= 
+[ncg3]]=],
+            [=[Hotkey= 
 
 [ncgb]
 Hotkey= 
@@ -7691,8 +7702,8 @@ Hotkey=
 [ndru]
 Hotkey= 
 
-[ndrz]
-Hotkey= 
+[ndrz]]=],
+            [=[Hotkey= 
 
 [ndt1]
 Buttonpos=2,0
@@ -7729,8 +7740,8 @@ Hotkey=
 
 [nfgb]
 Hotkey=W,W
-
-[Nfir]
+]=],
+            [=[[Nfir]
 Hotkey=F
 
 [nfra]
@@ -7750,8 +7761,8 @@ Buttonpos=1,1
 Hotkey=S
 
 [nft2]
-Buttonpos=0,0]=],
-            [=[Hotkey=Q
+Buttonpos=0,0
+Hotkey=Q
 
 [nftb]
 Hotkey=W
@@ -7768,8 +7779,8 @@ Hotkey=E
 [ngme]
 Hotkey= 
 
-[ngnb]
-Hotkey=Q
+[ngnb]]=],
+            [=[Hotkey=Q
 
 [ngnw]
 Hotkey=W
@@ -7810,8 +7821,8 @@ Hotkey=E
 [nkol]
 Hotkey=R
 
-[nkot]
-Hotkey=Q
+[nkot]]=],
+            [=[Hotkey=Q
 
 [nmbg]
 Hotkey=Q
@@ -7852,8 +7863,8 @@ Hotkey=
 [nmr9]
 Hotkey= 
 
-[nmra]
-Hotkey= 
+[nmra]]=],
+            [=[Hotkey= 
 
 [nmrb]
 Hotkey= 
@@ -7873,8 +7884,8 @@ Hotkey=
 [nmsn]
 Hotkey=E
 
-[nndk]]=],
-            [=[Hotkey=W
+[nndk]
+Hotkey=W
 
 [nndr]
 Hotkey=E
@@ -7894,8 +7905,8 @@ Hotkey=E
 [nnsa]
 Hotkey=S
 
-[nnsg]
-Hotkey=E
+[nnsg]]=],
+            [=[Hotkey=E
 
 [nnsw]
 Hotkey=W
@@ -7934,8 +7945,8 @@ Hotkey=Y
 [npn2]
 Hotkey=T
 
-[npn3]
-Hotkey=E
+[npn3]]=],
+            [=[Hotkey=E
 
 [nqb2]
 Hotkey= 
@@ -7976,8 +7987,8 @@ Hotkey=W
 [nsog]
 Hotkey=R
 
-[nsrh]
-Hotkey=W
+[nsrh]]=],
+            [=[Hotkey=W
 
 [nssp]
 Hotkey=R
@@ -7994,8 +8005,8 @@ Hotkey=C
 [ntkh]
 Hotkey=R
 
-[ntt1]]=],
-            [=[Buttonpos=1,0
+[ntt1]
+Buttonpos=1,0
 Hotkey=W
 
 [ntx2]
@@ -8015,7 +8026,8 @@ Hotkey=E
 Hotkey=R
 
 [nzep]
-Hotkey=W
+Hotkey=W]=],
+            [=[
 
 [o002]
 Hotkey=E
@@ -8049,8 +8061,8 @@ Hotkey=E
 [ocor]
 Hotkey=Y
 
-[odef]
-Hotkey=E
+[odef]]=],
+            [=[Hotkey=E
 MerchantAvailable=1
 
 [odes]
@@ -8084,7 +8096,8 @@ Hotkey=Y
 
 [ogrh]
 Buttonpos=0,0
-Hotkey=Q
+Hotkey=Q]=],
+            [=[
 
 [ogru]
 Hotkey=Q
@@ -8100,8 +8113,8 @@ Hotkey=E
 
 [oli2]
 Hotkey=Y
-]=],
-            [=[[olig]
+
+[olig]
 Hotkey=L
 
 [opeo]
@@ -8125,8 +8138,8 @@ Hotkey=Q
 
 [osld]
 Hotkey=D
-
-[oslo]
+]=],
+            [=[[oslo]
 Hotkey=Y
 
 [ospm]
@@ -8160,8 +8173,8 @@ Hotkey=W
 Buttonpos=1,2
 Hotkey=X
 
-[oven]
-Hotkey=Y
+[oven]]=],
+            [=[Hotkey=Y
 
 [ovln]
 Buttonpos=2,2
@@ -8190,16 +8203,16 @@ MerchantAvailable=1
 Hotkey=W
 MerchantAvailable=1
 
-[penr]
-Hotkey=C
+[penr]]=],
+            [=[Hotkey=C
 MerchantAvailable=1
 
 [pghe]
 Hotkey=Q
 MerchantAvailable=1
 
-[pgin]]=],
-            [=[Hotkey=I
+[pgin]
+Hotkey=I
 
 [pgma]
 Hotkey=W
@@ -8221,8 +8234,8 @@ Hotkey=S
 [pmna]
 Hotkey=R
 MerchantAvailable=1
-
-[pnvl]
+]=],
+            [=[[pnvl]
 Buttonpos=2,1
 Hotkey=D
 
@@ -8250,8 +8263,8 @@ Hotkey=120
 MenuCommand=1
 
 [QSav]
-Hotkey=117
-MenuCommand=1
+Hotkey=117]=],
+            [=[MenuCommand=1
 
 [rag1]
 Hotkey=A
@@ -8277,14 +8290,14 @@ MerchantAvailable=1
 Hotkey=K
 
 [rat6]
-Hotkey=S
-MerchantAvailable=1
+Hotkey=S]=],
+            [=[MerchantAvailable=1
 
 [rat9]
 Hotkey=X
 MerchantAvailable=1
-]=],
-            [=[[ratc]
+
+[ratc]
 Hotkey=A
 MerchantAvailable=1
 
@@ -8307,8 +8320,8 @@ MerchantAvailable=1
 
 [rdis]
 Hotkey=D
-
-[Recb]
+]=],
+            [=[[Recb]
 Hotkey=Y
 
 [Redc]
@@ -8341,8 +8354,8 @@ MerchantAvailable=1
 Hotkey=F
 MerchantAvailable=1
 
-[rej3]
-Hotkey=Y
+[rej3]]=],
+            [=[Hotkey=Y
 MerchantAvailable=1
 
 [rej4]
@@ -8374,15 +8387,15 @@ Hotkey=C
 
 [Repm]
 Hotkey=R
-
-[Rerh]
+]=],
+            [=[[Rerh]
 Hotkey=S,S,S
 
 [Rers]
 Hotkey=C
 
-[Resc]]=],
-            [=[Hotkey=X
+[Resc]
+Hotkey=X
 
 [Resi]
 Hotkey=Y
@@ -8405,8 +8418,8 @@ Hotkey=116
 
 [Rhac]
 Hotkey=W,W,W
-
-[Rhan]
+]=],
+            [=[[Rhan]
 Hotkey=C
 
 [Rhar]
@@ -8443,8 +8456,8 @@ Hotkey=A
 
 [Rhhb]
 Hotkey=X
-
-[Rhla]
+]=],
+            [=[[Rhla]
 Hotkey=S,S,S
 
 [Rhlh]
@@ -8479,12 +8492,12 @@ Hotkey=R
 Buttonpos=2,2
 Hotkey=C
 
-[Rhst]
-Hotkey=Y,Y
+[Rhst]]=],
+            [=[Hotkey=Y,Y
 
 [rhth]
-Hotkey=W]=],
-            [=[MerchantAvailable=1
+Hotkey=W
+MerchantAvailable=1
 
 [rin1]
 Hotkey=E
@@ -8512,8 +8525,8 @@ Hotkey=Q
 [rnsb]
 Hotkey=V
 
-[rnsi]
-Hotkey=C
+[rnsi]]=],
+            [=[Hotkey=C
 
 [rnsp]
 Hotkey=R
@@ -8540,8 +8553,8 @@ Hotkey=Y
 CameraCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 Hotkey=45
 
-[rocr]
-CameraCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+[rocr]]=],
+            [=[CameraCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 Hotkey=46
 
 [Roen]
@@ -8571,10 +8584,10 @@ Hotkey=E,E
 [Rost]
 Hotkey=Y,Y
 
-[Rotr]
-Buttonpos=1,1
-Hotkey=S]=],
-            [=[
+[Rotr]]=],
+            [=[Buttonpos=1,1
+Hotkey=S
+
 [rots]
 Hotkey=R
 
@@ -8608,8 +8621,8 @@ MerchantAvailable=1
 
 [Ruac]
 Hotkey=Y
-
-[Ruar]
+]=],
+            [=[[Ruar]
 Hotkey=A,A,A
 
 [Ruba]
@@ -8647,8 +8660,8 @@ Hotkey=X
 
 [Rupm]
 Hotkey=R
-
-[Rura]
+]=],
+            [=[[Rura]
 Hotkey=W,W,W
 
 [Rusf]
@@ -8710,8 +8723,8 @@ Hotkey=W
 
 [sfog]
 Hotkey=C
-
-[shar]
+]=],
+            [=[[shar]
 Hotkey=C
 MerchantAvailable=1
 
@@ -8743,8 +8756,8 @@ Hotkey=H
 [shwd]
 Hotkey=S
 
-[sidw]
-GameCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+[sidw]]=],
+            [=[GameCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 Hotkey=220
 
 [silk]
@@ -8775,9 +8788,9 @@ Hotkey=O
 
 [sor3]
 Hotkey=O
-
-[sor4]]=],
-            [=[Hotkey=O
+]=],
+            [=[[sor4]
+Hotkey=O
 
 [sor5]
 Hotkey=O
@@ -8806,8 +8819,8 @@ Modifier=Alt
 ObserverCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 
 [spre]
-Buttonpos=2,1
-Hotkey=D
+Buttonpos=2,1]=],
+            [=[Hotkey=D
 
 [spro]
 Hotkey=A
@@ -8840,8 +8853,8 @@ Hotkey=X
 Hotkey=C
 
 [ssil]
-Hotkey=E
-MerchantAvailable=1
+Hotkey=E]=],
+            [=[MerchantAvailable=1
 
 [stel]
 Buttonpos=2,0
@@ -8878,8 +8891,8 @@ Hotkey=65
 ObserverCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 
 [TAuC]
-Hotkey=101
-ReplayCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+Hotkey=101]=],
+            [=[ReplayCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 
 [tbak]
 Hotkey=K
@@ -8906,8 +8919,8 @@ Hotkey=T
 [texp]
 Hotkey=G
 
-[tfar]
-Hotkey=F
+[tfar]]=],
+            [=[Hotkey=F
 
 [TFmv]
 GameCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
@@ -8925,10 +8938,10 @@ Hotkey=X
 Hotkey=T
 
 [THer]
-Hotkey=72
-ObserverCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-]=],
-            [=[[tint]
+Hotkey=72]=],
+            [=[ObserverCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+
+[tint]
 Hotkey=R
 
 [tkno]
@@ -8943,8 +8956,8 @@ ObserverCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 
 [TMcd]
 GameCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-Hotkey=82
-Modifier=Alt
+Hotkey=82]=],
+            [=[Modifier=Alt
 
 [tmsc]
 Hotkey=T
@@ -8964,8 +8977,8 @@ Hotkey=80
 ReplayCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 
 [TPUQ]
-Hotkey=81
-ObserverCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+Hotkey=81]=],
+            [=[ObserverCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 
 [tret]
 Hotkey=Y
@@ -8982,12 +8995,12 @@ Hotkey=D
 Hotkey=83
 ObserverCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 
-[TSFX]
-Hotkey=83
+[TSFX]]=],
+            [=[Hotkey=83
 MenuCommand=1
 Modifier=Ctrl
-]=],
-            [=[[TSta]
+
+[TSta]
 Hotkey=84
 ObserverCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 
@@ -9004,8 +9017,8 @@ Hotkey=W
 [uaco]
 Hotkey=Q
 
-[uanb]
-Hotkey=S
+[uanb]]=],
+            [=[Hotkey=S
 
 [Uany]
 Hotkey=A
@@ -9040,8 +9053,8 @@ Hotkey=
 [Udea]
 Buttonpos=0,0
 Hotkey=Q
-
-[udes]
+]=],
+            [=[[udes]
 Hotkey=E
 
 [Udre]
@@ -9077,11 +9090,11 @@ Hotkey=G
 [ugrm]
 Hotkey=A
 
-[ugrv]
-Buttonpos=2,0
+[ugrv]]=],
+            [=[Buttonpos=2,0
 Hotkey=E
-]=],
-            [=[[uktl]
+
+[uktl]
 Hotkey=V
 
 [Ulic]
@@ -9111,8 +9124,8 @@ Hotkey=E
 [usap]
 Buttonpos=0,1
 Hotkey=A
-
-[usep]
+]=],
+            [=[[usep]
 Buttonpos=1,1
 Hotkey=S
 
@@ -9143,8 +9156,8 @@ OffensiveStructure=1
 Buttonpos=1,0
 Hotkey=W
 OffensiveStructure=1
-
-[uzig]
+]=],
+            [=[[uzig]
 Buttonpos=1,0
 Hotkey=W
 
@@ -9171,10 +9184,10 @@ Hotkey=F
 MerchantAvailable=1
 
 [will]
-Hotkey=V
-MerchantAvailable=1
-]=],
-            [=[[wneg]
+Hotkey=V]=],
+            [=[MerchantAvailable=1
+
+[wneg]
 Buttonpos=2,1
 Hotkey=D
 
@@ -9198,13 +9211,14 @@ MerchantAvailable=1
 [wtlg]
 Hotkey=L
 
-[zmin]
-CameraCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+[zmin]]=],
+            [=[CameraCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 Hotkey=33
 
 [zmou]
 CameraCommand=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 Hotkey=34
+
 ]=]
         },
     },
@@ -9212,20 +9226,20 @@ Hotkey=34
         filename = "README_ShortcutSetup.txt",
         chunks = {
             [=[Since you have to have the Inventory Hotkey program running while Warcraft III is running, the easiest way to do this is set up a custom hotkey that starts both your game and the hotkey program at the same time.
-
-This can be done by modifying your Warcraft III or Warcraft 3 Champions desktop shortcut.
+]=],
+            [=[This can be done by modifying your Warcraft III or Warcraft 3 Champions desktop shortcut.
 
 Here is how to do this in Windows.
-- Right-click the shortcut and click "Properties".
-- In the "Target" space, copy out one of the following, and paste it in.
-- You will have to change "USERNAME" to your actual username.
-- If you have installed Warcraft III or W3Champions anywhere but their standard locations, you will have to adjust the file paths as well.
+- Right-click the shortcut and click "Properties".]=],
+            [=[- In the "Target" space, copy out one of the following, and paste it in.
+- You will have to change "USERNAME" to your actual username.]=],
+            [=[- If you have installed Warcraft III or W3Champions anywhere but their standard locations, you will have to adjust the file paths as well.
 
 Warcraft III:]=],
             [=[C:\Windows\System32\cmd.exe /c start "" /b "C:\Program Files (x86)\Warcraft III\Warcraft III Launcher.exe" & start "" /b "C:\Users\USERNAME\Documents\Warcraft III\CustomKeyBindings\WIH.v1.1.2.w3c.exe"
 
-W3Champions:
-C:\Windows\System32\cmd.exe /c start "" /b "C:\Program Files\W3Champions\W3Champions.exe" & start "" /b "C:\Users\USERNAME\Documents\Warcraft III\CustomKeyBindings\WIH.v1.1.2.w3c.exe"]=]
+W3Champions:]=],
+            [=[C:\Windows\System32\cmd.exe /c start "" /b "C:\Program Files\W3Champions\W3Champions.exe" & start "" /b "C:\Users\USERNAME\Documents\Warcraft III\CustomKeyBindings\WIH.v1.1.2.w3c.exe"]=]
         },
     },
 }

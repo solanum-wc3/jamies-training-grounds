@@ -18,7 +18,7 @@ const {
 } = req('@jamiephan/stormlib');
 const luaParser = req('luaparse');
 
-const version = 'v0.1.0';
+const version = 'v0.1.2-beta1';
 const modeArgument = process.argv.find(argument => argument.startsWith('--mode='));
 const buildMode = modeArgument ? modeArgument.slice('--mode='.length) : 'release';
 assert(['release', 'development'].includes(buildMode),
@@ -34,7 +34,15 @@ const reportPath = path.join(root,
 const acceptedHash = 'a1ea7789e60b30e77d64f14337759842dff309d129929ef24defb1276cf1ba64';
 const sharedModulePaths = [
     'src/infrastructure/core.lua',
+    'src/infrastructure/training.lua',
+    'src/infrastructure/tutorial.lua',
     'src/generated/custom-keys.lua',
+    'src/generated/melee-tech.lua',
+    'src/generated/dodge-catalog.lua',
+    'src/generated/economy-layout.lua',
+    'src/generated/economy-script.lua',
+    'src/infrastructure/economy-layout.lua',
+    'src/activities/economy-tutorial.lua',
     'src/activities/camera-tutorial.lua',
     'src/activities/unit-controls-tutorial.lua',
     'src/activities/hotkey-setup-tutorial.lua',
@@ -42,6 +50,8 @@ const sharedModulePaths = [
     'src/activities/surrounds.lua',
     'src/activities/windwalk-pop.lua',
     'src/activities/body-blocking.lua',
+    'src/activities/bat-splitting.lua',
+    'src/activities/missile-dodging.lua',
     'src/activities/power-building.lua',
     'src/infrastructure/catalog.lua',
     'src/infrastructure/ui.lua',
@@ -50,13 +60,24 @@ const modulePaths = [
     ...sharedModulePaths,
     ...(isDevelopment ? [
         'src/infrastructure/diagnostics.lua',
+        'src/infrastructure/economy-layout-export.lua',
         'src/infrastructure/collision-order-diagnostics.lua',
         'src/infrastructure/collision-footprint-diagnostics.lua',
         'src/infrastructure/collision-placement-diagnostics.lua',
+        'src/infrastructure/dodge-timing-diagnostics.lua',
+        'src/generated/dodge-timing-methods.lua',
+        'src/infrastructure/dodge-timing-batch.lua',
     ] : []),
     'src/infrastructure/bootstrap.lua',
 ];
 const assetPaths = [
+    ['JTGMenu\\EconomyAndWorkers.dds', 'src/assets/menu/EconomyAndWorkers.dds'],
+    ['JTGMenu\\GargoyleSurrounds.dds', 'src/assets/menu/GargoyleSurrounds.dds'],
+    ['JTGMenu\\GargoyleSurroundsBriefing.dds', 'src/assets/menu/GargoyleSurroundsBriefing.dds'],
+    ['JTGMenu\\CombatMicro.dds', 'src/assets/menu/CombatMicro.dds'],
+    ['JTGCelebration\\HotDiggedyDog.mp3', 'src/assets/celebration/HotDiggedyDog.mp3'],
+    ...Array.from({length: 5}, (_, index) =>
+        [`JTGCelebration\\Doge${index}.dds`, `src/assets/celebration/Doge${index}.dds`]),
     ['JTGOverlay\\32x32NavigationGridDots.dds', 'src/assets/overlay/32x32NavigationGridDots.dds'],
     ['JTGOverlay\\8x8NavigationGrid.dds', 'src/assets/overlay/8x8NavigationGrid.dds'],
     ['JTGOverlay\\UnitSquaresEnemy.dds', 'src/assets/overlay/UnitSquaresEnemy.dds'],
@@ -70,6 +91,7 @@ const assetPaths = [
     ['JTGMenu\\CameraControls.dds', 'src/assets/menu/CameraControls.dds'],
     ['JTGMenu\\UnitControls.dds', 'src/assets/menu/UnitControls.dds'],
     ['JTGMenu\\TutorialArrowDown.dds', 'src/assets/menu/TutorialArrowDown.dds'],
+    ['JTGMenu\\TutorialArrowUp.dds', 'src/assets/menu/TutorialArrowUp.dds'],
     ['JTGMenu\\WindwalkPop.dds', 'src/assets/menu/WindwalkPop.dds'],
     ['JTGMenu\\WindwalkPopBriefing.dds', 'src/assets/menu/WindwalkPopBriefing.dds'],
     ['JTGMenu\\ZeppelinMicro.dds', 'src/assets/menu/ZeppelinMicro.dds'],
@@ -90,6 +112,7 @@ const assetPaths = [
     ['JTGMenu\\HotkeyTraining.dds', 'src/assets/menu/HotkeyTraining.dds'],
     ['JTGMenu\\HotkeySetup.dds', 'src/assets/menu/HotkeySetup.dds'],
     ['JTGMenu\\MissileDodging.dds', 'src/assets/menu/MissileDodging.dds'],
+    ['JTGMenu\\BatSplitterBriefing.dds', 'src/assets/menu/BatSplitterBriefing.dds'],
     ['JTGMenu\\StaffingHuman.dds', 'src/assets/menu/StaffingHuman.dds'],
     ['JTGMenu\\StaffingNightElf.dds', 'src/assets/menu/StaffingNightElf.dds'],
     ['JTGMenu\\TooltipTL.dds', 'src/assets/menu/TooltipTL.dds'],
@@ -234,10 +257,16 @@ if (isDevelopment) {
         nextLua.includes('"-diag-lifecycle"') &&
         nextLua.includes('id = PROBE_B'),
         'Development build is missing lifecycle diagnostics');
+    assert(nextLua.includes('JTG.Dev.DodgeTiming = Timing') && nextLua.includes('"-timing-on"') &&
+        nextLua.includes('"-timing-batch"') && nextLua.includes('"-timing-activation"'),
+        'Development build is missing Dodging timing observations');
+    assert(nextLua.includes('JTG-Economy-Layout.pld'), 'Development base workspace is missing');
 } else {
     assert(!nextLua.includes('function JTG.InitializeDiagnostics()') &&
         !nextLua.includes('dev.lifecycle') &&
-        !nextLua.includes('-diag-'),
+        !nextLua.includes('-diag-') && !nextLua.includes('JTG.Dev.DodgeTiming') &&
+        !nextLua.includes('"-timing-on"') && !nextLua.includes('JTG.DodgeTimingMethods') &&
+        !nextLua.includes('"-timing-batch"') && !nextLua.includes('"-timing-activation"') && !nextLua.includes('JTG-Economy-Layout.pld'),
         'Release build contains development diagnostics');
 }
 assert(nextLua.includes('function JTG.CreateWindwalkPopActivity(session)'),
@@ -274,11 +303,15 @@ assert(nextLua.includes('UI.PlaceToolbarButton(menu, 1, bar)') &&
     nextLua.includes('UI.PlaceToolbarButton(squares, 8, bar)'),
     'The standardized fixed toolbar layout is missing');
 assert(nextLua.includes('local function CreateStandardMenuShell(') &&
-    nextLua.includes('local SECTIONED_CATEGORY_LAYOUTS = {advanced = true, skills = true}') &&
+    nextLua.includes('local SECTIONED_CATEGORY_LAYOUTS = {advanced = true}') &&
     nextLua.includes('function UI.ShowCategoryRace(categoryId, raceId)') &&
     nextLua.includes('spec.headingArtworkCenterX or BRIEFING_IMAGE_CENTER_X') &&
     nextLua.includes('firstChoiceY + BRIEFING_DIVIDER_BUTTON_GAP'),
     'Shared menu and briefing layout infrastructure is incomplete');
+assert(nextLua.includes('local belongsOnGeneralPage = category == "skills"') &&
+    nextLua.includes('{label="Human",action=function() selection.race="human"; launch() end}') &&
+    nextLua.includes('{label="Orc",action=function() selection.race="orc"; launch() end}'),
+    'Flat Skill Training navigation or Mining Micro race choices are missing');
 assert(nextLua.includes('JTG.ClearBlightAfterActivity(current,') &&
     nextLua.includes('function JTG.ClearBlightAfterActivity('),
     'Hotkey Setup post-disposal blight cleanup is missing');

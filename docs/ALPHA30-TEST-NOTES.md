@@ -1,0 +1,13 @@
+# Alpha 30 dev — reliability acceptance
+
+Build: `outputs/Jamies-Training-Grounds-v0.1.2-alpha30-dev.w3x`.
+Automated regressions passed before packaging; all nine build/archive checks passed. These checks still need native Warcraft III testing.
+
+1. **Economy gathering and construction.** Visit all four races, then revisit them through Back/Topics. Five workers should mine gold at each base; the other workers and Ghouls should gather lumber. Start and cancel a building, and revisit the race. Gathering restoration must not interrupt an active construction. Check militia and the scripted attacks. If workers stop, enter `-economy-orders` and include the resulting log with your report.
+2. **Unit Controls movement section.** Reach the siege-engine/formation demonstration. Visit an optional section and return; use Back repeatedly and revisit the section through Topics. There should be one siege engine and, in the formation section, one additional Peasant. Obstacles should disappear after their demonstration.
+3. **Tutorial navigation.** In each tutorial, try Continue, Back, Topics, Pause, Menu/Resume, Exit and re-entry. Camera transitions should take 1.5 seconds. Welcome arrows should blink ten times, stay visible, then disappear with their narration. Quickly leave a demonstration and return: delayed attacks, camera moves or summons from the previous visit should not fire in the new visit. Hotkey Setup should have no Export button or export instructions.
+4. **Dodging menus and results.** Try one Homing, Ranged, Area and Devour setup. Open the toolbar Menu and native F10 menu during the countdown, an active trial and an end card. GO, feedback and status must not remain over menus. Resume should preserve the trial and pause state; result cards should hide the toolbar. Exit/re-entry should leave no old units or circles.
+5. **Bat Splitting.** Try the 6/8/10-unit stages and both day/night modes. Opening menus during countdown or combat should pause/resume cleanly. Redo should preserve the setup; advancing should choose a new setup. Results should wait for the last bat and distinguish a lost Gryphon, splash with no losses, and no splash. Exit/re-entry should remove the old units.
+6. **Save/load.** Save during a tutorial demonstration, an exercise countdown and an end card; load each. Expect the same state with restored interface, no duplicated units, no repeated world actions and no completed trial restarting. Also note whether exiting Warcraft III freezes again.
+
+For a failure, record the tutorial topic or exercise matchup/stage, what you clicked immediately beforehand, and whether it followed Back, Topics, Resume or loading a save. Screenshots help with presentation problems.

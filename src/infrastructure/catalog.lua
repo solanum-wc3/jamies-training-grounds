@@ -40,13 +40,11 @@ JTG.RegisterScene({
 })
 
 local planned = {
-    {"learn.economy", "learn", "4. The Economy", "Learn how to gather and manage your resources."},
-    {"learn.base", "learn", "5. Building your Base", "Construct buildings and advance through technology."},
-    {"learn.units", "learn", "Units & Food", "Train an army and manage the food limit."},
-    {"learn.heroes", "learn", "Heroes & Levels", "Learn hero growth, skills and revival."},
-    {"learn.creeping", "learn", "Creeping & Items", "Fight neutral camps and use their rewards."},
-    {"learn.combat", "learn", "Combat & Counters", "Understand focus fire, counters and damage."},
-    {"learn.tech", "learn", "Tech & Upkeep", "Advance your tech and manage upkeep."},
+    {"learn.economy", "learn", "4. Economy\n& Workers", "Learn how to gather and manage your resources.", "JTGMenu\\EconomyAndWorkers.dds"},
+    {"learn.heroes", "learn", "5. Heroes", "Learn hero growth, skills and revival."},
+    {"learn.combat", "learn", "6. Combat", "Understand focus fire, counters and damage."},
+    {"learn.creeping", "learn", "7. Creeping", "Fight neutral camps and use their rewards."},
+    {"learn.base", "learn", "8. The Base", "Construct buildings and advance through technology."},
 
     {"advanced.build_orders", "advanced", "Build Orders", "Practice race-specific openings and timings."},
     {"advanced.base_layouts", "advanced", "Base Layouts", "Plan building placement for defense and movement."},
@@ -55,17 +53,14 @@ local planned = {
     {"advanced.composition", "advanced", "Army Composition", "Adapt units and upgrades to the opponent."},
     {"advanced.matchups", "advanced", "Matchup Plans", "Develop plans for common race matchups."},
 
-    {"skills.bat_splitter", "skills", "Bat Splitter", "Split vulnerable air units under pressure.", "JTGMenu\\BatSplitter.dds"},
-    {"skills.missile_dodging", "skills", "Missile Dodging", "Avoid incoming projectiles with precise movement and timing.", "JTGMenu\\MissileDodging.dds"},
-    {"skills.micro", "skills", "Micro Training", "Control mixed armies efficiently."},
+    {"skills.micro", "skills", "Combat Micro", "Control mixed armies efficiently.", "JTGMenu\\CombatMicro.dds"},
     {"skills.staffing", "skills", "Staffing Units", "Save and reposition units with a Staff.", nil, {"human", "nightelf"}, {
         human = "JTGMenu\\StaffingHuman.dds",
         nightelf = "JTGMenu\\StaffingNightElf.dds",
     }},
-    {"skills.merc_creep", "skills", "Merc Camp Creeping", "Practice a Mercenary Camp creep route.", nil, {"human"}},
-    {"skills.lab_creep", "skills", "Goblin Lab Creeping", "Practice a Goblin Laboratory creep route.", nil, {"human"}},
-    {"skills.gargoyle", "skills", "Gargoyle Surround", "Surround targets with flying units.", nil, {"undead"}},
-    {"skills.aow_creep", "skills", "AoW Creeping", "Practice Ancient of War creeping.", "JTGMenu\\AoWCreeping.dds", {"nightelf"}},
+    {"skills.merc_creep", "advanced", "Merc Camp Creeping", "Practice a Mercenary Camp creep route.", nil, {"human"}},
+    {"skills.lab_creep", "advanced", "Goblin Lab Creeping", "Practice a Goblin Laboratory creep route.", nil, {"human"}},
+    {"skills.aow_creep", "advanced", "AoW Creeping", "Practice Ancient of War creeping.", "JTGMenu\\AoWCreeping.dds", {"nightelf"}},
     {"skills.peon_micro", "skills", "Peon Micro", "Practice Peon movement and survival under pressure.", "JTGMenu\\PeonMicro.dds", {"orc"}},
     {"skills.wisp_micro", "skills", "Wisp Micro", "Practice Wisp movement and survival under pressure.", "JTGMenu\\WispMicro.dds", {"nightelf"}},
     {"skills.zeppelin", "skills", "Zeppelin Micro", "Load, unload and protect transported units.", "JTGMenu\\ZeppelinMicro.dds"},
@@ -76,6 +71,23 @@ local planned = {
     {"tools.quiz", "tools", "Warcraft III Quiz", "Test knowledge of units and mechanics."},
     {"tools.compare", "tools", "Unit Comparison", "Compare unit statistics and interactions.", "JTGMenu\\UnitComparison.dds"},
 }
+
+JTG.RegisterActivity({
+    id = "skills.bat_splitter", category = "skills", title = "Bat Splitting",
+    description = "Split Gryphon Riders apart to avoid Unstable Concoction splash damage.",
+    artwork = "JTGMenu\\BatSplitter.dds", races = {"human"},
+    status = "available", sceneId = "arena.south",
+    capabilities = {restart = true, next = true, menu = true, pause = true, quests = false},
+    menu = JTG.OpenBatSplittingMenu, factory = JTG.CreateBatSplittingActivity,
+})
+
+JTG.RegisterActivity({
+    id = "skills.missile_dodging", category = "skills", title = "Dodging",
+    description = "Test dodge methods against attacks, missiles, artillery and area spells.",
+    artwork = "JTGMenu\\MissileDodging.dds", status = "available", sceneId = "arena.south",
+    capabilities = {restart = true, next = true, menu = true, pause = true, quests = true},
+    menu = JTG.OpenMissileDodgingMenu, factory = JTG.CreateMissileDodgingActivity,
+})
 
 JTG.RegisterActivity({
     id = "learn.camera",
@@ -150,6 +162,24 @@ JTG.RegisterActivity({
 })
 
 JTG.RegisterActivity({
+    id = "skills.gargoyle",
+    category = "skills",
+    title = "Gargoyle Surrounds",
+    menuOrder = 30,
+    description = "Turn flying Gargoyles into a ground surround with Stone Form.",
+    artwork = "JTGMenu\\GargoyleSurrounds.dds",
+    artworkWidth = 0.060,
+    artworkHeight = 0.048,
+    races = {"undead"},
+    status = "available",
+    sceneId = "arena.south",
+    capabilities = {restart = true, menu = true, pause = true,
+        setups = true, next = true, squares = true, quests = true},
+    menu = JTG.OpenGargoyleSurroundMenu,
+    factory = JTG.CreateGargoyleSurroundActivity,
+})
+
+JTG.RegisterActivity({
     id = "skills.windwalk",
     category = "skills",
     title = "Windwalk Pop",
@@ -203,3 +233,34 @@ for _, entry in ipairs(planned) do
         status = "planned", capabilities = {},
     })
 end
+
+JTG.Registry.byId["learn.economy"].artworkWidth = 0.0585
+JTG.Registry.byId["learn.economy"].artworkHeight = 0.0585
+JTG.Registry.byId["learn.economy"].artworkOffsetX = -0.009
+JTG.Registry.byId["learn.economy"].cardTitle = "4. Economy\n    & Workers"
+
+for index, id in ipairs({"learn.camera", "learn.unit_controls", "learn.hotkey_setup",
+    "learn.economy", "learn.heroes", "learn.combat", "learn.creeping", "learn.base"}) do
+    JTG.Registry.byId[id].menuOrder = index
+end
+
+local skillColumns = {
+    {"skills.body_blocking", "skills.surround", "skills.missile_dodging",
+        "skills.micro", "skills.reflex"},
+    {"skills.zeppelin", "skills.gold_mine", "skills.bat_splitter", "skills.staffing"},
+    {"skills.gargoyle", "skills.windwalk", "skills.peon_micro", "skills.wisp_micro"},
+}
+for column, ids in ipairs(skillColumns) do
+    for row, id in ipairs(ids) do
+        local descriptor = JTG.Registry.byId[id]
+        descriptor.menuOrder = (column - 1) * 5 + row
+        descriptor.catalogueColumn = column - 1
+        descriptor.catalogueRow = row - 1
+    end
+end
+
+local economy=JTG.Registry.byId["learn.economy"]
+economy.status="available"
+economy.sceneId="tutorial.camera"
+economy.factory=JTG.CreateEconomyTutorialActivity
+economy.capabilities={menu=true,pause=true}

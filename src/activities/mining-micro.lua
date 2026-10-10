@@ -43,7 +43,11 @@ local QUESTS = {
             "{Term: Return Resource} command, the slow stops until another " ..
             "cycle is completed.|n|n" ..
             "If you give the command before he enters the mine for the " ..
-            "second time, this will reset the cycle, and delay the slowdown.",
+            "second time, this will reset the cycle, and delay the slowdown." ..
+            "|n|nThis slowdown only happens for mines with four workers, " ..
+            "and it only happens for Humans and Orcs. You cannot raise " ..
+            "efficiency in Undead or Night Elf gold mines, nor in Human " ..
+            "or Orc gold mines with five workers.",
     },
     {
         title = "The Individual Method",
@@ -68,7 +72,7 @@ local QUESTS = {
             "gather cycle was, so when you give the command, the one with " ..
             "the gold will return it to the main building, and the one " ..
             "without will enter the gold mine.|n|n" ..
-            "This method consists of the player box-selecting two workers in " ..
+            "This method consists of the player {Input: box-selecting two workers} in " ..
             "a gathering cycle, one carrying gold, one not carrying gold, " ..
             "and giving them the shared command.|n|n" ..
             "Since the player gives the command to two workers, they only " ..
@@ -78,19 +82,21 @@ local QUESTS = {
         title = "Master Class",
         humanIcon = "humanMaster",
         orcIcon = "orcMaster",
-        text = "When mining, workers do not collide with each other.|nWhen " ..
-            "workers are given manual commands however, they gain collision " ..
-            "again for a moment, which can make them instantly push away " ..
-            "from other workers.|n|n" ..
-            "With perfect timing, this allows the player to further speed up " ..
-            "the worker's movement, by basically teleporting them part of " ..
-            "the way.|nWith bad timing, it can move the workers away from " ..
-            "their goal, and make them collide with each other.",
+        text = "When mining gold, workers have no collision.|n" ..
+            "However a unit that has no collision regains collision instantly " ..
+            "when given a command. If this happens while they are inside " ..
+            "another unit, both will regain collision, and it will make them " ..
+            "push away from each other.|n|n" ..
+            "Using this with perfect timing allows the player to further " ..
+            "raise worker efficiency by effectively teleporting them part " ..
+            "of the trip.|nBad timing however can cost efficiency, by making " ..
+            "workers run into each other or moving them away from their target.",
     },
 }
 
 local function FormatQuestText(text)
-    return string.gsub(text, "{Term:%s*(.-)}", "|cffff9933%1|r")
+    local formatted = string.gsub(text, "{Term:%s*(.-)}", "|cffff9933%1|r")
+    return string.gsub(formatted, "{Input:%s*(.-)}", "|cffffcc00%1|r")
 end
 
 local STARTING_MINE_GOLD = 12500
@@ -202,9 +208,11 @@ function JTG.OpenMiningMicroMenu(originCategory, pauseGame, restorePage, restore
             headingArtworkWidth = 0.176,
             headingArtworkHeight = 0.086,
             body = MINING_MICRO_INTRO,
-            choices = {{label = "Start Training", primary = true, action = launch}},
-            centerSingleChoice = true,
-            backAction = function() JTG.UI.ShowSkillRace(selection.race) end,
+            choices = {
+                {label="Human",action=function() selection.race="human"; launch() end},
+                {label="Orc",action=function() selection.race="orc"; launch() end},
+            },
+            backAction = function() JTG.UI.ShowCategory("skills") end,
             pauseGame = pauseGame == true,
             pageId = "root",
             restoreData = selection,

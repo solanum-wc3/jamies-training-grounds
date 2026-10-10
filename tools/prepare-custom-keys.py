@@ -4,27 +4,39 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 SOURCE = ROOT / "src" / "data"
 OUTPUT = ROOT / "src" / "generated" / "custom-keys.lua"
-MAX_CHUNK = 700
+# Preload output truncates at 259 bytes. Reserve room for the injection and
+# account for the engine doubling every backslash before writing the file.
+MAX_CHUNK = 240
+
+
+def preload_size(text: str):
+    return len(text.replace("\\", "\\\\").encode("utf-8"))
 
 
 def chunks_for(path: Path):
     chunks = []
     current = []
     length = 0
-    for line in path.read_text(encoding="utf-8").splitlines():
-        added = len(line) + (1 if current else 0)
+    for line in path.read_text(encoding="utf-8").split("\n"):
+        if preload_size(line) > MAX_CHUNK:
+            raise ValueError(f"{path.name}: line exceeds the safe Preload limit")
+        added = preload_size(line) + (1 if current else 0)
         if current and length + added > MAX_CHUNK:
             chunks.append("\n".join(current))
             current = []
             length = 0
         current.append(line)
-        length += len(line) + (1 if len(current) > 1 else 0)
+        length += preload_size(line) + (1 if len(current) > 1 else 0)
     if current:
         chunks.append("\n".join(current))
     return chunks
 
 
 def lua_long_string(value: str):
+    # Lua discards a newline immediately after a long-string opener. Preserve
+    # leading blank lines when a chunk begins at a paragraph boundary.
+    if value.startswith("\n"):
+        value = "\n" + value
     # Start with one equals sign so an INI section ending in "]" cannot
     # overlap the Lua closing delimiter.
     equals = "="

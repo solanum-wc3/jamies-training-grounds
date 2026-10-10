@@ -1,0 +1,473 @@
+{
+  "schema": 1,
+  "precisionNote": "Rounded observations from native events / sampled transitions; zero means same recorded timestamp. Not a universal projectile-disjoin boundary.",
+  "castPoints": {
+    "AHtb": {
+      "seconds": 0.4,
+      "minimum": 0.39844,
+      "maximum": 0.40625,
+      "samples": 3,
+      "source": "focused-2026-10-08",
+      "signal": "native channel-to-effect; excluding channelled teleport"
+    },
+    "Aens": {
+      "seconds": 0.6,
+      "minimum": 0.60156,
+      "maximum": 0.60156,
+      "samples": 1,
+      "source": "focused-2026-10-08",
+      "signal": "native channel-to-effect; excluding channelled teleport"
+    },
+    "AOsh": {
+      "seconds": 0.47,
+      "minimum": 0.46875,
+      "maximum": 0.46875,
+      "samples": 1,
+      "source": "focused-2026-10-08",
+      "signal": "native channel-to-effect; excluding channelled teleport"
+    },
+    "AOwk": {
+      "seconds": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0,
+      "samples": 3,
+      "source": "activation-2026-10-08",
+      "signal": "native channel-to-effect; excluding channelled teleport"
+    },
+    "Aloa": {
+      "seconds": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0,
+      "samples": 6,
+      "source": "activation-2026-10-08",
+      "signal": "native channel-to-effect; excluding channelled teleport"
+    },
+    "AIv1": {
+      "seconds": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0,
+      "samples": 3,
+      "source": "activation-2026-10-08",
+      "signal": "native channel-to-effect; excluding channelled teleport"
+    },
+    "AOmi": {
+      "seconds": 0.3,
+      "minimum": 0.29688,
+      "maximum": 0.29688,
+      "samples": 3,
+      "source": "activation-2026-10-08",
+      "signal": "native channel-to-effect; excluding channelled teleport"
+    },
+    "AOsf": {
+      "seconds": 0.3,
+      "minimum": 0.29688,
+      "maximum": 0.29688,
+      "samples": 3,
+      "source": "activation-2026-10-08",
+      "signal": "native channel-to-effect; excluding channelled teleport"
+    },
+    "AOvd": {
+      "seconds": 0.3,
+      "minimum": 0.29688,
+      "maximum": 0.29688,
+      "samples": 3,
+      "source": "activation-2026-10-08",
+      "signal": "native channel-to-effect; excluding channelled teleport"
+    },
+    "AHav": {
+      "seconds": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0,
+      "samples": 3,
+      "source": "retest-2026-10-08",
+      "signal": "native channel-to-effect; excluding channelled teleport"
+    },
+    "AHds": {
+      "seconds": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0,
+      "samples": 3,
+      "source": "activation-2026-10-08",
+      "signal": "native channel-to-effect; excluding channelled teleport"
+    },
+    "Aivs": {
+      "seconds": 0.45,
+      "minimum": 0.45313,
+      "maximum": 0.45313,
+      "samples": 3,
+      "source": "activation-2026-10-08",
+      "signal": "native channel-to-effect; excluding channelled teleport"
+    },
+    "ANsa": {
+      "seconds": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0,
+      "samples": 3,
+      "source": "activation-2026-10-08",
+      "signal": "native channel-to-effect; excluding channelled teleport"
+    },
+    "Astn": {
+      "seconds": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0,
+      "samples": 3,
+      "source": "activation-2026-10-08",
+      "signal": "native channel-to-effect; excluding channelled teleport"
+    },
+    "Abur": {
+      "seconds": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0,
+      "samples": 3,
+      "source": "activation-2026-10-08",
+      "signal": "native channel-to-effect; excluding channelled teleport"
+    },
+    "Abu2": {
+      "seconds": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0,
+      "samples": 3,
+      "source": "activation-2026-10-08",
+      "signal": "native channel-to-effect; excluding channelled teleport"
+    },
+    "Aams": {
+      "seconds": 0.5,
+      "minimum": 0.5,
+      "maximum": 0.5,
+      "samples": 3,
+      "source": "activation-2026-10-08",
+      "signal": "native channel-to-effect; excluding channelled teleport"
+    },
+    "AEbl": {
+      "seconds": 0.34,
+      "minimum": 0.33594,
+      "maximum": 0.33594,
+      "samples": 3,
+      "source": "activation-2026-10-08",
+      "signal": "native channel-to-effect; excluding channelled teleport"
+    },
+    "Apsh": {
+      "seconds": 0.3,
+      "minimum": 0.30469,
+      "maximum": 0.30469,
+      "samples": 3,
+      "source": "activation-2026-10-08",
+      "signal": "native channel-to-effect; excluding channelled teleport"
+    },
+    "AEme": {
+      "seconds": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0,
+      "samples": 3,
+      "source": "activation-2026-10-08",
+      "signal": "native channel-to-effect; excluding channelled teleport"
+    },
+    "Abrf": {
+      "seconds": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0,
+      "samples": 3,
+      "source": "activation-2026-10-08",
+      "signal": "native channel-to-effect; excluding channelled teleport"
+    },
+    "Arav": {
+      "seconds": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0,
+      "samples": 3,
+      "source": "activation-2026-10-08",
+      "signal": "native channel-to-effect; excluding channelled teleport"
+    },
+    "Adec": {
+      "seconds": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0,
+      "samples": 3,
+      "source": "retest-2026-10-08",
+      "signal": "native channel-to-effect; excluding channelled teleport"
+    },
+    "ANpr": {
+      "seconds": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0,
+      "samples": 3,
+      "source": "activation-2026-10-08",
+      "signal": "native channel-to-effect; excluding channelled teleport"
+    },
+    "AIxs": {
+      "seconds": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0,
+      "samples": 3,
+      "source": "activation-2026-10-08",
+      "signal": "native channel-to-effect; excluding channelled teleport"
+    },
+    "ANcp": {
+      "seconds": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0,
+      "samples": 3,
+      "source": "activation-2026-10-08",
+      "signal": "native channel-to-effect; excluding channelled teleport"
+    },
+    "ANef": {
+      "seconds": 0.4,
+      "minimum": 0.39843,
+      "maximum": 0.39843,
+      "samples": 3,
+      "source": "activation-2026-10-08",
+      "signal": "native channel-to-effect; excluding channelled teleport"
+    },
+    "ANrg": {
+      "seconds": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0,
+      "samples": 3,
+      "source": "activation-2026-10-08",
+      "signal": "native channel-to-effect; excluding channelled teleport"
+    },
+    "AIvu": {
+      "seconds": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0,
+      "samples": 3,
+      "source": "activation-2026-10-08",
+      "signal": "native channel-to-effect; excluding channelled teleport"
+    },
+    "Aave": {
+      "seconds": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0,
+      "samples": 3,
+      "source": "retest-2026-10-08",
+      "signal": "native channel-to-effect; excluding channelled teleport"
+    },
+    "Aco3": {
+      "seconds": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0,
+      "samples": 6,
+      "source": "retest-2026-10-08",
+      "signal": "native channel-to-effect; excluding channelled teleport"
+    },
+    "Adtn": {
+      "seconds": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0,
+      "samples": 3,
+      "source": "retest-2026-10-08",
+      "signal": "native channel-to-effect; excluding channelled teleport"
+    }
+  },
+  "activation": {
+    "AOwk": {
+      "label": "Invisible",
+      "seconds": 0.602,
+      "source": "activation-2026-10-08",
+      "samples": 3,
+      "anchor": "dodge request"
+    },
+    "AOmi": {
+      "label": "Hidden / invulnerable",
+      "seconds": 0.305,
+      "source": "activation-2026-10-08",
+      "samples": 3,
+      "anchor": "dodge request"
+    },
+    "AOsf": {
+      "label": "Old summon replaced",
+      "seconds": 0.297,
+      "source": "activation-2026-10-08",
+      "samples": 3,
+      "anchor": "dodge request"
+    },
+    "AOvd": {
+      "label": "Target invulnerable",
+      "seconds": 0.555,
+      "source": "activation-2026-10-08",
+      "samples": 3,
+      "anchor": "dodge request"
+    },
+    "AHav": {
+      "label": "Magic immunity",
+      "seconds": 0,
+      "source": "retest-2026-10-08",
+      "samples": 3,
+      "anchor": "dodge request"
+    },
+    "AHds": {
+      "label": "Invulnerable",
+      "seconds": 0,
+      "source": "activation-2026-10-08",
+      "samples": 3,
+      "anchor": "dodge request"
+    },
+    "Aivs": {
+      "label": "Target invisible",
+      "seconds": 0.461,
+      "source": "activation-2026-10-08",
+      "samples": 3,
+      "anchor": "dodge request"
+    },
+    "Astn": {
+      "label": "Stone form",
+      "seconds": 1.008,
+      "source": "activation-2026-10-08",
+      "samples": 3,
+      "anchor": "dodge request"
+    },
+    "Abur": {
+      "label": "Burrowed / invisible",
+      "seconds": 1.461,
+      "source": "activation-2026-10-08",
+      "samples": 3,
+      "anchor": "dodge request"
+    },
+    "Abu2": {
+      "label": "Burrowed / invisible",
+      "seconds": 1.461,
+      "source": "activation-2026-10-08",
+      "samples": 3,
+      "anchor": "dodge request"
+    },
+    "Aave": {
+      "label": "Destroyer / magic immunity",
+      "seconds": 0,
+      "source": "retest-2026-10-08",
+      "samples": 3,
+      "anchor": "dodge request"
+    },
+    "Aams": {
+      "label": "Target protection buff",
+      "seconds": 0.508,
+      "source": "activation-2026-10-08",
+      "samples": 3,
+      "anchor": "dodge request"
+    },
+    "Ashm": {
+      "label": "Invisible",
+      "seconds": 1.508,
+      "source": "retest-2026-10-08",
+      "samples": 3,
+      "anchor": "dodge request"
+    },
+    "AEbl": {
+      "label": "Position changes",
+      "seconds": 0.344,
+      "source": "activation-2026-10-08",
+      "samples": 3,
+      "anchor": "dodge request"
+    },
+    "Apsh": {
+      "label": "Phase Shift active",
+      "seconds": 0.312,
+      "source": "activation-2026-10-08",
+      "samples": 3,
+      "anchor": "dodge request"
+    },
+    "AEme": {
+      "label": "Demon form",
+      "seconds": 1.508,
+      "source": "activation-2026-10-08",
+      "samples": 3,
+      "anchor": "dodge request"
+    },
+    "Abrf": {
+      "label": "Bear form",
+      "seconds": 1.453,
+      "source": "activation-2026-10-08",
+      "samples": 3,
+      "anchor": "dodge request"
+    },
+    "Arav": {
+      "label": "Crow form",
+      "seconds": 0,
+      "source": "activation-2026-10-08",
+      "samples": 3,
+      "anchor": "dodge request"
+    },
+    "Adec": {
+      "label": "Rider replaced",
+      "seconds": 0,
+      "source": "retest-2026-10-08",
+      "samples": 3,
+      "anchor": "dodge request"
+    },
+    "Adtn": {
+      "label": "Wisp removed",
+      "seconds": 0,
+      "source": "retest-2026-10-08",
+      "samples": 3,
+      "anchor": "dodge request"
+    },
+    "ANef": {
+      "label": "Hidden / invulnerable",
+      "seconds": 0.406,
+      "source": "activation-2026-10-08",
+      "samples": 3,
+      "anchor": "dodge request"
+    },
+    "ANrg": {
+      "label": "Robo-Goblin form",
+      "seconds": 1.5,
+      "source": "activation-2026-10-08",
+      "samples": 3,
+      "anchor": "dodge request"
+    },
+    "AIv1": {
+      "label": "Invisible",
+      "seconds": 1.953,
+      "source": "activation-2026-10-08",
+      "samples": 3,
+      "anchor": "dodge request"
+    },
+    "AIvu": {
+      "label": "Invulnerable",
+      "seconds": 0,
+      "source": "activation-2026-10-08",
+      "samples": 3,
+      "anchor": "dodge request"
+    },
+    "AIhm": {
+      "label": "Invisible after stopping",
+      "seconds": 1.469,
+      "source": "activation-2026-10-08",
+      "samples": 3,
+      "anchor": "dodge request"
+    },
+    "AIxs": {
+      "label": "Protection buff",
+      "seconds": 0,
+      "source": "activation-2026-10-08",
+      "samples": 3,
+      "anchor": "dodge request"
+    },
+    "ANsa": {
+      "label": "Target teleports",
+      "seconds": 0,
+      "source": "activation-2026-10-08",
+      "samples": 3,
+      "anchor": "dodge request"
+    },
+    "ANpr": {
+      "label": "Target teleports",
+      "seconds": 0,
+      "source": "activation-2026-10-08",
+      "samples": 3,
+      "anchor": "dodge request"
+    }
+  },
+  "channelledTeleport": {
+    "AItp": {
+      "invulnerabilityAfterRequest": 0,
+      "teleportAfterRequest": 5,
+      "samples": 3,
+      "source": "activation-2026-10-08"
+    }
+  },
+  "loading": {
+    "model": "approach_then_entry",
+    "archerMountEstimate": true,
+    "note": "Do not reuse approach totals across different units or geometry."
+  }
+}

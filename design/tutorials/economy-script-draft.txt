@@ -1,0 +1,303 @@
+Setup: On the map are four bases, one by each race. Each of these is controlled by a neutral faction. The player should have no unit control to begin with, but should have vision of the Human units. No faction researches should be unlocked for this exercise.
+In addition to the exported building locations, a Sacrificial Pit needs to be placed in the Undead base.
+
+Section 1 - Welcome
+Checkpoint: Welcome
+
+Trigger: Center camera on Town Hall.
+Trigger: Have the arrow asset blinkingly point at the "Next/Continue" button the same way as in the first section of other Tutorials.
+
+{Heading: WELCOME}
+Narration: Welcome to the Economy Tutorial!
+Narration: This time we are taking a look at the different resources you have to manage when playing Warcraft III.
+Narration:
+Narration: Once you are done reading a section and playing around with whichever mechanic you learn, press the {Button: Continue} or {Button: Next} button to move on!
+Progression: Wait for Continue.
+
+Section 2 - Workers
+Checkpoint: Workers
+
+{Heading: WORKERS}
+Narration: The backbone of your economy are your worker units.
+Narration: Every race has their own workers, that function slightly differently.
+Narration: However, all of them construct {Term: Buildings} and harvest {Term: Gold}, and almost of them also harvest {Term: Lumber} - The two main resources of Warcraft III.
+Narration: Aside from that, they are all a little different. We shall take a look at them now.
+Progression: Wait for Continue.
+
+Section 3 - Peasants
+Checkpoint: Peasants
+
+{Heading: PEASANTS}
+Trigger: Center the camera on a gold-gathering Peasant and select him for the player. Have the arrow asset point up at the gold resource gauge and blink 10 times, then stay constant, then disappear as narration is cleared.
+Narration: These are {Term: Peasants}. They are the Human worker unit.
+Narration: Peasants can gather {Term: Gold} by running back and forth between a {Term: Gold Mine} and the Human player's {Term: Main Building}.
+Narration: A mine can be manned by up to five Peasants, and each peasant gathers 10 Gold every five seconds.
+Narration: So a full gold mine can bring in {Green Font: 10 Gold per second, or 600 Gold per minute}. No more.
+Progression: Wait for Continue.
+
+Narration: This is true for all races.
+Narration: It also means that the only way to raise your gold mining capacity, is finding new gold mines and building {Term: Expansions} there.
+Narration: Expansions are smaller bases you create during play. They will be covered in later tutorials.
+Progression: Wait for Continue.
+
+
+Trigger: Center the camera on a lumber-gathering Peasant and select him for the player. Have the arrow asset point up at the Lumber resource gauge and blink 10 times, then stay constant, then disappear as narration is cleared.
+Narration: Peasants can also gather {Term: Lumber}, by hacking at trees and carrying the lumber back to the Human player's {Term: Main Building} or their {Term: Lumber Mill}.
+Narration: They require 11 seconds to gather 10 Lumber, which they then need to carry back.
+Narration: Since trees only hold 50 Lumber until they are felled, these trips can vary a lot in length, so a precise rate is not as easy to calculate.
+Narration: As a rule of thumb however, a Human player will eventually want to have {Green Font: 8 Peasants gathering Lumber} in their main base.
+Narration: Humans can research {Term: Lumber Harvesting}, which raises the Lumber carrying capacity of Peasants to 20 and later 30, cutting down on walking time.
+Progression: Wait for Continue.
+
+Narration: Worker units are very vulnerable.
+Narration: Peasants especially, since they are out in the open when gathering and building.
+Narration: To protect themselves and their base, Peasants can be drafted into the {Term: Militia}.
+Narration: This happens through a {Term: Call to Arms}, either individually, or at the main building. It lasts 42.5 seconds.
+Narration: While part of the Militia, they are almost as strong as a Human's basic worker unit, the {Term: Footman}, and gain a lot of movement speed.
+Progression: Wait for Continue.
+
+Trigger: Spawn a two enemy ghouls outside of the human base and have them attack move into the base. Give the player unit control.
+Narration: Your base is being attacked.
+Narration: Call to arms a few Militia, and attack the Ghoul!
+Progression: Wait for Continue.
+
+Trigger: If the Ghouls have not been killed yet, have them die. Have all peasants return to their previous work orders. Take the player's control of the human units away again.
+Narration: You can dissolve the {Term: Militia} through the {Term: Back to Work} command.  
+Narration: Since a {Term: Call to Arms} at the main building calls every Peasant in the entire base, this will completely stop your resource production.
+Narration: For this reason, it is recommended to only every call individual Peasants into the Militia.
+Progression: Wait for Continue.
+
+Trigger: Reduce the health of the Town Hall to 80%. Have three lumber-harvesting peasants run up to it to repair it.
+Narration: All worker units can {Term: Repair} buildings and mechanical units.
+Narration: Repairing damage takes 1.5 times as long as it takes to build that much of the building.
+Narration: It also costs 35% of the Gold and Lumber it cost to build that part of the building.
+Progression: Wait for Continue.
+
+Trigger: Select a lumber peasant for the player. Have it start building the human altar. Have three other lumber peasants help construction.
+Narration: Peasants have another unique feature.
+Narration: They can help each other in constructing buildings, speeding up the build time for some extra Gold and Lumber.
+This is called {Term: Power Building}.
+Narration: You can see a demonstration of this in {Menu: Tools & Extras}.
+Narration: 
+Narration: Canceling a building costs you 25% of its build cost. Having the build site destroyed loses the entire build cost.
+Progression: Wait for Continue.
+
+
+Section 4 - Peons
+Checkpoint: Peons
+
+{Heading: PEONS}
+Trigger: Change player vision from the Human to the Orc units. Select a lumber-gathering Peon for the player and center the camera on it.
+Narration: These are {Term: Peons}. They are Orc worker units.
+Narration: They behave almost the same as Peasants when it comes to Gold and Lumber.
+Progression: Wait for Continue.
+
+Narration: The main difference is that an Orc player cannot raise the Lumber carrying capacity of their Peons.
+Narration: An Orc player will eventually want to have {Green Font: 7 Peons harvesting Lumber} in their base.
+Progression: Wait for Continue.
+
+Trigger: Have the lumber peon that is selected construct the tower.
+Narration: While Peons are building, they vanish into the building site, making them invulnerable.
+Narration: That is - until the building site is destroyed.
+Progression: Wait for Continue.
+
+Trigger: If it has not finished, finish building the tower instantly. Have the selected Peon move into the closest orc burrow.
+Narration: While Peons have a bit more {Term: HP} than other workers, they still die easily.
+Narration: Their means of protecting themselves is assuming {Term: Battle Stations} in a nearby {Term: Orc Burrow} and throwing spears at the attacker.
+Narration: Similar to Militia, calling all your Peons into the Burrows will stop your resource production, so you will want to only use as few as are needed.
+Progression: Wait for Continue.
+
+Trigger: Spawn three ghouls north of the Orc base and have it attack move the base. Give unit control of the Orcs to the player.
+Narration: Your base is being attacked.
+Narration: Call a few Peons to {Term: Battle Stations}!
+Progression: Wait for Continue.
+
+Trigger: If the ghouls are not dead yet, kill them.
+Narration: Once you are done having them defend your base, you can have them return to work with the {Term: Stand Down} command.
+Progression: Wait for Continue. On Continue, take away unit control from the player and have the Peons return to their harvesting duty.
+
+Section 5 - Wisps
+Checkpoint: Wisps
+
+{Heading: WISPS}
+Trigger: Change player vision to the Elf vision. Center the camera on one of the lumber-gathering wisps.
+Narration: Night Elf workers are called {Term: Wisps}.
+Narration: They behave very differently compared to Peasants and Peons.
+Progression: Wait for Continue.
+
+Trigger: Change unit selection for the player and camera position to center on the the Night Elf main building, and five seconds later to the entangled gold mine.
+Narration: The Night Elf main building entangles the nearby gold mine.
+Narration: Wisps gather Gold in this {Term: Entangled Gold Mine}.
+Narration: They do not have to walk back and forth, and while inside, are completely safe from harm.
+Progression: Wait for Continue.
+
+Trigger: Change player vision to the Elf vision. Center the camera on one of the lumber-gathering wisps.
+Narration: Wisps gather Lumber at a rate of 5 per 7.5 seconds, and they do not destroy the trees when doing so.
+Narration: Because of the lower gathering rate, a Night Elf player will want to have {Green Font: around 8 Wisps gathering Lumber}.
+Narration: This may fluctuate up and down a bit during the game.
+Progression: Wait for Continue.
+
+Trigger: Have the selected Wisp start building the Ancient of Wonders.
+Narration: Like Peons, Wisps disappear into the building when they are {Term: Constructing}.
+Narration: Additionally, when they finish building one of the living trees that make up many of the Night Elf buildings, they do not come out at all.
+Progression: Wait for Continue.
+
+Narration: Aside from the ones in the {Term: Entangled Gold Mine}, Wisps are among the most vulnerable worker units.
+Narration: Except for fleeing into the gold mine or into a construction site, Wisps have no great ways of dealing with this.
+Narration: Their only option is often simply to {Term: Detonate}.
+Progression: Wait for Continue.
+
+Narration: {Term: Detonate} burns 40 mana from enemy units, and deals 225 damage to enemy summons.
+Narration: This also denies the enemy the {Term: XP} they would otherwise get for killing the Wisp.
+Progression: Wait for Continue.
+
+Trigger: Have an enemy Farseer spawn in 1000 units to the north east of the gold mine. Have it summon spirit wolves. Reduce the HP of the spirit wolves by half. Have the spirit wolves attack move into the night elf base. Have the Farseer run towards the tavern. Hand Night Elf Control over to the player.
+Narration: Your Wisps are being harassed by magically summoned units.
+Narration: Detonate a Wisp to protect your other Wisps!
+Progression: Wait for Continue. On Continue, despawn the wolves and the farseer, and have the wisps return to their gather duties.
+
+Section 6 - Acolytes
+Checkpoint: Acolytes
+
+{Heading: ACOLYTES}
+Trigger: Give the player vision of the Undead units. Center the camera on an Acolyte and select it for the player.
+Narration: Undead workers are called {Term: Acolytes}.
+Narration: They function in a very unique way compared to other worker units..
+Progression: Wait for Continue.
+
+Trigger: Select the Haunted Goldmine for the player and center the camera on it.
+Narration: Acolytes gather {Term: Gold) in the {Term: Haunted Gold Mine}.
+Narration: This is a separate building that has nothing to do with the Undead main building.
+Narration: Different from any other worker, Acolytes stand in the open while gathering gold, completely vulnerable.
+Progression: Wait for Continue.
+
+Trigger: Center the camera on a ghoul and select it for the player.
+Narration: Acolytes are also the only worker unit that does not gather {Term: Lumber} at all.
+Narration: Instead this is done by the basic Undead military unit, the {Term: Ghoul.
+Narration: Ghouls can harvest 20 {Term: Lumber} in 13.5 seconds, and an Undead player will want to have {Green Font: 3 Ghouls harvesting Lumber}.
+Narration: Their gather rate can be improved by the {Term: Ghoul Frenzy} research, which raises their movement speed.
+Progression: Wait for Continue.
+
+Trigger: Center the camera on an acolyte and select it for the player. Have it summon the altar, and return to the gold mine.
+Narration: Acolytes have no way of defending themselves.
+Narration: However, when {Term: Summoning} buildings, an Acolyte needs only to be present once to initiate the summoning.
+Narration: This way, an Undead base only ever needs the five Acolytes in the Gold Mine.
+Progression: Wait for Continue.
+
+Trigger: Have the Acolyte walk up to the Crypt and De-Summon it, then return to the haunted gold mine.
+Narration: Through Acolytes, Undead are the only ones who can deconstruct their own buildings.
+Narration: This is done through the {Term: Unsummon Building} command.
+Narration: It nets the Undead player 50% of the building's original resource cost.
+Progression: Wait for Continue.
+
+Trigger: Have the Acolyte walk into the sacrificial pit and sacrifice itself. Have the resulting Shade start patrolling between undead base and tavern.
+Narration: Another unique feature of Acolytes is that they can be sacrificed at a {Term: Sacrificial Pit}, turning them into a {Term: Shade}.
+Narration: A Shade is an invisible scout unit that reveals other invisible units.
+Progression: Wait for Continue.
+
+Section 7 - Food
+Checkpoint: Food
+
+{Heading: FOOD PRODUCTION}
+
+Trigger: Return the camera to whatever faction's main building, the player last had vision of. Have the arrow asset point up at the Food resource gauge and blink 10 times, then stay constant, then disappear as narration is cleared.
+Narration: Aside from {Term: Gold} and {Term: Lumber}, which can be gathered directly, there is a third Resource in Warcraft III, called {Term: Food}.
+Narration: Food is gained by building specific buildings.
+Progression: Wait for Continue.
+
+Narration: Primarily, this is the {Term: Main Building}.
+Narration: Since the player always starts with this, it provides their starting {Term: Food Production}.
+Narration: The amount of Food a Main Building produces is different by race.
+Progression: Wait for Continue.
+
+Trigger: Change vision to Night Elf, and center the camera on the Night Elf main building and select it for the player. Then, 5 seconds later, do the same for the Undead main building and change vision to Undead.
+Narration: For Night Elves and the Undead, their Main Buildings, the {Term: Tree of Life} and the {Term: Necropolis}, produce 10 Food.
+Progression: Wait for Continue.
+
+Trigger: Change Vision to orc, and center the camera on their main building, and select it for the player.
+Narration: For Orcs, their Main Building, the {Term: Great Hall}, produces 11 Food.
+Progression: Wait for Continue.
+
+Trigger: Change vision to Human and center the camera on the Human main building and select it for the player. Spawn in the hidden Keep and Castle buildings. After 5 seconds respectively, change camera and selections to keep, then castle.
+Narration: The Main Building of the Humans produces different amounts of Food depending on its tier.
+Narration: The {Term: Town Hall} produces 12, the {Term: Keep} produces 14, and the {Term: Castle} produces 16.
+Progression: Wait for Continue.
+
+Trigger: Change vision to Human, center the camera to a farm, and select it for the player. After 5 seconds, switch to Orc and select a Burrow. After another 5 seconds, switch to Night Elf and do a Moon Well. After yet another 5 seconds switch to Undead and go to the Ziggurat.
+Narration: Aside from their main building, each race has a Food building.
+Narration: For Humans it is Farms, for Orcs it is Orc Burrow, for Night Elves it is Moon Wells, and for Undead it is Ziggurats.
+Progression: Wait for Continue.
+
+
+Narration: Now, the question is: {Gold Font: What does Food do?}
+Progression: Wait for Continue.
+
+Narration: The answer: Nothing by itself.
+Narration: Instead, {Gold Font: it limits how many units you can have}.
+Progression: Wait for Continue.
+
+Narration: Workers require 1 Food, other small units require 2 or 3.
+Narration: Heroes require 5, and larger units require up to 7.
+Narration: All of these add up, and {Gold Font: cannot exceed your food production}.
+Progression: Wait for Continue.
+
+Trigger: Set the Undead faction's current food production to as much as they have. Give the player unit control of the Undead, select the necropolis for him, and attempt producing an Acolyte for him. This should throw the "We need more Ziggurats" message. After this, take away unit control again.
+Narration: When you are consuming as much food as you produce, you cannot produce more units.
+Narration: This means you have {Term: Supply Blocked} yourself.
+Narration: To be able to build new units, you now have to build more food production buildings.
+Narration: This takes time, and slows down your game, so it is better to {Gold Font: plan ahead!}
+Progression: Wait for Continue.
+
+Section 8 - Upkeep
+Checkpoint: Upkeep
+
+{Heading: UPKEEP}
+
+Trigger: Return the camera to whatever faction's main building, the player last had vision of. Have the arrow asset point up at the Upkeep gauge and blink 10 times, then stay constant, then disappear as narration is cleared.
+Narration: Food governs the last mechanic relevant to Warcraft III's economy: {Term: Upkeep}.
+Narration: This mechanic limits your army size, not by not allowing you to build units, but by making you pay extra for having them.
+Progression: Wait for Continue.
+
+Trigger: Give the player ownership of the current faction and set food consumption to 51, so they hear the Upkeep notification.
+Narration: This is done through a {Gold Font: tax on all Gold income}.
+Narration: Once your {Term: Food Consumption}, not production, goes past 50, you hear a notification sound, and see {Yellow Font: Low Upkeep} pop up on your screen.
+Progression: Wait for Continue.
+
+Trigger: Center  the camera on the faction's main building.
+Narration: While you consume this much food, {Gold Font: you pay a 30% tax}.
+Narration: This means each of your workers only produce 7 {Term: Gold} every 5 seconds.
+Narration: It also affects Gold you get for selling items, killing neutral enemies, and so on.
+Narration: Basically it affects all ways you can receive Gold in the game. (Lumber is not affected at all.)
+Progression: Wait for Continue.
+
+Trigger: Set the current food consumption to 50.
+Narration: Once you fall back under 51 {Term: Food Consumption}, you no longer have to pay {Term: Upkeep}.
+Narration: Your hear the notification sound again, and {Green Font: No Upkeep} pops up on your screen.
+Progression: Wait for Continue.
+
+Trigger: Set the current food consumption to 81, and center the camera on the main building again.
+Narration: Once your {Term: Food Consumption} goes past 80, you go to {Red Font: High Upkeep}.
+Narration: You now {Gold Font: pay a 60% tax}.
+Progression: Wait for Continue.
+
+Narration: This mechanic makes it so you do not want to expand your army as quickly as you could.
+Narration: Growing it to 50 Food Consumption is great, and you should do it quickly, to be as strong as possible as soon as you can.
+Narration: But both crossing the threshold to 51 and to 81 are serious decisions you should only make with a goal in mind.
+Progression: Wait for Continue.
+
+Narration: For example, you can raise your army size past 50 in anticipation for a great battle.
+Narration: You will lose some units in the battle, so it will likely drop you back to below 51.
+Progression: Wait for Continue.
+
+Narration: Of course it makes sense of course to cross the threshold into Low or High Upkeep to attain the advantage to end the game.
+Progression: Wait for Continue.
+
+Narration: What you do not ever want to do is going to 51 Food Consumption and staying there for minutes at a time, with no plan on what to do.
+Narration: That is just wasting money. Especially because your Gold Mines still lose 10 Gold, and will run empty eventually.
+Progression: Wait for Continue.
+
+Section 6 - Outro
+
+Narration: {Heading: END OF TUTORIAL}
+Narration: This concludes the economy tutorial. Press the {Button: Menu} button to choose another tutorial!
+Progression: Highlight the {Button: Menu} button.

@@ -9,28 +9,28 @@ local BODY_BLOCKING_QUEST_TEXT =
     "Instead, units receive short movement instructions that tell them which " ..
     "direction and distance they can currently move.|n|n" ..
     "If a unit collides with another unit, its instruction is interrupted, " ..
-    "which makes it stop shortly.|n|n" ..
+    "which makes it stop shortly.|n" ..
     "The unit then has to receive a pathfinding update before it can move " ..
     "around the obstacle.|n|n" ..
     "Every player gets up to 50 such pathfinding instructions per second for " ..
-    "all of their moving units, which includes the repeated movements of " ..
-    "workers.|n|n" ..
+    "all of their moving units, which includes the repeated movements of workers.|n" ..
     "This explains why big armies become more and more unwieldy, as more and " ..
     "more units block each other and require more and more instructions.|n|n" ..
     "When trying to body block a unit, this explains part of why the unit " ..
-    "stands still for a moment.|n|n" ..
+    "stands still for a moment.|n" ..
     "The other half is that the unit now has to navigate around the obstacle, " ..
-    "which requires it to turn left or right.|n|n" ..
-    "Turning in Warcraft takes time, with every unit having its own turn " ..
-    "speed.|n|n" ..
+    "which requires it to turn left or right.|n" ..
+    "Turning in Warcraft III takes time, with every unit having its own turn " ..
+    "rate.|n|n" ..
     "So a blocked unit has to wait for new movement instructions, and then " ..
-    "turn on the spot to start moving along the new path.|n|n" ..
-    "In the time this takes, a keen-eyed player can predict where the new " ..
-    "path is going to go, and move their blocker into position again.|n|n" ..
-    "Press the |cffffcc00Squares|r button to display the areas that units " ..
-    "obstruct. These areas snap to a 32x32 in-game unit grid, so they do not " ..
-    "move seamlessly like the units do. You can also display the snap points " ..
-    "and a finer 8x8 grid."
+    "turn on the spot to start moving along the new path.|n" ..
+    "In the time this takes, a keen-eyed player can predict where it is going " ..
+    "to go, and move their blocker into position again.|n|n" ..
+    "Press the {Button: Squares} button to display the areas that units " ..
+    "obstruct. These areas snap to a grid of 32x32 in-game units, so they do " ..
+    "not move seamlessly like the units do, and they may not always be where " ..
+    "you think they are based on the model's position. You can also display " ..
+    "a finer grid of 8x8 in-game units."
 
 local TRAINING_ROSTERS = {
     human = {
@@ -60,11 +60,14 @@ local RACE_CHOICES = {
         artwork = "UI\\Glues\\Loading\\Backgrounds\\Campaigns\\HumanSymbol.dds"},
     {key = "orc", label = "Orc",
         artwork = "UI\\Glues\\Loading\\Backgrounds\\Campaigns\\OrcSymbol.dds"},
-    {key = "nightelf", label = "Night Elf",
-        artwork = "UI\\Glues\\Loading\\Backgrounds\\Campaigns\\NightElfSymbol.dds"},
     {key = "undead", label = "Undead",
         artwork = "UI\\Glues\\Loading\\Backgrounds\\Campaigns\\UndeadSymbol.dds"},
+    {key = "nightelf", label = "Night Elf",
+        artwork = "UI\\Glues\\Loading\\Backgrounds\\Campaigns\\NightElfSymbol.dds"},
 }
+
+local RACE_CHOICE_ICON_SIZE = 0.0396
+local RACE_CHOICE_ICON_OFFSET_X = 0.051
 
 local CUSTOM_RACE_CHOICES = {
     RACE_CHOICES[1], RACE_CHOICES[2], RACE_CHOICES[3], RACE_CHOICES[4],
@@ -128,9 +131,20 @@ local REFERENCE_RUNNER_ID = FourCC("Hgam")
 local REFERENCE_LANE_OFFSET = 300.0
 
 local BODY_BLOCKING_INTRO =
-    "Sometimes a valid strategy is simply to stand in the way of your opponent, to stop them from getting where they are going. Be it to get more hits in on them, or to stop them from effectively doing anything.|n|n" ..
-    "This exercise trains you in blocking the movement of other units. You control a Footman, and using the Move, Stop and Hold Position commands, try to stay in front of a series of units, for as long as possible.|n|n" ..
-    "The usual |cffffcc00Training|r has you choose between the race of the units you want to practice against, and you will encounter a series of that race's units.|nAlternatively, you can freely customize which unit you want to practice blocking with which."
+    "Sometimes a valid strategy is simply to stop your opponent from doing " ..
+    "what they are doing by standing in the way. Be it to get more hits in " ..
+    "on them, or to stop them from effectively doing anything.|n|n" ..
+    "This exercise trains you in blocking the movement of other units. You " ..
+    "control a Footman, and using the Move, Stop and Hold Position commands, " ..
+    "try to slow down a series of units for as long as possible.|n|n" ..
+    "The usual {Button: Training} has you choose between the race of the " ..
+    "units you want to practice against, and you will encounter a series of " ..
+    "that race's units.|nAlternatively, you can freely customize which unit " ..
+    "you want to practice with."
+
+local function FormatBodyBlockingText(text)
+    return string.gsub(text, "{Button:%s*(.-)}", "|cffffcc00%1|r")
+end
 
 function JTG.OpenBodyBlockingMenu(originCategory, pauseGame, restorePage, restoreData)
     local selection = {
@@ -161,7 +175,38 @@ function JTG.OpenBodyBlockingMenu(originCategory, pauseGame, restorePage, restor
     local showRoot, showTrainingRace, showTrainingDifficulty
     local showCustomRace, showCustomRunner, showCustomBlockerRace
     local showCustomBlocker, showCustomDifficulty
-    local function show(spec, pageId)
+    local show
+    local function showUnitGrid(race, body, selectAction, backAction, pageId)
+        local choices = {}
+        local columns = JTG.GetSurroundCustomRaceColumns(race)
+        for columnIndex, column in ipairs(columns) do
+            for rowIndex, item in ipairs(column) do
+                local definition = item
+                choices[#choices + 1] = {
+                    label = definition.label,
+                    unitRawcode = definition.rawcode,
+                    icon = JTG.GetSurroundCustomUnitIcon(definition.rawcode),
+                    enabled = definition.enabled,
+                    column = columnIndex - 1,
+                    row = rowIndex - 1,
+                    action = function() selectAction(definition) end,
+                }
+            end
+        end
+        show({
+            body = body,
+            choices = choices,
+            commandGridChoices = true,
+            commandGridColumns = 10,
+            commandGridRows = 5,
+            commandGridButtonSize = 0.029,
+            commandGridStep = 0.030,
+            commandGridTop = -0.205,
+            hideHeadingArtwork = true,
+            backAction = backAction,
+        }, pageId)
+    end
+    show = function(spec, pageId)
         spec.title = "Body Blocking"
         spec.activityId = "skills.body_blocking"
         spec.originCategory = originCategory or "skills"
@@ -177,6 +222,7 @@ function JTG.OpenBodyBlockingMenu(originCategory, pauseGame, restorePage, restor
                 showRoot()
             end
         end
+        spec.body = FormatBodyBlockingText(spec.body or "")
         JTG.UI.ShowActivityBriefing(spec)
     end
     showRoot = function()
@@ -184,9 +230,8 @@ function JTG.OpenBodyBlockingMenu(originCategory, pauseGame, restorePage, restor
             body = BODY_BLOCKING_INTRO,
             choices = {
                 {label = "Start Training", primary = true,
-                    tooltip = "Choose a race and practice against its sequence of units.",
                     action = function() selection.mode = "training"; showTrainingRace() end},
-                {label = "Custom", tooltip = "Choose both the runner and the unit you control.",
+                {label = "Custom",
                     action = function() selection.mode = "custom"; showCustomRace() end},
             },
             backAction = leaveMenu,
@@ -198,7 +243,8 @@ function JTG.OpenBodyBlockingMenu(originCategory, pauseGame, restorePage, restor
             local key, label = race.key, race.label
             table.insert(choices, {label = label, icon = race.artwork,
                 iconScale = race.iconScale,
-                tooltip = "Practice against " .. label .. " units.",
+                iconSize = RACE_CHOICE_ICON_SIZE,
+                iconOffsetX = RACE_CHOICE_ICON_OFFSET_X,
                 action = function()
                     selection.race = key
                     selection.runnerIndex = 1
@@ -207,14 +253,14 @@ function JTG.OpenBodyBlockingMenu(originCategory, pauseGame, restorePage, restor
                     showTrainingDifficulty()
                 end})
         end
-        show({body = "Choose the race whose units you want to practice blocking.",
+        show({body = "Choose the race of the units you want to practice blocking.",
             choices = choices, backAction = showRoot}, "training_race")
     end
     showTrainingDifficulty = function()
         show({body = "Choose a difficulty. Hard runners take a less predictable route.", choices = {
-            {label = "Normal", tooltip = "The runner follows the direct course.",
+            {label = "Normal",
                 action = function() selection.difficulty = 1; launch() end},
-            {label = "Hard", tooltip = "The runner changes its route more often.",
+            {label = "Hard",
                 action = function() selection.difficulty = 2; launch() end},
         }, backAction = showTrainingRace}, "training_difficulty")
     end
@@ -224,26 +270,20 @@ function JTG.OpenBodyBlockingMenu(originCategory, pauseGame, restorePage, restor
             local key, label = race.key, race.label
             table.insert(choices, {label = label, icon = race.artwork,
                 iconScale = race.iconScale,
-                tooltip = "Choose a " .. label .. " runner.",
+                iconSize = RACE_CHOICE_ICON_SIZE * (race.iconScale or 1.0),
+                iconOffsetX = RACE_CHOICE_ICON_OFFSET_X,
                 action = function() selection.race = key; showCustomRunner() end})
         end
         show({body = "Choose the race of the runner you want to block.", choices = choices,
             backAction = showRoot}, "custom_race")
     end
     showCustomRunner = function()
-        local choices = {}
-        for _, runner in ipairs(CUSTOM_UNITS[selection.race]) do
-            local unitId, unitName = runner[1], runner[2]
-            table.insert(choices, {label = unitName, tooltip = "Use " .. unitName .. " as the runner.",
-                action = function()
-                    selection.runnerId = unitId
-                    selection.runnerName = unitName
-                    showCustomBlockerRace()
-                end})
-        end
-        show({body = "Choose the unit you want to block.", choices = choices,
-            compactChoices = true,
-            backAction = showCustomRace}, "custom_runner")
+        showUnitGrid(selection.race, "Choose the unit you want to block.",
+            function(item)
+                selection.runnerId = FourCC(item.rawcode)
+                selection.runnerName = item.label
+                showCustomBlockerRace()
+            end, showCustomRace, "custom_runner")
     end
     showCustomBlockerRace = function()
         local choices = {}
@@ -251,31 +291,27 @@ function JTG.OpenBodyBlockingMenu(originCategory, pauseGame, restorePage, restor
             local key, label = race.key, race.label
             table.insert(choices, {label = label, icon = race.artwork,
                 iconScale = race.iconScale,
+                iconSize = RACE_CHOICE_ICON_SIZE * (race.iconScale or 1.0),
+                iconOffsetX = RACE_CHOICE_ICON_OFFSET_X,
                 action = function() selection.blockerRace = key; showCustomBlocker() end})
         end
         show({body = "Choose the race of the unit you want to control.", choices = choices,
             backAction = showCustomRunner}, "custom_blocker_race")
     end
     showCustomBlocker = function()
-        local choices = {}
-        for _, blocker in ipairs(CUSTOM_UNITS[selection.blockerRace]) do
-            local unitId, unitName = blocker[1], blocker[2]
-            table.insert(choices, {label = unitName, tooltip = "Control a " .. unitName .. ".",
-                action = function()
-                    selection.blockerId = unitId
-                    selection.blockerName = unitName
-                    showCustomDifficulty()
-                end})
-        end
-        show({body = "Choose the unit you want to use for blocking.", choices = choices,
-            compactChoices = true,
-            backAction = showCustomBlockerRace}, "custom_blocker")
+        showUnitGrid(selection.blockerRace,
+            "Choose the unit you want to use for blocking.",
+            function(item)
+                selection.blockerId = FourCC(item.rawcode)
+                selection.blockerName = item.label
+                showCustomDifficulty()
+            end, showCustomBlockerRace, "custom_blocker")
     end
     showCustomDifficulty = function()
         show({body = "Choose a difficulty. Hard runners take a less predictable route.", choices = {
-            {label = "Normal", tooltip = "The runner follows the direct course.",
+            {label = "Normal",
                 action = function() selection.difficulty = 1; launch() end},
-            {label = "Hard", tooltip = "The runner changes its route more often.",
+            {label = "Hard",
                 action = function() selection.difficulty = 2; launch() end},
         }, backAction = showCustomBlocker}, "custom_difficulty")
     end
@@ -607,8 +643,6 @@ function JTG.CreateBodyBlockingActivity(session)
         BlzFrameSetText(self.countdownFrame, "|cffffcc003|r")
         BlzFrameSetVisible(self.countdownFrame, true)
         self.countdownTimer = self:makeTimer(1.0, true, function() self:countdownTick() end)
-        DisplayTimedTextToPlayer(Player(0), 0, 0, 5,
-            "|cffffcc00" .. self.blockerName .. " vs " .. runnerName .. "|r  Stay in front and delay the runner.")
     end
 
     function activity:countdownTick()
@@ -1116,10 +1150,10 @@ function JTG.CreateBodyBlockingActivity(session)
 
         local quest = JTG.ScopeTrackQuest(current.scope, CreateQuest())
         QuestSetTitle(quest, "On Pathfinding and Movement")
-        QuestSetDescription(quest, BODY_BLOCKING_QUEST_TEXT)
+        QuestSetDescription(quest, FormatBodyBlockingText(BODY_BLOCKING_QUEST_TEXT))
         QuestSetIconPath(quest,
             "ReplaceableTextures\\CommandButtons\\BTNManual3.blp")
-        QuestSetRequired(quest, false)
+        QuestSetRequired(quest, true)
         QuestSetDiscovered(quest, true)
         QuestSetEnabled(quest, true)
         JTG.BorrowCamera(current.scope, Player(0))

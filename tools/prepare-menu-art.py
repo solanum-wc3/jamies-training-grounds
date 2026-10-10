@@ -11,6 +11,8 @@ ROOT_CARD_SIZE = (256, 128)
 CATEGORY_CARD_SIZE = (416, 200)
 
 CARDS = {
+    "GargoyleSurrounds": ("gargoyle-surrounds-source.png", 1.0, 0.50, 0.50, "gargoyle_card"),
+    "CombatMicro": ("combat-micro-source.png", 1.0, 0.50, 0.50, "contain"),
     # Keep the original card treatment: a centered 2:1 crop at the authored
     # scale.  The briefing uses the full transparent composition separately.
     "BodyBlocking": ("body-blocking-source.png", 1.0, 0.50, 0.50, "crop"),
@@ -104,7 +106,15 @@ for output_name, values in CARDS.items():
     source = Image.open(SOURCE / source_name).convert("RGBA")
     if output_name != "WindwalkPop":
         assert source.getchannel("A").getextrema()[0] == 0, source_name + " must retain transparency"
-    if mode == "hotkey_card":
+    if mode == "gargoyle_card":
+        # Match the narrow right-hand artwork frame without squeezing the
+        # composition. Crop the sides while keeping the central target visible.
+        output_size = (320, 256)
+        crop_width = min(source.width, round(source.height * 1.25))
+        left = (source.width - crop_width) // 2
+        card = source.crop((left, 0, left + crop_width, source.height)).resize(
+            output_size, Image.Resampling.LANCZOS)
+    elif mode == "hotkey_card":
         # Keep the card at full button height, but narrow its source crop so
         # the flames leave a safety gap after the title. The authored texture
         # matches the runtime frame ratio and therefore is not squeezed.
@@ -219,9 +229,25 @@ for output_name, (source_name, mode, amount, focal_y, focal_x) in ROOT_CARDS.ite
     card.save(card_path, pixel_format="DXT5")
     generated.append((card_path, output_size))
 
+# Bat Splitting's briefing uses the complete authored source at 50% dimensions.
+# Pad the compressed texture to 4px blocks; never crop the composition.
+bat_source = Image.open(SOURCE / "bat-splitter-source.png").convert("RGBA")
+bat_half = bat_source.resize((round(bat_source.width * 0.5), round(bat_source.height * 0.5)), Image.Resampling.LANCZOS)
+bat_size = tuple((value + 3) // 4 * 4 for value in bat_half.size)
+bat_briefing = Image.new("RGBA", bat_size, (0, 0, 0, 0))
+bat_briefing.alpha_composite(bat_half, (0, 0))
+bat_path = OUTPUT / "BatSplitterBriefing.dds"
+bat_briefing.save(bat_path, pixel_format="DXT5")
+generated.append((bat_path, bat_size))
+
 # Briefings preserve the whole transparent composition.  Cards intentionally
 # use their tighter 2:1 crop, so the two UI contexts can be art-directed
 # independently.
+gargoyle_source = Image.open(SOURCE / "gargoyle-surrounds-source.png").convert("RGBA")
+gargoyle_briefing = contain_visible(gargoyle_source, (512, 256), 1.0)
+gargoyle_path = OUTPUT / "GargoyleSurroundsBriefing.dds"
+gargoyle_briefing.save(gargoyle_path, pixel_format="DXT5")
+generated.append((gargoyle_path, (512, 256)))
 briefing_source = Image.open(SOURCE / "body-blocking-source.png").convert("RGBA")
 briefing = Image.new("RGBA", (512, 256), (0, 0, 0, 0))
 briefing_art = briefing_source.copy()
@@ -313,6 +339,9 @@ tutorial_arrow = contain_visible(arrow_down, (128, 128), 0.92)
 tutorial_arrow_path = OUTPUT / "TutorialArrowDown.dds"
 tutorial_arrow.save(tutorial_arrow_path, pixel_format="DXT5")
 generated.append((tutorial_arrow_path, (128, 128)))
+welcome_arrow_path = OUTPUT / "TutorialArrowUp.dds"
+tutorial_arrow.transpose(Image.Transpose.ROTATE_180).save(welcome_arrow_path, pixel_format="DXT5")
+generated.append((welcome_arrow_path, (128, 128)))
 
 # Nine-slice runtime skin. Only straight sections stretch; the four rounded
 # corners retain their shape at every tooltip height.

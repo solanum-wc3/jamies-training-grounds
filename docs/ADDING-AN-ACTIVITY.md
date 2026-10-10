@@ -42,13 +42,17 @@ Create `src/activities/<activity>.lua` and add it to the explicit module list in
 - `afterCleanup()` only for work that must occur after disposal;
 - presentation hide, restore or rebuild hooks when menus and save/load require them.
 
-Use `JTG.ScopeTrack*` helpers for units, timers, triggers, frames, images, markers, quests, destructables and fog modifiers. Use guarded scoped timers so callbacks from an invalidated session cannot affect its replacement. Register borrowed camera, selection, alliance, resource or object state before changing it.
+Use `JTG.ScopeTrack*` helpers for units, timers, triggers, frames, images, markers, quests, destructables and fog modifiers. Use `JTG.StartScopedTimer(session, scope, timeout, periodic, callback)` instead of reproducing timer creation, tracking and session guards in each activity. Register borrowed camera, selection, alliance, resource or object state before changing it.
 
 ## 5. Use shared presentation
 
 Use `JTG.UI.ShowActivityBriefing` for briefing and selector pages. Preserve the shared title, body, artwork, divider and footer anchors unless the content needs an explicit override.
 
-Advertise toolbar capabilities rather than creating another permanent toolbar. Use the shared result card for ordinary completion, success and failure states. Supply activity-specific text and progression while reusing common Replay, Retry, Next and Menu behavior.
+Advertise toolbar capabilities rather than creating another permanent toolbar. Use the shared result card for ordinary completion, success and failure states. Supply activity-specific text and progression while reusing common Redo, Next and Menu behavior. Reserve Replay for recorded playback. Hide is an intentional exception for Windwalk Pop and successful Surrounds, not a default action.
+
+Every configuration page must supply `activityId`, `originCategory`, `pageId` and serializable `restoreData`. Its menu function accepts `(originCategory, pauseGame, restorePage, restoreData)` and reconstructs that exact page after loading. Back returns to the previous selector and retains the active exercise's pause. Supply Resume and Exit on every page reached from a live exercise, not just its root page.
+
+Use the existing racial unit roster and command-grid layout when choosing units. Set `unitRawcode` on choices so the shared `UI.GetSummonLevelBadge` supplies summon numbers; do not maintain another partial badge table.
 
 Quest text should explain behavior a player can use. Put experimental detail and engine hypotheses in project documentation instead.
 
@@ -56,7 +60,9 @@ Quest text should explain behavior a player can use. Put experimental detail and
 
 Test Menu, Resume, Exit, Redo and activity replacement during countdowns, active play and result presentation. If the activity can be saved in those states, capture enough semantic data to reconstruct presentation without retaining invalid frame or handle references.
 
-Cleanup must be safe after partial setup and repeated transition attempts. Activity-specific code must not assume its timers or units survive reset or exit.
+Cleanup must be safe after partial setup and repeated transition attempts. Activity-specific code must not assume its timers or units survive reset or exit. Keep resource destruction in the scopes; semantic cleanup clears feedback, selection and activity references. Engine-created units from summons, construction, loading or morphing also need ownership tracking or a baseline-aware cleanup sweep.
+
+Result rendering must not change scoring or rerun completion. Both first display and restoration hide the toolbar while the end card is visible. Save/load abandons invalid presentation handles and reconstructs presentation only; it does not run ordinary exercise cleanup or restart gameplay AI.
 
 ## 7. Build and validate
 
@@ -78,3 +84,5 @@ Then test in Warcraft III:
 8. `-diag-lifecycle` in the development build.
 
 Update [`ACTIVITIES.md`](ACTIVITIES.md), the changelog and any affected architectural decision. Keep experimental tools in development-only modules and prove the release build does not package them.
+
+For tutorials, follow [TUTORIAL-STANDARD.md](TUTORIAL-STANDARD.md) and use `JTG.Tutorial` instead of copying presentation, camera or input-blocking code.

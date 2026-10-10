@@ -1,0 +1,3811 @@
+{
+  "schema": 1,
+  "scope": "All current Homing, Area, Ranged entries and individual dodge methods",
+  "source": "Installed game SYLK tables extracted into work; catalogue checked 2026-10-08",
+  "source_sha256": {
+    "design\\dodge-catalog.json": "b71472fadc592b12e8d841988e064e7bc0db0ad085e74926db7c79e1de9d85c7",
+    "work\\abilitydata.slk": "8e0f49e848ea7d9be8866e21a766a3d4833e3747fd4ca08979fd5be7531a13b2",
+    "work\\unitweapons.slk": "54d6c5a0dfb108804c10a2876738f883c0be330a6b11c75b96b51d298afbdda9",
+    "work\\itemdata.slk": "311f39bf506606d07078aedc6db4721cfc1f4fd6777cb67dfa64431bb5ce4173"
+  },
+  "runtime_measurements_performed": false,
+  "dangers": [
+    {
+      "id": "attack.Ofar.0",
+      "group": "Ranged",
+      "name": "Far Seer",
+      "unit": "Ofar",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.3",
+        "base_attack_cooldown": "2.28",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.3,
+      "catalogue_missile_speed": 1200.0,
+      "range": 600.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.Oshd.1",
+      "group": "Ranged",
+      "name": "Shadow Hunter",
+      "unit": "Oshd",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.3",
+        "base_attack_cooldown": "2.28",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.3,
+      "catalogue_missile_speed": 900.0,
+      "range": 600.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.ohun.2",
+      "group": "Ranged",
+      "name": "Troll Headhunter",
+      "unit": "ohun",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "-",
+        "base_attack_damage_point": "0.31",
+        "base_attack_cooldown": "2.31",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.31,
+      "catalogue_missile_speed": 1200.0,
+      "range": 550.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.otbk.3",
+      "group": "Ranged",
+      "name": "Troll Berserker",
+      "unit": "otbk",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "-",
+        "base_attack_damage_point": "0.31",
+        "base_attack_cooldown": "2.31",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.31,
+      "catalogue_missile_speed": 1200.0,
+      "range": 550.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.otbr.4",
+      "group": "Ranged",
+      "name": "Troll Batrider",
+      "unit": "otbr",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0",
+        "base_attack_damage_point": "0.6",
+        "base_attack_cooldown": "1.8",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.6,
+      "catalogue_missile_speed": 900.0,
+      "range": 300.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.owyv.5",
+      "group": "Ranged",
+      "name": "Wind Rider",
+      "unit": "owyv",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.6",
+        "base_attack_cooldown": "2",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.6,
+      "catalogue_missile_speed": 1200.0,
+      "range": 450.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.okod.6",
+      "group": "Ranged",
+      "name": "Kodo Beast",
+      "unit": "okod",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.5",
+        "base_attack_damage_point": "0.85",
+        "base_attack_cooldown": "1.44",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.85,
+      "catalogue_missile_speed": 1200.0,
+      "range": 500.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.oshm.7",
+      "group": "Ranged",
+      "name": "Shaman",
+      "unit": "oshm",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.6",
+        "base_attack_damage_point": "0.43",
+        "base_attack_cooldown": "2.1",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.43,
+      "catalogue_missile_speed": 1200.0,
+      "range": 600.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.odoc.8",
+      "group": "Ranged",
+      "name": "Witch Doctor",
+      "unit": "odoc",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.35",
+        "base_attack_damage_point": "0.73",
+        "base_attack_cooldown": "1.75",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.73,
+      "catalogue_missile_speed": 900.0,
+      "range": 600.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.ospw.9",
+      "group": "Ranged",
+      "name": "Spirit Walker",
+      "unit": "ospw",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.68",
+        "base_attack_damage_point": "0.5",
+        "base_attack_cooldown": "1.75",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.5,
+      "catalogue_missile_speed": 900.0,
+      "range": 400.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.otrb.11",
+      "group": "Ranged",
+      "name": "Orc Burrow",
+      "unit": "otrb",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "-",
+        "base_attack_damage_point": "0.3",
+        "base_attack_cooldown": "4",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.3,
+      "catalogue_missile_speed": 1200.0,
+      "range": 700.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.owtw.12",
+      "group": "Ranged",
+      "name": "Watch Tower",
+      "unit": "owtw",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "-",
+        "base_attack_damage_point": "0.3",
+        "base_attack_cooldown": "0.6",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.3,
+      "catalogue_missile_speed": 1800.0,
+      "range": 800.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.osp1.13",
+      "group": "Ranged",
+      "name": "Serpent Ward 1",
+      "unit": "osp1",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "-",
+        "base_attack_damage_point": "0.3",
+        "base_attack_cooldown": "1.5",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.3,
+      "catalogue_missile_speed": 900.0,
+      "range": 600.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.osp2.14",
+      "group": "Ranged",
+      "name": "Serpent Ward 2",
+      "unit": "osp2",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "-",
+        "base_attack_damage_point": "0.3",
+        "base_attack_cooldown": "1.5",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.3,
+      "catalogue_missile_speed": 900.0,
+      "range": 600.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.osp3.15",
+      "group": "Ranged",
+      "name": "Serpent Ward 3",
+      "unit": "osp3",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "-",
+        "base_attack_damage_point": "0.3",
+        "base_attack_cooldown": "1.5",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.3,
+      "catalogue_missile_speed": 900.0,
+      "range": 600.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.hrif.16",
+      "group": "Ranged",
+      "name": "Rifleman",
+      "unit": "hrif",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.17",
+        "base_attack_cooldown": "1.4",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "instant"
+      },
+      "catalogue_cast_point": 0.17,
+      "catalogue_missile_speed": 0,
+      "range": 400.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.hspt.17",
+      "group": "Ranged",
+      "name": "Spell Breaker",
+      "unit": "hspt",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.5",
+        "base_attack_cooldown": "1.9",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.5,
+      "catalogue_missile_speed": 900.0,
+      "range": 250.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.hmpr.18",
+      "group": "Ranged",
+      "name": "Priest",
+      "unit": "hmpr",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.4",
+        "base_attack_damage_point": "0.59",
+        "base_attack_cooldown": "2",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.59,
+      "catalogue_missile_speed": 900.0,
+      "range": 600.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.hsor.19",
+      "group": "Ranged",
+      "name": "Sorceress",
+      "unit": "hsor",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.45",
+        "base_attack_damage_point": "0.75",
+        "base_attack_cooldown": "1.75",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.75,
+      "catalogue_missile_speed": 900.0,
+      "range": 600.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.hgry.21",
+      "group": "Ranged",
+      "name": "Gryphon Rider",
+      "unit": "hgry",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.8",
+        "base_attack_cooldown": "2.2",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "mline"
+      },
+      "catalogue_cast_point": 0.8,
+      "catalogue_missile_speed": 1100.0,
+      "range": 450.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.hwat.22",
+      "group": "Ranged",
+      "name": "Water Elemental Level 1",
+      "unit": "hwat",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.4",
+        "base_attack_cooldown": "1.5",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.4,
+      "catalogue_missile_speed": 1300.0,
+      "range": 300.0,
+      "area": 75.0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.hwt2.23",
+      "group": "Ranged",
+      "name": "Water Elemental Level 2",
+      "unit": "hwt2",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.4",
+        "base_attack_cooldown": "1.5",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.4,
+      "catalogue_missile_speed": 1300.0,
+      "range": 300.0,
+      "area": 75.0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.hwt3.24",
+      "group": "Ranged",
+      "name": "Water Elemental Level 3",
+      "unit": "hwt3",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.4",
+        "base_attack_cooldown": "1.5",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.4,
+      "catalogue_missile_speed": 1300.0,
+      "range": 300.0,
+      "area": 75.0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.hdhw.25",
+      "group": "Ranged",
+      "name": "Dragonhawk Rider",
+      "unit": "hdhw",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.43",
+        "base_attack_cooldown": "1.75",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.43,
+      "catalogue_missile_speed": 1100.0,
+      "range": 300.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.hphx.26",
+      "group": "Ranged",
+      "name": "Phoenix",
+      "unit": "hphx",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.43",
+        "base_attack_cooldown": "1.4",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "msplash"
+      },
+      "catalogue_cast_point": 0.43,
+      "catalogue_missile_speed": 1800.0,
+      "range": 600.0,
+      "area": 125.0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.Hamg.27",
+      "group": "Ranged",
+      "name": "Archmage",
+      "unit": "Hamg",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.55",
+        "base_attack_cooldown": "2.13",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.55,
+      "catalogue_missile_speed": 900.0,
+      "range": 600.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.Hblm.28",
+      "group": "Ranged",
+      "name": "Blood Mage",
+      "unit": "Hblm",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.5",
+        "base_attack_damage_point": "0.55",
+        "base_attack_cooldown": "1.64",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.55,
+      "catalogue_missile_speed": 900.0,
+      "range": 600.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.hgtw.29",
+      "group": "Ranged",
+      "name": "Guard Tower",
+      "unit": "hgtw",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "-",
+        "base_attack_damage_point": "0.3",
+        "base_attack_cooldown": "0.9",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.3,
+      "catalogue_missile_speed": 1800.0,
+      "range": 700.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.hatw.30",
+      "group": "Ranged",
+      "name": "Arcane Tower",
+      "unit": "hatw",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "-",
+        "base_attack_damage_point": "0.3",
+        "base_attack_cooldown": "1",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.3,
+      "catalogue_missile_speed": 1500.0,
+      "range": 800.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.hctw.31",
+      "group": "Ranged",
+      "name": "Cannon Tower",
+      "unit": "hctw",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "-",
+        "base_attack_damage_point": "0.3",
+        "base_attack_cooldown": "2.5",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "artillery"
+      },
+      "catalogue_cast_point": 0.3,
+      "catalogue_missile_speed": 700.0,
+      "range": 800.0,
+      "area": 125.0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.hgyr.32",
+      "group": "Ranged",
+      "name": "Flying Machine ground attack",
+      "unit": "hgyr",
+      "ability": null,
+      "weapon": 1,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.633",
+        "base_attack_cooldown": "2.5",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.633,
+      "catalogue_missile_speed": 0,
+      "range": 100.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.hrtt.33",
+      "group": "Ranged",
+      "name": "Siege Engine Barrage",
+      "unit": "hrtt",
+      "ability": null,
+      "weapon": 1,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.125",
+        "base_attack_cooldown": "2",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.125,
+      "catalogue_missile_speed": 0,
+      "range": 500.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder.",
+        "Barrage / air-only attack needs explicit native validation; a plain attack event may not represent every secondary projectile."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.ugar.34",
+      "group": "Ranged",
+      "name": "Gargoyle",
+      "unit": "ugar",
+      "ability": null,
+      "weapon": 1,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0",
+        "base_attack_damage_point": "0.633",
+        "base_attack_cooldown": "2.2",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.633,
+      "catalogue_missile_speed": 900.0,
+      "range": 300.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.ubsp.35",
+      "group": "Ranged",
+      "name": "Destroyer",
+      "unit": "ubsp",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.66",
+        "base_attack_damage_point": "0.633",
+        "base_attack_cooldown": "1.35",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "msplash"
+      },
+      "catalogue_cast_point": 0.633,
+      "catalogue_missile_speed": 900.0,
+      "range": 450.0,
+      "area": 1.0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.ucry.36",
+      "group": "Ranged",
+      "name": "Crypt Fiend",
+      "unit": "ucry",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0",
+        "base_attack_damage_point": "0.64",
+        "base_attack_cooldown": "2",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.64,
+      "catalogue_missile_speed": 500.0,
+      "range": 550.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.unec.37",
+      "group": "Ranged",
+      "name": "Necromancer",
+      "unit": "unec",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.5",
+        "base_attack_damage_point": "0.53",
+        "base_attack_cooldown": "1.8",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.53,
+      "catalogue_missile_speed": 900.0,
+      "range": 600.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.uban.38",
+      "group": "Ranged",
+      "name": "Banshee",
+      "unit": "uban",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.5",
+        "base_attack_damage_point": "0.56",
+        "base_attack_cooldown": "1.5",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.56,
+      "catalogue_missile_speed": 900.0,
+      "range": 600.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.ufro.39",
+      "group": "Ranged",
+      "name": "Frost Wyrm",
+      "unit": "ufro",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.5",
+        "base_attack_damage_point": "0.5",
+        "base_attack_cooldown": "3",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "msplash"
+      },
+      "catalogue_cast_point": 0.5,
+      "catalogue_missile_speed": 800.0,
+      "range": 375.0,
+      "area": 200.0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.uskm.40",
+      "group": "Ranged",
+      "name": "Skeleton Mage",
+      "unit": "uskm",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.5",
+        "base_attack_damage_point": "0.5",
+        "base_attack_cooldown": "1.5",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.5,
+      "catalogue_missile_speed": 900.0,
+      "range": 500.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.uzg1.42",
+      "group": "Ranged",
+      "name": "Spirit Tower",
+      "unit": "uzg1",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "-",
+        "base_attack_damage_point": "0.5",
+        "base_attack_cooldown": "1",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.5,
+      "catalogue_missile_speed": 900.0,
+      "range": 700.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.uzg2.43",
+      "group": "Ranged",
+      "name": "Nerubian Tower",
+      "unit": "uzg2",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "-",
+        "base_attack_damage_point": "0.5",
+        "base_attack_cooldown": "1.15",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.5,
+      "catalogue_missile_speed": 1200.0,
+      "range": 700.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.unp2.44",
+      "group": "Ranged",
+      "name": "Black Citadel",
+      "unit": "unp2",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "-",
+        "base_attack_damage_point": "0.3",
+        "base_attack_cooldown": "1",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.3,
+      "catalogue_missile_speed": 1200.0,
+      "range": 800.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.unp1.45",
+      "group": "Ranged",
+      "name": "Halls of the Dead",
+      "unit": "unp1",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "-",
+        "base_attack_damage_point": "0.3",
+        "base_attack_cooldown": "1",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.3,
+      "catalogue_missile_speed": 1200.0,
+      "range": 800.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.Ulic.46",
+      "group": "Ranged",
+      "name": "Lich",
+      "unit": "Ulic",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.4",
+        "base_attack_damage_point": "0.46",
+        "base_attack_cooldown": "1.9",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.46,
+      "catalogue_missile_speed": 900.0,
+      "range": 600.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.uobs.47",
+      "group": "Ranged",
+      "name": "Obsidian Statue",
+      "unit": "uobs",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.5",
+        "base_attack_damage_point": "0.53",
+        "base_attack_cooldown": "2.1",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.53,
+      "catalogue_missile_speed": 1200.0,
+      "range": 575.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.Ekee.48",
+      "group": "Ranged",
+      "name": "Keeper of the Grove",
+      "unit": "Ekee",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.7",
+        "base_attack_damage_point": "0.4",
+        "base_attack_cooldown": "2.18",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.4,
+      "catalogue_missile_speed": 900.0,
+      "range": 600.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.Emoo.49",
+      "group": "Ranged",
+      "name": "Priestess of the Moon",
+      "unit": "Emoo",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.5",
+        "base_attack_damage_point": "0.3",
+        "base_attack_cooldown": "2.33",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.3,
+      "catalogue_missile_speed": 900.0,
+      "range": 600.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.Edmm.50",
+      "group": "Ranged",
+      "name": "Demon Hunter demon form",
+      "unit": "Edmm",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.26",
+        "base_attack_cooldown": "1.6",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "msplash"
+      },
+      "catalogue_cast_point": 0.26,
+      "catalogue_missile_speed": 900.0,
+      "range": 600.0,
+      "area": 250.0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.earc.51",
+      "group": "Ranged",
+      "name": "Archer",
+      "unit": "earc",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.72",
+        "base_attack_cooldown": "1.5",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.72,
+      "catalogue_missile_speed": 900.0,
+      "range": 500.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.esen.52",
+      "group": "Ranged",
+      "name": "Huntress",
+      "unit": "esen",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.6",
+        "base_attack_damage_point": "0.46",
+        "base_attack_cooldown": "1.8",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "mbounce"
+      },
+      "catalogue_cast_point": 0.46,
+      "catalogue_missile_speed": 900.0,
+      "range": 225.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.edry.54",
+      "group": "Ranged",
+      "name": "Dryad",
+      "unit": "edry",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.3",
+        "base_attack_cooldown": "2",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.3,
+      "catalogue_missile_speed": 1000.0,
+      "range": 500.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.efdr.55",
+      "group": "Ranged",
+      "name": "Faerie Dragon",
+      "unit": "efdr",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.5",
+        "base_attack_cooldown": "1.75",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.5,
+      "catalogue_missile_speed": 900.0,
+      "range": 300.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.echm.56",
+      "group": "Ranged",
+      "name": "Chimaera",
+      "unit": "echm",
+      "ability": null,
+      "weapon": 1,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.7",
+        "base_attack_damage_point": "0.5",
+        "base_attack_cooldown": "2.5",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "msplash"
+      },
+      "catalogue_cast_point": 0.5,
+      "catalogue_missile_speed": 0,
+      "range": 450.0,
+      "area": 200.0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.edot.57",
+      "group": "Ranged",
+      "name": "Druid of the Talon caster form",
+      "unit": "edot",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.7",
+        "base_attack_damage_point": "0.5",
+        "base_attack_cooldown": "1.6",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.5,
+      "catalogue_missile_speed": 900.0,
+      "range": 600.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.edtm.58",
+      "group": "Ranged",
+      "name": "Druid of the Talon crow form",
+      "unit": "edtm",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.6",
+        "base_attack_cooldown": "1.75",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.6,
+      "catalogue_missile_speed": 900.0,
+      "range": 600.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.ehpr.59",
+      "group": "Ranged",
+      "name": "Hippogryph Rider",
+      "unit": "ehpr",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.633",
+        "base_attack_cooldown": "1.1",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.633,
+      "catalogue_missile_speed": 1500.0,
+      "range": 400.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.etrp.60",
+      "group": "Ranged",
+      "name": "Ancient Protector",
+      "unit": "etrp",
+      "ability": null,
+      "weapon": 1,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.5",
+        "base_attack_damage_point": "0.6",
+        "base_attack_cooldown": "1.7",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "msplash"
+      },
+      "catalogue_cast_point": 0.6,
+      "catalogue_missile_speed": 750.0,
+      "range": 700.0,
+      "area": 125.0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.espv.61",
+      "group": "Ranged",
+      "name": "Avatar of Vengeance",
+      "unit": "espv",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.33",
+        "base_attack_cooldown": "1.35",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.33,
+      "catalogue_missile_speed": 1200.0,
+      "range": 450.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.even.62",
+      "group": "Ranged",
+      "name": "Spirit of Vengeance",
+      "unit": "even",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.33",
+        "base_attack_cooldown": "1.35",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.33,
+      "catalogue_missile_speed": 1200.0,
+      "range": 450.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.Nfir.63",
+      "group": "Ranged",
+      "name": "Firelord",
+      "unit": "Nfir",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.67",
+        "base_attack_damage_point": "0.5",
+        "base_attack_cooldown": "1.8",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.5,
+      "catalogue_missile_speed": 1200.0,
+      "range": 550.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.nlv1.64",
+      "group": "Ranged",
+      "name": "Lava Spawn 1",
+      "unit": "nlv1",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.4",
+        "base_attack_cooldown": "1.5",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.4,
+      "catalogue_missile_speed": 1000.0,
+      "range": 300.0,
+      "area": 75.0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.nlv2.65",
+      "group": "Ranged",
+      "name": "Lava Spawn 2",
+      "unit": "nlv2",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.4",
+        "base_attack_cooldown": "1.5",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.4,
+      "catalogue_missile_speed": 1000.0,
+      "range": 300.0,
+      "area": 75.0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.nlv3.66",
+      "group": "Ranged",
+      "name": "Lava Spawn 3",
+      "unit": "nlv3",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.4",
+        "base_attack_cooldown": "1.5",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.4,
+      "catalogue_missile_speed": 1000.0,
+      "range": 300.0,
+      "area": 75.0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.Nbrn.67",
+      "group": "Ranged",
+      "name": "Dark Ranger",
+      "unit": "Nbrn",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.4",
+        "base_attack_damage_point": "0.7",
+        "base_attack_cooldown": "2.42",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.7,
+      "catalogue_missile_speed": 900.0,
+      "range": 600.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.Nngs.68",
+      "group": "Ranged",
+      "name": "Naga Sea Witch",
+      "unit": "Nngs",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.67",
+        "base_attack_damage_point": "0.73",
+        "base_attack_cooldown": "1.9",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.73,
+      "catalogue_missile_speed": 1200.0,
+      "range": 600.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.npn2.69",
+      "group": "Ranged",
+      "name": "Storm Spirit",
+      "unit": "npn2",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.4",
+        "base_attack_damage_point": "0.4",
+        "base_attack_cooldown": "1.5",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.4,
+      "catalogue_missile_speed": 1200.0,
+      "range": 500.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.nqb1.70",
+      "group": "Ranged",
+      "name": "Beastmaster Quillbeast 1",
+      "unit": "nqb1",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "-",
+        "base_attack_damage_point": "0.5",
+        "base_attack_cooldown": "1.5",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.5,
+      "catalogue_missile_speed": 1500.0,
+      "range": 550.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.nqb2.71",
+      "group": "Ranged",
+      "name": "Beastmaster Quillbeast 2",
+      "unit": "nqb2",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.5",
+        "base_attack_cooldown": "1.5",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.5,
+      "catalogue_missile_speed": 1500.0,
+      "range": 550.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.nqb3.72",
+      "group": "Ranged",
+      "name": "Beastmaster Quillbeast 3",
+      "unit": "nqb3",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.633",
+        "base_attack_cooldown": "1.5",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "msplash"
+      },
+      "catalogue_cast_point": 0.633,
+      "catalogue_missile_speed": 1500.0,
+      "range": 550.0,
+      "area": 125.0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.nqb4.73",
+      "group": "Ranged",
+      "name": "Beastmaster Quillbeast 4",
+      "unit": "nqb4",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.633",
+        "base_attack_cooldown": "1.5",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "msplash"
+      },
+      "catalogue_cast_point": 0.633,
+      "catalogue_missile_speed": 0,
+      "range": 550.0,
+      "area": 175.0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.nwe1.74",
+      "group": "Ranged",
+      "name": "Beastmaster Hawk 1",
+      "unit": "nwe1",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "-",
+        "base_attack_cooldown": "-",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "_"
+      },
+      "catalogue_cast_point": 0,
+      "catalogue_missile_speed": 1500.0,
+      "range": 0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder.",
+        "First Hawk has no native attack. Keep listed, but mark untestable if no attack is emitted."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.nwe2.75",
+      "group": "Ranged",
+      "name": "Beastmaster Hawk 2",
+      "unit": "nwe2",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.5",
+        "base_attack_cooldown": "1.5",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "msplash"
+      },
+      "catalogue_cast_point": 0.5,
+      "catalogue_missile_speed": 1500.0,
+      "range": 300.0,
+      "area": 75.0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.nwe3.76",
+      "group": "Ranged",
+      "name": "Beastmaster Hawk 3",
+      "unit": "nwe3",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.5",
+        "base_attack_cooldown": "1.5",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "msplash"
+      },
+      "catalogue_cast_point": 0.5,
+      "catalogue_missile_speed": 1500.0,
+      "range": 300.0,
+      "area": 75.0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "spell.Aens",
+      "group": "Homing",
+      "name": "Raider: Ensnare",
+      "unit": "orai",
+      "ability": "Aens",
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.6",
+        "base_attack_damage_point": "0.5",
+        "base_attack_cooldown": "1.85",
+        "ability_Cast1": "0",
+        "ability_Dur1": "9",
+        "ability_DataA1": "0.6",
+        "ability_DataB1": "200",
+        "weapon_type": "normal"
+      },
+      "catalogue_cast_point": 0.6,
+      "catalogue_missile_speed": 1500.0,
+      "range": 500.0,
+      "area": 0,
+      "events": "cast_start, cast_event, ability_effect, cast_finish, cast_end, damage, sampled buffs",
+      "issues": [],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "spell.AOsh",
+      "group": "Area",
+      "name": "Tauren Chieftain: Shockwave",
+      "unit": "Otch",
+      "ability": "AOsh",
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.47",
+        "base_attack_damage_point": "0.36",
+        "base_attack_cooldown": "2.05",
+        "ability_Cast1": "0",
+        "ability_Dur1": "0",
+        "ability_DataA1": "75",
+        "ability_DataB1": "900",
+        "weapon_type": "normal"
+      },
+      "catalogue_cast_point": 0.47,
+      "catalogue_missile_speed": 1050.0,
+      "range": 700.0,
+      "area": 125.0,
+      "events": "cast_start, cast_event, ability_effect, cast_finish, cast_end, damage, sampled buffs",
+      "issues": [
+        "Effect event is not universally first damage; multi-wave, bouncing and charging abilities need separate interpretation."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "spell.AOws",
+      "group": "Area",
+      "name": "Tauren Chieftain: War Stomp",
+      "unit": "Otch",
+      "ability": "AOws",
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.47",
+        "base_attack_damage_point": "0.36",
+        "base_attack_cooldown": "2.05",
+        "ability_Cast1": "0",
+        "ability_Dur1": "3",
+        "ability_DataA1": "30",
+        "ability_DataB1": "-",
+        "weapon_type": "normal"
+      },
+      "catalogue_cast_point": 0.47,
+      "catalogue_missile_speed": 0,
+      "range": 0,
+      "area": 250.0,
+      "events": "cast_start, cast_event, ability_effect, cast_finish, cast_end, damage, sampled buffs",
+      "issues": [
+        "Effect event is not universally first damage; multi-wave, bouncing and charging abilities need separate interpretation."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "spell.AHtc",
+      "group": "Area",
+      "name": "Mountain King: Thunder Clap",
+      "unit": "Hmkg",
+      "ability": "AHtc",
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.4",
+        "base_attack_damage_point": "0.35",
+        "base_attack_cooldown": "2.22",
+        "ability_Cast1": "0",
+        "ability_Dur1": "5",
+        "ability_DataA1": "60",
+        "ability_DataB1": "0",
+        "weapon_type": "normal"
+      },
+      "catalogue_cast_point": 0.4,
+      "catalogue_missile_speed": 0,
+      "range": 0,
+      "area": 300.0,
+      "events": "cast_start, cast_event, ability_effect, cast_finish, cast_end, damage, sampled buffs",
+      "issues": [
+        "Effect event is not universally first damage; multi-wave, bouncing and charging abilities need separate interpretation."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "spell.AHtb",
+      "group": "Homing",
+      "name": "Mountain King: Storm Bolt",
+      "unit": "Hmkg",
+      "ability": "AHtb",
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.4",
+        "base_attack_damage_point": "0.35",
+        "base_attack_cooldown": "2.22",
+        "ability_Cast1": "0",
+        "ability_Dur1": "5",
+        "ability_DataA1": "100",
+        "ability_DataB1": "-",
+        "weapon_type": "normal"
+      },
+      "catalogue_cast_point": 0.4,
+      "catalogue_missile_speed": 1000.0,
+      "range": 600.0,
+      "area": 0,
+      "events": "cast_start, cast_event, ability_effect, cast_finish, cast_end, damage, sampled buffs",
+      "issues": [],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "spell.AHbz",
+      "group": "Area",
+      "name": "Archmage: Blizzard",
+      "unit": "Hamg",
+      "ability": "AHbz",
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.55",
+        "base_attack_cooldown": "2.13",
+        "ability_Cast1": "1",
+        "ability_Dur1": "0",
+        "ability_DataA1": "6",
+        "ability_DataB1": "30",
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.3,
+      "catalogue_missile_speed": 0,
+      "range": 800.0,
+      "area": 200.0,
+      "events": "cast_start, cast_event, ability_effect, cast_finish, cast_end, damage, sampled buffs",
+      "issues": [
+        "Cast1 is a wave interval; do not add it universally to unit cast point.",
+        "Effect event is not universally first damage; multi-wave, bouncing and charging abilities need separate interpretation."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "spell.AUim",
+      "group": "Area",
+      "name": "Crypt Lord: Impale",
+      "unit": "Ucrl",
+      "ability": "AUim",
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.5",
+        "base_attack_damage_point": "0.46",
+        "base_attack_cooldown": "1.9",
+        "ability_Cast1": "0",
+        "ability_Dur1": "2",
+        "ability_DataA1": "600",
+        "ability_DataB1": "0.3",
+        "weapon_type": "normal"
+      },
+      "catalogue_cast_point": 0.5,
+      "catalogue_missile_speed": 0,
+      "range": 700.0,
+      "area": 250.0,
+      "events": "cast_start, cast_event, ability_effect, cast_finish, cast_end, damage, sampled buffs",
+      "issues": [
+        "Effect event is not universally first damage; multi-wave, bouncing and charging abilities need separate interpretation."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "spell.AUcs",
+      "group": "Area",
+      "name": "Dread Lord: Carrion Swarm",
+      "unit": "Udre",
+      "ability": "AUcs",
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.55",
+        "base_attack_cooldown": "1.8",
+        "ability_Cast1": "0",
+        "ability_Dur1": "0",
+        "ability_DataA1": "75",
+        "ability_DataB1": "400",
+        "weapon_type": "normal"
+      },
+      "catalogue_cast_point": 0.3,
+      "catalogue_missile_speed": 1100.0,
+      "range": 700.0,
+      "area": 100.0,
+      "events": "cast_start, cast_event, ability_effect, cast_finish, cast_end, damage, sampled buffs",
+      "issues": [
+        "Effect event is not universally first damage; multi-wave, bouncing and charging abilities need separate interpretation."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "spell.AUdc",
+      "group": "Homing",
+      "name": "Death Knight: Death Coil",
+      "unit": "Udea",
+      "ability": "AUdc",
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.452",
+        "base_attack_damage_point": "0.56",
+        "base_attack_cooldown": "2.33",
+        "ability_Cast1": "0",
+        "ability_Dur1": "0",
+        "ability_DataA1": "200",
+        "ability_DataB1": "-",
+        "weapon_type": "normal"
+      },
+      "catalogue_cast_point": 0.452,
+      "catalogue_missile_speed": 1100.0,
+      "range": 800.0,
+      "area": 0,
+      "events": "cast_start, cast_event, ability_effect, cast_finish, cast_end, damage, sampled buffs",
+      "issues": [],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "spell.AHfa",
+      "group": "Homing",
+      "name": "Priestess of the Moon: Searing Arrows",
+      "unit": "Emoo",
+      "ability": "AHfa",
+      "weapon": 0,
+      "orb": true,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.5",
+        "base_attack_damage_point": "0.3",
+        "base_attack_cooldown": "2.33",
+        "ability_Cast1": "0",
+        "ability_Dur1": "0",
+        "ability_DataA1": "12",
+        "ability_DataB1": "-",
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.3,
+      "catalogue_missile_speed": 1500.0,
+      "range": 600.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Orb uses attack timing; attack speed modifies the animation damage point. Read current native weapon fields in game."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "spell.AEfk",
+      "group": "Area",
+      "name": "Warden: Fan of Knives",
+      "unit": "Ewar",
+      "ability": "AEfk",
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.5",
+        "base_attack_damage_point": "0.3",
+        "base_attack_cooldown": "2.05",
+        "ability_Cast1": "0",
+        "ability_Dur1": "0",
+        "ability_DataA1": "70",
+        "ability_DataB1": "420",
+        "weapon_type": "normal"
+      },
+      "catalogue_cast_point": 0.5,
+      "catalogue_missile_speed": 700.0,
+      "range": 0,
+      "area": 400.0,
+      "events": "cast_start, cast_event, ability_effect, cast_finish, cast_end, damage, sampled buffs",
+      "issues": [
+        "Effect event is not universally first damage; multi-wave, bouncing and charging abilities need separate interpretation."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "spell.AEsh",
+      "group": "Homing",
+      "name": "Warden: Shadow Strike",
+      "unit": "Ewar",
+      "ability": "AEsh",
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.5",
+        "base_attack_damage_point": "0.3",
+        "base_attack_cooldown": "2.05",
+        "ability_Cast1": "3",
+        "ability_Dur1": "15.1",
+        "ability_DataA1": "10",
+        "ability_DataB1": "0.5",
+        "weapon_type": "normal"
+      },
+      "catalogue_cast_point": 0.5,
+      "catalogue_missile_speed": 1200.0,
+      "range": 300.0,
+      "area": 0,
+      "events": "cast_start, cast_event, ability_effect, cast_finish, cast_end, damage, sampled buffs",
+      "issues": [
+        "Cast1 is reported as poison tick interval, not initial cast delay; existing summed tooltip is misleading."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "spell.ANfa",
+      "group": "Homing",
+      "name": "Naga Sea Witch: Frost Arrows",
+      "unit": "Nngs",
+      "ability": "ANfa",
+      "weapon": 0,
+      "orb": true,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.67",
+        "base_attack_damage_point": "0.73",
+        "base_attack_cooldown": "1.9",
+        "ability_Cast1": "0",
+        "ability_Dur1": "5",
+        "ability_DataA1": "5",
+        "ability_DataB1": "0.3",
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.73,
+      "catalogue_missile_speed": 1500.0,
+      "range": 600.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Orb uses attack timing; attack speed modifies the animation damage point. Read current native weapon fields in game."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "spell.ANbf",
+      "group": "Area",
+      "name": "Pandaren Brewmaster: Breath of Fire",
+      "unit": "Npbm",
+      "ability": "ANbf",
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.4",
+        "base_attack_damage_point": "0.35",
+        "base_attack_cooldown": "2.22",
+        "ability_Cast1": "0",
+        "ability_Dur1": "5",
+        "ability_DataA1": "80",
+        "ability_DataB1": "600",
+        "weapon_type": "normal"
+      },
+      "catalogue_cast_point": 0.4,
+      "catalogue_missile_speed": 1050.0,
+      "range": 375.0,
+      "area": 90.0,
+      "events": "cast_start, cast_event, ability_effect, cast_finish, cast_end, damage, sampled buffs",
+      "issues": [
+        "Effect event is not universally first damage; multi-wave, bouncing and charging abilities need separate interpretation."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "spell.ANdh",
+      "group": "Homing",
+      "name": "Pandaren Brewmaster: Drunken Haze",
+      "unit": "Npbm",
+      "ability": "ANdh",
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.4",
+        "base_attack_damage_point": "0.35",
+        "base_attack_cooldown": "2.22",
+        "ability_Cast1": "0",
+        "ability_Dur1": "12",
+        "ability_DataA1": "0",
+        "ability_DataB1": "0.45",
+        "weapon_type": "normal"
+      },
+      "catalogue_cast_point": 0.4,
+      "catalogue_missile_speed": 1500.0,
+      "range": 550.0,
+      "area": 200.0,
+      "events": "cast_start, cast_event, ability_effect, cast_finish, cast_end, damage, sampled buffs",
+      "issues": [],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "spell.ANrf",
+      "group": "Area",
+      "name": "Pit Lord: Rain of Fire",
+      "unit": "Nplh",
+      "ability": "ANrf",
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.75",
+        "base_attack_damage_point": "0.8",
+        "base_attack_cooldown": "2.05",
+        "ability_Cast1": "1",
+        "ability_Dur1": "3",
+        "ability_DataA1": "6",
+        "ability_DataB1": "25",
+        "weapon_type": "normal"
+      },
+      "catalogue_cast_point": 0.75,
+      "catalogue_missile_speed": 0,
+      "range": 800.0,
+      "area": 200.0,
+      "events": "cast_start, cast_event, ability_effect, cast_finish, cast_end, damage, sampled buffs",
+      "issues": [
+        "Cast1 is a wave interval; do not add it universally to unit cast point.",
+        "Effect event is not universally first damage; multi-wave, bouncing and charging abilities need separate interpretation."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "spell.ANcs",
+      "group": "Area",
+      "name": "Tinker: Cluster Rockets",
+      "unit": "Ntin",
+      "ability": "ANcs",
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.53",
+        "base_attack_damage_point": "0.35",
+        "base_attack_cooldown": "2",
+        "ability_Cast1": "0",
+        "ability_Dur1": "1.01",
+        "ability_DataA1": "11.25",
+        "ability_DataB1": "0.25",
+        "weapon_type": "normal"
+      },
+      "catalogue_cast_point": 0.53,
+      "catalogue_missile_speed": 700.0,
+      "range": 800.0,
+      "area": 200.0,
+      "events": "cast_start, cast_event, ability_effect, cast_finish, cast_end, damage, sampled buffs",
+      "issues": [
+        "Effect event is not universally first damage; multi-wave, bouncing and charging abilities need separate interpretation."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "spell.ANab",
+      "group": "Area",
+      "name": "Alchemist: Acid Bomb",
+      "unit": "Nalc",
+      "ability": "ANab",
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.4",
+        "base_attack_damage_point": "0.35",
+        "base_attack_cooldown": "2.5",
+        "ability_Cast1": "0",
+        "ability_Dur1": "15",
+        "ability_DataA1": "0",
+        "ability_DataB1": "0",
+        "weapon_type": "normal"
+      },
+      "catalogue_cast_point": 0.4,
+      "catalogue_missile_speed": 700.0,
+      "range": 700.0,
+      "area": 200.0,
+      "events": "cast_start, cast_event, ability_effect, cast_finish, cast_end, damage, sampled buffs",
+      "issues": [
+        "Effect event is not universally first damage; multi-wave, bouncing and charging abilities need separate interpretation."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "spell.ANba",
+      "group": "Homing",
+      "name": "Dark Ranger: Black Arrow",
+      "unit": "Nbrn",
+      "ability": "ANba",
+      "weapon": 0,
+      "orb": true,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.4",
+        "base_attack_damage_point": "0.7",
+        "base_attack_cooldown": "2.42",
+        "ability_Cast1": "0",
+        "ability_Dur1": "2",
+        "ability_DataA1": "2",
+        "ability_DataB1": "1",
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.7,
+      "catalogue_missile_speed": 1050.0,
+      "range": 600.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Orb uses attack timing; attack speed modifies the animation damage point. Read current native weapon fields in game."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "spell.ANia",
+      "group": "Homing",
+      "name": "Firelord: Incinerate",
+      "unit": "Nfir",
+      "ability": "ANia",
+      "weapon": 0,
+      "orb": true,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.67",
+        "base_attack_damage_point": "0.5",
+        "base_attack_cooldown": "1.8",
+        "ability_Cast1": "0",
+        "ability_Dur1": "4",
+        "ability_DataA1": "2",
+        "ability_DataB1": "30",
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.5,
+      "catalogue_missile_speed": 1000.0,
+      "range": 550.0,
+      "area": 0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Orb uses attack timing; attack speed modifies the animation damage point. Read current native weapon fields in game."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "spell.Adsm",
+      "group": "Area",
+      "name": "Storm Spirit: Dispel Magic",
+      "unit": "npn2",
+      "ability": "Adsm",
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.4",
+        "base_attack_damage_point": "0.4",
+        "base_attack_cooldown": "1.5",
+        "ability_Cast1": "0",
+        "ability_Dur1": "0",
+        "ability_DataA1": "0",
+        "ability_DataB1": "200",
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.4,
+      "catalogue_missile_speed": 0,
+      "range": 500.0,
+      "area": 200.0,
+      "events": "cast_start, cast_event, ability_effect, cast_finish, cast_end, damage, sampled buffs",
+      "issues": [
+        "Effect event is not universally first damage; multi-wave, bouncing and charging abilities need separate interpretation."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "spell.AOcl",
+      "group": "Area",
+      "name": "Far Seer: Chain Lightning",
+      "unit": "Ofar",
+      "ability": "AOcl",
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.3",
+        "base_attack_cooldown": "2.28",
+        "ability_Cast1": "0",
+        "ability_Dur1": "0",
+        "ability_DataA1": "85",
+        "ability_DataB1": "4",
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.3,
+      "catalogue_missile_speed": 1500.0,
+      "range": 700.0,
+      "area": 500.0,
+      "events": "cast_start, cast_event, ability_effect, cast_finish, cast_end, damage, sampled buffs",
+      "issues": [
+        "Effect event is not universally first damage; multi-wave, bouncing and charging abilities need separate interpretation."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "spell.Auco",
+      "group": "Area",
+      "name": "Batrider: Unstable Concoction",
+      "unit": "otbr",
+      "ability": "Auco",
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0",
+        "base_attack_damage_point": "0.6",
+        "base_attack_cooldown": "1.8",
+        "ability_Cast1": "0",
+        "ability_Dur1": "0",
+        "ability_DataA1": "0",
+        "ability_DataB1": "600",
+        "weapon_type": "missile"
+      },
+      "catalogue_cast_point": 0.0,
+      "catalogue_missile_speed": 0,
+      "range": 400.0,
+      "area": 200.0,
+      "events": "cast_start, cast_event, ability_effect, cast_finish, cast_end, damage, sampled buffs",
+      "issues": [
+        "Effect event is not universally first damage; multi-wave, bouncing and charging abilities need separate interpretation."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "spell.AUim.target",
+      "group": "Homing",
+      "name": "Crypt Lord: Impale (unit target)",
+      "unit": "Ucrl",
+      "ability": "AUim",
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.5",
+        "base_attack_damage_point": "0.46",
+        "base_attack_cooldown": "1.9",
+        "ability_Cast1": "0",
+        "ability_Dur1": "2",
+        "ability_DataA1": "600",
+        "ability_DataB1": "0.3",
+        "weapon_type": "normal"
+      },
+      "catalogue_cast_point": 0.5,
+      "catalogue_missile_speed": 0,
+      "range": 700.0,
+      "area": 250.0,
+      "events": "cast_start, cast_event, ability_effect, cast_finish, cast_end, damage, sampled buffs",
+      "issues": [],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.ocat.10.targeted",
+      "group": "Ranged",
+      "name": "Demolisher: targeted attack",
+      "unit": "ocat",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "-",
+        "base_attack_damage_point": "0.1",
+        "base_attack_cooldown": "4.5",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "artillery"
+      },
+      "catalogue_cast_point": 0.1,
+      "catalogue_missile_speed": 900.0,
+      "range": 1150.0,
+      "area": 150.0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.hmtm.20.targeted",
+      "group": "Ranged",
+      "name": "Mortar Team: targeted attack",
+      "unit": "hmtm",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "1.1",
+        "base_attack_damage_point": "1",
+        "base_attack_cooldown": "3.5",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "artillery"
+      },
+      "catalogue_cast_point": 1.0,
+      "catalogue_missile_speed": 900.0,
+      "range": 1150.0,
+      "area": 200.0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.umtw.41.targeted",
+      "group": "Ranged",
+      "name": "Meat Wagon: targeted attack",
+      "unit": "umtw",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.5",
+        "base_attack_damage_point": "0.7",
+        "base_attack_cooldown": "4",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "artillery"
+      },
+      "catalogue_cast_point": 0.7,
+      "catalogue_missile_speed": 900.0,
+      "range": 1150.0,
+      "area": 150.0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "attack.ebal.53.targeted",
+      "group": "Ranged",
+      "name": "Glaive Thrower: targeted attack",
+      "unit": "ebal",
+      "ability": null,
+      "weapon": 0,
+      "orb": false,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.1",
+        "base_attack_cooldown": "3.5",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "artillery"
+      },
+      "catalogue_cast_point": 0.1,
+      "catalogue_missile_speed": 0,
+      "range": 1150.0,
+      "area": 150.0,
+      "events": "attack_start, damage",
+      "issues": [
+        "Attack-start event precedes launch. Native missile launch/impact timestamps are not directly exposed by this recorder."
+      ],
+      "measured_status": "pending_native_run"
+    }
+  ],
+  "dodge_methods": [
+    {
+      "id": "dodge.01.1",
+      "choice_id": "dodge.01",
+      "choice": "Blademaster",
+      "method": "Wind Walk",
+      "unit": "Obla",
+      "ability": "AOwk",
+      "item": null,
+      "category": "Invisibility",
+      "order": "windwalk",
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.33",
+        "base_attack_cooldown": "1.77",
+        "ability_Cast1": "0",
+        "ability_Dur1": "20",
+        "ability_DataA1": "0.6",
+        "ability_DataB1": "0.1",
+        "weapon_type": "normal"
+      },
+      "notes": [
+        "Unit cast point is a raw animation field, not proven command-to-effect latency for this ability.",
+        "Measure invisibility as seen by the enemy separately from cast effect; fade sample is bounded by polling interval."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "dodge.01.2",
+      "choice_id": "dodge.01",
+      "choice": "Blademaster",
+      "method": "Mirror Image",
+      "unit": "Obla",
+      "ability": "AOmi",
+      "item": null,
+      "category": "Invisibility",
+      "order": "mirrorimage",
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.33",
+        "base_attack_cooldown": "1.77",
+        "ability_Cast1": "0",
+        "ability_Dur1": "60",
+        "ability_DataA1": "1",
+        "ability_DataB1": "0.2",
+        "weapon_type": "normal"
+      },
+      "notes": [
+        "Unit cast point is a raw animation field, not proven command-to-effect latency for this ability.",
+        "Measure invisibility as seen by the enemy separately from cast effect; fade sample is bounded by polling interval."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "dodge.03.1",
+      "choice_id": "dodge.03",
+      "choice": "Spirit Wolf: re-summon",
+      "method": "Feral Spirit re-summon",
+      "unit": "Ofar",
+      "ability": "AOsf",
+      "item": null,
+      "category": "Replacement / removal",
+      "order": "spiritwolf",
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.3",
+        "base_attack_cooldown": "2.28",
+        "ability_Cast1": "0",
+        "ability_Dur1": "60",
+        "ability_DataA1": null,
+        "ability_DataB1": "2",
+        "weapon_type": "missile"
+      },
+      "notes": [
+        "Unit cast point is a raw animation field, not proven command-to-effect latency for this ability."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "dodge.04.1",
+      "choice_id": "dodge.04",
+      "choice": "Peon: Build, Burrow",
+      "method": "Build",
+      "unit": "opeo",
+      "ability": null,
+      "item": null,
+      "category": "Loading / building",
+      "order": null,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.5",
+        "base_attack_cooldown": "3",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "normal"
+      },
+      "notes": [
+        "Unit cast point is a raw animation field, not proven command-to-effect latency for this ability.",
+        "No spell rawcode in catalogue: use order, construction/load and sampled state events; do not substitute attack damage point."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "dodge.04.2",
+      "choice_id": "dodge.04",
+      "choice": "Peon: Build, Burrow",
+      "method": "Burrow loading",
+      "unit": "opeo",
+      "ability": null,
+      "item": null,
+      "category": "Loading / building",
+      "order": null,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.5",
+        "base_attack_cooldown": "3",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "normal"
+      },
+      "notes": [
+        "Unit cast point is a raw animation field, not proven command-to-effect latency for this ability.",
+        "No spell rawcode in catalogue: use order, construction/load and sampled state events; do not substitute attack damage point."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "dodge.06.1",
+      "choice_id": "dodge.06",
+      "choice": "Shadow Hunter: Big Bad Voodoo",
+      "method": "Shadow Hunter: Big Bad Voodoo",
+      "unit": "Oshd",
+      "ability": "AOvd",
+      "item": null,
+      "category": "Invulnerability",
+      "order": "voodoo",
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.3",
+        "base_attack_cooldown": "2.28",
+        "ability_Cast1": "0",
+        "ability_Dur1": "30",
+        "ability_DataA1": "-",
+        "ability_DataB1": "-",
+        "weapon_type": "missile"
+      },
+      "notes": [
+        "Unit cast point is a raw animation field, not proven command-to-effect latency for this ability."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "dodge.07.1",
+      "choice_id": "dodge.07",
+      "choice": "Mountain King: Avatar",
+      "method": "Mountain King: Avatar",
+      "unit": "Hmkg",
+      "ability": "AHav",
+      "item": null,
+      "category": "Transformation",
+      "order": "avatar",
+      "raw_fields": {
+        "unit_animation_cast_point": "0.4",
+        "base_attack_damage_point": "0.35",
+        "base_attack_cooldown": "2.22",
+        "ability_Cast1": "0",
+        "ability_Dur1": "60",
+        "ability_DataA1": "5",
+        "ability_DataB1": "500",
+        "weapon_type": "normal"
+      },
+      "notes": [
+        "Unit cast point is a raw animation field, not proven command-to-effect latency for this ability."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "dodge.08.1",
+      "choice_id": "dodge.08",
+      "choice": "Paladin: Divine Shield",
+      "method": "Paladin: Divine Shield",
+      "unit": "Hpal",
+      "ability": "AHds",
+      "item": null,
+      "category": "Invulnerability",
+      "order": "divineshield",
+      "raw_fields": {
+        "unit_animation_cast_point": "0.5",
+        "base_attack_damage_point": "0.433",
+        "base_attack_cooldown": "2",
+        "ability_Cast1": "0",
+        "ability_Dur1": "15",
+        "ability_DataA1": "0",
+        "ability_DataB1": "-",
+        "weapon_type": "normal"
+      },
+      "notes": [
+        "Unit cast point is a raw animation field, not proven command-to-effect latency for this ability."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "dodge.09.1",
+      "choice_id": "dodge.09",
+      "choice": "Sorceress: Invisibility",
+      "method": "Sorceress: Invisibility",
+      "unit": "hsor",
+      "ability": "Aivs",
+      "item": null,
+      "category": "Invisibility",
+      "order": "invisibility",
+      "raw_fields": {
+        "unit_animation_cast_point": "0.45",
+        "base_attack_damage_point": "0.75",
+        "base_attack_cooldown": "1.75",
+        "ability_Cast1": "0",
+        "ability_Dur1": "120",
+        "ability_DataA1": "0",
+        "ability_DataB1": "-",
+        "weapon_type": "missile"
+      },
+      "notes": [
+        "Unit cast point is a raw animation field, not proven command-to-effect latency for this ability.",
+        "Measure invisibility as seen by the enemy separately from cast effect; fade sample is bounded by polling interval."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "dodge.10.1",
+      "choice_id": "dodge.10",
+      "choice": "Staff of Sanctuary",
+      "method": "Staff of Sanctuary",
+      "unit": "Ntin",
+      "ability": "ANsa",
+      "item": "ssan",
+      "category": "Teleportation",
+      "order": null,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.53",
+        "base_attack_damage_point": "0.35",
+        "base_attack_cooldown": "2",
+        "ability_Cast1": "0",
+        "ability_Dur1": "0",
+        "ability_DataA1": "15",
+        "ability_DataB1": "1",
+        "weapon_type": "normal"
+      },
+      "notes": [
+        "Unit cast point is a raw animation field, not proven command-to-effect latency for this ability.",
+        "Items may bypass unit casting animation. Do not assume Tinker cast point applies."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "dodge.12.1",
+      "choice_id": "dodge.12",
+      "choice": "Gargoyle: Stone Form",
+      "method": "Gargoyle: Stone Form",
+      "unit": "ugar",
+      "ability": "Astn",
+      "item": null,
+      "category": "Transformation",
+      "order": "stoneform",
+      "raw_fields": {
+        "unit_animation_cast_point": "0",
+        "base_attack_damage_point": "0.33",
+        "base_attack_cooldown": "1.4",
+        "ability_Cast1": "0.7",
+        "ability_Dur1": "0.5",
+        "ability_DataA1": "ugar",
+        "ability_DataB1": "7",
+        "weapon_type": "normal"
+      },
+      "notes": [
+        "Unit cast point is a raw animation field, not proven command-to-effect latency for this ability."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "dodge.13.1",
+      "choice_id": "dodge.13",
+      "choice": "Crypt Fiend: Burrow",
+      "method": "Crypt Fiend: Burrow",
+      "unit": "ucry",
+      "ability": "Abur",
+      "item": null,
+      "category": "Invisibility",
+      "order": "burrow",
+      "raw_fields": {
+        "unit_animation_cast_point": "0",
+        "base_attack_damage_point": "0.64",
+        "base_attack_cooldown": "2",
+        "ability_Cast1": "0",
+        "ability_Dur1": "1.45",
+        "ability_DataA1": "ucry",
+        "ability_DataB1": "1",
+        "weapon_type": "missile"
+      },
+      "notes": [
+        "Unit cast point is a raw animation field, not proven command-to-effect latency for this ability.",
+        "Measure invisibility as seen by the enemy separately from cast effect; fade sample is bounded by polling interval."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "dodge.14.1",
+      "choice_id": "dodge.14",
+      "choice": "Obsidian Statue: Destroyer Form",
+      "method": "Obsidian Statue: Destroyer Form",
+      "unit": "uobs",
+      "ability": "Aave",
+      "item": null,
+      "category": "Transformation",
+      "order": "sphinxform",
+      "raw_fields": {
+        "unit_animation_cast_point": "0.5",
+        "base_attack_damage_point": "0.53",
+        "base_attack_cooldown": "2.1",
+        "ability_Cast1": "1",
+        "ability_Dur1": "1.1",
+        "ability_DataA1": "uobs",
+        "ability_DataB1": "31",
+        "weapon_type": "missile"
+      },
+      "notes": [
+        "Unit cast point is a raw animation field, not proven command-to-effect latency for this ability."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "dodge.15.1",
+      "choice_id": "dodge.15",
+      "choice": "Carrion Beetle: Burrow",
+      "method": "Carrion Beetle: Burrow",
+      "unit": "ucs2",
+      "ability": "Abu2",
+      "item": null,
+      "category": "Invisibility",
+      "order": "burrow",
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.33",
+        "base_attack_cooldown": "1.5",
+        "ability_Cast1": "0",
+        "ability_Dur1": "1.45",
+        "ability_DataA1": "ucs2",
+        "ability_DataB1": "1",
+        "weapon_type": "normal"
+      },
+      "notes": [
+        "Unit cast point is a raw animation field, not proven command-to-effect latency for this ability.",
+        "Measure invisibility as seen by the enemy separately from cast effect; fade sample is bounded by polling interval."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "dodge.16.1",
+      "choice_id": "dodge.16",
+      "choice": "Banshee: Anti-Magic Shell",
+      "method": "Banshee: Anti-Magic Shell",
+      "unit": "uban",
+      "ability": "Aams",
+      "item": null,
+      "category": "Magic protection",
+      "order": "antimagicshell",
+      "raw_fields": {
+        "unit_animation_cast_point": "0.5",
+        "base_attack_damage_point": "0.56",
+        "base_attack_cooldown": "1.5",
+        "ability_Cast1": "0",
+        "ability_Dur1": "90",
+        "ability_DataA1": "0",
+        "ability_DataB1": "0",
+        "weapon_type": "missile"
+      },
+      "notes": [
+        "Unit cast point is a raw animation field, not proven command-to-effect latency for this ability."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "dodge.17.1",
+      "choice_id": "dodge.17",
+      "choice": "Shadowmeld",
+      "method": "Shadowmeld",
+      "unit": "Emoo",
+      "ability": "Ashm",
+      "item": null,
+      "category": "Invisibility",
+      "order": "ambush",
+      "raw_fields": {
+        "unit_animation_cast_point": "0.5",
+        "base_attack_damage_point": "0.3",
+        "base_attack_cooldown": "2.33",
+        "ability_Cast1": "0",
+        "ability_Dur1": "0",
+        "ability_DataA1": "1.5",
+        "ability_DataB1": "2.5",
+        "weapon_type": "missile"
+      },
+      "notes": [
+        "Unit cast point is a raw animation field, not proven command-to-effect latency for this ability.",
+        "Measure invisibility as seen by the enemy separately from cast effect; fade sample is bounded by polling interval."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "dodge.18.1",
+      "choice_id": "dodge.18",
+      "choice": "Warden: Blink",
+      "method": "Warden: Blink",
+      "unit": "Ewar",
+      "ability": "AEbl",
+      "item": null,
+      "category": "Teleportation",
+      "order": "blink",
+      "raw_fields": {
+        "unit_animation_cast_point": "0.5",
+        "base_attack_damage_point": "0.3",
+        "base_attack_cooldown": "2.05",
+        "ability_Cast1": "0",
+        "ability_Dur1": "0.33",
+        "ability_DataA1": "1000",
+        "ability_DataB1": "200",
+        "weapon_type": "normal"
+      },
+      "notes": [
+        "Unit cast point is a raw animation field, not proven command-to-effect latency for this ability."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "dodge.19.1",
+      "choice_id": "dodge.19",
+      "choice": "Faerie Dragon: Phase Shift",
+      "method": "Faerie Dragon: Phase Shift",
+      "unit": "efdr",
+      "ability": "Apsh",
+      "item": null,
+      "category": "Invulnerability",
+      "order": "phaseshift",
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.5",
+        "base_attack_cooldown": "1.75",
+        "ability_Cast1": "0",
+        "ability_Dur1": "1.5",
+        "ability_DataA1": "0",
+        "ability_DataB1": "0",
+        "weapon_type": "missile"
+      },
+      "notes": [
+        "Unit cast point is a raw animation field, not proven command-to-effect latency for this ability."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "dodge.20.1",
+      "choice_id": "dodge.20",
+      "choice": "Demon Hunter: Metamorphosis",
+      "method": "Demon Hunter: Metamorphosis",
+      "unit": "Edem",
+      "ability": "AEme",
+      "item": null,
+      "category": "Transformation",
+      "order": "metamorphosis",
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.3",
+        "base_attack_cooldown": "1.7",
+        "ability_Cast1": "0",
+        "ability_Dur1": "1.5",
+        "ability_DataA1": "Edem",
+        "ability_DataB1": "1",
+        "weapon_type": "normal"
+      },
+      "notes": [
+        "Unit cast point is a raw animation field, not proven command-to-effect latency for this ability."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "dodge.21.1",
+      "choice_id": "dodge.21",
+      "choice": "Druid of the Claw: Bear Form",
+      "method": "Druid of the Claw: Bear Form",
+      "unit": "edoc",
+      "ability": "Abrf",
+      "item": null,
+      "category": "Transformation",
+      "order": "bearform",
+      "raw_fields": {
+        "unit_animation_cast_point": "0.5",
+        "base_attack_damage_point": "0.33",
+        "base_attack_cooldown": "1.5",
+        "ability_Cast1": "0",
+        "ability_Dur1": "1.45",
+        "ability_DataA1": "edoc",
+        "ability_DataB1": "1",
+        "weapon_type": "normal"
+      },
+      "notes": [
+        "Unit cast point is a raw animation field, not proven command-to-effect latency for this ability."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "dodge.22.1",
+      "choice_id": "dodge.22",
+      "choice": "Druid of the Talon: Crow Form",
+      "method": "Druid of the Talon: Crow Form",
+      "unit": "edot",
+      "ability": "Arav",
+      "item": null,
+      "category": "Transformation",
+      "order": "ravenform",
+      "raw_fields": {
+        "unit_animation_cast_point": "0.7",
+        "base_attack_damage_point": "0.5",
+        "base_attack_cooldown": "1.6",
+        "ability_Cast1": "1.05",
+        "ability_Dur1": "0.6",
+        "ability_DataA1": "edot",
+        "ability_DataB1": "5",
+        "weapon_type": "missile"
+      },
+      "notes": [
+        "Unit cast point is a raw animation field, not proven command-to-effect latency for this ability."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "dodge.23.1",
+      "choice_id": "dodge.23",
+      "choice": "Archer: mount Hippogryph",
+      "method": "Archer: mount Hippogryph",
+      "unit": "earc",
+      "ability": null,
+      "item": null,
+      "category": "Replacement / removal",
+      "order": null,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.72",
+        "base_attack_cooldown": "1.5",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "missile"
+      },
+      "notes": [
+        "Unit cast point is a raw animation field, not proven command-to-effect latency for this ability.",
+        "No spell rawcode in catalogue: use order, construction/load and sampled state events; do not substitute attack damage point."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "dodge.24.1",
+      "choice_id": "dodge.24",
+      "choice": "Hippogryph: pick up Archer",
+      "method": "Hippogryph: pick up Archer",
+      "unit": "ehip",
+      "ability": null,
+      "item": null,
+      "category": "Replacement / removal",
+      "order": null,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.6",
+        "base_attack_cooldown": "1.05",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "normal"
+      },
+      "notes": [
+        "Unit cast point is a raw animation field, not proven command-to-effect latency for this ability.",
+        "No spell rawcode in catalogue: use order, construction/load and sampled state events; do not substitute attack damage point."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "dodge.25.1",
+      "choice_id": "dodge.25",
+      "choice": "Hippogryph Rider: dismount",
+      "method": "Hippogryph Rider: dismount",
+      "unit": "ehpr",
+      "ability": "Adec",
+      "item": null,
+      "category": "Replacement / removal",
+      "order": "decouple",
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.633",
+        "base_attack_cooldown": "1.1",
+        "ability_Cast1": "0",
+        "ability_Dur1": "0",
+        "ability_DataA1": "earc",
+        "ability_DataB1": "ehip",
+        "weapon_type": "missile"
+      },
+      "notes": [
+        "Unit cast point is a raw animation field, not proven command-to-effect latency for this ability."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "dodge.26.1",
+      "choice_id": "dodge.26",
+      "choice": "Wisp: Build, Goldmine, Detonate",
+      "method": "Build",
+      "unit": "ewsp",
+      "ability": null,
+      "item": null,
+      "category": "Replacement / removal",
+      "order": null,
+      "raw_fields": {
+        "unit_animation_cast_point": "0",
+        "base_attack_damage_point": "-",
+        "base_attack_cooldown": "-",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "_"
+      },
+      "notes": [
+        "Unit cast point is a raw animation field, not proven command-to-effect latency for this ability.",
+        "No spell rawcode in catalogue: use order, construction/load and sampled state events; do not substitute attack damage point."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "dodge.26.2",
+      "choice_id": "dodge.26",
+      "choice": "Wisp: Build, Goldmine, Detonate",
+      "method": "Enter entangled gold mine",
+      "unit": "ewsp",
+      "ability": null,
+      "item": null,
+      "category": "Replacement / removal",
+      "order": null,
+      "raw_fields": {
+        "unit_animation_cast_point": "0",
+        "base_attack_damage_point": "-",
+        "base_attack_cooldown": "-",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "_"
+      },
+      "notes": [
+        "Unit cast point is a raw animation field, not proven command-to-effect latency for this ability.",
+        "No spell rawcode in catalogue: use order, construction/load and sampled state events; do not substitute attack damage point."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "dodge.26.3",
+      "choice_id": "dodge.26",
+      "choice": "Wisp: Build, Goldmine, Detonate",
+      "method": "Detonate",
+      "unit": "ewsp",
+      "ability": "Adtn",
+      "item": null,
+      "category": "Replacement / removal",
+      "order": "detonate",
+      "raw_fields": {
+        "unit_animation_cast_point": "0",
+        "base_attack_damage_point": "-",
+        "base_attack_cooldown": "-",
+        "ability_Cast1": "0",
+        "ability_Dur1": "0",
+        "ability_DataA1": "40",
+        "ability_DataB1": "225",
+        "weapon_type": "_"
+      },
+      "notes": [
+        "Unit cast point is a raw animation field, not proven command-to-effect latency for this ability."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "dodge.29.1",
+      "choice_id": "dodge.29",
+      "choice": "Staff of Preservation",
+      "method": "Staff of Preservation",
+      "unit": "Ntin",
+      "ability": "ANpr",
+      "item": "spre",
+      "category": "Teleportation",
+      "order": null,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.53",
+        "base_attack_damage_point": "0.35",
+        "base_attack_cooldown": "2",
+        "ability_Cast1": "0",
+        "ability_Dur1": "0",
+        "ability_DataA1": "15",
+        "ability_DataB1": "-",
+        "weapon_type": "normal"
+      },
+      "notes": [
+        "Unit cast point is a raw animation field, not proven command-to-effect latency for this ability.",
+        "Items may bypass unit casting animation. Do not assume Tinker cast point applies."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "dodge.30.1",
+      "choice_id": "dodge.30",
+      "choice": "Anti-Magic Potion",
+      "method": "Anti-Magic Potion",
+      "unit": "Ntin",
+      "ability": "AIxs",
+      "item": "pams",
+      "category": "Magic protection",
+      "order": null,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.53",
+        "base_attack_damage_point": "0.35",
+        "base_attack_cooldown": "2",
+        "ability_Cast1": "0",
+        "ability_Dur1": "15",
+        "ability_DataA1": "0",
+        "ability_DataB1": "10",
+        "weapon_type": "normal"
+      },
+      "notes": [
+        "Unit cast point is a raw animation field, not proven command-to-effect latency for this ability.",
+        "Items may bypass unit casting animation. Do not assume Tinker cast point applies."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "dodge.31.1",
+      "choice_id": "dodge.31",
+      "choice": "Forsaken Paladin: Righteous Fury",
+      "method": "Forsaken Paladin: Righteous Fury",
+      "unit": "Npal",
+      "ability": "ANcp",
+      "item": null,
+      "category": "Movement",
+      "order": "righteousfury",
+      "raw_fields": {
+        "unit_animation_cast_point": "0.5",
+        "base_attack_damage_point": "0.433",
+        "base_attack_cooldown": "2",
+        "ability_Cast1": "0",
+        "ability_Dur1": "5",
+        "ability_DataA1": "1000",
+        "ability_DataB1": "100",
+        "weapon_type": "normal"
+      },
+      "notes": [
+        "Unit cast point is a raw animation field, not proven command-to-effect latency for this ability."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "dodge.32.1",
+      "choice_id": "dodge.32",
+      "choice": "Pandaren Brewmaster: Storm, Earth and Fire",
+      "method": "Pandaren Brewmaster: Storm, Earth and Fire",
+      "unit": "Npbm",
+      "ability": "ANef",
+      "item": null,
+      "category": "Replacement / removal",
+      "order": "elementalfury",
+      "raw_fields": {
+        "unit_animation_cast_point": "0.4",
+        "base_attack_damage_point": "0.35",
+        "base_attack_cooldown": "2.22",
+        "ability_Cast1": "0",
+        "ability_Dur1": "45",
+        "ability_DataA1": "npn1,npn2,npn3",
+        "ability_DataB1": "-",
+        "weapon_type": "normal"
+      },
+      "notes": [
+        "Unit cast point is a raw animation field, not proven command-to-effect latency for this ability."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "dodge.33.1",
+      "choice_id": "dodge.33",
+      "choice": "Tinker: Robo-Goblin",
+      "method": "Tinker: Robo-Goblin",
+      "unit": "Ntin",
+      "ability": "ANrg",
+      "item": null,
+      "category": "Transformation",
+      "order": "robogoblin",
+      "raw_fields": {
+        "unit_animation_cast_point": "0.53",
+        "base_attack_damage_point": "0.35",
+        "base_attack_cooldown": "2",
+        "ability_Cast1": "0",
+        "ability_Dur1": "1.5",
+        "ability_DataA1": "Ntin",
+        "ability_DataB1": "1",
+        "weapon_type": "normal"
+      },
+      "notes": [
+        "Unit cast point is a raw animation field, not proven command-to-effect latency for this ability."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "dodge.34.1",
+      "choice_id": "dodge.34",
+      "choice": "Goblin Zeppelin: load unit",
+      "method": "Goblin Zeppelin: load unit",
+      "unit": "hfoo",
+      "ability": null,
+      "item": null,
+      "category": "Loading / building",
+      "order": null,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.5",
+        "base_attack_cooldown": "1.35",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "normal"
+      },
+      "notes": [
+        "Unit cast point is a raw animation field, not proven command-to-effect latency for this ability.",
+        "No spell rawcode in catalogue: use order, construction/load and sampled state events; do not substitute attack damage point."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "dodge.35.1",
+      "choice_id": "dodge.35",
+      "choice": "Scroll of Town Portal",
+      "method": "Scroll of Town Portal",
+      "unit": "Ntin",
+      "ability": "AItp",
+      "item": "stwp",
+      "category": "Teleportation",
+      "order": null,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.53",
+        "base_attack_damage_point": "0.35",
+        "base_attack_cooldown": "2",
+        "ability_Cast1": "5",
+        "ability_Dur1": "0",
+        "ability_DataA1": "90",
+        "ability_DataB1": "1",
+        "weapon_type": "normal"
+      },
+      "notes": [
+        "Unit cast point is a raw animation field, not proven command-to-effect latency for this ability.",
+        "Items may bypass unit casting animation. Do not assume Tinker cast point applies."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "dodge.36.1",
+      "choice_id": "dodge.36",
+      "choice": "Cloak of Shadows",
+      "method": "Cloak of Shadows",
+      "unit": "Ntin",
+      "ability": "AIhm",
+      "item": "clsd",
+      "category": "Invisibility",
+      "order": "ambush",
+      "raw_fields": {
+        "unit_animation_cast_point": "0.53",
+        "base_attack_damage_point": "0.35",
+        "base_attack_cooldown": "2",
+        "ability_Cast1": "0",
+        "ability_Dur1": "0",
+        "ability_DataA1": "1.5",
+        "ability_DataB1": "2.5",
+        "weapon_type": "normal"
+      },
+      "notes": [
+        "Unit cast point is a raw animation field, not proven command-to-effect latency for this ability.",
+        "Measure invisibility as seen by the enemy separately from cast effect; fade sample is bounded by polling interval.",
+        "Items may bypass unit casting animation. Do not assume Tinker cast point applies."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "dodge.37.1",
+      "choice_id": "dodge.37",
+      "choice": "Potion of Invisibility",
+      "method": "Potion of Invisibility",
+      "unit": "Ntin",
+      "ability": "AIv1",
+      "item": "pinv",
+      "category": "Invisibility",
+      "order": null,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.53",
+        "base_attack_damage_point": "0.35",
+        "base_attack_cooldown": "2",
+        "ability_Cast1": "0",
+        "ability_Dur1": "120",
+        "ability_DataA1": "-",
+        "ability_DataB1": "-",
+        "weapon_type": "normal"
+      },
+      "notes": [
+        "Unit cast point is a raw animation field, not proven command-to-effect latency for this ability.",
+        "Measure invisibility as seen by the enemy separately from cast effect; fade sample is bounded by polling interval.",
+        "Items may bypass unit casting animation. Do not assume Tinker cast point applies."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "dodge.38.1",
+      "choice_id": "dodge.38",
+      "choice": "Potion of Invulnerability",
+      "method": "Potion of Invulnerability",
+      "unit": "Ntin",
+      "ability": "AIvu",
+      "item": "pnvu",
+      "category": "Invulnerability",
+      "order": null,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.53",
+        "base_attack_damage_point": "0.35",
+        "base_attack_cooldown": "2",
+        "ability_Cast1": "0",
+        "ability_Dur1": "15",
+        "ability_DataA1": "1",
+        "ability_DataB1": "-",
+        "weapon_type": "normal"
+      },
+      "notes": [
+        "Unit cast point is a raw animation field, not proven command-to-effect latency for this ability.",
+        "Items may bypass unit casting animation. Do not assume Tinker cast point applies."
+      ],
+      "measured_status": "pending_native_run"
+    },
+    {
+      "id": "dodge.40.1",
+      "choice_id": "dodge.40",
+      "choice": "Move on the ground",
+      "method": "Move on the ground",
+      "unit": "hfoo",
+      "ability": null,
+      "item": null,
+      "category": "Movement",
+      "order": null,
+      "raw_fields": {
+        "unit_animation_cast_point": "0.3",
+        "base_attack_damage_point": "0.5",
+        "base_attack_cooldown": "1.35",
+        "ability_Cast1": null,
+        "ability_Dur1": null,
+        "ability_DataA1": null,
+        "ability_DataB1": null,
+        "weapon_type": "normal"
+      },
+      "notes": [
+        "Unit cast point is a raw animation field, not proven command-to-effect latency for this ability.",
+        "No spell rawcode in catalogue: use order, construction/load and sampled state events; do not substitute attack damage point."
+      ],
+      "measured_status": "pending_native_run"
+    }
+  ]
+}

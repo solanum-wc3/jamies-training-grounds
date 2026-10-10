@@ -109,7 +109,7 @@ local STEPS = {
     {
         groupStart = 11, wait = true,
         lines = {
-            "If you already have a {Term: Control Group}, you can add new units to it by selecting hem, {Input: holding Shift}, and {Input: pressing its number}.",
+            "If you already have a {Term: Control Group}, you can add new units to it by selecting them, {Input: holding Shift}, and {Input: pressing its number}.",
             "For example {Input: Shift+1}.",
             "Alternatively, you can select the group, {Term: Shift-Select} the unit or units you want to add, and then re-create the group.",
             "You can also add units using {Term: Shift-Select} combined with {Term: Box-Select} and {Term: CTRL-Select}.",
@@ -117,10 +117,15 @@ local STEPS = {
         },
     },
     {
-        groupStart = 12, wait = true, sectionEnd = true,
+        groupStart = 12, wait = true,
         lines = {
             "To remove units from a {Term: Control Group}, you have to {Input: shift-unselect} them and then re-create the group.",
             "Add and remove units from your groups!",
+        },
+    },
+    {
+        groupStart = 13, wait = true, sectionEnd = true,
+        lines = {
             "Every player develops their own preferences when using {Term: Control Groups}.",
             "The first couple groups usually divide the army into melee, ranged and spellcasters, but the details vary.",
             "This allows the player to quickly give precise commands in battle.",
@@ -128,50 +133,50 @@ local STEPS = {
         },
     },
     {
-        groupStart = 13, checkpoint = "unitinterface", wait = true, trigger = "resetUnits",
+        groupStart = 14, checkpoint = "unitinterface", wait = true, trigger = "resetUnits",
         lines = {
             "{Heading: UNIT INTERFACE}",
             "Let us take a look at your interface.",
         },
     },
     {
-        groupStart = 14, wait = true, trigger = "portraitArrow",
+        groupStart = 15, wait = true, trigger = "portraitArrow",
         lines = {
             "This is the active unit's {Term: portrait}.",
-            "Clicking it portrait centers the camera on the unit.",
+            "Clicking its portrait centers the camera on the unit.",
             "If several of the same type are selected, you will center on the leftmost in the selection.",
             "Below the portrait, you can see the unit's {Term: health} and {Term: mana}.",
         },
     },
     {
-        groupStart = 15, wait = true, trigger = "infoArrow", preserveArrowOnContinue = true,
+        groupStart = 16, wait = true, trigger = "infoArrow", preserveArrowOnContinue = true,
         lines = {
             "This space has two functions.",
         },
     },
     {
-        groupStart = 16, wait = true, preserveArrowOnContinue = true,
+        groupStart = 17, wait = true, preserveArrowOnContinue = true,
         lines = {
-            "When you have selected one unit, it shows you that unit's statistics, such as damage, armor, buffs and debuffs, and so on..",
+            "When you have selected one unit, it shows you that unit's statistics, such as damage, armor, buffs and debuffs, and so on.",
         },
     },
     {
-        groupStart = 17, wait = true,
+        groupStart = 18, wait = true,
         lines = {
             "When you have selected more than one unit, it shows you smaller portraits of your selection.",
             "You can {Input: double-click} these smaller portraits to select or target the individual units without having to look for them on the screen.",
         },
     },
     {
-        groupStart = 18, wait = true, trigger = "inventoryArrow",
+        groupStart = 19, wait = true, trigger = "inventoryArrow",
         lines = {
-            "This space shows a units {Term: inventory}.",
+            "This space shows a unit's {Term: inventory}.",
             "Not all units have an inventory, and only Hero units can use {Term: items}.",
             "We will talk about items in detail once we talk about Heroes.",
         },
     },
     {
-        groupStart = 19, wait = true, trigger = "commandsArrow",
+        groupStart = 20, wait = true, trigger = "commandsArrow",
         lines = {
             "This part of the interface displays the {Term: actions} a unit can take.",
             "Many of these are generic, meaning almost every unit has some or all of them.",
@@ -180,62 +185,63 @@ local STEPS = {
         },
     },
     {
-        groupStart = 20, wait = true, sectionEnd = true,
+        groupStart = 21, wait = true, sectionEnd = true,
         lines = {
             "{Heading: HOTKEYS}",
             "{Yellow Font: Using hotkeys} takes less time than clicking buttons, so it {Yellow Font: is always recommended!}",
+            "You can see a button's hotkey by hovering over it.",
             "If you are new, it is OK to click the buttons during this tutorial.",
-            "There will be tips on how to best set up Hotkeys in the next tutorial.",
+            "The next tutorial will instruct you on how to set up Hotkeys.",
         },
     },
     {
-        groupStart = 21, checkpoint = "abilities", wait = true, trigger = "selectFootman",
+        groupStart = 22, checkpoint = "abilities", wait = true, trigger = "selectFootman",
         lines = {
             "{Heading: ABILITIES}",
             "The units you currently control have a variety of abilities.",
             "The footman has the {Button: Defend} ability, which protects him from the piercing damage type, at the cost of movement speed.",
-            "This kind of ability simply activates once you {Input: press the button} or {Input: use the hotkey}.",
+            "This kind of ability simply activates once you {Input: press the button or use the hotkey}.",
             "When several footmen are selected, all of them will use the ability.",
             "Give it a try!",
         },
     },
     {
-        groupStart = 22, wait = true, trigger = "selectRifleman",
+        groupStart = 23, wait = true, trigger = "selectRifleman",
         lines = {
             "The Rifleman has what is called a {Term: passive ability}. It raises his attack range.",
             "Passive abilities are always in effect.",
         },
     },
     {
-        groupStart = 23, wait = true, trigger = "healExercise",
+        groupStart = 24, wait = true, trigger = "healExercise",
         lines = {
             "The priest is a spellcaster with a variety of abilities, all of which cost mana.",
             "His {Button: Heal} is a {Term: targeted ability} you can use on friendly units.",
-            "You use targeted abilities by {Input: pressing the button} or {Input: using the hotkey}, and then {Input: clicking the target}.",
+            "You use targeted abilities by {Input: pressing the button or using the hotkey}, and then {Input: clicking the target}.",
             "Try healing your wounded footmen!",
         },
     },
     {
-        groupStart = 24, wait = true, trigger = "fillPriestMana",
+        groupStart = 25, wait = true, trigger = "fillPriestMana",
         lines = {
-            "{Button: Dispel} is an {Term: area of effect} spell, that removes magical buffs debuffs, and damages enemy summoned units within an area.",
-            "You use area spells in the same way you user other targeted abilities, except that you do not target units.",
+            "{Button: Dispel} is an {Term: area of effect} spell, that removes magical buffs and debuffs, and damages enemy summoned units within an area.",
+            "You use area spells in the same way you use other targeted abilities, except that you do not target units.",
         },
     },
     {
-        groupStart = 25, wait = true, trigger = "slowExercise",
+        groupStart = 26, wait = true, trigger = "slowExercise",
         lines = {
             "Your units have been magically slowed. Dispel the magic!",
         },
     },
     {
-        groupStart = 26, wait = true, trigger = "wolfExercise", afterContinue = "resetUnits",
+        groupStart = 27, wait = true, trigger = "wolfExercise", afterContinue = "resetUnits",
         lines = {
             "Magically summoned creatures are attacking you! Dispel them!",
         },
     },
     {
-        groupStart = 27, wait = true, trigger = "innerFireExercise",
+        groupStart = 28, wait = true, trigger = "innerFireExercise",
         lines = {
             "The last Priest spell is another targeted ability.",
             "{Button: Inner Fire} strengthens a friendly unit both offensively and defensively.",
@@ -243,16 +249,16 @@ local STEPS = {
         },
     },
     {
-        groupStart = 28, wait = true,
+        groupStart = 29, wait = true,
         lines = {
             "You have probably noticed that {Button: Inner Fire} and {Button: Heal} have yellow corners.",
-            "This means that these are spells that can be {Term: auto-cast}",
+            "This means that these are spells that can be {Term: auto-cast}.",
             "You can set a spell to auto-cast by {Button: right-clicking} it.",
             "A spellcaster can only ever auto-cast one spell at a time.",
         },
     },
     {
-        groupStart = 29, wait = true,
+        groupStart = 30, wait = true,
         lines = {
             "{Term: Auto-cast} spells usually have conditions.",
             "For example, the priest will only heal units if there are damaged units nearby.",
@@ -260,32 +266,47 @@ local STEPS = {
         },
     },
     {
-        groupStart = 30, wait = true,
+        groupStart = 31, wait = true,
         lines = {
             "{Heading: SUB-SELECTION}",
             "You may have noticed, that when you have selected all of your units, you can see your Priests' abilities, and their portraits are a bit bigger in the unit selection interface.",
-            "This is because when you have selected units of several types, one is type is selected primarily.",
+            "This is because when you have selected units of several types, one unit type is selected primarily.",
         },
     },
     {
-        groupStart = 31, wait = true,
+        groupStart = 32, wait = true,
         lines = {
             "You can cycle through the different unit types, allowing you to use that type's abilities without changing your selection.",
-            "The default hotkey for this is the {Input: Tabulator} key, or {Input: Tab}.",
+            "The default hotkey for this is the {Input: Tabulator} key, also known as {Input: Tab}.",
             "Alternatively you can {Input: click} on one of the unit types in the interface.",
             "Try cycling through the unit types in your selection!",
         },
     },
     {
-        groupStart = 32, wait = true, sectionEnd = true,
+        groupStart = 33, wait = true,
         lines = {
-            "You can cycle through the unit types in reverse.",
+            "You can also cycle through the unit types in reverse.",
             "This is done by {Input: holding Shift}, and pressing {Input: Tab}.",
             "{Input: (Shift+Tab)}.",
         },
     },
     {
-        groupStart = 33, checkpoint = "movement", wait = true, trigger = "resetUnits",
+        groupStart = 34, wait = true,
+        lines = {
+            "There is an option you can enable, that allows you to give commands only to the primary {Term: sub-group} in your selection.",
+            "Go to {Menu: Gameplay} -> {Term: User Interface} in the game options, and check the box for {Term: Subgroup Order Modifier Key}.",
+        },
+    },
+    {
+        groupStart = 35, wait = true, sectionEnd = true,
+        lines = {
+            "Now you can {Input: press and hold CTRL} and give a {Term: Command}, and only your primary {Term: sub-group} will receive it.",
+            "This can be especially useful to move around only your hero in a battle, or have a particular unit type focus fire onto a particular enemy, without having to change selection.",
+            "Try giving commands to your primary selection using this command!",
+        },
+    },
+    {
+        groupStart = 36, checkpoint = "movement", wait = true, trigger = "resetUnits",
         lines = {
             "{Heading: THE MOVEMENT COMMAND}",
             "You can move around your units by using the {Term: Move} command.",
@@ -294,14 +315,14 @@ local STEPS = {
         },
     },
     {
-        groupStart = 34, wait = true, trigger = "startSiegeCircle",
+        groupStart = 37, wait = true, trigger = "startSiegeCircle",
         lines = {
             "If you use a {Term: Move} command on a friendly or neutral unit, your unit will follow that unit.",
             "Have one or several units follow the Siege Engine!",
         },
     },
     {
-        groupStart = 35, wait = true, trigger = "holdSiege",
+        groupStart = 38, wait = true, trigger = "holdSiege",
         lines = {
             "When your units move on a unit that stands still, your units will stand still at a distance.",
             "If you give them another {Term: Move} command on the same unit, they will move closer.",
@@ -310,7 +331,7 @@ local STEPS = {
         },
     },
     {
-        groupStart = 36, wait = true, trigger = "giveSiegeAndPeasant",
+        groupStart = 39, wait = true, trigger = "giveSiegeAndPeasant",
         lines = {
             "{Heading: FORMATION MOVEMENT}",
             "Different units have different movement speeds, sizes, and turn rates.",
@@ -319,40 +340,40 @@ local STEPS = {
         },
     },
     {
-        groupStart = 37, wait = true,
+        groupStart = 40, wait = true,
         lines = {
             "The game has a mechanic for this, called {Term: Formation Movement}.",
-            "This can be enabled or disabled by {Input: clicking the button} next to the minimap, or, per default by {Input: holding Alt} and {Input: pressing F}.",
+            "This can be enabled or disabled by {Input: clicking the button} next to the minimap, or by {Input: holding Alt} and {Input: pressing F}.",
             "{Input: Alt+F}",
             "Try moving around all of your units in one big selection with and without {Term: Formation Movement}!",
         },
     },
     {
-        groupStart = 38, wait = true,
+        groupStart = 41, wait = true,
         lines = {
             "With regular {Term: Movement}, every unit will move individually, as fast as it can.",
             "When reaching the target location, the army will then arrange itself with melee units in front, ranged fighters in the middle, and casters in the back.",
         },
     },
     {
-        groupStart = 39, wait = true,
+        groupStart = 42, wait = true,
         lines = {
             "{Term: Formation Movement} switches this around.",
-            "First, the army arranges itself with melee in front and casters in the back.",
-            "Then the army moves as a whole, only as quickly as the slowest unit in the selection.",
+            "First, the army arranges itself with melee in front, ranged units in the middle, and casters in the back.",
+            "Then the army moves as a whole, only as quickly as the slowest unit in the selection, and while trying to hold the arrangement.",
         },
     },
     {
-        groupStart = 40, wait = true,
+        groupStart = 43, wait = true,
         lines = {
-            "In competitive play, {Term: Formation Movement} is almost never, because it slows down your army, and because your army takes a while to get moving in the first place.",
+            "In competitive play, {Term: Formation Movement} is almost never used, because it slows down your army, and because your army takes a while to get moving in the first place.",
             "Since new players do not know that it exists, and because it is active by default, it is considered an invisible roadblock for new players.",
             "For these reasons, {Yellow Font: it is recommended you deactivate it.}",
             "The game will remember this choice between sessions.",
         },
     },
     {
-        groupStart = 41, wait = true,
+        groupStart = 44, wait = true,
         lines = {
             "{Heading: PATHFINDING}",
             "Since maps are filled with terrain, buildings, and units, movement is often more complicated than in an open field.",
@@ -361,13 +382,13 @@ local STEPS = {
         },
     },
     {
-        groupStart = 42, wait = true, trigger = "obstacleCourse", afterContinue = "removeObstacleCourse",
+        groupStart = 45, wait = true, trigger = "obstacleCourse", afterContinue = "removeObstacleCourse",
         lines = {
             "Move your units around and through all of these obstacles!",
         },
     },
     {
-        groupStart = 43, wait = true,
+        groupStart = 46, wait = true,
         lines = {
             "{Heading: The SHIFT QUEUE}",
             "If you want to have your unit move along more complicated paths, you can use the {Term: Shift-Queue}.",
@@ -377,14 +398,14 @@ local STEPS = {
         },
     },
     {
-        groupStart = 44, wait = true,
+        groupStart = 47, wait = true,
         lines = {
             "{Term: Shift-Queue} works not only with {Term: Movement} commands, but with basically everything you can tell a unit to do.",
             "This includes all commands, all abilities, and even items.",
         },
     },
     {
-        groupStart = 45, wait = true,
+        groupStart = 48, wait = true,
         lines = {
             "{Heading: THE STOP COMMAND}",
             "If your unit is moving, or doing anything else, you can have it abort what it is currently doing by giving it a {Term: Stop} command.",
@@ -393,7 +414,7 @@ local STEPS = {
         },
     },
     {
-        groupStart = 46, wait = true, sectionEnd = true, afterContinue = "clearMovementProps",
+        groupStart = 49, wait = true, sectionEnd = true, afterContinue = "clearMovementProps",
         lines = {
             "{Term: Stop} is a temporary command. It only aborts what the unit currently does.",
             "If the unit wants to start doing something else, like {Term: auto-casting}, it will start again right away.",
@@ -401,7 +422,7 @@ local STEPS = {
         },
     },
     {
-        groupStart = 47, checkpoint = "combat", wait = true, trigger = "resetUnits",
+        groupStart = 50, checkpoint = "combat", wait = true, trigger = "resetUnits",
         lines = {
             "{Heading: COMBAT}",
             "Like most strategy games, Warcraft III has a basic stance system.",
@@ -409,13 +430,13 @@ local STEPS = {
         },
     },
     {
-        groupStart = 48, wait = true, trigger = "spawnPassingGrunt", afterContinue = "removeEnemies",
+        groupStart = 51, wait = true, trigger = "spawnPassingGrunt", afterContinue = "removeEnemies",
         lines = {
             "Once the enemy unit moves away far enough, your units will return to where they were.",
         },
     },
     {
-        groupStart = 49, wait = true, trigger = "prepareHoldPosition",
+        groupStart = 52, wait = true, trigger = "prepareHoldPosition",
         lines = {
             "To change your units' stance, you can use the unit command {Button: Hold Position}, by pressing its button or using its hotkey.",
             "{Button: Hold Position} also cancels any other order they were given, in the same way the {Term: Stop} command does.",
@@ -424,46 +445,46 @@ local STEPS = {
         },
     },
     {
-        groupStart = 50, wait = true, trigger = "spawnPassingGrunt", afterContinue = "removeEnemies",
+        groupStart = 53, wait = true, trigger = "spawnPassingGrunt", afterContinue = "removeEnemies",
         lines = {
             "When holding position, your units will not move, even when an enemy unit is close by.",
             "However, they will attack when in range.",
         },
     },
     {
-        groupStart = 51, wait = true, trigger = "spawnAttackGrunt", afterContinue = "removeEnemies",
+        groupStart = 54, wait = true, trigger = "spawnAttackGrunt", afterContinue = "removeEnemies",
         lines = {
             "{Heading: THE ATTACK COMMAND}",
             "If you want to attack a unit, you use the unit command {Button: Attack}.",
-            "You can do this by pressing its {Input: button} or using its {Input: hotkey}, and then clicking your target.",
+            "You can do this by pressing its {Input: button} or using its {Input: hotkey}, and then {Input: clicking} your target.",
             "You can also {Input: right-click} your target.",
             "{Yellow Font: Select all of your units}, and attack the Grunt to the north!",
         },
     },
     {
-        groupStart = 52, wait = true, trigger = "spawnEnemyTrio", afterContinue = "removeEnemies",
+        groupStart = 55, wait = true, trigger = "spawnEnemyTrio", afterContinue = "removeEnemies",
         lines = {
             "Just like with other commands, you can {Term: shift-queue} attack commands.",
             "{Yellow Font: Select all of your units}, and order them to first attack the Headhunter, then the Grunt, and lastly the Peon.",
         },
     },
     {
-        groupStart = 53, wait = true,
+        groupStart = 56, wait = true,
         lines = {
-            "You may have noticed that your footmen were bunching up a lot, and running around each other to reach the target.",
-            "This is because the Attack command leaves no room for alternatives.",
+            "You may have noticed that your footmen were bunching up a bit, and running around each other to reach the target.",
+            "This is because the {Term: Attack} command, just like the {Term: Move} command leaves no room for alternatives.",
             "Your units will do everything they can to get into attack range of that unit, and ignore anything else.",
         },
     },
     {
-        groupStart = 54, wait = true,
+        groupStart = 57, wait = true,
         lines = {
-            "You may also have noticed that your Priests did not heal your Footmen, despite Heal being on auto-cast.",
+            "You may also have noticed that your Priests did not heal your Footmen, despite {Input: Heal} being on {Term: auto-cast}.",
             "This is because a direct attack order supersedes auto-casting.",
         },
     },
     {
-        groupStart = 55, wait = true, trigger = "resetUnits",
+        groupStart = 58, wait = true, trigger = "resetUnits",
         lines = {
             "{Heading: THE ATTACK MOVE COMMAND}",
             "The {Yellow Font: most important combat command} is the {Term: Attack Move}!",
@@ -472,21 +493,21 @@ local STEPS = {
         },
     },
     {
-        groupStart = 56, wait = true,
+        groupStart = 59, wait = true,
         lines = {
-            "There is several advantages to this.",
+            "There are several advantages to this.",
             "For one, no time is wasted bunching up. Each unit will just find the closest enemy and attack.",
             "For another, this kind of move does not supersede auto-cast.",
         },
     },
     {
-        groupStart = 57, wait = true, trigger = "spawnCombatTrio", afterContinue = "removeEnemies",
+        groupStart = 60, wait = true, trigger = "spawnCombatTrio", afterContinue = "removeEnemies",
         lines = {
             "Try attacking the enemy units to the north with an attack move by {Input: clicking it behind them}!",
         },
     },
     {
-        groupStart = 58, wait = true, trigger = "spawnCombatTrio", afterContinue = "removeEnemies",
+        groupStart = 61, wait = true, trigger = "spawnCombatTrio", afterContinue = "removeEnemies",
         lines = {
             "After using an {Term: Attack Move}, you can then manually select units to reposition them or switch their targets.",
             "This is called {Term: Micro}, from micro-management.",
@@ -494,41 +515,41 @@ local STEPS = {
         },
     },
     {
-        groupStart = 59, wait = true, trigger = "resetUnits",
+        groupStart = 62, wait = true, trigger = "resetUnits",
         lines = {
             "As a {Yellow Font: rule of thumb}, it is almost always better to {Yellow Font: move your units with an attack move} compared to a regular move!",
         },
     },
     {
-        groupStart = 60, wait = true,
+        groupStart = 63, wait = true,
         lines = {
             "The reason for this is that while given a {Term: Move} command, your units will ignore enemies completely.",
             "This makes them vulnerable in two ways.",
         },
     },
     {
-        groupStart = 61, wait = true,
+        groupStart = 64, wait = true,
         lines = {
             "For one, they will receive damage without defending themselves.",
             "For another, weaker units such as Priests and Riflemen will move out of position, making it easier for your enemy to attack them.",
         },
     },
     {
-        groupStart = 62, wait = true,
+        groupStart = 65, wait = true,
         lines = {
             "Another use for attack moves, is to have your units finish off an enemy, and then start moving somewhere else, without you having to give them another command.",
         },
     },
     {
-        groupStart = 63, wait = true, trigger = "spawnFinalHeadhuntersAttack", afterContinue = "removeEnemies",
+        groupStart = 66, wait = true, trigger = "spawnFinalHeadhuntersAttack", afterContinue = "removeEnemies",
         lines = {
             "Your units will win this fight easily.",
             "Give an attack move command to the top right corner of the minimap!",
-            "Your units will finish fighting, and then starting moving up there.",
+            "Your units will finish fighting, and then start moving up there.",
         },
     },
     {
-        groupStart = 64, wait = true, sectionEnd = true,
+        groupStart = 67, wait = true, sectionEnd = true,
         lines = {
             "The only downside to the Attack move is that along the way, you may attack things you do not intend to.",
             "This can be annoying, especially when you are not paying attention to your army at the time.",
@@ -536,7 +557,7 @@ local STEPS = {
         },
     },
     {
-        groupStart = 65, terminal = true, trigger = "highlightMenu",
+        groupStart = 68, terminal = true, trigger = "highlightMenu",
         lines = {
             "{Heading: END OF TUTORIAL}",
             "This concludes the unit control tutorial. Press the {Button: Menu} button to choose another tutorial!",
@@ -549,10 +570,10 @@ local TOPICS = {
     {label = "Welcome", step = 1},
     {label = "Unit Selection", step = 2},
     {label = "Control Groups", step = 8},
-    {label = "Unit Interface", step = 13},
-    {label = "Abilities", step = 21},
-    {label = "Movement", step = 33},
-    {label = "Combat", step = 47},
+    {label = "Unit Interface", step = 14},
+    {label = "Abilities", step = 22},
+    {label = "Movement", step = 36},
+    {label = "Combat", step = 50},
 }
 
 
@@ -586,14 +607,14 @@ local OPTIONAL_SECTIONS = {
         steps = {
             {wait = true, trigger = "resetUnits", lines = {
                 "{Heading: BONUS: FORMATION MOVEMENT OPTION}",
-                "There is an option that allow the use of {Term: Formation Movement} without having to toggle it on and off between commands.",
+                "There is an option that allows the use of {Term: Formation Movement} without having to toggle it on and off between commands.",
             }},
             {wait = true, lines = {
                 "Go to {Menu: Gameplay} -> {Menu: Interface}, and check the checkbox for {Menu: Enable Formation Movement Toggle}.",
             }},
             {wait = true, lines = {
                 "Now you can give a {Term: Formation Movement} command by {Input: holding Alt} and giving your units a {Term: Movement} command.",
-                "Try enabling this option and moving your army with and without {Term: Formation Movement} using it!",
+                "Try enabling this option and moving your army using it!",
             }},
             {wait = true, sectionEnd = true, lines = {
                 "{Heading: OPTIONAL TOPIC COMPLETE}",
@@ -605,29 +626,13 @@ local OPTIONAL_SECTIONS = {
 }
 
 
-local function FormatNarration(text)
-    local formatted = text
-    formatted = string.gsub(formatted, "{Small Heading:%s*(.-)}", "|cff00ccff%1|r")
-    formatted = string.gsub(formatted, "{Heading:%s*(.-)}", "|cff00ccff%1|r")
-    formatted = string.gsub(formatted, "{Button:%s*(.-)}", "|cffffcc00%1|r")
-    formatted = string.gsub(formatted, "{Input:%s*(.-)}", "|cffffcc00%1|r")
-    formatted = string.gsub(formatted, "{Menu:%s*(.-)}", "|cffcc66ff%1|r")
-    formatted = string.gsub(formatted, "{Term:%s*(.-)}", "|cffff9933%1|r")
-    formatted = string.gsub(formatted, "{Yellow Font:%s*(.-)}", "|cffffcc00%1|r")
-    return formatted
-end
+local FormatNarration = JTG.Tutorial.FormatNarration
 
 local function StepText(step)
     return table.concat(step.lines or {}, "\n")
 end
 
-local function CreateTutorialButton(name, parent, label, width)
-    local button = BlzCreateFrameByType("GLUETEXTBUTTON", name, parent,
-        "ScriptDialogButton", 0)
-    BlzFrameSetSize(button, width, 0.024)
-    BlzFrameSetText(button, label)
-    return button
-end
+local CreateTutorialButton = JTG.Tutorial.CreateButton
 
 function JTG.CreateUnitControlsTutorialActivity(session)
     local activity = {
@@ -663,28 +668,8 @@ function JTG.CreateUnitControlsTutorialActivity(session)
         combatAutocast = false,
     }
 
-    function activity:makeTimer(period, repeating, callback)
-        return JTG.StartScopedTimer(session, session.scope, period, repeating,
-            callback)
-    end
-
-    function activity:registerClick(button, action, soundKind)
-        self.actions[GetHandleId(button)] = {action = action, sound = soundKind}
-        BlzTriggerRegisterFrameEvent(self.clickTrigger, button,
-            FRAMEEVENT_CONTROL_CLICK)
-    end
-
-    function activity:setButtonEnabled(button, enabled)
-        if button == nil then return end
-        self.buttonEnabled[GetHandleId(button)] = enabled == true
-        BlzFrameSetEnable(button, enabled == true)
-        BlzFrameSetAlpha(button, enabled and 255 or 145)
-        BlzFrameSetTextColor(button, enabled and
-            BlzConvertColor(255, 255, 204, 0) or
-            BlzConvertColor(255, 145, 145, 145))
-    end
-
     function activity:refreshControls()
+        JTG.UI.RefreshWelcomeArrow(self)
         if self.frames.continue == nil then return end
         local optionalSteps = self.optionalSection and
             self.optionalSection.steps or nil
@@ -715,21 +700,6 @@ function JTG.CreateUnitControlsTutorialActivity(session)
         end
     end
 
-    function activity:clearNarration(preserveArrow)
-        if not preserveArrow then self:clearArrow() end
-        ClearTextMessages()
-        self.narrationBlocks = {}
-    end
-
-    function activity:renderNarration()
-        ClearTextMessages()
-        if not self.presentationVisible or self.topicsOpen or
-                self.optionalOpen then return end
-        for _, text in ipairs(self.narrationBlocks) do
-            DisplayTimedTextToPlayer(UNIT_PLAYER, 0, 0,
-                NARRATION_DURATION, text)
-        end
-    end
 
     function activity:appendNarration(text)
         local formatted = FormatNarration(text or "")
@@ -834,7 +804,7 @@ function JTG.CreateUnitControlsTutorialActivity(session)
             end
         end
         if GetLocalPlayer() == UNIT_PLAYER then
-            PanCameraToTimed(session.scene.centerX, session.scene.centerY, 0.5)
+            JTG.Tutorial.MoveCamera(UNIT_PLAYER, session.scene.centerX, session.scene.centerY)
         end
     end
 
@@ -935,7 +905,7 @@ function JTG.CreateUnitControlsTutorialActivity(session)
         if GetLocalPlayer() == UNIT_PLAYER then
             ClearSelection()
             SelectUnit(unit, true)
-            PanCameraToTimed(GetUnitX(unit), GetUnitY(unit), 0.5)
+            JTG.Tutorial.MoveCamera(UNIT_PLAYER, GetUnitX(unit), GetUnitY(unit))
         end
     end
 
@@ -991,7 +961,7 @@ function JTG.CreateUnitControlsTutorialActivity(session)
         end
         -- Let Warcraft create the actual level-one Feral Spirit summons. This
         -- preserves their summoned classification, model and Dispel response.
-        self:makeTimer(0.40, false, function()
+        JTG.Tutorial.ScheduleStep(session,self,0.40,function()
             local group = CreateGroup()
             GroupEnumUnitsInRange(group, centerX, spawnY, 520.0, nil)
             while true do
@@ -1024,7 +994,7 @@ function JTG.CreateUnitControlsTutorialActivity(session)
         for _, priest in ipairs(self.unitGroups.priests) do
             SelectUnit(priest, true)
         end
-        PanCameraToTimed(session.scene.centerX, session.scene.centerY, 0.5)
+        JTG.Tutorial.MoveCamera(UNIT_PLAYER, session.scene.centerX, session.scene.centerY)
     end
 
     function activity:removeObstacleCourse()
@@ -1046,6 +1016,7 @@ function JTG.CreateUnitControlsTutorialActivity(session)
         end
         self.movementUnits = {}
         self.siegeEngine = nil
+        self.formationPeasant = nil
     end
 
     function activity:startSiegeCircle()
@@ -1097,11 +1068,38 @@ function JTG.CreateUnitControlsTutorialActivity(session)
         if self.siegeEngine ~= nil and GetUnitTypeId(self.siegeEngine) ~= 0 then
             SetUnitOwner(self.siegeEngine, UNIT_PLAYER, true)
         end
+        if self.formationPeasant and GetUnitTypeId(self.formationPeasant)~=0 then return end
         local peasant = JTG.ScopeTrackUnit(session.scope,
             CreateUnit(UNIT_PLAYER, FourCC("hpea"),
                 session.scene.centerX + 125.0,
                 session.scene.centerY - 50.0, 90.0))
         table.insert(self.movementUnits, peasant)
+        self.formationPeasant = peasant
+    end
+
+    function activity:restoreScene(index)
+        -- A canonical checkpoint rebuild is explicit navigation, never rendering.
+        self:clearMovementProps()
+        self:removeObstacleCourse()
+        self:resetUnits()
+        local first=1
+        for i=1,index-1 do
+            local trigger=STEPS[i].trigger
+            if trigger=='resetUnits' or trigger=='selectFootman' or
+                    trigger=='slowExercise' or trigger=='innerFireExercise' or
+                    trigger=='prepareHoldPosition' then first=i end
+        end
+        for i=first,index-1 do
+            self:runStepTrigger(STEPS[i])
+            JTG.Tutorial.RunStepExit(self,STEPS[i])
+        end
+    end
+
+    function activity:restoreCheckpoint(index)
+        self:setTopicsVisible(false)
+        self:setOptionalVisible(false)
+        self:restoreScene(index)
+        self:showStep(index)
     end
 
     function activity:startObstacleCourse()
@@ -1253,6 +1251,7 @@ function JTG.CreateUnitControlsTutorialActivity(session)
         end
         self:clearNarration(preserveArrow)
         self:appendNarration(StepText(spec))
+        if index==1 then JTG.UI.StartWelcomeArrow(self) end
         self:runStepTrigger(spec)
         self:refreshControls()
     end
@@ -1284,7 +1283,7 @@ function JTG.CreateUnitControlsTutorialActivity(session)
     function activity:beginOptionalSection(section)
         self.optionalReturnStep = self.step
         self.optionalSection = section
-        if self.step >= 33 and self.step <= 46 then
+        if self.step >= 36 and self.step <= 49 then
             self:clearMovementProps()
         end
         self:removeEnemies()
@@ -1301,22 +1300,12 @@ function JTG.CreateUnitControlsTutorialActivity(session)
                 local returnStep = self.optionalReturnStep
                 self.optionalActive = false
                 self.optionalSection = nil
-                self:showStep(returnStep)
+                self:restoreCheckpoint(returnStep)
             end
             return
         end
         local current = STEPS[self.step]
-        if current ~= nil then
-            if current.afterContinue == "resetUnits" then
-                self:resetUnits()
-            elseif current.afterContinue == "removeEnemies" then
-                self:removeEnemies()
-            elseif current.afterContinue == "removeObstacleCourse" then
-                self:removeObstacleCourse()
-            elseif current.afterContinue == "clearMovementProps" then
-                self:clearMovementProps()
-            end
-        end
+        JTG.Tutorial.RunStepExit(self,current)
         if self.step >= #STEPS then
             self.complete = true
             self.waitingForContinue = false
@@ -1335,37 +1324,24 @@ function JTG.CreateUnitControlsTutorialActivity(session)
                 local returnStep = self.optionalReturnStep
                 self.optionalActive = false
                 self.optionalSection = nil
-                self:showStep(returnStep)
+                self:restoreCheckpoint(returnStep)
             end
             return
         end
         if self.step <= 1 and not self.complete then return end
-        self:showStep(math.max(1, self.complete and self.step or self.step - 1))
+        self:restoreCheckpoint(math.max(1, self.complete and self.step or self.step - 1))
     end
 
     function activity:restoreTopic(stepIndex)
-        if self.step >= 33 and self.step <= 46 and
-                (stepIndex < 33 or stepIndex > 46) then
-            self:clearMovementProps()
-        end
-        self:removeEnemies()
-        self:setTopicsVisible(false)
-        self:setOptionalVisible(false)
-        self:showStep(stepIndex)
+        self:restoreCheckpoint(stepIndex)
     end
 
     function activity:openMenu()
-        if JTG.UI == nil then return end
-        self:setPresentationVisible(false)
-        JTG.UI.SetGameplayMenuPaused(true)
-        JTG.UI.ShowActivityMenu("learn")
+        JTG.Tutorial.OpenMenu(self,"learn")
     end
 
     function activity:togglePause()
-        if JTG.UI ~= nil then
-            JTG.UI.SetExercisePaused(not JTG.UI.exercisePaused)
-        end
-        self:refreshControls()
+        JTG.Tutorial.TogglePause(self)
     end
 
     function activity:setTopicsVisible(visible)
@@ -1427,77 +1403,16 @@ function JTG.CreateUnitControlsTutorialActivity(session)
         self.actions = {}
         self.buttonEnabled = {}
 
-        local toolbarLayout = (JTG.UI and JTG.UI.ToolbarLayout) or {
-            buttonWidth = 0.087, buttonHeight = 0.024,
-            gap = 0.001, rowStep = 0.025, left = 0.446, top = 0.575,
-        }
-        local bar = JTG.ScopeTrackFrame(scope, BlzCreateFrameByType("FRAME",
-            "JTGUnitControlsTutorialBar" .. suffix, root, "", 0))
-        BlzFrameSetSize(bar, 0.351, 0.060)
-        BlzFrameSetAbsPoint(bar, FRAMEPOINT_TOPLEFT,
-            toolbarLayout.left, toolbarLayout.top)
-        self.frames.bar = bar
         local labels = {
             {"menu", "Menu", 1}, {"back", "Back", 2},
             {"topicsButton", "Topics", 3},
             {"optionalButton", "Optional", 4},
             {"continue", "Continue", 5}, {"pause", "Pause", 7},
         }
-        for _, spec in ipairs(labels) do
-            local button = JTG.ScopeTrackFrame(scope, CreateTutorialButton(
-                "JTGUnitControlsTutorial" .. spec[1] .. suffix,
-                bar, spec[2], toolbarLayout.buttonWidth))
-            local slot = spec[3] - 1
-            BlzFrameSetPoint(button, FRAMEPOINT_TOPLEFT, bar,
-                FRAMEPOINT_TOPLEFT,
-                (slot % 4) * (toolbarLayout.buttonWidth + toolbarLayout.gap),
-                -math.floor(slot / 4) * toolbarLayout.rowStep)
-            self.frames[spec[1]] = button
-            local label = BlzFrameGetChild(button, 4)
-            if label ~= nil then BlzFrameSetScale(label, 0.72) end
-        end
-
-        local highlight = JTG.ScopeTrackFrame(scope, BlzCreateFrameByType("SPRITE",
-            "JTGUnitControlsContinueHighlight" .. suffix, bar, "", 0))
-        BlzFrameSetSize(highlight, 0.058, 0.024)
-        BlzFrameSetPoint(highlight, FRAMEPOINT_CENTER, self.frames.continue,
-            FRAMEPOINT_CENTER, -0.0125, 0)
-        BlzFrameSetModel(highlight,
-            "UI\\Feedback\\QuestButton\\UI-QuestButtonOn.mdl", 0)
-        BlzFrameSetLevel(highlight, 3)
-        BlzFrameSetEnable(highlight, false)
-        BlzFrameSetVisible(highlight, false)
-        BlzFrameSetLevel(self.frames.continue, 2)
-        self.frames.continueHighlight = highlight
-
-        local pauseHighlight = JTG.ScopeTrackFrame(scope, BlzCreateFrameByType("SPRITE",
-            "JTGUnitControlsPauseHighlight" .. suffix, bar, "", 0))
-        BlzFrameSetSize(pauseHighlight, 0.058, 0.024)
-        BlzFrameSetPoint(pauseHighlight, FRAMEPOINT_CENTER, self.frames.pause,
-            FRAMEPOINT_CENTER, -0.0125, 0)
-        BlzFrameSetModel(pauseHighlight,
-            "UI\\Feedback\\QuestButton\\UI-QuestButtonOn.mdl", 0)
-        BlzFrameSetLevel(pauseHighlight, 3)
-        BlzFrameSetEnable(pauseHighlight, false)
-        BlzFrameSetVisible(pauseHighlight, false)
-        BlzFrameSetLevel(self.frames.pause, 2)
-        if JTG.UI and JTG.UI.RegisterPauseHighlight then
-            local unregister = JTG.UI.RegisterPauseHighlight(pauseHighlight)
-            JTG.ScopeBorrow(scope, unregister)
-        end
-
-        local menuHighlight = JTG.ScopeTrackFrame(scope, BlzCreateFrameByType("SPRITE",
-            "JTGUnitControlsMenuHighlight" .. suffix, bar, "", 0))
-        BlzFrameSetSize(menuHighlight, 0.058, 0.024)
-        BlzFrameSetPoint(menuHighlight, FRAMEPOINT_CENTER, self.frames.menu,
-            FRAMEPOINT_CENTER, -0.0125, 0)
-        BlzFrameSetModel(menuHighlight,
-            "UI\\Feedback\\QuestButton\\UI-QuestButtonOn.mdl", 0)
-        BlzFrameSetLevel(menuHighlight, 3)
-        BlzFrameSetEnable(menuHighlight, false)
-        BlzFrameSetVisible(menuHighlight, false)
-        BlzFrameSetLevel(self.frames.menu, 2)
-        self.frames.menuHighlight = menuHighlight
+        local bar = JTG.Tutorial.CreateToolbar(self, scope, root, "JTGUnitControlsTutorial", suffix, labels)
+        JTG.Tutorial.CreateHighlight(self, scope, "JTGUnitControls", suffix, "continue")
+        JTG.Tutorial.CreateHighlight(self, scope, "JTGUnitControls", suffix, "menu")
+        JTG.Tutorial.CreateHighlight(self, scope, "JTGUnitControls", suffix, "pause")
 
         local arrow = JTG.ScopeTrackFrame(scope, BlzCreateFrameByType("BACKDROP",
             "JTGUnitControlsInterfaceArrow" .. suffix, root, "", 0))
@@ -1507,6 +1422,8 @@ function JTG.CreateUnitControlsTutorialActivity(session)
         BlzFrameSetLevel(arrow, 30)
         BlzFrameSetVisible(arrow, false)
         self.frames.arrow = arrow
+        self.frames.welcomeArrow=JTG.UI.CreateWelcomeArrow(scope,root,self.frames.continue,
+            "JTGUnitControlsWelcomeArrow"..suffix)
 
         local topics = self:createMenuPanel("JTGUnitControlsTopics", suffix,
             #TOPICS)
@@ -1561,26 +1478,7 @@ function JTG.CreateUnitControlsTutorialActivity(session)
         BlzFrameSetPoint(optionalClose, FRAMEPOINT_BOTTOM, optional,
             FRAMEPOINT_BOTTOM, 0, 0.025)
 
-        self.clickTrigger = JTG.ScopeTrackTrigger(scope, CreateTrigger())
-        TriggerAddAction(self.clickTrigger, function()
-            local clicked = BlzGetTriggerFrame()
-            local entry = self.actions[GetHandleId(clicked)]
-            if entry == nil or self.buttonEnabled[GetHandleId(clicked)] == false then
-                return
-            end
-            if JTG.UI and JTG.UI.PlayButtonSound then
-                local soundKind = entry.sound
-                if type(soundKind) == "function" then soundKind = soundKind() end
-                JTG.UI.PlayButtonSound(soundKind)
-            end
-            if JTG.UI and JTG.UI.ReleaseFrameFocus then
-                JTG.UI.ReleaseFrameFocus(clicked)
-            end
-            entry.action()
-            if JTG.UI and JTG.UI.ReleaseKeyboardFocusAfterClick then
-                JTG.UI.ReleaseKeyboardFocusAfterClick()
-            end
-        end)
+        JTG.Tutorial.BindClicks(self, scope)
         self:registerClick(self.frames.continue,
             function() self:continueTutorial() end)
         self:registerClick(self.frames.back, function() self:goBack() end, "return")
@@ -1634,6 +1532,7 @@ function JTG.CreateUnitControlsTutorialActivity(session)
 
     function activity:tick()
         if self.locallyPaused or self.topicsOpen or self.optionalOpen then return end
+        JTG.UI.TickWelcomeArrow(self,TICK_INTERVAL)
         if self.arrowActive and self.frames.arrow ~= nil then
             self.arrowElapsed = self.arrowElapsed + TICK_INTERVAL
             if self.arrowElapsed >= 0.35 then
@@ -1705,7 +1604,7 @@ function JTG.CreateUnitControlsTutorialActivity(session)
     function activity:start()
         if JTG.UI then JTG.UI.HideToolbar() end
         if GetLocalPlayer() == UNIT_PLAYER then
-            SetCameraPosition(session.scene.centerX, session.scene.centerY)
+            JTG.Tutorial.MoveCamera(UNIT_PLAYER, session.scene.centerX, session.scene.centerY)
         end
         self:createPresentation()
         self:showStep(1)
@@ -1752,6 +1651,7 @@ function JTG.CreateUnitControlsTutorialActivity(session)
     end
 
     function activity:cleanup()
+        JTG.UI.ClearWelcomeArrow(self)
         ClearTextMessages()
         self:clearArrow()
         self:removeWolves()
@@ -1762,7 +1662,6 @@ function JTG.CreateUnitControlsTutorialActivity(session)
         self.actions = {}
     end
 
+    JTG.Tutorial.InstallRunner(activity, session, {id="learn.unit_controls", player=UNIT_PLAYER, steps=STEPS})
     return activity
 end
-
-

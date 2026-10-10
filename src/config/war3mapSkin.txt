@@ -1,7 +1,7 @@
 [CustomSkin]
 // The Camera tutorial uses Orc units regardless of the race chosen before
-// map load. These three native skin entries keep its idle-worker control and
-// attack warnings consistent without importing replacement game assets.
-IdlePeon=ReplaceableTextures\CommandButtons\BTNPeon.blp
+// map load. These sound entries keep its attack warnings consistent.
+// Idle-worker artwork uses the selected native race; the Camera tutorial
+// supplies its own scoped Peon icon instead of overriding every activity.
 UnderAttackSound=UnderAttackOrc
 TownAttackSound=TownAttackOrc

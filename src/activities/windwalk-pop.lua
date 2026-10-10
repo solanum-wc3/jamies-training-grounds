@@ -7,55 +7,58 @@ local WINDWALK_POP_INTRO =
     "Orcs have a unique way to free a unit from being surrounded.\n" ..
     "During Blademaster's {Term: Windwalk}, he has no unit collision.\n" ..
     "This allows him \"pop out\" a surrounded unit, after getting " ..
-    "collision again.\n" ..
+    "collision again.\n\n" ..
     "In these trainings, you can practice freeing units from surrounds " ..
     "like this,\nor you can learn the counterplay against a Windwalk Pop.\n\n" ..
-    "Check the {Button: Quest Log} for precise instructions!\n" ..
-    "You can reset the training using the {Button: Redo} button."
+    "Check the {Button: Quest Log} for precise instructions!"
 
 local WINDWALK_POP_QUEST_TEXT =
-    "The Blademaster loses unit collision immediately upon using his Wind " ..
-    "Walk ability.\n\n" ..
-    "He regains it immediately after ending the effect.\n\n" ..
-    "This does not immediately push him and other units apart. That only " ..
-    "happens once one of them moves.\n\n\n" ..
+    "When using {Button: Wind Walk}, the Blademaster immediately loses unit " ..
+    "collision.\n" ..
+    "If you move a unit that has lost collision into another unit, then " ..
+    "they ignore each other even after the effect that removed collision " ..
+    "ends.\n\n" ..
+    "This state ends when one of the units is given a {Term: Command} of " ..
+    "any kind,\nwhich makes it push out of the other unit.\n\n" ..
     "Keeping that in mind, here is the order of operations on how to " ..
     "perform a Windwalk Pop.\n\n" ..
-    "1. Use {Term: Wind Walk}.\n" ..
+    "1. Use {Button: Wind Walk}.\n" ..
     "2. Run through the surrounded unit by using a {Term: Move} command " ..
     "behind it.\n" ..
-    "3. When the Blademaster is exactly on it, use a {Term: Stop} or " ..
+    "3. When the Blade Master is exactly on it, use a {Term: Stop} or " ..
     "{Term: Hold Position} command.\n" ..
-    "4. Attack one of the surrounding units.\n" ..
-    "5. Select the surrounded unit and give it any command. Move, Attack, " ..
-    "Hold Position, Stop, Patrol and ability commands all make it regain " ..
+    "4. {Input: Attack} one of the surrounding units.\n" ..
+    "5. Select the surrounded unit and give it any {Term: Command}: Move, " ..
+    "Attack, Hold Position, Stop, Patrol and Ability commands all make it regain " ..
     "collision with the Blademaster.\n\n" ..
-    "If executed correctly, the surrounded unit will pop out of the " ..
-    "surround. An ability can be particularly useful here. For example, a " ..
-    "Tauren Chieftain can use War Stomp immediately after the pop to prevent " ..
-    "a chase.\n\n" ..
-    "Press the {Button: Squares} button to display the areas that units " ..
-    "obstruct. These areas snap to a 32x32 in-game unit grid, so they do not " ..
-    "move seamlessly like the units do. You can also display the snap points " ..
-    "and a finer 8x8 grid.\n\n" ..
+    "If executed correctly, and if there is enough space somewhere close " ..
+    "by, the surrounded unit will pop out of the surround.\n" ..
+    "Using an {Term: Ability} can be particularly useful here. For example, " ..
+    "a Tauren Chieftain can use War Stomp, stunning the units where he pops " ..
+    "out immediately after it happens, preventing another surround.\n" ..
     "Of course, now the Blademaster is surrounded, so you should not do " ..
-    "this when he does not have enough mana for two Wind Walks."
+    "this when he does not have enough mana for two Wind Walks.\n\n" ..
+    "Press the {Button: Squares} button to display the areas that units " ..
+    "obstruct. These areas snap to a grid of 32x32 in-game units, so they " ..
+    "do not move seamlessly like the units do, and they may not always be " ..
+    "where you think they are based on the model's position. You can also " ..
+    "display a finer grid of 8x8 in-game units."
 
 local COUNTERPLAY_QUEST_TEXT =
-    "Knowing you are facing a Blademaster, you can try to counterplay the " ..
-    "Windwalk pop.\n\n" ..
-    "To do this, you need to see it coming.\n\n" ..
-    "If you now loosen the surround a bit, so the surrounded unit is still " ..
-    "trapped, but so there is enough space for it and the Blademaster, the " ..
-    "Windwalk Pop will instead also trap the Blademaster in the surround.\n\n" ..
-    "A Windwalk pop may also be made impossible if there is simply no room " ..
-    "to displace the surrounded unit to. This can be the case particularly " ..
+    "When facing a Blademaster, and when you expect a Windwalk Pop, you can " ..
+    "try to sabotage it.\n\n" ..
+    "If you loosen the surround a bit, so the surrounded unit is still " ..
+    "trapped, but so there is enough space for both it and the Blademaster, " ..
+    "the Windwalk Pop will just trap the Blademaster in the surround too.\n" ..
+    "This is hard to do, because moving the surrounding units runs risk of " ..
+    "fleeing the surrounded unit.\n\n" ..
+    "The {Button: Squares} button can be particularly helpful when " ..
+    "practicing this.\n\n" ..
+    "A Windwalk Pop may also be made impossible if there is simply no room " ..
+    "to displace the surrounded unit to.\n" ..
+    "This can be the case particularly " ..
     "in a very tight surround with 8 units: one unit on every side and " ..
-    "every corner.\n\n" ..
-    "Press the {Button: Squares} button to display the areas that units " ..
-    "obstruct. These areas snap to a 32x32 in-game unit grid, so they do not " ..
-    "move seamlessly like the units do. You can also display the snap points " ..
-    "and a finer 8x8 grid."
+    "every corner."
 
 local BLADEMASTER_ID = FourCC("Obla")
 local GRUNT_ID = FourCC("ogru")
@@ -190,7 +193,9 @@ end
 local function FormatBriefingText(text)
     local formatted = string.gsub(text, "{Button:%s*(.-)}",
         "|cffffcc00%1|r")
-    return string.gsub(formatted, "{Term:%s*(.-)}", "|cffff9933%1|r")
+    formatted = string.gsub(formatted, "{Term:%s*(.-)}",
+        "|cffff9933%1|r")
+    return string.gsub(formatted, "{Input:%s*(.-)}", "|cffffcc00%1|r")
 end
 
 local function TrainSkill(hero, abilityId, levels)
@@ -624,6 +629,7 @@ function JTG.CreateWindwalkPopActivity(session)
             tone = self.resultKind,
             details = self.resultDetailsText or "",
             actions = {
+                hide = {},
                 retry = {},
                 next = showPrimary and {label = primary} or nil,
                 menu = {},
@@ -1396,6 +1402,24 @@ function JTG.CreateWindwalkPopActivity(session)
         end
     end
 
+    function activity:refreshEnemyHealth()
+        local function heal(unit)
+            if unit ~= nil and GetUnitTypeId(unit) ~= 0 and
+                    not IsUnitType(unit, UNIT_TYPE_DEAD) and
+                    GetOwningPlayer(unit) == Player(1) and
+                    not (self.mode == "hard" and unit == self.surroundee) then
+                SetWidgetLife(unit, BlzGetUnitMaxHP(unit))
+            end
+        end
+        for _, unit in ipairs(self.humanArmy) do heal(unit) end
+        for _, unit in ipairs(self.timedTargets) do heal(unit) end
+        for _, ring in ipairs(self.timedRings) do
+            for _, unit in ipairs(ring) do heal(unit) end
+        end
+        heal(self.surroundee)
+        heal(self.blademaster)
+    end
+
     function activity:setup(current)
         self.scene = current.scene
         local p0 = Player(0)
@@ -1421,6 +1445,13 @@ function JTG.CreateWindwalkPopActivity(session)
         JTG.ScopeRevealScene(current.scope, current.scene, p0)
 
         self:createScenario()
+        local healthTimer = JTG.ScopeTrackTimer(current.scope, CreateTimer())
+        TimerStart(healthTimer, 2.0, true,
+            JTG.GuardSession(current, function()
+                if self.exerciseStarted and not self.finished then
+                    self:refreshEnemyHealth()
+                end
+            end))
         self:prepareCounterplayArmy()
         self:createSquareOverlays()
         self.squareTimer = JTG.ScopeTrackTimer(current.scope, CreateTimer())

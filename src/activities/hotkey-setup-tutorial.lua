@@ -1,11 +1,11 @@
--- Hotkey Setup tutorial. This tutorial presents Warcraft's hotkey options and
--- exports two ready-to-edit CustomKeys examples and their shortcut-setup
--- instructions into CustomMapData.
+-- Hotkey Setup tutorial. File exports are suspended until clean distribution
+-- is available; retain their authored narration for possible future use.
 JTG = JTG or {}
 
 local HOTKEY_PLAYER = Player(0)
 local TICK_INTERVAL = 0.05
 local NARRATION_DURATION = 3600.0
+local EXPORT_ENABLED = false
 
 local STEPS = {
     {
@@ -29,9 +29,9 @@ local STEPS = {
     {
         wait = true,
         lines = {
-            "Manually clicking every button for every ability or command, it slows you down significantly.",
-            "For every ability, you have to move the mouse cursor away from the action, to the command grid, click a button it, and then move it back to the action.",
-            "It takes time away from giving unit commands or moving the camera, and it introduces a lot of opportunity for error.",
+            "Manually clicking every button for every ability or command slows you down significantly.",
+            "For every ability, you have to move the mouse cursor away from the action, to the command grid, click a button, and then move it back to the action.",
+            "It takes time away from giving unit commands or moving the camera, and it introduces a lot of room for error.",
         },
     },
     {
@@ -68,7 +68,7 @@ local STEPS = {
         wait = true, trigger = "commandArrow",
         lines = {
             "You can check out some of the units under your control.",
-            "Hover over their buttons in the command grid, to see their {Term: Tool Tips}!",
+            "Hover over their buttons in the command grid, to see their {Term: Tooltips}!",
             "Usually one letter will be highlighted in yellow. This is the hotkey for that button.",
         },
     },
@@ -84,7 +84,7 @@ local STEPS = {
         wait = true,
         lines = {
             "{Heading: GRID HOTKEYS}",
-            "For this reason, Warcraft III Reforged introduced {Term: Grid} Hotkeys.",
+            "Warcraft III Reforged introduced {Term: Grid} Hotkeys.",
             "These compact all major hotkeys into the 4x3 cluster of QWER, ASDF and ZXCV (or YXCV).",
             "This is the best option, if you want to have a simple solution.",
             "There are better solutions, but they get complicated.",
@@ -104,7 +104,7 @@ local STEPS = {
             "{Heading: CUSTOM HOTKEYS}",
             "From here on out, we are going into the better solutions.",
             "This is where it gets complicated.",
-            "If you want to proceed using {Term: Grid}, you can jump the the next {Input: Topic}.",
+            "If you want to proceed using {Term: Grid}, you can jump to the next {Input: Topic}.",
         },
     },
     {
@@ -131,7 +131,7 @@ local STEPS = {
     {
         wait = true,
         lines = {
-            "Changing custom tooltips also requires you go to {Menu: \\Users\\YourUserName\\Documents\\Warcraft III}, and into the folder {Menu: CustomKeyBindings}.",
+            "Changing custom tooltips also requires you to go to {Menu: \\Users\\YourUserName\\Documents\\Warcraft III}, and into the folder {Menu: CustomKeyBindings}.",
             "There you will find a file called {Green Font: CustomKeys.txt}, which contains a list of key bindings.",
         },
     },
@@ -148,8 +148,8 @@ local STEPS = {
         wait = true,
         lines = {
             "This sets you up with a pretty involved adjustment of the hotkeys.",
-            "Notably, unit the command grid buttons are moved so they fit the key arrangement on the keyboard.",
-            "This means that a button with the hotkey {Input: Q} will be on the top left spot, for example.",
+            "Notably, the command grid buttons are moved so they fit the key arrangement on the keyboard.",
+            "This means that a button with the hotkey {Input: Q} will always be displayed on the top left spot, for example.",
         },
     },
     {
@@ -157,15 +157,21 @@ local STEPS = {
         lines = {
             "It also changes around some of the positions of buttons.",
             "For example, the layout of the build menus of workers, so they are more consistent across races.",
-            "Or the item arrangement in shops, so those better fit the when they are unlocked, and are consistent across shops.",
+            "Or the item arrangement in shops, so the items better fit the order in which they are unlocked and remain consistent across all shops.",
+        },
+    },
+    {
+        wait = true,
+        lines = {
+            "Of course you do not have to keep this hotkey setup.",
+            "It is included here as a demonstration of what can be done.",
         },
     },
     {
         wait = true, sectionEnd = true,
         lines = {
-            "Of course you do not have to keep this hotkey setup.",
-            "It included here as a demonstration of what can be done.",
-            "Tip: If you want to play the campaign, it is recommended you change your hotkey layout to {Term: Grid} again while you do. The different campaigns have a lot of special units that, and a {Term: Custom} setup can cause some bugs with the buttons and hotkeys.",
+            "Tip: If you want to play the campaign \"The Founding of Durotar\", or the new campaign of The Forsaken Kingdom, it is recommended you change your hotkey layout to {Term: Grid} again while you do.",
+            "The different campaigns have a lot of special units with complicated ability combinations, and a {Term: Custom} setup can cause some confusion here.",
         },
     },
     {
@@ -190,7 +196,7 @@ local STEPS = {
             "People from the community have created their own interfaces to allow easy editing of all aspects of hotkeys.",
             "One of the simplest can be found by using a search engine and typing in \"{Input: warcraft 3 hotkey editor}\".",
             "The first result should lead you to a GitHub page belonging to a {Yellow Font: J.C.Fields}, where you can upload your hotkey file, edit it, and download the changed version.",
-            "This page allows you to change hotkey positions, by simple dragging and dropping the buttons in the displayed command grid.",
+            "This page allows you to change hotkey positions by simply dragging and dropping the buttons in the displayed command grid.",
         },
     },
     {
@@ -198,7 +204,7 @@ local STEPS = {
         lines = {
             "Another such resource is the more involved hotkey editor by {Yellow Font: clemenscodes}.",
             "The main problem with setting up custom hotkeys is that abilities are shared between a lot of units, so making a position change can conflict down the line.",
-            "This one is very good in showing you where hotkeys or button positions conflict. Warcraft III can show this too, but not as well by far.",
+            "This one is very good at showing you where hotkeys or button positions conflict. Warcraft III can show this too, but not nearly as well.",
             "However, this tool will automatically change the button tooltips, so it is only recommended if you don't mind this, or if you know how to change them back.",
         },
     },
@@ -207,7 +213,7 @@ local STEPS = {
         lines = {
             "{Heading: CHANGING INVENTORY HOTKEYS}",
             "By default, inventory spots are tied to the {Input: Numpad}.",
-            "These are far away from the other keys, and since some keyboards do not have the buttons at all.",
+            "These are far away from the other keys, and some keyboards do not have the buttons at all.",
             "For this reason, many players rebind them.",
             "This can be done in the Warcraft III options.",
         },
@@ -215,15 +221,15 @@ local STEPS = {
     {
         wait = true,
         lines = {
-            "When using {Term: Grid} or {Term: Custom}, an obvious location to put them in is the 2x3 cluster of TY (or TZ), GH and BN..",
-            "However, many people, especially coming from the MOBA scene, prefer using a Modifier key (Alt, Shift, CTRL) and using the cluister of  QW, AS and ZX (or YX).",
+            "When using {Term: Grid} or {Term: Custom}, an obvious location to put them in is the 2x3 cluster of TY (or TZ), GH and BN.",
+            "However, many people, especially coming from the MOBA scene, prefer using a Modifier key (Alt, Shift, CTRL) and using the cluster of QW, AS and ZX (or YX).",
             "The problem: Warcraft III does not support this.",
         },
     },
     {
         wait = true,
         lines = {
-            "The only way to do this, is use an extra program just to rebind a key combination onto the relevant {Input: Numpad} keyboard keys.",
+            "The only way to do this is to use an extra program just to rebind a key combination onto the relevant {Input: Numpad} keyboard keys.",
             "This little program has to run in the background while Warcraft III is running.",
         },
     },
@@ -231,7 +237,7 @@ local STEPS = {
         wait = true,
         lines = {
             "The simplest tool to use for this can be found by using a search engine and typing in \"{Input: warcraft inventory hotkeys}\".",
-            "The first result should be the tool by {Yellow Font: J.C.Fields}.",
+            "The first result should be the tool by {Yellow Font: AucT}.",
             "You can use it to customize your inventory buttons in any way you want.",
         },
     },
@@ -248,7 +254,7 @@ local STEPS = {
         lines = {
             "Since you need to have the program running while the game is running, it is easiest to start them at the same time.",
             "Even simpler, you can do this using the same shortcut on your Desktop. (assuming you are using Windows)",
-            "Pressing the {Button: Export} button earlier also exported a .txt file with instructions on how to do this.",
+            "Pressing the {Button: Export} button earlier also exported a file called {Green Font: README_ShortcutSetup.txt}, which has instructions on how to do this.",
         },
     },
     {
@@ -260,12 +266,20 @@ local STEPS = {
     },
 }
 
+-- Preserve authored step indices and Topics destinations while omitting the
+-- unavailable export workflow and descriptions that depend on its files.
+if not EXPORT_ENABLED then
+    for _, index in ipairs({14, 17, 18, 19, 20}) do
+        STEPS[index].hidden = true
+    end
+end
+
 local TOPICS = {
     {label = "Welcome", step = 1},
     {label = "Why Use Hotkeys", step = 2},
     {label = "Which Hotkeys?", step = 7},
-    {label = "Hotkey Resources", step = 21},
-    {label = "The Inventory", step = 25},
+    {label = "Hotkey Resources", step = 22},
+    {label = "The Inventory", step = 26},
 }
 
 local UNIT_LAYOUT = {
@@ -281,26 +295,9 @@ local UNIT_LAYOUT = {
     {rawcode = "ngme", x = 6264, y = 2700, facing = 90, shop = true},
 }
 
-local function FormatNarration(text)
-    local formatted = text
-    formatted = string.gsub(formatted, "{Heading:%s*(.-)}", "|cff00ccff%1|r")
-    formatted = string.gsub(formatted, "{Button:%s*(.-)}", "|cffffcc00%1|r")
-    formatted = string.gsub(formatted, "{Input:%s*(.-)}", "|cffffcc00%1|r")
-    formatted = string.gsub(formatted, "{Menu:%s*(.-)}", "|cffcc66ff%1|r")
-    formatted = string.gsub(formatted, "{Term:%s*(.-)}", "|cffff9933%1|r")
-    formatted = string.gsub(formatted, "{Yellow Font:%s*(.-)}", "|cffffcc00%1|r")
-    formatted = string.gsub(formatted, "{Green Font:%s*(.-)}", "|cff00ff00%1|r")
-    formatted = string.gsub(formatted, "{Hotkeys}", "|cffcc66ffHotkeys|r")
-    return formatted
-end
+local FormatNarration = JTG.Tutorial.FormatNarration
 
-local function CreateTutorialButton(name, parent, label, width)
-    local button = BlzCreateFrameByType("GLUETEXTBUTTON", name, parent,
-        "ScriptDialogButton", 0)
-    BlzFrameSetSize(button, width, 0.024)
-    BlzFrameSetText(button, label)
-    return button
-end
+local CreateTutorialButton = JTG.Tutorial.CreateButton
 
 function JTG.CreateHotkeySetupTutorialActivity(session)
     local activity = {
@@ -323,28 +320,8 @@ function JTG.CreateHotkeySetupTutorialActivity(session)
         arrowVisible = false,
     }
 
-    function activity:makeTimer(period, repeating, callback)
-        return JTG.StartScopedTimer(session, session.scope, period, repeating,
-            callback)
-    end
-
-    function activity:registerClick(button, action, soundKind)
-        self.actions[GetHandleId(button)] = {action = action, sound = soundKind}
-        BlzTriggerRegisterFrameEvent(self.clickTrigger, button,
-            FRAMEEVENT_CONTROL_CLICK)
-    end
-
-    function activity:setButtonEnabled(button, enabled)
-        if button == nil then return end
-        self.buttonEnabled[GetHandleId(button)] = enabled == true
-        BlzFrameSetEnable(button, enabled == true)
-        BlzFrameSetAlpha(button, enabled and 255 or 145)
-        BlzFrameSetTextColor(button, enabled and
-            BlzConvertColor(255, 255, 204, 0) or
-            BlzConvertColor(255, 145, 145, 145))
-    end
-
     function activity:refreshControls()
+        JTG.UI.RefreshWelcomeArrow(self)
         if self.frames.continue == nil then return end
         local current = STEPS[self.step]
         local canContinue = self.waitingForContinue and not self.complete
@@ -372,26 +349,6 @@ function JTG.CreateHotkeySetupTutorialActivity(session)
         end
     end
 
-    function activity:clearNarration()
-        self:clearArrow()
-        if self.frames.exportHighlight ~= nil then
-            BlzFrameSetVisible(self.frames.exportHighlight, false)
-        end
-        if self.frames.menuHighlight ~= nil then
-            BlzFrameSetVisible(self.frames.menuHighlight, false)
-        end
-        ClearTextMessages()
-        self.narrationBlocks = {}
-    end
-
-    function activity:renderNarration()
-        ClearTextMessages()
-        if not self.presentationVisible or self.topicsOpen then return end
-        for _, text in ipairs(self.narrationBlocks) do
-            DisplayTimedTextToPlayer(HOTKEY_PLAYER, 0, 0,
-                NARRATION_DURATION, text)
-        end
-    end
 
     function activity:showCommandArrow()
         local target = BlzGetOriginFrame(ORIGIN_FRAME_COMMAND_BUTTON, 0)
@@ -412,7 +369,7 @@ function JTG.CreateHotkeySetupTutorialActivity(session)
         local trigger = spec and spec.trigger
         if trigger == "commandArrow" then
             self:showCommandArrow()
-        elseif trigger == "highlightExport" then
+        elseif trigger == "highlightExport" and EXPORT_ENABLED then
             if self.frames.exportHighlight ~= nil then
                 BlzFrameSetVisible(self.frames.exportHighlight,
                     self.presentationVisible and not self.topicsOpen)
@@ -425,7 +382,10 @@ function JTG.CreateHotkeySetupTutorialActivity(session)
         end
     end
 
-    function activity:showStep(index)
+    function activity:showStep(index, direction)
+        while STEPS[index] and STEPS[index].hidden do
+            index = index + (direction or 1)
+        end
         local spec = STEPS[index]
         if spec == nil then return end
         self.step = index
@@ -433,13 +393,20 @@ function JTG.CreateHotkeySetupTutorialActivity(session)
         self.complete = spec.terminal == true
         self.waitingForContinue = spec.wait == true and not self.complete
         self:clearNarration()
-        local text = FormatNarration(table.concat(spec.lines or {}, "\n"))
+        local lines = {}
+        for _, line in ipairs(spec.lines or {}) do
+            if EXPORT_ENABLED or not line:find("{Button: Export}", 1, true) then
+                lines[#lines + 1] = line
+            end
+        end
+        local text = FormatNarration(table.concat(lines, "\n"))
         table.insert(self.narrationBlocks, text)
         if self.presentationVisible and not self.topicsOpen then
             DisplayTimedTextToPlayer(HOTKEY_PLAYER, 0, 0,
                 NARRATION_DURATION, text)
         end
         self:runStepTrigger(spec)
+        if index==1 then JTG.UI.StartWelcomeArrow(self) end
         self:refreshControls()
     end
 
@@ -451,7 +418,7 @@ function JTG.CreateHotkeySetupTutorialActivity(session)
     function activity:goBack()
         if self.step <= 1 and not self.complete then return end
         self:setTopicsVisible(false)
-        self:showStep(math.max(1, self.step - 1))
+        self:showStep(math.max(1, self.step - 1), -1)
     end
 
     function activity:restoreTopic(index)
@@ -460,20 +427,15 @@ function JTG.CreateHotkeySetupTutorialActivity(session)
     end
 
     function activity:openMenu()
-        if JTG.UI == nil then return end
-        self:setPresentationVisible(false)
-        JTG.UI.SetGameplayMenuPaused(true)
-        JTG.UI.ShowActivityMenu("learn")
+        JTG.Tutorial.OpenMenu(self,"learn")
     end
 
     function activity:togglePause()
-        if JTG.UI ~= nil then
-            JTG.UI.SetExercisePaused(not JTG.UI.exercisePaused)
-        end
-        self:refreshControls()
+        JTG.Tutorial.TogglePause(self)
     end
 
     function activity:exportCustomKeys()
+        if not EXPORT_ENABLED then return false end
         if GetLocalPlayer() == HOTKEY_PLAYER then
             for _, export in ipairs(JTG.CustomKeyExports or {}) do
                 PreloadGenClear()
@@ -518,55 +480,17 @@ function JTG.CreateHotkeySetupTutorialActivity(session)
         self.actions = {}
         self.buttonEnabled = {}
 
-        local layout = (JTG.UI and JTG.UI.ToolbarLayout) or {
-            buttonWidth = 0.087, gap = 0.001, rowStep = 0.025,
-            left = 0.446, top = 0.575,
-        }
-        local bar = JTG.ScopeTrackFrame(scope, BlzCreateFrameByType("FRAME",
-            "JTGHotkeyTutorialBar" .. suffix, root, "", 0))
-        BlzFrameSetSize(bar, 0.351, 0.060)
-        BlzFrameSetAbsPoint(bar, FRAMEPOINT_TOPLEFT, layout.left, layout.top)
-        self.frames.bar = bar
         local labels = {
             {"menu", "Menu", 1}, {"back", "Back", 2},
             {"topics", "Topics", 3}, {"continue", "Continue", 5},
-            {"pause", "Pause", 7}, {"export", "Export", 8},
+            {"pause", "Pause", 7},
         }
-        for _, spec in ipairs(labels) do
-            local button = JTG.ScopeTrackFrame(scope, CreateTutorialButton(
-                "JTGHotkeyTutorial" .. spec[1] .. suffix, bar, spec[2],
-                layout.buttonWidth))
-            local slot = spec[3] - 1
-            BlzFrameSetPoint(button, FRAMEPOINT_TOPLEFT, bar,
-                FRAMEPOINT_TOPLEFT,
-                (slot % 4) * (layout.buttonWidth + layout.gap),
-                -math.floor(slot / 4) * layout.rowStep)
-            self.frames[spec[1]] = button
-            local label = BlzFrameGetChild(button, 4)
-            if label ~= nil then BlzFrameSetScale(label, 0.72) end
-        end
-
-        local function createHighlight(key)
-            local highlight = JTG.ScopeTrackFrame(scope, BlzCreateFrameByType("SPRITE",
-                "JTGHotkey" .. key .. "Highlight" .. suffix, bar, "", 0))
-            BlzFrameSetSize(highlight, 0.058, 0.024)
-            BlzFrameSetPoint(highlight, FRAMEPOINT_CENTER, self.frames[key],
-                FRAMEPOINT_CENTER, -0.0125, 0)
-            BlzFrameSetModel(highlight,
-                "UI\\Feedback\\QuestButton\\UI-QuestButtonOn.mdl", 0)
-            BlzFrameSetLevel(highlight, 3)
-            BlzFrameSetEnable(highlight, false)
-            BlzFrameSetVisible(highlight, false)
-            BlzFrameSetLevel(self.frames[key], 2)
-            return highlight
-        end
-        self.frames.continueHighlight = createHighlight("continue")
-        self.frames.exportHighlight = createHighlight("export")
-        self.frames.menuHighlight = createHighlight("menu")
-        local pauseHighlight = createHighlight("pause")
-        if JTG.UI and JTG.UI.RegisterPauseHighlight then
-            JTG.ScopeBorrow(scope, JTG.UI.RegisterPauseHighlight(pauseHighlight))
-        end
+        if EXPORT_ENABLED then labels[#labels + 1] = {"export", "Export", 8} end
+        local bar = JTG.Tutorial.CreateToolbar(self, scope, root, "JTGHotkeyTutorial", suffix, labels)
+        JTG.Tutorial.CreateHighlight(self, scope, "JTGHotkey", suffix, "continue")
+        JTG.Tutorial.CreateHighlight(self, scope, "JTGHotkey", suffix, "menu")
+        JTG.Tutorial.CreateHighlight(self, scope, "JTGHotkey", suffix, "pause")
+        if EXPORT_ENABLED then JTG.Tutorial.CreateHighlight(self, scope, "JTGHotkey", suffix, "export") end
 
         local arrow = JTG.ScopeTrackFrame(scope, BlzCreateFrameByType("BACKDROP",
             "JTGHotkeyCommandArrow" .. suffix, root, "", 0))
@@ -576,6 +500,8 @@ function JTG.CreateHotkeySetupTutorialActivity(session)
         BlzFrameSetLevel(arrow, 30)
         BlzFrameSetVisible(arrow, false)
         self.frames.arrow = arrow
+        self.frames.welcomeArrow=JTG.UI.CreateWelcomeArrow(scope,root,self.frames.continue,
+            "JTGHotkeyWelcomeArrow"..suffix)
 
         local topics = JTG.ScopeTrackFrame(scope, BlzCreateFrameByType("FRAME",
             "JTGHotkeyTopics" .. suffix, root, "", 0))
@@ -613,34 +539,17 @@ function JTG.CreateHotkeySetupTutorialActivity(session)
         BlzFrameSetPoint(close, FRAMEPOINT_BOTTOM, topics,
             FRAMEPOINT_BOTTOM, 0, 0.025)
 
-        self.clickTrigger = JTG.ScopeTrackTrigger(scope, CreateTrigger())
-        TriggerAddAction(self.clickTrigger, function()
-            local clicked = BlzGetTriggerFrame()
-            local entry = self.actions[GetHandleId(clicked)]
-            if entry == nil or self.buttonEnabled[GetHandleId(clicked)] == false then
-                return
-            end
-            if JTG.UI and JTG.UI.PlayButtonSound then
-                local soundKind = entry.sound
-                if type(soundKind) == "function" then soundKind = soundKind() end
-                JTG.UI.PlayButtonSound(soundKind)
-            end
-            if JTG.UI and JTG.UI.ReleaseFrameFocus then
-                JTG.UI.ReleaseFrameFocus(clicked)
-            end
-            entry.action()
-            if JTG.UI and JTG.UI.ReleaseKeyboardFocusAfterClick then
-                JTG.UI.ReleaseKeyboardFocusAfterClick()
-            end
-        end)
+        JTG.Tutorial.BindClicks(self, scope)
         self:registerClick(self.frames.continue,
             function() self:continueTutorial() end)
         self:registerClick(self.frames.back, function() self:goBack() end, "return")
         self:registerClick(self.frames.menu, function() self:openMenu() end)
         self:registerClick(self.frames.pause, function() self:togglePause() end,
             function() return JTG.UI.exercisePaused and "return" or "normal" end)
-        self:registerClick(self.frames.export,
-            function() self:exportCustomKeys() end)
+        if EXPORT_ENABLED then
+            self:registerClick(self.frames.export,
+                function() self:exportCustomKeys() end)
+        end
         self:registerClick(self.frames.topics,
             function() self:setTopicsVisible(not self.topicsOpen) end)
         for index, topic in ipairs(TOPICS) do
@@ -675,6 +584,7 @@ function JTG.CreateHotkeySetupTutorialActivity(session)
 
     function activity:tick()
         if self.locallyPaused or self.topicsOpen then return end
+        JTG.UI.TickWelcomeArrow(self,TICK_INTERVAL)
         if self.arrowActive and self.arrowBlinking and self.frames.arrow ~= nil then
             self.arrowElapsed = self.arrowElapsed + TICK_INTERVAL
             self.arrowBlinkElapsed = self.arrowBlinkElapsed + TICK_INTERVAL
@@ -750,7 +660,7 @@ function JTG.CreateHotkeySetupTutorialActivity(session)
     function activity:start()
         if JTG.UI then JTG.UI.HideToolbar() end
         if GetLocalPlayer() == HOTKEY_PLAYER then
-            SetCameraPosition(session.scene.centerX, session.scene.centerY)
+            JTG.Tutorial.MoveCamera(HOTKEY_PLAYER, session.scene.centerX, session.scene.centerY)
             ClearSelection()
             if self.paladin ~= nil then SelectUnit(self.paladin, true) end
         end
@@ -795,6 +705,7 @@ function JTG.CreateHotkeySetupTutorialActivity(session)
     end
 
     function activity:cleanup()
+        JTG.UI.ClearWelcomeArrow(self)
         ClearTextMessages()
         self:clearArrow()
         if GetLocalPlayer() == HOTKEY_PLAYER then ClearSelection() end
@@ -802,5 +713,6 @@ function JTG.CreateHotkeySetupTutorialActivity(session)
         self.actions = {}
     end
 
+    JTG.Tutorial.InstallRunner(activity, session, {id="learn.hotkey_setup", player=HOTKEY_PLAYER, steps=STEPS})
     return activity
 end
