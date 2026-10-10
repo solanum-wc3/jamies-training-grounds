@@ -32,3 +32,14 @@ Maintenance verification on 10 October 2026: obsolete Camera quest textures and 
 The repository is public and `v0.1.2-beta1` is published as a GitHub Release. Its attached `Jamies-Training-Grounds.w3x` is the preserved release artifact, verified against the public download.
 
 The fixed link is [Download the latest non-alpha map](https://github.com/solanum-wc3/jamies-training-grounds/releases/latest/download/Jamies-Training-Grounds.w3x). Each future non-alpha release must attach the public map under that exact filename and become GitHub's latest release. Beta versions qualify for this link and are published as ordinary GitHub Releases while retaining their beta version names. Alpha versions must be marked as pre-releases, which GitHub excludes from `/releases/latest`. Upload the map before publishing a release so the fixed link has its asset available.
+
+## Completing an alpha cycle
+
+Standing user instruction, confirmed 11 October 2026: when an alpha cycle finishes and a new non-alpha version is released, update both download routes as part of that release.
+
+1. Attach the validated public release map twice to the new GitHub Release: `Jamies-Training-Grounds.w3x` and `Jamies-Training-Grounds-<version>.w3x` (for example, `Jamies-Training-Grounds-v0.1.2-beta1.w3x`). Both attachments must contain identical bytes. Do not substitute a development build.
+2. Publish that release as GitHub's latest non-alpha release. The fixed `/releases/latest/download/Jamies-Training-Grounds.w3x` URL then resolves to the new map without changing the URL.
+3. Update the download link at the top of the project README to `/releases/download/<version>/Jamies-Training-Grounds-<version>.w3x`, with the precise version in its visible label. Update the current-release description accordingly and push the documentation change.
+4. Verify both public downloads against the validated release artifact and provide both links to the user.
+
+Ordinary alpha outputs do not replace either public download route. Keep previous versioned releases available. This procedure does not independently authorize starting a new release; apply it when the user asks to finish the alpha cycle and release the next version.
