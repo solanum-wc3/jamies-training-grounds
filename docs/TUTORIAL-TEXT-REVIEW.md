@@ -865,10 +865,10 @@ Once you are done reading a section and playing around with whichever mechanic y
 ### Progression point 2 — WORKERS
 
 {Heading: WORKERS}
-The backbone of your economy are your worker units.
-Every race has their own workers, which all function a little differently.
+The backbone of your economy is your worker units.
+Every race has its own workers, which all function a little differently.
 
-All of them construct {Term: Buildings} and harvest {Term: Gold}, and almost of them also harvest {Term: Lumber} - The two main resources of Warcraft III.
+All of them construct {Term: Buildings} and harvest {Term: Gold}, and almost all of them also harvest {Term: Lumber} - The two main resources of Warcraft III.
 They are also all produced at the race's main building.
 
 ### Progression point 3 — PEASANTS
@@ -885,7 +885,7 @@ So a full gold mine can bring in {Green Font: 10 Gold per second, or 600 Gold pe
 ### Progression point 5
 
 This is true for all races.
-It also means that the only way to raise your gold mining capacity, is finding new gold mines and building {Term: Expansions} there.
+It also means that the only way to raise your gold mining capacity is finding new gold mines and building {Term: Expansions} there.
 Expansions are smaller bases you create during play. They will be covered in later tutorials.
 
 ### Progression point 6
@@ -896,7 +896,7 @@ Since trees only hold 50 Lumber until they are felled, these trips can vary a lo
 
 ### Progression point 7
 
-As a rule of thumb however, a Human player will eventually want to have {Green Font: 8 Peasants gathering Lumber} in their main base.
+As a rule of thumb, however, a Human player will eventually want to have {Green Font: 8 Peasants gathering Lumber} in their main base.
 Humans can research {Term: Lumber Harvesting}, which raises the Lumber carrying capacity of Peasants to 20 and later 30, cutting down on walking time.
 
 ### Progression point 8
@@ -909,12 +909,12 @@ Peasants especially, since they are out in the open when gathering and building.
 To protect themselves and their base, Peasants can be drafted into the {Term: Militia}.
 This happens through a {Term: Call to Arms}, either individually, or at the main building. It lasts 42.5 seconds.
 
-While part of the Militia, they are almost as strong as a Human's basic worker unit, the {Term: Footman}, and gain a lot of movement speed.
+While part of the Militia, they are almost as strong as a Human's basic military unit, the {Term: Footman}, and gain a lot of movement speed.
 
 ### Progression point 10
 
 Your base is being attacked.
-Select your Town Hall and use the {Term: Call fo Arms} command to form the {Term: Militia}!
+Select your Town Hall and use the {Term: Call to Arms} command to form the {Term: Militia}!
 
 ### Progression point 11
 
@@ -946,10 +946,10 @@ You can see a demonstration of this in {Menu: Tools & Extras}.
 ### Progression point 15
 
 Select a Peasant and tell it to {Input: Build} an {Term: Altar of Kings}!
-Then select a few other Peasants (preferrably from those gathering Lumber) and {Input: right-click} the construction site!
+Then select a few other Peasants (preferably from those gathering Lumber) and {Input: right-click} the construction site!
 They will help with the construction.
 
-If you want to make sure they continue to what they were doing after they are done, you can {Input: shift-queue} them back onto their gathering duty.
+If you want to make sure they return to what they were doing after they are done, you can {Input: shift-queue} them back onto their gathering duty.
 
 ### Progression point 16
 
@@ -974,13 +974,13 @@ That is - until the building site is destroyed.
 
 ### Progression point 20
 
-Select a Peon (preferrably from the ones gathering lumber), and command it to {Term: Build} an {Term: Altar of Storms}.
+Select a Peon (preferably from the ones gathering lumber), and command it to {Term: Build} an {Term: Altar of Storms}.
 
 ### Progression point 21
 
 While Peons have a bit more {Term: HP} than other workers, they still die easily.
 Their means of protecting themselves is assuming {Term: Battle Stations} in a nearby {Term: Orc Burrow} and throwing spears at the attacker.
-Similar to Militia, calling all your Peons into the Burrows will stop your resource production, so you will want to only use as few as are needed.
+Similar to Militia, calling all your Peons into the Burrows will stop your resource production, so you will want to use only as many as are needed.
 
 ### Progression point 22
 
@@ -1037,7 +1037,7 @@ The second will not, and will have to be replaced.
 Aside from the ones in the {Term: Entangled Gold Mine}, Wisps are among the most vulnerable worker units.
 Except for fleeing into the gold mine or into a construction site, Wisps have no great ways of dealing with attacks.
 
-Their only option is often run or to simply {Term: Detonate}.
+Their only option is often to run or simply {Term: Detonate}.
 
 ### Progression point 31
 
@@ -1053,7 +1053,7 @@ Your Wisps are being harassed by magically summoned units.
 
 {Heading: ACOLYTES}
 Undead workers are called {Term: Acolytes}.
-They function in a very unique way compared to other worker units..
+They function in a very unique way compared to other worker units.
 
 ### Progression point 34
 
@@ -1083,7 +1083,7 @@ This way, an Undead base only ever needs the five Acolytes in the Gold Mine.
 ### Progression point 38
 
 Select an Acolyte and command it to {Input: Build an Altar of Darkness}!
-Then immediately order it to {Input: Move} back into the Goldmine.
+Then immediately order it to {Input: Move} back into the Gold Mine.
 
 ### Progression point 39
 
@@ -1132,7 +1132,7 @@ The {Term: Town Hall} produces 12, the {Term: Keep} produces 14, and the {Term: 
 Aside from their main building, each race has a Food building.
 For Humans it is {Term: Farms}, for Orcs it is {Term: Orc Burrows}, for Night Elves it is {Term: Moon Wells}, and for Undead it is {Term: Ziggurats}.
 
-Each of these produce 10 Food.
+Each of these produces 10 Food.
 
 ### Progression point 47
 
@@ -1169,7 +1169,7 @@ Once your {Term: Food Consumption}, not production, goes past 50, you hear a not
 ### Progression point 52
 
 While you consume this much food, {Gold Font: you pay a 30% tax}.
-This means each of your workers only produce 7 {Term: Gold} every 5 seconds.
+This means each of your workers only produces 7 {Term: Gold} every 5 seconds.
 
 It also affects Gold you get for selling items, killing neutral enemies, and so on.
 Basically it affects all ways you can receive Gold in the game. (Lumber is not affected.)
@@ -1177,7 +1177,7 @@ Basically it affects all ways you can receive Gold in the game. (Lumber is not a
 ### Progression point 53
 
 Once you fall back under 51 {Term: Food Consumption}, you no longer have to pay {Term: Upkeep}.
-Your hear the notification sound again, and {Green Font: No Upkeep} pops up on your screen.
+You hear the notification sound again, and {Green Font: No Upkeep} pops up on your screen.
 
 ### Progression point 54
 
@@ -1193,7 +1193,7 @@ But both {Yellow Font: crossing the threshold to 51 and to 81 are serious decisi
 
 ### Progression point 56
 
-For example, you can raise your army size past 50 in anticipation for a battle.
+For example, you can raise your army size past 50 in anticipation of a battle.
 Since you will lose some units, it will likely drop you back to below 51.
 
 And of course it makes sense to cross the threshold into Low or High Upkeep to attain the advantage to end the game.

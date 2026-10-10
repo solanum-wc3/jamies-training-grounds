@@ -67,10 +67,10 @@ Problem: Lumber Peasants have no collision.
 
 ```text
 {Heading: WORKERS}
-The backbone of your economy are your worker units.
-Every race has their own workers, which all function a little differently.
+The backbone of your economy is your worker units.
+Every race has its own workers, which all function a little differently.
 
-All of them construct {Term: Buildings} and harvest {Term: Gold}, and almost of them also harvest {Term: Lumber} - The two main resources of Warcraft III.
+All of them construct {Term: Buildings} and harvest {Term: Gold}, and almost all of them also harvest {Term: Lumber} - The two main resources of Warcraft III.
 They are also all produced at the race's main building.
 ```
 
@@ -111,7 +111,7 @@ Break up progression between the first two lines and the last two lines. I have 
 
 ```text
 This is true for all races.
-It also means that the only way to raise your gold mining capacity, is finding new gold mines and building {Term: Expansions} there.
+It also means that the only way to raise your gold mining capacity is finding new gold mines and building {Term: Expansions} there.
 Expansions are smaller bases you create during play. They will be covered in later tutorials.
 ```
 
@@ -133,7 +133,7 @@ Peasants can also gather {Term: Lumber} by hacking at trees and carrying the lum
 They require 11 seconds to gather 10 Lumber, which they then need to carry back.
 Since trees only hold 50 Lumber until they are felled, these trips can vary a lot in length, so a precise rate is not as easy to calculate.
 
-As a rule of thumb however, a Human player will eventually want to have {Green Font: 8 Peasants gathering Lumber} in their main base.
+As a rule of thumb, however, a Human player will eventually want to have {Green Font: 8 Peasants gathering Lumber} in their main base.
 Humans can research {Term: Lumber Harvesting}, which raises the Lumber carrying capacity of Peasants to 20 and later 30, cutting down on walking time.
 ```
 
@@ -159,7 +159,7 @@ Peasants especially, since they are out in the open when gathering and building.
 To protect themselves and their base, Peasants can be drafted into the {Term: Militia}.
 This happens through a {Term: Call to Arms}, either individually, or at the main building. It lasts 42.5 seconds.
 
-While part of the Militia, they are almost as strong as a Human's basic worker unit, the {Term: Footman}, and gain a lot of movement speed.
+While part of the Militia, they are almost as strong as a Human's basic military unit, the {Term: Footman}, and gain a lot of movement speed.
 ```
 
 **Trigger commands on entry**
@@ -178,7 +178,7 @@ The last line should have an extra line break above it, but should be displayed 
 
 ```text
 Your base is being attacked.
-Select your Town Hall and use the {Term: Call fo Arms} command to form the {Term: Militia}!
+Select your Town Hall and use the {Term: Call to Arms} command to form the {Term: Militia}!
 ```
 
 **Trigger commands on entry**
@@ -254,10 +254,10 @@ You can see a demonstration of this in {Menu: Tools & Extras}.
 **Your changes / notes:**
 Insert an extra narration set:
 "Select a Peasant and tell it to {Input: Build} an {Term: Altar of Kings}!
-Then select a few other Peasants (preferrably from those gathering Lumber) and {Input: right-click} the construction site!
+Then select a few other Peasants (preferably from those gathering Lumber) and {Input: right-click} the construction site!
 They will help with the construction.
 
-If you want to make sure they continue to what they were doing after they are done, you can {Input: shift-queue} them back onto their gathering duty."
+If you want to make sure they return to what they were doing after they are done, you can {Input: shift-queue} them back onto their gathering duty."
 
 Make this narration an extra narration set:
 "Canceling a construction costs you 25% of its build cost.
@@ -316,7 +316,7 @@ That is - until the building site is destroyed.
 
 **Your changes / notes:**
 Insert a narration set after this one:
-"Select a Peon (preferrably from the ones gathering lumber), and command it to {Term: Build} an {Term: Altar of Storms}.
+"Select a Peon (preferably from the ones gathering lumber), and command it to {Term: Build} an {Term: Altar of Storms}.
 
 ### 14 — Peons
 
@@ -325,7 +325,7 @@ Insert a narration set after this one:
 ```text
 While Peons have a bit more {Term: HP} than other workers, they still die easily.
 Their means of protecting themselves is assuming {Term: Battle Stations} in a nearby {Term: Orc Burrow} and throwing spears at the attacker.
-Similar to Militia, calling all your Peons into the Burrows will stop your resource production, so you will want to only use as few as are needed.
+Similar to Militia, calling all your Peons into the Burrows will stop your resource production, so you will want to use only as many as are needed.
 ```
 
 **Trigger commands on entry**
@@ -463,7 +463,7 @@ The second will not, and will have to be replaced."
 Aside from the ones in the {Term: Entangled Gold Mine}, Wisps are among the most vulnerable worker units.
 Except for fleeing into the gold mine or into a construction site, Wisps have no great ways of dealing with attacks.
 
-Their only option is often run or to simply {Term: Detonate}.
+Their only option is often to run or simply {Term: Detonate}.
 ```
 
 **Trigger commands on entry**
@@ -518,7 +518,7 @@ Spawn an enemy Far Seer at (-3400, -2400), facing 225 degrees. Learn Feral Spiri
 ```text
 {Heading: ACOLYTES}
 Undead workers are called {Term: Acolytes}.
-They function in a very unique way compared to other worker units..
+They function in a very unique way compared to other worker units.
 ```
 
 **Trigger commands on entry**
@@ -592,7 +592,7 @@ Make the first two and the last two lines two separate narration sets.
 
 Then add this as a separate narration set:
 "Select an Acolyte and command it to {Input: Build an Altar of Darkness}!
-Then immediately order it to {Input: Move} back into the Goldmine.
+Then immediately order it to {Input: Move} back into the Gold Mine.
 
 ### 28 — Acolytes
 
@@ -733,7 +733,7 @@ Activate Human ownership and vision; focus/select the Town Hall. Instantly creat
 Aside from their main building, each race has a Food building.
 For Humans it is {Term: Farms}, for Orcs it is {Term: Orc Burrows}, for Night Elves it is {Term: Moon Wells}, and for Undead it is {Term: Ziggurats}.
 
-Each of these produce 10 Food.
+Each of these produces 10 Food.
 ```
 
 **Trigger commands on entry**
@@ -848,7 +848,7 @@ Set player Food Used to 51 to demonstrate Low Upkeep. This is a scripted counter
 
 ```text
 While you consume this much food, {Gold Font: you pay a 30% tax}.
-This means each of your workers only produce 7 {Term: Gold} every 5 seconds.
+This means each of your workers only produces 7 {Term: Gold} every 5 seconds.
 
 It also affects Gold you get for selling items, killing neutral enemies, and so on.
 Basically it affects all ways you can receive Gold in the game. (Lumber is not affected.)
@@ -869,7 +869,7 @@ Focus/select the active main building. The scripted Food Used value remains 51.
 
 ```text
 Once you fall back under 51 {Term: Food Consumption}, you no longer have to pay {Term: Upkeep}.
-Your hear the notification sound again, and {Green Font: No Upkeep} pops up on your screen.
+You hear the notification sound again, and {Green Font: No Upkeep} pops up on your screen.
 ```
 
 **Trigger commands on entry**
@@ -924,7 +924,7 @@ No additional scene command. Existing harvesting, construction, combat, ownershi
 **Narration**
 
 ```text
-For example, you can raise your army size past 50 in anticipation for a battle.
+For example, you can raise your army size past 50 in anticipation of a battle.
 Since you will lose some units, it will likely drop you back to below 51.
 
 And of course it makes sense to cross the threshold into Low or High Upkeep to attain the advantage to end the game.
@@ -1002,15 +1002,9 @@ Topics jump to: Welcome 1, Workers 2, Peasants 3, Peons 11, Wisps 17, Acolytes 2
 
 Remove tutorial units, construction sites, trained units, summons, attackers, timers, event triggers, arrows, and tutorial interface. Restore borrowed world units, hidden creeps, mine foundations, tree state, player state, and camera state. Clear tutorial blight after tutorial structures are removed.
 
-## Existing wording to review separately
+## Wording maintenance
 
-These phrases are preserved above and have not been corrected without your approval:
-
-- Stop 2: “almost of them”.
-- Stop 6: “basic worker unit, the Footman”.
-- Stop 8: “only every call individual Peasants”.
-- Stop 24: “other worker units..”.
-- Stop 43: “Your hear the notification sound”.
+The spelling and grammar pass authorized on 11 October 2026 is applied to the maintained narration and this work file. Corrections include Call to Arms, preferably, almost all, Footman's military-unit description, subject–verb agreement and duplicate punctuation. Narration splits, timings, gameplay values and trigger commands are unchanged.
 
 ## Source references
 

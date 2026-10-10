@@ -25,3 +25,7 @@ Baseline: v0.1.2-beta1. Historical implementation audits are in the [0.1.2 archi
 - Clean player-facing text export until a supported native mechanism exists.
 - Long-term player statistics pending a versioned persistence design.
 - Future Heroes, Combat, Creeping and The Base tutorials and other placeholder activities.
+
+## Next content candidates
+
+User direction, 11 October 2026: Heroes requires the user's script before implementation. Reflex Training (expanded beyond the legacy map) and Unit Comparison are the preferred next training candidates; either or both may be chosen. Scope and mechanics are not decided yet. Combat Micro is postponed because it needs substantial research. The Economy spelling pass is complete in source; no new alpha or public release was requested for it.
