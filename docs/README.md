@@ -1,19 +1,26 @@
 # Documentation guide
 
-## Current documents
+Current baseline: **v0.1.2-beta1** (10 October 2026). Archived reports describe earlier builds and are not current specifications.
 
-- [`ARCHITECTURE.md`](ARCHITECTURE.md) — authoritative current architecture and build boundaries
-- [`ARCHITECTURE-TODO.md`](ARCHITECTURE-TODO.md) — loose architecture backlog and completed packages
-- [`COLLISION-OBSTRUCTION-RESEARCH.md`](COLLISION-OBSTRUCTION-RESEARCH.md) — evidence behind the obstruction and navigation overlays
-- [`PROJECT-FILES.md`](PROJECT-FILES.md) — what each file group owns and which retained files still need a human decision
-- [`BUILD-AND-TEST.md`](BUILD-AND-TEST.md) — clean-checkout setup, map installation and validation
-- [`ACTIVITIES.md`](ACTIVITIES.md) — implemented player-facing content and its source ownership
-- [`ADDING-AN-ACTIVITY.md`](ADDING-AN-ACTIVITY.md) — contributor workflow for adding content safely
-- [`FOUNDATION-ACCEPTANCE.md`](FOUNDATION-ACCEPTANCE.md) — immutable foundation acceptance record
-- [`decisions/`](decisions/) — architectural decisions that remain relevant
+## Current guidance
 
-## Historical documents
+- [Release status](RELEASE-STATUS.md) — validation, limitations and distribution
+- [Activity catalogue](ACTIVITIES.md) — playable content and placeholders
+- [Build and test](BUILD-AND-TEST.md) — dependencies, packaging and native acceptance
+- [Architecture](ARCHITECTURE.md) and [backlog](ARCHITECTURE-TODO.md)
+- [Adding an activity](ADDING-AN-ACTIVITY.md) — reference-first implementation workflow
+- [Tutorial standard](TUTORIAL-STANDARD.md) — progression, checkpoints, ownership and scene setup
+- [Economy layout](ECONOMY-TUTORIAL-LAYOUT.md) — current construction, gathering and ownership rules
+- [Dodging test bench](DODGE-TEST-BENCH.md) — current modes and diagnostic tools
+- [Native menu handoff](NATIVE-LOG-HANDOFF.md) — implementation and engine-sensitive behavior
+- [Project files](PROJECT-FILES.md) — source/generated/reference boundaries
+- [Collision research](COLLISION-OBSTRUCTION-RESEARCH.md)
+- [Foundation acceptance](FOUNDATION-ACCEPTANCE.md) and [decisions](decisions/)
 
-[`archive/`](archive/README.md) contains completed plans, superseded candidate checklists, early legacy analysis and implemented design drafts. They preserve reasoning and engine constraints, but do not describe current project state.
+## Editable work and inventories
 
-When a plan is completed or superseded, archive it and link any still-relevant conclusion from a current document. Do not rewrite an old candidate checklist to look like a current specification.
+[Economy script work file](ECONOMY-TUTORIAL-SCRIPT-WORK.md) remains available for author edits. [Tutorial text review](TUTORIAL-TEXT-REVIEW.md), [Bat Splitting text review](BAT-SPLITTING-TEXT-REVIEW.md), [Gargoyle Surround text review](GARGOYLE-SURROUND-TEXT-REVIEW.md), [Dodging tooltip review](DODGING-TOOLTIP-REVIEW.md), [Surrounds ability audit](SURROUNDS-ABILITY-AUDIT.md) and [timing inventory](DODGE-TIMING-INVENTORY.md) are working or generated snapshots. Editing them does not automatically update the map; maintained JSON/Lua remains authoritative.
+
+## Historical evidence
+
+[archive](archive/README.md) retains completed implementation plans, candidate checklists and measurement results. The [0.1.2 archive](archive/v0.1.2/README.md) includes the standardization audits, alpha reports and native timing measurements. Keep their original findings and limitations intact; link current conclusions from current guidance.

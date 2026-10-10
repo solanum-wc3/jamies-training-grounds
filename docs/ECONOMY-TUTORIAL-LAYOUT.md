@@ -8,7 +8,7 @@ The active race is owned by Player 0 throughout this tutorial and has unrestrict
 
 Native harvesting, construction and other engine orders are never intercepted. No orders or abilities are blocked, and tutorial-owned workers are not paused. No starting research is enabled.
 
-Continue and Next advance narration. Back and Topics recreate a clean checkpoint scene, including preceding construction and the currently required faction. Camera changes use the shared fixed 1.5-second movement. Delayed cameras are guarded by their narration stop and session. Clearing narration and rebuilding presentation do not rebuild the scene or restart workers. The temporary four-race cycling preview is no longer used by the packaged tutorial.
+Continue and Next advance narration. Back and Topics restore the canonical checkpoint within the existing scene, preserving living workers already gathering or returning resources. Idle, missing or transformed workers are restored near the main building. Camera changes use the shared fixed 1.5-second movement. Delayed cameras are guarded by their narration stop and session. Clearing narration and rebuilding presentation do not rebuild the scene or restart workers. The temporary four-race cycling preview is no longer used by the packaged tutorial.
 
 ## Layout and construction
 
@@ -33,7 +33,11 @@ Human and Orc attacks use purple Ghouls owned by the Undead tutorial faction. Co
 
 ## Gathering and cleanup
 
-At map entry, all four bases’ workers spawn on native open-ground positions around their respective main building with pathing enabled, after all initial buildings. Five workers per race are sent to Gold and the remaining workers, including Ghouls, to Lumber. Exported worker positions remain reference points for their gathering assignments; buildings retain exact exported positions. Five workers per race gather gold; remaining Peasants, Peons and Wisps, and all Ghouls, gather nearby lumber. Those assignments were inferred from placement clusters because the original export has no orders. Wisps and Acolytes use their prepared racial mines. The underlying neutral gold mines are hidden and have pathing disabled until cleanup; they are not duplicated visibly. All initial buildings are created before workers. The shared scene-unit helper uses a full native position update if placement needs correction, keeping model and gameplay coordinates together; coordinate-only building setters are not used. Trigger-created Town Halls explicitly receive permanent native militia conversion (`Amic`), matching the existing legacy trainer.
+At tutorial entry, all initial buildings are created before mobile units. Workers start at their exported coordinates and facing, with native pathing enabled. Five workers per race gather gold; the other Peasants, Peons and Wisps, and all Ghouls, gather lumber. Native Harvest orders match Camera’s working procedure. Existing gather/return orders are preserved during startup and narration entry.
+
+Assignments were inferred from placement clusters because the original export has no orders. Wisps and Acolytes use prepared racial mines; the corresponding underlying foundation mines are hidden with pathing disabled and restored on exit. Human and Orc workers use the existing neutral mines. Town Halls receive permanent native militia conversion (`Amic`). Buildings use full position correction where required, keeping model and gameplay coordinates together.
+
+Ownership/vision changes finish before gathering restoration. Two bounded idle-only retries run at 0.25 and 0.75 seconds, guarded by the current race visit. Active player orders and construction are not overwritten. A rejected Human/Orc gold order may try native return-and-resume at an owned gold drop-off. The user confirmed initial Peon mining working after alpha36; see [release status](RELEASE-STATUS.md).
 
 Creeps within 1100 units of a layout placement are hidden and paused for the tutorial, then restored on exit. Trees start healthy and are restored after harvesting. Units, construction sites, training products, attackers, event triggers, timers, player state and camera changes use the activity scope; Undead blight is cleared after owned structures are disposed.
 
@@ -41,4 +45,4 @@ Native construction, garrisoning, Unsummon, Sacrifice, supply notifications and 
 
 The Outro shares the Upkeep checkpoint; Topics lists eight sections and has no separate Outro entry.
 
-Gold Peons receive native smart (right-click) orders onto the Gold Mine. On showing the Orc base, an idle-only retry runs 0.10 seconds after ownership transfer. Burrow narration selects the Gold Mine-side Burrow at (4064, -5280), including the manual-entry prompt and food-building camera tour. Wolves have acquisition and guard behavior disabled; their direct attacks select visible, living lumber Wisps, excluding Wisps inside construction sites. The wolf targeting monitor repairs overwritten summon orders and redirects orders targeting a construction site.
+Burrow narration selects the Gold Mine-side Burrow at (4064, -5280). Wolves have acquisition and guard behavior disabled and directly target visible, living lumber Wisps, excluding construction sites. The targeting monitor repairs overwritten summon orders. Development order exports include initial position samples to distinguish failure to approach from later interruption.

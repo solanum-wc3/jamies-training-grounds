@@ -1,7 +1,7 @@
-# Successor menu artwork
+# Menu artwork sources
 
-The PNG files in this directory are the editable source artwork supplied for successor menu cards and the full-size menu frame. Card art remains separate from button backgrounds, titles, status text and hover treatment so those layers can be changed independently.
+The PNG files here are editable source artwork. `tools/prepare-menu-art.py` converts them to textures under `src/assets/menu/`; the build's asset list determines which textures are packaged. Button backgrounds, art, titles and hover treatment are separate UI layers.
 
-`tools/prepare-menu-art.py` crops each composition to a readable 2:1 card image without distorting it, creates a matching white alpha-mask hover layer, and writes DXT5 textures under `src/assets/menu/`. Full menu panels use Warcraft III's native racial frame resources.
+Each card has its own crop or containment recipe. Full-composition briefing images are generated separately from cropped button cards. Sizes and placement are controlled jointly by the preparation recipe and UI frames; do not apply a universal 2:1 crop to every source. Menu panels use native racial frame resources.
 
-Cropping choices prioritize the recognizable subject on the right half of each card.
+The obsolete Camera settings screenshot sources and textures were removed when those quests switched to native Reveal and Peon icons. Generated hover and older tooltip textures retained for review are listed in [Project files](../../docs/PROJECT-FILES.md); their existence does not mean they are included in the map.

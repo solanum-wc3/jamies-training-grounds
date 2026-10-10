@@ -49,3 +49,9 @@ Bat Splitting and Dodging use `src/infrastructure/training.lua` for countdowns a
 ## Required checks
 
 Check first entry, Continue, Back, Topics, Menu/Resume, pause, exit and save/load. Include assertions that presentation operations do not create units or issue orders, that delayed actions cannot affect another step, and that neutral demonstrations grant control only for practice. Native movement, construction and combat still require an in-game pass.
+
+## Reference-first implementation
+
+Before implementing a similar setup, identify its closest working reference and compare spawn order, coordinates, native orders, ownership, vision and interruption behavior. Camera’s imported gathering layout is the reference for Economy’s initial native worker setup. Use authored worker positions after buildings, explicit Harvest orders and preserve existing gathering during startup. Hall-centered placement is checkpoint recovery for idle/missing workers, not initial gathering placement.
+
+When a mechanic fails, inspect deviations from the working reference before adding retries or state resets. Record what native exports prove separately from hypotheses. Accepted order returns and mock tests do not prove movement or effect completion. Keep diagnostic samples bounded and scoped.

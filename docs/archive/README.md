@@ -6,5 +6,7 @@ These files preserve completed plans, superseded checklists, early research and 
 - `research/` — early analysis of the inherited v0.92 map
 - `design-drafts/` — drafts retained after their corresponding feature was implemented
 
+- `v0.1.2/` — completed alpha acceptance notes, standardization reviews and native timing reports
+
 Current guidance begins at [`../README.md`](../README.md).
 

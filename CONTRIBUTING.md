@@ -24,3 +24,11 @@ Generated `.w3x` files and validation reports belong in `outputs/` and are not c
 ## Documentation
 
 Current guidance belongs in the documents listed by `docs/README.md`. Completed plans and superseded candidate checklists should be moved to `docs/archive/` rather than left beside authoritative documents or silently rewritten as current behavior.
+
+## Reference-first changes
+
+Before adding tutorial or exercise behavior, read the closest working activity and the shared lifecycle helpers. Follow [Tutorial standard](docs/TUTORIAL-STANDARD.md) and [Adding an activity](docs/ADDING-AN-ACTIVITY.md). Compare differences before introducing engine workarounds, especially for native gathering orders, ownership, camera moves, menu handoff and cleanup.
+
+Keep generated data consistent with its maintained input. Run the relevant scripted checks and packaging validation, then report separately what still needs native Warcraft III testing. A mocked native call passing is not evidence that the engine accepts its target or order.
+
+Do not overwrite a distributed milestone during maintenance validation. Use the builder's `--output-dir=work/maintenance-build` option for isolated checks. Do not silently change release or patch-note versions as part of a documentation cleanup.

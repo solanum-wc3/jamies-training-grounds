@@ -1,23 +1,23 @@
 # Implemented activity catalogue
 
-This page describes player-facing content in v0.1.0. Planned catalogue cards without factories are intentionally omitted.
+This page describes player-facing content in v0.1.2-beta1. Planned catalogue cards without factories are intentionally omitted.
 
 | Activity | Category | Scene | Main variants | Source |
 | --- | --- | --- | --- | --- |
 | Camera | Learn to Play | Imported Orc base | Player-paced topics, demonstrations and checkpoints | `src/activities/camera-tutorial.lua` |
 | Unit Controls | Learn to Play | South arena | Selection, interface and command practice | `src/activities/unit-controls-tutorial.lua` |
-| Hotkey Setup | Learn to Play | South arena | QWERTY/QWERTZ comparison and CustomKeys export | `src/activities/hotkey-setup-tutorial.lua` |
+| Hotkey Setup | Learn to Play | South arena | QWERTY/QWERTZ comparison and setup guidance; file export disabled | `src/activities/hotkey-setup-tutorial.lua` |
 | Economy & Workers | Learn to Play | Four racial bases | Worker mechanics, resource gathering, defense practice, food and upkeep | `src/activities/economy-tutorial.lua` |
 | Mining Micro | Skill Training | North arena | Human/Orc; rotated but geometrically identical mine layouts | `src/activities/mining-micro.lua` |
 | Body Blocking | Skill Training | South arena | Racial training sequences or custom runner/blocker; Normal/Hard | `src/activities/body-blocking.lua` |
 | Surrounds | Skill Training | South arena | Racial training setups or custom army of up to 12 units | `src/activities/surrounds.lua` |
-| Gargoyle Surround | Skill Training | South arena | Gargoyles form ground surrounds by entering Stone Form; Undead and neutral-hero setups | `src/activities/surrounds.lua` |
+| Gargoyle Surrounds | Skill Training | South arena | Gargoyles form ground surrounds by entering Stone Form; Undead and neutral-hero setups | `src/activities/surrounds.lua` |
 | Windwalk Pop | Skill Training | North arena | Normal, Hard, Timed Training and Counterplay | `src/activities/windwalk-pop.lua` |
 | Power Building | Tools & Extras | South arena | Human building selector; 1–10 Peasant comparison | `src/activities/power-building.lua` |
 | Bat Splitting | Skill Training | Arena 1 northern boundary | 6/8/10 Gryphons versus fixed-target bats; direct/splash results | `src/activities/bat-splitting.lua` |
-| Dodging | Skill Training | South arena | Five danger menus, grouped ability picker, three missile stages and unscored arenas | `src/activities/missile-dodging.lua` |
+| Dodging | Skill Training | South arena | Disjoining Abilities/Attacks; Avoiding Area/Devour; grouped dodge abilities and racial movement selection | `src/activities/missile-dodging.lua` |
 
-The two 0.1.2 alpha exercises and their research limitations are described in [Dodge test bench](DODGE-TEST-BENCH.md).
+Four tutorials and eight exercises are implemented. Planned cards are not playable. Dodging modes and diagnostic limitations are described in [Dodge test bench](DODGE-TEST-BENCH.md).
 
 ## Shared behavior
 
@@ -27,6 +27,6 @@ Body Blocking, Surrounds, Gargoyle Surround and Windwalk Pop use shared result c
 
 ## Tutorials
 
-Tutorials use player-paced text and explicit navigation rather than advancing when temporary messages disappear. Quest entries provide durable reference material. Camera uses match-like terrain and fog behavior; the other current tutorials use controlled arena presentation.
+Tutorials use player-paced text and explicit navigation rather than advancing when temporary messages disappear. Quest entries provide durable reference material. Camera uses match-like terrain and fog behavior; Unit Controls and Hotkey Setup use controlled arenas; Economy uses four racial bases with active-race vision.
 
 All four tutorials use the shared presentation helpers in `JTG.Tutorial`. See [TUTORIAL-STANDARD.md](TUTORIAL-STANDARD.md) for confirmed ownership, checkpoint, camera and lifecycle rules.

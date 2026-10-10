@@ -769,74 +769,45 @@ It also allows you to change the positions of buttons.
 
 ### Progression point 14
 
-This is of course complicated, especially for a newbie.
-For this reason, you can use this map to help set you up. (Assuming you use Windows)
-
-### Progression point 15
-
 Again, to change the hotkey setup, you have to {Term: Quicksave} your game with {Input: F6}, leave this map, and go to the game options!
 
-### Progression point 16
+### Progression point 15
 
 Changing custom tooltips also requires you to go to {Menu: \Users\YourUserName\Documents\Warcraft III}, and into the folder {Menu: CustomKeyBindings}.
 There you will find a file called {Green Font: CustomKeys.txt}, which contains a list of key bindings.
 
-### Progression point 17
-
-In the {Menu: Warcraft III} folder, there is also a folder called {Menu: CustomMapData}.
-Press the {Input: Export} button! Three files will appear in that folder. One for a {Green Font: QWERTY}, one for a {Green Font: QWERTZ} keyboard layout, and one you do not need yet.
-You can now rename the one that fits your layout to {Green Font: "CustomKeys.txt"}, and put it into the {Menu: CustomKeyBindings} folder.
-It is recommended you first {Input: rename your old key bindings file}, so it does not get deleted. (Just add a number to the name.)
-
-### Progression point 18
-
-This sets you up with a pretty involved adjustment of the hotkeys.
-Notably, the command grid buttons are moved so they fit the key arrangement on the keyboard.
-This means that a button with the hotkey {Input: Q} will always be displayed on the top left spot, for example.
-
-### Progression point 19
-
-It also changes around some of the positions of buttons.
-For example, the layout of the build menus of workers, so they are more consistent across races.
-Or the item arrangement in shops, so the items better fit the order in which they are unlocked and remain consistent across all shops.
-
-### Progression point 20
-
-Of course you do not have to keep this hotkey setup.
-It is included here as a demonstration of what can be done.
-
-### Progression point 21
+### Progression point 16
 
 Tip: If you want to play the campaign "The Founding of Durotar", or the new campaign of The Forsaken Kingdom, it is recommended you change your hotkey layout to {Term: Grid} again while you do.
 The different campaigns have a lot of special units with complicated ability combinations, and a {Term: Custom} setup can cause some confusion here.
 
-### Progression point 22 — HOTKEY RESOURCES
+### Progression point 17 — HOTKEY RESOURCES
 
 {Heading: HOTKEY RESOURCES}
 If you have looked into the hotkeys file, you will have seen that all the buttons only have a coded description.
 Without knowing which code corresponds to which button, you cannot do anything here directly.
 
-### Progression point 23
+### Progression point 18
 
 You have probably noticed that there is a part of the options menu called {Hotkeys}.
 When setting up custom hotkeys, you can start by using this one.
 However, it only allows you to change the keys, not the position of buttons.
 
-### Progression point 24
+### Progression point 19
 
 People from the community have created their own interfaces to allow easy editing of all aspects of hotkeys.
 One of the simplest can be found by using a search engine and typing in "{Input: warcraft 3 hotkey editor}".
 The first result should lead you to a GitHub page belonging to a {Yellow Font: J.C.Fields}, where you can upload your hotkey file, edit it, and download the changed version.
 This page allows you to change hotkey positions by simply dragging and dropping the buttons in the displayed command grid.
 
-### Progression point 25
+### Progression point 20
 
 Another such resource is the more involved hotkey editor by {Yellow Font: clemenscodes}.
 The main problem with setting up custom hotkeys is that abilities are shared between a lot of units, so making a position change can conflict down the line.
 This one is very good at showing you where hotkeys or button positions conflict. Warcraft III can show this too, but not nearly as well.
 However, this tool will automatically change the button tooltips, so it is only recommended if you don't mind this, or if you know how to change them back.
 
-### Progression point 26 — CHANGING INVENTORY HOTKEYS
+### Progression point 21 — CHANGING INVENTORY HOTKEYS
 
 {Heading: CHANGING INVENTORY HOTKEYS}
 By default, inventory spots are tied to the {Input: Numpad}.
@@ -844,45 +815,398 @@ These are far away from the other keys, and some keyboards do not have the butto
 For this reason, many players rebind them.
 This can be done in the Warcraft III options.
 
-### Progression point 27
+### Progression point 22
 
 When using {Term: Grid} or {Term: Custom}, an obvious location to put them in is the 2x3 cluster of TY (or TZ), GH and BN.
 However, many people, especially coming from the MOBA scene, prefer using a Modifier key (Alt, Shift, CTRL) and using the cluster of QW, AS and ZX (or YX).
 The problem: Warcraft III does not support this.
 
-### Progression point 28
+### Progression point 23
 
 The only way to do this is to use an extra program just to rebind a key combination onto the relevant {Input: Numpad} keyboard keys.
 This little program has to run in the background while Warcraft III is running.
 
-### Progression point 29
+### Progression point 24
 
 The simplest tool to use for this can be found by using a search engine and typing in "{Input: warcraft inventory hotkeys}".
 The first result should be the tool by {Yellow Font: AucT}.
 You can use it to customize your inventory buttons in any way you want.
 
-### Progression point 30
+### Progression point 25
 
 However, be aware that this tool does not work properly if you have rebound the inventory hotkeys away from the {Input: Numpad} in the Warcraft options.
 You have to reset them to default before using it.
 The tool makes your operating system believe that {Input: Alt+Q} is really {Input: Num1} (for example). If Num1 is not the right key, nothing will happen.
 
-### Progression point 31
+### Progression point 26
 
 Since you need to have the program running while the game is running, it is easiest to start them at the same time.
 Even simpler, you can do this using the same shortcut on your Desktop. (assuming you are using Windows)
-Pressing the {Button: Export} button earlier also exported a file called {Green Font: README_ShortcutSetup.txt}, which has instructions on how to do this.
 
-### Progression point 32 — END OF TUTORIAL
+### Progression point 27 — END OF TUTORIAL
 
 {Heading: END OF TUTORIAL}
 This concludes the hotkeys tutorial. Press the {Button: Menu} button to choose another tutorial!
 
-## Hotkey Setup tutorial — Export confirmation
+# Economy & Workers tutorial
 
-{Yellow Font: Hotkey setup files exported.}
-Documents\Warcraft III\CustomMapData\
-CustomKeys-SolanumQWERTY.txt
-CustomKeys-SolanumQWERTZ.txt
-README_ShortcutSetup.txt
+**Learn to Play entry:** 4. Economy & Workers
+
+## Main progression
+
+### Progression point 1 — WELCOME
+
+{Heading: WELCOME}
+Welcome to the Economy Tutorial!
+This time we are taking a look at the different resources you have to manage when playing Warcraft III.
+
+Once you are done reading a section and playing around with whichever mechanic you learn, press the {Button: Continue} or {Button: Next} button to move on!
+
+### Progression point 2 — WORKERS
+
+{Heading: WORKERS}
+The backbone of your economy are your worker units.
+Every race has their own workers, which all function a little differently.
+
+All of them construct {Term: Buildings} and harvest {Term: Gold}, and almost of them also harvest {Term: Lumber} - The two main resources of Warcraft III.
+They are also all produced at the race's main building.
+
+### Progression point 3 — PEASANTS
+
+{Heading: PEASANTS}
+These are {Term: Peasants}. They are the Human worker unit.
+Peasants can gather {Term: Gold} by running back and forth between a {Term: Gold Mine} and the Human player's {Term: Main Building}.
+
+### Progression point 4
+
+A mine can be manned by up to five Peasants, and each peasant gathers 10 Gold every five seconds.
+So a full gold mine can bring in {Green Font: 10 Gold per second, or 600 Gold per minute}. No more.
+
+### Progression point 5
+
+This is true for all races.
+It also means that the only way to raise your gold mining capacity, is finding new gold mines and building {Term: Expansions} there.
+Expansions are smaller bases you create during play. They will be covered in later tutorials.
+
+### Progression point 6
+
+Peasants can also gather {Term: Lumber} by hacking at trees and carrying the lumber back to the Human player's {Term: Main Building} or their {Term: Lumber Mill}.
+They require 11 seconds to gather 10 Lumber, which they then need to carry back.
+Since trees only hold 50 Lumber until they are felled, these trips can vary a lot in length, so a precise rate is not as easy to calculate.
+
+### Progression point 7
+
+As a rule of thumb however, a Human player will eventually want to have {Green Font: 8 Peasants gathering Lumber} in their main base.
+Humans can research {Term: Lumber Harvesting}, which raises the Lumber carrying capacity of Peasants to 20 and later 30, cutting down on walking time.
+
+### Progression point 8
+
+Worker units are very vulnerable.
+Peasants especially, since they are out in the open when gathering and building.
+
+### Progression point 9
+
+To protect themselves and their base, Peasants can be drafted into the {Term: Militia}.
+This happens through a {Term: Call to Arms}, either individually, or at the main building. It lasts 42.5 seconds.
+
+While part of the Militia, they are almost as strong as a Human's basic worker unit, the {Term: Footman}, and gain a lot of movement speed.
+
+### Progression point 10
+
+Your base is being attacked.
+Select your Town Hall and use the {Term: Call fo Arms} command to form the {Term: Militia}!
+
+### Progression point 11
+
+You can dissolve the {Term: Militia} through the {Term: Back to Work} command.
+
+Since a {Term: Call to Arms} at the main building calls every Peasant in the entire base, this will completely stop your resource production.
+
+For this reason, it is recommended to only ever call Peasants into the Militia by selecting them and giving them the {Term: Call to Arms} command individually.
+
+### Progression point 12
+
+All worker units can {Term: Repair} buildings and mechanical units.
+Repairing damage takes 1.5 times as long as it takes to build that much of the building.
+It also costs 35% of the Gold and Lumber it cost to build that part of the building.
+
+### Progression point 13
+
+Your Town Hall is damaged.
+Select some of your Peasants and have them repair it by {Input: right-clicking it}!
+
+### Progression point 14
+
+Peasants have another unique feature.
+They can help each other in constructing buildings, speeding up the build time for some extra Gold and Lumber.
+This is called {Term: Power Building}.
+
+You can see a demonstration of this in {Menu: Tools & Extras}.
+
+### Progression point 15
+
+Select a Peasant and tell it to {Input: Build} an {Term: Altar of Kings}!
+Then select a few other Peasants (preferrably from those gathering Lumber) and {Input: right-click} the construction site!
+They will help with the construction.
+
+If you want to make sure they continue to what they were doing after they are done, you can {Input: shift-queue} them back onto their gathering duty.
+
+### Progression point 16
+
+Canceling a construction costs you 25% of its build cost.
+Having the build site destroyed loses the entire build cost.
+
+### Progression point 17 — PEONS
+
+{Heading: PEONS}
+These are {Term: Peons}. They are Orc worker units.
+They behave almost the same as Peasants when it comes to Gold and Lumber.
+
+### Progression point 18
+
+The main difference is that an Orc player cannot raise the Lumber carrying capacity of their Peons.
+An Orc player will eventually want to have {Green Font: 7 Peons harvesting Lumber} in their base.
+
+### Progression point 19
+
+While Peons are building, they vanish into the building site, making them invulnerable.
+That is - until the building site is destroyed.
+
+### Progression point 20
+
+Select a Peon (preferrably from the ones gathering lumber), and command it to {Term: Build} an {Term: Altar of Storms}.
+
+### Progression point 21
+
+While Peons have a bit more {Term: HP} than other workers, they still die easily.
+Their means of protecting themselves is assuming {Term: Battle Stations} in a nearby {Term: Orc Burrow} and throwing spears at the attacker.
+Similar to Militia, calling all your Peons into the Burrows will stop your resource production, so you will want to only use as few as are needed.
+
+### Progression point 22
+
+Select a Peon and {Input: right-click} the Orc Burrow.
+The Peon will enter it.
+You can call it back by {Input: selecting the Burrow and clicking its icon}.
+
+### Progression point 23
+
+Your base is being attacked.
+Call a few Peons to {Term: Battle Stations}!
+
+You can do this by selecting the Burrows and giving the {Term: Battle Stations} command.
+
+### Progression point 24
+
+Once you are done having them defend your base, you can have them return to work with the {Term: Stand Down} command.
+
+Similar to {Term: Militia}, it is better to assign Peons to {Term: Battle Stations} individually, to disrupt your own economy as little as possible.
+
+### Progression point 25 — WISPS
+
+{Heading: WISPS}
+Night Elf workers are called {Term: Wisps}.
+They behave very differently compared to Peasants and Peons.
+
+### Progression point 26
+
+The Night Elf main building entangles the nearby gold mine.
+Wisps gather Gold in this {Term: Entangled Gold Mine}.
+They do not have to walk back and forth, and while inside, are completely safe from harm.
+
+### Progression point 27
+
+Wisps gather Lumber at a rate of 5 per 7.5 seconds, and they do not destroy the trees when doing so.
+Because of the lower gathering rate, a Night Elf player will want to have {Green Font: around 8 Wisps gathering Lumber}.
+This may fluctuate up and down a bit during the game.
+
+### Progression point 28
+
+Like Peons, Wisps disappear into the building when they are {Term: Constructing}.
+Additionally, when they finish building one of the living trees that make up many of the Night Elf buildings, they do not come out at all.
+
+### Progression point 29
+
+Select a Wisp and {Input: Build an Altar of Elders}!
+Then select another and {Input: Build an Ancient of Wonders}!
+
+The first Wisp will return from the construction site.
+The second will not, and will have to be replaced.
+
+### Progression point 30
+
+Aside from the ones in the {Term: Entangled Gold Mine}, Wisps are among the most vulnerable worker units.
+Except for fleeing into the gold mine or into a construction site, Wisps have no great ways of dealing with attacks.
+
+Their only option is often run or to simply {Term: Detonate}.
+
+### Progression point 31
+
+{Term: Detonate} burns 40 mana from enemy units, and deals 225 damage to enemy summons.
+This also denies the enemy the {Term: XP} they would otherwise get for killing the Wisp.
+
+### Progression point 32
+
+Your Wisps are being harassed by magically summoned units.
+{Term: Detonate} a Wisp to protect the others!
+
+### Progression point 33 — ACOLYTES
+
+{Heading: ACOLYTES}
+Undead workers are called {Term: Acolytes}.
+They function in a very unique way compared to other worker units..
+
+### Progression point 34
+
+Acolytes gather {Term: Gold} in the {Term: Haunted Gold Mine}.
+This is a separate building that has nothing to do with the Undead main building.
+
+Different from any other worker, Acolytes stand in the open while gathering gold, completely vulnerable.
+
+### Progression point 35
+
+Acolytes are also the only worker unit that does not gather {Term: Lumber} at all.
+Instead this is done by the basic Undead military unit, the {Term: Ghoul}.
+
+Ghouls can harvest 20 {Term: Lumber} in 13.5 seconds, and an Undead player will want to have {Green Font: 3 Ghouls harvesting Lumber}.
+Their gather rate can be slightly improved by the {Term: Ghoul Frenzy} research, which raises their movement speed.
+
+### Progression point 36
+
+Acolytes have no way of defending themselves.
+Ghouls take care of this, as well as the Undead buildings' superb defensive capabilities.
+
+### Progression point 37
+
+When {Term: Summoning} buildings, an Acolyte needs only to be present once to initiate the summoning.
+This way, an Undead base only ever needs the five Acolytes in the Gold Mine.
+
+### Progression point 38
+
+Select an Acolyte and command it to {Input: Build an Altar of Darkness}!
+Then immediately order it to {Input: Move} back into the Goldmine.
+
+### Progression point 39
+
+Undead are the only race that can deconstruct their own buildings.
+This is done through the Acolyte's {Term: Unsummon Building} command.
+It nets the Undead player 50% of the building's original resource cost.
+
+{Input: Select an Acolyte and unsummon your Crypt}!
+
+### Progression point 40
+
+Another unique feature of Acolytes is that they can be sacrificed at a {Term: Sacrificial Pit}, turning them into a {Term: Shade}.
+A Shade is an invisible scout unit that reveals other invisible units.
+
+Select an Acolyte and {Input: right-click the Sacrificial Pit}!
+
+Since the sacrifice can be cancelled, this is a way to safely hide an Acolyte for a few seconds.
+
+### Progression point 41 — FOOD PRODUCTION
+
+{Heading: FOOD PRODUCTION}
+Aside from {Term: Gold} and {Term: Lumber}, which can be gathered directly, there is a third Resource in Warcraft III, called {Term: Food}.
+Food is produced by building specific buildings.
+
+### Progression point 42
+
+At first, this is the {Term: Main Building}.
+Since the player always starts with this, it provides their starting {Term: Food Production}.
+The amount of Food a Main Building produces is different by race.
+
+### Progression point 43
+
+For Night Elves and the Undead, their Main Buildings, the {Term: Tree of Life} and the {Term: Necropolis}, produce 10 Food.
+
+### Progression point 44
+
+For Orcs, their Main Building, the {Term: Great Hall}, produces 11 Food.
+
+### Progression point 45
+
+The Main Building of the Humans produces different amounts of Food depending on its tier.
+The {Term: Town Hall} produces 12, the {Term: Keep} produces 14, and the {Term: Castle} produces 16.
+
+### Progression point 46
+
+Aside from their main building, each race has a Food building.
+For Humans it is {Term: Farms}, for Orcs it is {Term: Orc Burrows}, for Night Elves it is {Term: Moon Wells}, and for Undead it is {Term: Ziggurats}.
+
+Each of these produce 10 Food.
+
+### Progression point 47
+
+Now, the question is: {Gold Font: What does Food do?}
+
+The answer: Nothing by itself.
+Instead, {Gold Font: it limits how many units you can have} - the size of your army.
+
+### Progression point 48
+
+Workers require 1 Food, other small units require 2 or 3.
+Heroes require 5, and larger units require up to 7.
+All of these add up, and the total {Gold Font: cannot exceed your food production}.
+
+### Progression point 49
+
+When you are consuming as much food as you produce, you cannot produce more units.
+This means you have {Term: Supply Blocked} yourself.
+
+To be able to build new units, you now have to build more food production buildings.
+This takes time, and slows down your game, so it is better to {Gold Font: plan ahead!}
+
+### Progression point 50 — UPKEEP
+
+{Heading: UPKEEP}
+Food governs the last mechanic relevant to Warcraft III's economy: {Term: Upkeep}.
+This mechanic limits your army size, not by not allowing you to build units, but by making you pay extra for having them.
+
+### Progression point 51
+
+This is done through a {Gold Font: tax on all Gold income}.
+Once your {Term: Food Consumption}, not production, goes past 50, you hear a notification sound, and see {Yellow Font: Low Upkeep} pop up on your screen.
+
+### Progression point 52
+
+While you consume this much food, {Gold Font: you pay a 30% tax}.
+This means each of your workers only produce 7 {Term: Gold} every 5 seconds.
+
+It also affects Gold you get for selling items, killing neutral enemies, and so on.
+Basically it affects all ways you can receive Gold in the game. (Lumber is not affected.)
+
+### Progression point 53
+
+Once you fall back under 51 {Term: Food Consumption}, you no longer have to pay {Term: Upkeep}.
+Your hear the notification sound again, and {Green Font: No Upkeep} pops up on your screen.
+
+### Progression point 54
+
+Once your {Term: Food Consumption} goes past 80, you go to {Red Font: High Upkeep}.
+You now {Gold Font: pay a 60% tax}.
+
+### Progression point 55
+
+This mechanic makes it so {Yellow Font: you do not want to just grow your army as quickly as you can}.
+
+Growing it to 50 Food Consumption is great, and you should do it quickly, to be as strong as possible as soon as you can.
+But both {Yellow Font: crossing the threshold to 51 and to 81 are serious decisions} you should only make with a goal in mind.
+
+### Progression point 56
+
+For example, you can raise your army size past 50 in anticipation for a battle.
+Since you will lose some units, it will likely drop you back to below 51.
+
+And of course it makes sense to cross the threshold into Low or High Upkeep to attain the advantage to end the game.
+
+### Progression point 57
+
+{Yellow Font: What you do not ever want to do is go to 51 Food Consumption and stay there for no reason.}
+
+That is just wasting money.
+Especially because your Gold Mines still lose 10 Gold, and will run empty eventually.
+
+### Progression point 58 — END OF TUTORIAL
+
+{Heading: END OF TUTORIAL}
+This concludes the economy tutorial. Press the {Button: Menu} button to choose another tutorial!
 

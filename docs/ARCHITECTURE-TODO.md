@@ -1,35 +1,27 @@
 # Architecture work list
 
-This is the maintained loose planning list. Completed implementation plans and runtime checklists live in [`archive/`](archive/README.md).
+Baseline: v0.1.2-beta1. Historical implementation audits are in the [0.1.2 archive](archive/v0.1.2/README.md).
 
-## Completed for v0.1.0
+## Implemented
 
-- **Development and release builds:** release maps omit developer tools; development maps include clearly separated diagnostics.
-- **Automated lifecycle check:** verifies start, reset, replacement, exit, resource disposal, final cleanup and stale callbacks.
-- **Shared activity lifecycle:** common ownership and cleanup cover gameplay and presentation resources, borrowed state and guarded timers.
-- **Shared result cards and exercise controls:** common action dispatch, toolbar positions, result layouts and semantic heading colors.
-- **Shared briefing and catalogue layouts:** common title, body, artwork, divider, choice and footer positioning; shared General / Race Specific menus.
-- **First documentation cleanup:** current guidance was updated; completed plans, old checklists and the implemented Camera draft were archived.
+- Separate release/development modules and build validation.
+- Session/scoped resource ownership, guarded timers and baseline-aware cleanup.
+- Shared briefing, catalogue, racial selector, toolbar and result-card helpers.
+- Shared tutorial runner installed by all four tutorials: stable entry generations, narration/presentation boundaries, checkpoints, fixed camera movement and interruption handling.
+- Shared training countdown and presentation visibility used by Bat Splitting and Dodging.
+- Economy semantic step IDs and checkpoint scenes; native worker gathering preserved independently of narration.
+- Regression fixtures for tutorial transitions, exercise menus, scoring, orders and cleanup.
 
-## Next architectural package
+## Next priorities
 
-### Shared tutorial system
-
-Status: planned alongside the Economy tutorial.
-
-- Share page progression, narration, checkpoints, Topics, Continue, Back, Pause, Menu, save/load presentation rebuilding and cleanup.
-- Prove the system with the Economy tutorial.
-- Migrate existing tutorials incrementally after the common system is stable.
-
-## Later consolidation candidates
-
-- Review exercise-specific timers for common countdown and elapsed-time helpers.
-- Review cleanup code after more activities use the shared lifecycle; extract only patterns that remain genuinely identical.
-- Add reusable selectors for future unit, building and hero-selection pages based on the Power Building and Custom Surrounds grids.
-- Add a reusable guided camera-tour system if competitive-map lessons are pursued.
-- Extend automated lifecycle coverage when new shared resource types appear.
+- Use the closest working tutorial/exercise before adding a new implementation; record necessary differences before coding.
+- Keep native menu activation intact while investigating any reproduced paused-overlay problem. Do not reintroduce opening-button frame hooks.
+- Separate Dodging eligibility, enemy orders and scoring further only when a concrete change benefits from it; retain known matchup outcomes.
+- Extend scene/native-interaction coverage for future interactive tutorials and micro AI. Mock acceptance alone is insufficient.
+- Review repeated code for extraction after its behavior is confirmed, rather than adding generalized abstractions preemptively.
 
 ## Deferred
 
-- **Embedded CustomKeys data:** keep the current replaceable generated representation.
-- **Long-term player statistics:** keep Player Stats unavailable until a separately versioned persistence design has clear player value and migration rules.
+- Clean player-facing text export until a supported native mechanism exists.
+- Long-term player statistics pending a versioned persistence design.
+- Future Heroes, Combat, Creeping and The Base tutorials and other placeholder activities.

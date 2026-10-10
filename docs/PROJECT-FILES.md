@@ -10,6 +10,8 @@ This inventory distinguishes maintained source, generated output, immutable refe
 - `src/data/` — replaceable CustomKeys and shortcut-setup source data
 - `design/menu-art/` — editable menu artwork used by the texture generator
 - `design/overlays/` — editable unit-obstruction-square artwork
+- `design/tutorials/` — authored Economy JSON, source export and editable drafts
+- `design/dodge-catalog.json` — native danger/dodger catalogue; activation measurements and timing audit JSON retain evidence
 - `tools/` — build, extraction and asset-preparation utilities
 - `docs/ARCHITECTURE.md` and `docs/ARCHITECTURE-TODO.md` — current architecture and backlog
 
@@ -44,4 +46,10 @@ The following files are not used by the current packaged map but may still be us
 - the large extracted legacy menu-asset collection under `reference/legacy/menu-assets/`;
 - the archived Camera tutorial draft, whose implemented behavior now lives in `src/activities/camera-tutorial.lua`.
 
-Embedded CustomKeys data is deliberately excluded from cleanup for now because easy file replacement is more valuable than reducing its packaged representation.
+Embedded CustomKeys data remains committed, although player-facing exports are disabled. It can be replaced or regenerated from `src/data/`; it is not proof that arbitrary clean text export works.
+
+`src/generated/economy-script.lua`, `economy-layout.lua` and `dodge-catalog.lua` are regenerated from maintained design inputs. `dodge-timing-methods.lua` and `melee-tech.lua` are generated/native-derived data; preserve them for clean-checkout builds.
+
+The map preview source is `reference/legacy/arthas-jaina-preview.png`, with `war3mapPreview.tga` alongside it. Current builds inherit the browser artwork as `war3mapMap.blp` from the accepted foundation; the terrain minimap is restored separately in game.
+
+Unused Camera settings screenshot textures and their generator/build entries were removed after their Quest icons changed to native Reveal and Peon icons. The distributed beta1 map is unchanged; subsequent builds omit these unused assets.

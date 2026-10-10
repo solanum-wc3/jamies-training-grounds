@@ -1,6 +1,6 @@
 # Design material
 
-This directory holds maintained editable design sources. It currently contains menu-card compositions and obstruction-square artwork; future tutorial scripts, annotated screenshots and map-layout sketches may also live here.
+This directory holds maintained editable design sources. It contains menu-card compositions, obstruction-square artwork, Economy script/layout inputs and Dodging catalogue/measurement data. See [project files](../docs/PROJECT-FILES.md) for source and generated boundaries.
 
 A tutorial specification should describe:
 

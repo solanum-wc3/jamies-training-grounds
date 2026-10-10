@@ -1,8 +1,8 @@
 # Economy & Workers — script work file
 
-Implementation note: These edits are incorporated into alpha27 as 58 narration stops. The numbered headings below retain your original review numbers; the setup and reconstruction tables below describe the earlier snapshot. Current behavior is documented in [ECONOMY-TUTORIAL-LAYOUT.md](ECONOMY-TUTORIAL-LAYOUT.md), with narration in `design/tutorials/economy-script.json`. Player practice prompts no longer issue automatic repair, build, Burrow, Unsummon or Sacrifice orders.
+Implementation note: These edits are incorporated into v0.1.2-beta1 as 58 narration stops. The numbered headings below retain your original review numbers; the setup and reconstruction tables below describe the earlier snapshot. Current behavior is documented in [ECONOMY-TUTORIAL-LAYOUT.md](ECONOMY-TUTORIAL-LAYOUT.md), with narration in `design/tutorials/economy-script.json`. Player practice prompts no longer issue automatic repair, build, Burrow, Unsummon or Sacrifice orders.
 
-Current implementation snapshot: 10 October 2026. Edit this file section by section; edits here do not automatically change the map. Narration is copied verbatim, including formatting tags and existing wording. Trigger descriptions describe what the current map actually attempts, rather than proposed behavior.
+Current implementation snapshot: 10 October 2026. Edit this file section by section; edits here do not automatically change the map. Narration is copied verbatim, including formatting tags and existing wording. Narration and trigger notes below are an editable author snapshot; where setup notes differ, the maintained JSON and current layout guide take precedence.
 
 ## Shared setup and rules
 

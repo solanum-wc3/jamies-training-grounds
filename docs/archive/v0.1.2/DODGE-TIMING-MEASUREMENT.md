@@ -2,7 +2,7 @@
 
 Status: the first smoke export and [complete 595-case native pass](DODGE-TIMING-FULL-2026-10-08.md) have been inspected. The complete pass lacked spell lifecycle timestamps. **A focused 14-case pass is prepared to verify corrected event matching, attack selection and construction placement.** Code tests inject synthetic events and cannot establish Warcraft's actual timings or dodge outcomes.
 
-Scope: all 10 Homing, 14 Area and 77 Ranged catalogue entries, plus all 34 dodge choices expanded into 38 individual methods (including the Movement baseline). See [the full inventory](DODGE-TIMING-INVENTORY.md) and `design/dodge-timing-audit.json`. Artillery has not been removed; its four targeted attack variants are included in Ranged. This is category coverage, not a requirement to test every possible pairing.
+Scope: all 10 Homing, 14 Area and 77 Ranged catalogue entries, plus all 34 dodge choices expanded into 38 individual methods (including the Movement baseline). See [the full inventory](../../DODGE-TIMING-INVENTORY.md) and `design/dodge-timing-audit.json`. Artillery has not been removed; its four targeted attack variants are included in Ranged. This is category coverage, not a requirement to test every possible pairing.
 
 ## Findings from the analysis
 

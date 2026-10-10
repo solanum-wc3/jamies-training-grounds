@@ -1,54 +1,46 @@
 # Jamie's Training Grounds
 
-Jamie’s Training Grounds is a Warcraft III teaching and practice map. It combines beginner tutorials, mechanical exercises, demonstrations and reference material in one map with a shared interface.
+Jamie’s Training Grounds is a Warcraft III teaching and practice map. Guided tutorials introduce the essentials, while focused exercises let players repeat and explore mechanical skills.
 
 ## Current release
 
-The current tested release is `v0.1.0`. It includes:
+**v0.1.2-beta1**, released 10 October 2026, contains four tutorials and eight playable exercises:
 
-- Camera, Unit Controls and Hotkey Setup tutorials;
-- Body Blocking, Mining Micro, Surrounds and Windwalk Pop training;
-- the Power Building demonstration;
-- shared menus, briefing pages, toolbars, result cards and activity cleanup;
-- save/load restoration across supported menus and activities;
-- separate release and development builds;
-- development-only lifecycle and collision diagnostics;
-- collision-square, snap-point and navigation-grid visualization in relevant exercises.
+- Camera, Unit Controls, Hotkey Setup, and Economy & Workers;
+- Body Blocking, Surrounds, Gargoyle Surrounds, Windwalk Pop, Mining Micro, Bat Splitting, and Dodging;
+- Power Building, a building-speed demonstration under Tools & Extras.
 
-The map is built on the accepted `v0.0.1-alpha.5` Twisted Meadows foundation. The source foundation and historical references remain unchanged; current map behavior is implemented through the maintained modules under `src/`.
+Other menu cards are placeholders. Modes, stages and individual setups are not counted as separate exercises. See the [activity catalogue](docs/ACTIVITIES.md) for details.
 
-## Design direction
-
-- Keep Warcraft III’s native interface and Quest window usable.
-- Use reusable arenas where terrain is incidental.
-- Use decorated match-like areas where terrain is part of the lesson.
-- Give every activity explicit setup, start, reset, cleanup and exit behavior.
-- Present essential instruction as player-paced text. Audio remains optional.
-- Keep release builds free of developer tools while retaining reproducible development builds for diagnostics.
+The release includes shared menus, toolbars, result cards, scoped cleanup and save/load presentation restoration. Player-facing text-file exports are disabled because Warcraft’s native Preload output does not preserve arbitrary text reliably. Development builds retain machine-readable diagnostic exports.
 
 ## Repository guide
 
-- [`docs/`](docs/README.md) — current architecture, research, decisions and an archive of completed plans
-- `design/` — editable source artwork and future design material
-- `reference/` — immutable historical maps, accepted foundations and extracted reference assets
-- `src/` — authoritative Lua modules, data and packaged assets
-- `tools/` — reproducible build and asset-preparation utilities
-- `outputs/` — generated maps and validation reports; excluded from version control
-- `work/` — temporary investigation material; excluded from version control
+- [docs](docs/README.md) — current implementation guidance, release status and historical reports
+- [design](design/README.md) — editable artwork, tutorial scripts/layouts and measurement inputs
+- [src](docs/PROJECT-FILES.md) — maintained Lua modules, generated data and packaged assets
+- [tools](tools/README.md) — build, asset preparation and validation utilities
+- `reference/` — immutable source maps, accepted foundation and extracted historical assets
+- `outputs/` — generated maps and build reports; ignored by Git
+- `work/` — temporary investigations; ignored by Git
 
-## Building
+## Build and test
 
 ```text
 pnpm install --frozen-lockfile
-pnpm run build:all
+pnpm run check:lua
+pnpm run build:release
 ```
 
-This produces `outputs/Jamies-Training-Grounds-v0.1.0.w3x` and `outputs/Jamies-Training-Grounds-v0.1.0-dev.w3x`. See [`tools/README.md`](tools/README.md) for diagnostics and build details.
+The release map is `outputs/Jamies-Training-Grounds-v0.1.2-beta1.w3x`. Use `pnpm run build:development` for the matching `-dev` map, or `pnpm run build:all` for both. Generated maps are distributed separately from source commits.
 
-## Further documentation
+The immutable `v0.0.1-alpha.5` Twisted Meadows foundation supplies terrain and preview/minimap assets. Current behavior comes from `src/` and the explicit module list in the builder.
+
+## Development guidance
 
 - [Build, installation and testing](docs/BUILD-AND-TEST.md)
-- [Implemented activity catalogue](docs/ACTIVITIES.md)
-- [Adding a new activity](docs/ADDING-AN-ACTIVITY.md)
-- [Architecture overview](docs/ARCHITECTURE.md)
-- [Collision and pathfinding research](docs/COLLISION-OBSTRUCTION-RESEARCH.md)
+- [Architecture](docs/ARCHITECTURE.md)
+- [Adding an activity](docs/ADDING-AN-ACTIVITY.md)
+- [Tutorial standard](docs/TUTORIAL-STANDARD.md)
+- [Release status and acceptance](docs/RELEASE-STATUS.md)
+- [Changelog](CHANGELOG.md)

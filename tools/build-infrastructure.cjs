@@ -1,6 +1,6 @@
-/* Build the shared-infrastructure test on the accepted alpha.5 foundation.
- * The source map is immutable; only the Lua trigger, editor trigger source and
- * version string are replaced. Every other archive member is verified equal.
+/* Build the current map on the immutable accepted alpha.5 foundation.
+ * Explicit changes include Lua, editor metadata, assets and native overrides.
+ * All other listed archive members are verified byte-identical.
  */
 const fs = require('node:fs');
 const path = require('node:path');
@@ -28,9 +28,13 @@ const sourcePath = path.join(root, 'reference/foundation/Jamies-Training-Grounds
 const outputLabel = isDevelopment
     ? `${version}-dev`
     : version;
-const outputPath = path.join(root, `outputs/Jamies-Training-Grounds-${outputLabel}.w3x`);
-const reportPath = path.join(root,
-    `outputs/Jamies-Training-Grounds-${outputLabel}-validation.json`);
+const outputArgument = process.argv.find(argument => argument.startsWith('--output-dir='));
+const outputDirectory = outputArgument
+    ? path.resolve(root, outputArgument.slice('--output-dir='.length))
+    : path.join(root, 'outputs');
+const outputPath = path.join(outputDirectory, `Jamies-Training-Grounds-${outputLabel}.w3x`);
+const reportPath = path.join(outputDirectory,
+    `Jamies-Training-Grounds-${outputLabel}-validation.json`);
 const acceptedHash = 'a1ea7789e60b30e77d64f14337759842dff309d129929ef24defb1276cf1ba64';
 const sharedModulePaths = [
     'src/infrastructure/core.lua',
@@ -95,8 +99,6 @@ const assetPaths = [
     ['JTGMenu\\WindwalkPop.dds', 'src/assets/menu/WindwalkPop.dds'],
     ['JTGMenu\\WindwalkPopBriefing.dds', 'src/assets/menu/WindwalkPopBriefing.dds'],
     ['JTGMenu\\ZeppelinMicro.dds', 'src/assets/menu/ZeppelinMicro.dds'],
-    ['JTGQuest\\CameraSettingsZoom.dds', 'src/assets/menu/CameraSettingsZoom.dds'],
-    ['JTGQuest\\IdleWorkerSettings.dds', 'src/assets/menu/IdleWorkerSettings.dds'],
     ['JTGMenu\\Surrounds.dds', 'src/assets/menu/Surrounds.dds'],
     ['JTGMenu\\SurroundsBriefing.dds', 'src/assets/menu/SurroundsBriefing.dds'],
     ['JTGMenu\\AoWCreeping.dds', 'src/assets/menu/AoWCreeping.dds'],
@@ -136,6 +138,9 @@ const configurationPaths = [
 const removedArchivePaths = [
     'war3mapSkin.w3b',
     'war3mapSkin.w3t',
+    // Replaced by native Reveal and Peon quest icons.
+    'JTGQuest\\CameraSettingsZoom.dds',
+    'JTGQuest\\IdleWorkerSettings.dds',
 ];
 
 const hash = buffer => crypto.createHash('sha256').update(buffer).digest('hex');
@@ -467,7 +472,7 @@ try {
         assert(verifyArchive.readFile(name).equals(bytes), 'Unexpected archive change: ' + name);
     }
     for (const name of removedArchivePaths) {
-        assert(!verifyArchive.hasFile(name), 'Skin override remained in archive: ' + name);
+        assert(!verifyArchive.hasFile(name), 'Removed member remained in archive: ' + name);
     }
     for (const [name, bytes] of changes) {
         assert(verifyArchive.readFile(name).equals(bytes), 'Archive roundtrip failed: ' + name);

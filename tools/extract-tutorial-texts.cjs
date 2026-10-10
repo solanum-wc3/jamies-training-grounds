@@ -138,20 +138,26 @@ for (const tutorial of tutorials) {
     `**Tooltip:** ${tutorial.menuDescription}`, '');
   const topics = topicLabels(source);
   if (topics.length) out.push(`**Topic menu:** ${topics.join(' · ')}`, '');
-  out.push(...renderBlocks(lineBlocks(tableBody(source, tutorial.main)), 'Main progression'));
+  let blocks = lineBlocks(tableBody(source, tutorial.main));
+  if (tutorial.title === 'Hotkey Setup tutorial') {
+    // Match the disabled export stops declared by the activity.
+    const hidden = source.match(/if not EXPORT_ENABLED then\s+for _, index in ipairs\(\{([\d, ]+)\}\)/);
+    if (!hidden) throw new Error('Missing disabled Hotkey export stops');
+    const indices = new Set(hidden ? hidden[1].split(',').map(Number) : []);
+    blocks = blocks.filter((block, index) => !indices.has(index + 1))
+      .map(block => ({...block, lines: block.lines.filter(line => !line.includes('{Button: Export}'))}));
+  }
+  out.push(...renderBlocks(blocks, 'Main progression'));
   if (tutorial.optional) {
     out.push(...renderBlocks(lineBlocks(tableBody(source, tutorial.optional)), 'Optional topics'));
   }
   if (tutorial.title === 'Camera tutorial') out.push(...cameraQuests());
-  if (tutorial.title === 'Hotkey Setup tutorial') {
-    out.push('## Hotkey Setup tutorial — Export confirmation', '',
-      '{Yellow Font: Hotkey setup files exported.}',
-      'Documents\\Warcraft III\\CustomMapData\\',
-      'CustomKeys-SolanumQWERTY.txt',
-      'CustomKeys-SolanumQWERTZ.txt',
-      'README_ShortcutSetup.txt', '');
-  }
+
 }
+
+const economy = JSON.parse(fs.readFileSync(path.join(root, 'design/tutorials/economy-script.json'), 'utf8'));
+out.push('# Economy & Workers tutorial', '', '**Learn to Play entry:** 4. Economy & Workers', '');
+out.push(...renderBlocks(economy, 'Main progression'));
 
 const output = path.join(root, 'docs', 'TUTORIAL-TEXT-REVIEW.md');
 fs.writeFileSync(output, `${out.join('\n').replace(/\n{3,}/g, '\n\n')}\n`);
