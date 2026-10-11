@@ -1,8 +1,8 @@
 # Reflex Training prototype
 
-Last packaged iteration: v0.1.3-alpha7. This includes both training modes and the three randomized crowd layouts. The distributed release remains v0.1.2-beta1.
+Last packaged iteration: v0.1.3-alpha8. This includes both training modes and the three randomized crowd layouts. The distributed release remains v0.1.2-beta1.
 
-Unpackaged after alpha7: Reflex Test uses 20% fewer units (rounded to the nearest unit), keeps all models represented and every hero unique, and is stationary regardless of layout. Both modes exclude level-three Spirit Wolves and Shades. The identification crossing layout now assigns opposing owners, enables acquisition and restores every unit to maximum HP once per second, including during the countdown. Normal attacks deal damage, with lethal damage capped to leave 1 HP between refreshes so required targets remain alive.
+In alpha8: Reflex Test uses 20% fewer units (rounded to the nearest unit), keeps all models represented and every hero unique, and is stationary regardless of layout. Both modes exclude level-three Spirit Wolves and Shades. The identification crossing layout now assigns opposing owners, enables acquisition and restores every unit to maximum HP once per second, including during the countdown. Normal attacks deal damage, with lethal damage capped to leave 1 HP between refreshes so required targets remain alive.
 
 In alpha6: a mixed Human/Orc crowd, with blue Human and red Orc team colors. The fixed Human target list remains unchanged for this first mixture test.
 
