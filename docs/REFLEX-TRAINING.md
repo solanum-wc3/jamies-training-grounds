@@ -1,8 +1,8 @@
 # Reflex Training prototype
 
-Source iteration: v0.1.3-alpha3. The distributed release remains v0.1.2-beta1.
+Source iteration: v0.1.3-alpha4. The distributed release remains v0.1.2-beta1.
 
-Unpackaged fix after alpha3: the crowd now translates the shared selector's historical Mortar Team/Siege Engine keys to native `hmtm`/`hmtt` IDs. Alpha3 failed at startup when `hmtn` could not create a unit. The regression now runs the actual shared Human roster and rejects invalid native IDs instead of accepting every mocked creation request.
+Fixed in alpha4: the crowd now translates the shared selector's historical Mortar Team/Siege Engine keys to native `hmtm`/`hmtt` IDs. Alpha3 failed at startup when `hmtn` could not create a unit. The regression now runs the actual shared Human roster and rejects invalid native IDs instead of accepting every mocked creation request.
 
 The Skill Training card opens a shared briefing with placeholder Lorem ipsum text and one Start Training choice. That choice enters the south arena directly. The shared toolbar offers Menu, Redo and Pause; live briefing pages retain Resume and Exit.
 

@@ -18,7 +18,7 @@ const {
 } = req('@jamiephan/stormlib');
 const luaParser = req('luaparse');
 
-const version = 'v0.1.3-alpha3';
+const version = 'v0.1.3-alpha4';
 const modeArgument = process.argv.find(argument => argument.startsWith('--mode='));
 const buildMode = modeArgument ? modeArgument.slice('--mode='.length) : 'release';
 assert(['release', 'development'].includes(buildMode),
