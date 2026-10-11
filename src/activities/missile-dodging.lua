@@ -1346,14 +1346,14 @@ function JTG.CreateMissileDodgingActivity(session)
         self:refreshStatus()
     end
 
-    function activity:placeBelowBuilding(unit,building,footprintHalf)
+    function activity:placeBelowBuilding(unit,building,footprintHalf,southOffset)
         local padding=BlzGetUnitCollisionSize(unit)+16
         local x,y=GetUnitX(unit),GetUnitY(unit)
         -- Wisps ignore ground pathing, and a mine's collision field is much
         -- smaller than its footprint. Use the footprint, not terrain probes.
         -- Move the building north rather than moving the target/camera south.
         local distance=math.max(BlzGetUnitCollisionSize(building),footprintHalf)+padding
-        SetUnitPosition(building,x,y+distance)
+        SetUnitPosition(building,x,y+distance-(southOffset or 0))
         SetUnitX(unit,x);SetUnitY(unit,y)
         BlzSetUnitFacingEx(unit,90)
     end
@@ -1560,7 +1560,8 @@ function JTG.CreateMissileDodgingActivity(session)
             SetResourceAmount(mine, 100000)
             self.supports[#self.supports + 1] = tree
             self.supports[#self.supports+1]=mine
-            self:placeBelowBuilding(self.pawn,mine,256)
+            -- Two 64-unit building squares closer; retain the pawn/camera anchor.
+            self:placeBelowBuilding(self.pawn,mine,256,128)
         end
         if self.definition.support=="otrb" and self.helper then
             self:placeBelowBuilding(self.pawn,self.helper,96)

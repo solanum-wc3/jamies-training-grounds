@@ -37,6 +37,8 @@ local a=JTG.CreateMissileDodgingActivity(session({dangerIndex=indices.Devour,mov
 local wisp,mine={id='ewsp',x=0,y=0},{id='egol',x=0,y=0}
 a:placeBelowBuilding(wisp,mine,256)
 assert(wisp.x==mine.x and wisp.y==0 and mine.y==288 and wisp.facing==90)
+a:placeBelowBuilding(wisp,mine,256,128)
+assert(wisp.y==0 and mine.y==160,'Wisp mine must move two building squares south')
 -- Even when ground terrain reports clear, the flying Wisp must remain below
 -- the mine's visual/pathing footprint, at the original missile-target position.
 function IsTerrainPathable() return false end
@@ -49,7 +51,7 @@ local wispSession=session({dangerIndex=1,pawnIndex=wispIndex})
 local wispSetup=JTG.CreateMissileDodgingActivity(wispSession);wispSetup:setup(wispSession)
 local spawnedMine
 for _,unit in ipairs(wispSetup.supports) do if unit.id=='egol' then spawnedMine=unit end end
-assert(spawnedMine and spawnedMine.y> wispSetup.pawn.y+256)
+assert(spawnedMine and spawnedMine.y==wispSetup.pawn.y+160)
 assert(wispSetup.pawn.y==wispSetup.caster.y and wispSetup.pawn.y==0,
     'Worker target must stay at scene height, aligned with the missile caster')
 for i=#wispSession.scope,1,-1 do wispSession.scope[i]() end
