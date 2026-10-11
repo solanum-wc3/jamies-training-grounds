@@ -12,6 +12,7 @@ function Player(id) return id end
 function GetLocalPlayer() return 0 end
 function FourCC(code) return code end
 PLAYER_NEUTRAL_PASSIVE, PLAYER_COLOR_BLUE, UNIT_TYPE_DEAD, UNIT_TYPE_FLYING = 15, 1, "dead", "flying"
+PLAYER_COLOR_RED=0
 GAME_STATE_TIME_OF_DAY = "time"
 CAMERA_FIELD_ROTATION, CAMERA_FIELD_ANGLE_OF_ATTACK = "rotation", "angle"
 function GetFloatGameState() return 7 end
@@ -76,7 +77,11 @@ function JTG.StartScopedTimer(session, scope, period, repeating, fn)
     return timer
 end
 function PauseTimer(timer) timer.paused=true end
-function JTG.GetSurroundCustomRaceColumns()
+function JTG.GetSurroundCustomRaceColumns(race)
+    if race=='orc' then return {{{kind='unit',enabled=true,rawcode='opeo'},
+        {kind='unit',enabled=true,rawcode='ogru'},{kind='unit',enabled=true,rawcode='Obla',hero=true},
+        {kind='unit',enabled=true,rawcode='osw1'},{kind='unit',enabled=true,rawcode='osw2'},
+        {kind='unit',enabled=true,rawcode='osw3'}}} end
     return {{{kind="unit",enabled=true,rawcode="hpea"},
         {kind="unit",enabled=true,rawcode="Hamg",hero=true},
         {kind="unit",enabled=true,rawcode="hwat"},
@@ -89,6 +94,7 @@ function JTG.GetSurroundCustomRaceColumns()
 end
 function JTG.GetSurroundCustomSummonFamily(rawcode)
     if rawcode=='hwat' or rawcode=='hwt2' or rawcode=='hwt3' then return 'AHwe' end
+    if rawcode=='osw1' or rawcode=='osw2' or rawcode=='osw3' then return 'AOsf' end
 end
 function JTG.GetSurroundCustomSpawnRawcode(rawcode) return rawcode end
 function JTG.UI.ShowActivityBriefing(spec) menu = spec end
@@ -112,15 +118,16 @@ assert(menu.resumeAction and menu.exitAction and menu.backAction)
 local session = {active=true,scope={},presentationScope={},descriptor={capabilities={}},scene={centerX=4864,centerY=3456}}
 local activity = JTG.CreateReflexTrainingActivity(session)
 activity:setup(session); activity:start()
-assert(#tracked == 21 and #activity.units == 21 and #timers == 2)
+assert(#tracked == 20 and #activity.units == 20 and #timers == 2)
 local counts = {}
 for _, unit in ipairs(tracked) do counts[unit.code] = (counts[unit.code] or 0) + 1 end
-assert(counts.hpea==4 and counts.Hamg==1)
-assert(counts.hwat==2 and counts.hwt2==1 and counts.hwt3==1,
+assert(counts.hpea==2 and counts.Hamg==1 and counts.opeo==2 and counts.Obla==1)
+assert(counts.hwat==1 and counts.hwt2==1 and counts.hwt3==1 and counts.osw1==1 and counts.osw2==1 and counts.osw3==1,
     'Summon population must be divided across levels')
 assert(camera.x == 4864 and camera.y == 3456)
 for _, unit in ipairs(tracked) do
     assert(unit.owner == 15 and unit.code ~= 'hgry')
+    assert(unit.color==(unit.code:sub(1,1):lower()=='o' and PLAYER_COLOR_RED or PLAYER_COLOR_BLUE))
     assert(unit.x >= activity.minX and unit.x <= activity.maxX and unit.y >= activity.minY and unit.y <= activity.maxY)
 end
 local function click(unit) selectedUnit=unit;selectionTrigger.action() end
@@ -160,7 +167,7 @@ click(footmen[1]);assert(activity.correct==1 and footmen[1].alpha==100 and activ
 click(footmen[1]);assert(activity.correct==1,'Same Footman counted twice')
 click(priest);assert(activity.correct==2 and activity.completed[3],'Targets must allow any order')
 for _=1,12 do movementTimer() end
-assert(#orders >= 21, 'Walkers did not receive independent orders')
+assert(#orders >= 20, 'Walkers did not receive independent orders')
 local first = activity.units[1]
 assert(first.targetX ~= activity.units[2].targetX or first.targetY ~= activity.units[2].targetY)
 local before = #orders
@@ -190,13 +197,15 @@ local upperSession={active=true,scope={},presentationScope={},descriptor={capabi
 local upper=JTG.CreateReflexTrainingActivity(upperSession);upper:setup(upperSession)
 local upperCounts={}
 for _,walker in ipairs(upper.units) do upperCounts[walker.unit.code]=(upperCounts[walker.unit.code] or 0)+1 end
-assert(upperCounts.hpea==8 and upperCounts.Hamg==1)
-assert(upperCounts.hwat==3 and upperCounts.hwt2==3 and upperCounts.hwt3==2)
+assert(upperCounts.hpea==4 and upperCounts.Hamg==1 and upperCounts.opeo==4 and upperCounts.Obla==1)
+assert(upperCounts.hwat==2 and upperCounts.hwt2==2 and upperCounts.hwt3==2)
 -- Exercise the actual shared roster, rather than a mock that accepts invalid
 -- native IDs. Previously the nonexistent hmtn produced nil in Warcraft.
 dofile('src/activities/surrounds.lua')
 local nativeIds={hpea=true,hmil=true,hfoo=true,hrif=true,hkni=true,hsor=true,hmpr=true,
-    hspt=true,hmtm=true,hmtt=true,Hamg=true,Hmkg=true,Hpal=true,Hblm=true,hwat=true,hwt2=true,hwt3=true}
+    hspt=true,hmtm=true,hmtt=true,Hamg=true,Hmkg=true,Hpal=true,Hblm=true,hwat=true,hwt2=true,hwt3=true,
+    opeo=true,ogru=true,ohun=true,otbk=true,ocat=true,oshm=true,odoc=true,orai=true,okod=true,
+    ospw=true,otau=true,Obla=true,Ofar=true,Otch=true,Oshd=true,osw1=true,osw2=true,osw3=true}
 local originalCreateUnit=CreateUnit
 function CreateUnit(owner,code,x,y,facing)
     assert(nativeIds[code],'Invalid Human ground native ID: '..tostring(code))
@@ -206,5 +215,5 @@ local realSession={active=true,scope={},presentationScope={},descriptor={capabil
 local real=JTG.CreateReflexTrainingActivity(realSession);real:setup(realSession)
 local realCounts={}
 for _,walker in ipairs(real.units) do realCounts[walker.unit.code]=(realCounts[walker.unit.code] or 0)+1 end
-assert(realCounts.hmtm==8 and realCounts.hmtt==8 and #real.units==92)
+assert(realCounts.hmtm==4 and realCounts.hmtt==4 and realCounts.ocat==4 and #real.units==104)
 print('Passed: Reflex population bounds, shared countdown, animated target cue, distinct any-order clicks, ethereal marking, movement, menu/load restoration, completion and cleanup guards.')

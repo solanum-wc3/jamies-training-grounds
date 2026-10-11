@@ -2,7 +2,7 @@
 -- keeps selection possible without player commands interrupting the walkers.
 JTG = JTG or {}
 local WIDTH, HEIGHT = 1800, 1000
-local MIN_COPIES, MAX_COPIES, COLUMNS, ROWS = 4, 8, 15, 8
+local MIN_COPIES, MAX_COPIES, COLUMNS, ROWS = 2, 4, 15, 8
 local TICK = 0.25
 local TARGETS = {"hfoo", "hfoo", "hmpr", "hkni"}
 local CUE_TICK, CUE_HOLD, CUE_MOVE = 0.02, 0.4, 0.3
@@ -166,20 +166,22 @@ function JTG.CreateReflexTrainingActivity(session)
             self.maxX + 200, self.maxY + 200)
 
         local roster, slots = {}, {}
-        -- Reuse the shared racial roster, including heroes and summon levels.
-        -- Human entries marked unavailable here are the flying units.
+        -- Split the crowd density across two races in the same arena.
         local choices, families = {}, {}
-        for _, column in ipairs(JTG.GetSurroundCustomRaceColumns("human")) do
-            for _, choice in ipairs(column) do
-                if choice.kind == "unit" and choice.enabled then
-                    choices[#choices + 1] = choice
-                    local family = JTG.GetSurroundCustomSummonFamily(choice.rawcode)
-                    if family then families[family] = (families[family] or 0) + 1 end
+        for _,race in ipairs({{id="human",color=PLAYER_COLOR_BLUE},{id="orc",color=PLAYER_COLOR_RED}}) do
+            for _, column in ipairs(JTG.GetSurroundCustomRaceColumns(race.id)) do
+                for _, choice in ipairs(column) do
+                    if choice.kind == "unit" and choice.enabled then
+                        choices[#choices + 1] = {definition=choice,color=race.color}
+                        local family = JTG.GetSurroundCustomSummonFamily(choice.rawcode)
+                        if family then families[family] = (families[family] or 0) + 1 end
+                    end
                 end
             end
         end
         local familyIndices, familyBudgets = {}, {}
-        for _, choice in ipairs(choices) do
+        for _, entry in ipairs(choices) do
+            local choice=entry.definition
             local count = choice.hero and 1 or GetRandomInt(MIN_COPIES, MAX_COPIES)
             local family = JTG.GetSurroundCustomSummonFamily(choice.rawcode)
             if family and not choice.hero then
@@ -187,12 +189,13 @@ function JTG.CreateReflexTrainingActivity(session)
                 familyIndices[family] = index
                 -- Keep one population budget per summon type, split across
                 -- its levels; distribute any remainder in roster order.
-                familyBudgets[family] = familyBudgets[family] or GetRandomInt(MIN_COPIES, MAX_COPIES)
+                familyBudgets[family] = familyBudgets[family] or GetRandomInt(3,6)
                 local budget = familyBudgets[family]
                 count = math.floor(budget / families[family]) +
                     (index <= budget % families[family] and 1 or 0)
             end
-            for _ = 1, count do roster[#roster + 1] = JTG.GetSurroundCustomSpawnRawcode(choice.rawcode) end
+            for _ = 1, count do roster[#roster + 1] = {
+                rawcode=JTG.GetSurroundCustomSpawnRawcode(choice.rawcode),color=entry.color} end
         end
         for row = 0, ROWS - 1 do
             for column = 0, COLUMNS - 1 do
@@ -215,12 +218,13 @@ function JTG.CreateReflexTrainingActivity(session)
             -- count twice, and keep selection circles out of the next search.
             if GetLocalPlayer()==Player(0) then ClearSelection() end
         end))
-        for index, rawcode in ipairs(roster) do
+        for index, entry in ipairs(roster) do
+            local rawcode=entry.rawcode
             local slot = slots[index]
             local unit = JTG.ScopeTrackUnit(current.scope,
                 CreateUnit(Player(PLAYER_NEUTRAL_PASSIVE), FourCC(rawcode), slot.x, slot.y, GetRandomReal(0, 360)))
             assert(unit ~= nil,"Reflex could not create native unit "..rawcode)
-            SetUnitColor(unit, PLAYER_COLOR_BLUE)
+            SetUnitColor(unit, entry.color)
             SetUnitInvulnerable(unit, true)
             SetUnitAcquireRange(unit, 0)
             SetUnitCreepGuard(unit, false)

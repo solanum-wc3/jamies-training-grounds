@@ -64,6 +64,28 @@ timed.target.x=timed.danger.area*0.5;timed.trialTime=2.3
 timed:updateAreaOrders();assert(timed.attempts==3 and math.abs(timed.areaCastAt-4.55)<0.00001)
 timed.trialTime=2.35;timed:updateAreaOrders();assert(timed.attempts==3)
 
+-- Native hit observations relocate Chain Lightning's footprint per bounce.
+local chain=create('AOcl')
+chain.areaFootprintImages={{}}
+local firstHit={id='hfoo',x=420,y=120}
+local nextHit={id='hfoo',x=560,y=-80}
+chain:chainLightningHit(firstHit)
+assert(chain.areaFootprint.followUnit==firstHit and chain.areaFootprint.x==420)
+chain:chainLightningHit(nextHit)
+assert(chain.areaFootprint.followUnit==nextHit and chain.areaFootprint.x==560 and chain.areaFootprint.y==-80)
+nextHit.x=600;chain:updateAreaPresentation();assert(chain.areaFootprint.x==600)
+-- Helpers use their normal movement speed and hold position upon arrival.
+local oldImmediate=IssueImmediateOrder
+local holds={}
+function IssueImmediateOrder(unit,order) holds[#holds+1]={unit=unit,order=order};return true end
+chain.chainTargets={firstHit,nextHit,{id='hfoo',x=500,y=0}}
+orders={};chain:updateChainCompanions();assert(#orders>0)
+local moving=chain.chainMoving[1]
+firstHit.x,firstHit.y=moving.x,moving.y
+chain:updateChainCompanions();assert(holds[#holds].unit==firstHit and holds[#holds].order=='holdposition')
+chain.target.x=800;chain:updateChainCompanions();assert(chain.chainMoving[1].x==800)
+IssueImmediateOrder=oldImmediate
+
 GetRandomReal,IssuePointOrder,UnitAddItemById,JTG.ScopeAdd,SetImagePosition,ShowImage=
     oldRandom,oldPoint,oldItem,oldAdd,oldPosition,oldShow
 print('Passed: Area circular arenas, shrinking stages, random casting/feints, windup protection, moving overlays, menu visibility, half-radius pursuit and scoped Boots of Speed at ten seconds.')

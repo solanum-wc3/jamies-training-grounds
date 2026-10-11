@@ -703,12 +703,40 @@ function JTG.CreateMissileDodgingActivity(session)
             if not Alive(unit) then
                 unit=self:spawn(Player(0),"hfoo",GetUnitX(self.target)+offset[1],GetUnitY(self.target)+offset[2])
                 self.chainTargets[i]=unit
-                SetUnitMoveSpeed(unit,0); SetUnitAcquireRange(unit,0)
+                SetUnitAcquireRange(unit,0)
                 UnitRemoveAbility(unit,FourCC("Aatk")); IssueImmediateOrder(unit,"holdposition")
             end
             SetUnitState(unit,UNIT_STATE_LIFE,BlzGetUnitMaxHP(unit))
         end
         return self.chainTargets[1]
+    end
+
+    function activity:updateChainCompanions()
+        if self.finished or not Alive(self.target) then return end
+        self.chainMoving=self.chainMoving or {}
+        local offsets={{0,120},{-120,-80},{120,-80}}
+        for index,unit in ipairs(self.chainTargets or {}) do
+            if Alive(unit) then
+                local x,y=GetUnitX(self.target)+offsets[index][1],GetUnitY(self.target)+offsets[index][2]
+                local dx,dy=GetUnitX(unit)-x,GetUnitY(unit)-y
+                if dx*dx+dy*dy>48^2 then
+                    local goal=self.chainMoving[index]
+                    if not goal or (goal.x-x)^2+(goal.y-y)^2>32^2 then
+                        IssuePointOrder(unit,"move",x,y)
+                        self.chainMoving[index]={x=x,y=y}
+                    end
+                elseif self.chainMoving[index] then
+                    IssueImmediateOrder(unit,"holdposition")
+                    self.chainMoving[index]=nil
+                end
+            end
+        end
+    end
+
+    function activity:chainLightningHit(unit)
+        if self.danger.ability~="AOcl" or not Alive(unit) then return end
+        self:showAreaFootprint(GetUnitX(unit),GetUnitY(unit))
+        self.areaFootprint.followUnit=unit
     end
 
     function activity:spawnOpponent()
@@ -853,6 +881,9 @@ function JTG.CreateMissileDodgingActivity(session)
                 session.scene.centerY+math.sin(angle)*self.arenaHalf-4,2)
         end
         local footprint=self.areaFootprint
+        if footprint and footprint.followUnit and Alive(footprint.followUnit) then
+            footprint.x,footprint.y=GetUnitX(footprint.followUnit),GetUnitY(footprint.followUnit)
+        end
         local age=footprint and self.trialTime-footprint.time or math.huge
         for index,image in ipairs(self.areaFootprintImages or {}) do
             local visible=footprint and age<=footprint.duration
@@ -1617,7 +1648,10 @@ function JTG.CreateMissileDodgingActivity(session)
             BlzSetUnitFacingEx(self.target,(self.definition.mine or self.definition.support=="otrb") and 90 or (self.stage==1 and 180 or 0))
             if self.stage>1 or self.abilityDevour then SetUnitMoveSpeed(self.target,0) end
         end
-        if self.danger.ability=="AOcl" and self.target then self:chainLightningTarget() end
+        if self.danger.ability=="AOcl" and self.target then
+            self:chainLightningTarget()
+            JTG.StartScopedTimer(current,current.scope,0.25,true,function() self:updateChainCompanions() end)
+        end
         self.devourValid = self.target ~= nil and not IsUnitType(self.target, UNIT_TYPE_HERO) and
             not IsUnitType(self.target, UNIT_TYPE_FLYING) and not IsUnitType(self.target, UNIT_TYPE_MECHANICAL) and
             not IsUnitType(self.target, UNIT_TYPE_STRUCTURE) and GetUnitLevel(self.target) <= 5
@@ -1628,6 +1662,7 @@ function JTG.CreateMissileDodgingActivity(session)
         TriggerRegisterPlayerUnitEvent(damageTrigger, p0, EVENT_PLAYER_UNIT_DAMAGED, nil)
         if self.definition.supportOwner=="neutral" then TriggerRegisterPlayerUnitEvent(damageTrigger,Player(PLAYER_NEUTRAL_PASSIVE),EVENT_PLAYER_UNIT_DAMAGED,nil) end
         TriggerAddAction(damageTrigger, JTG.GuardSession(current, function()
+            if GetEventDamageSource()==self.caster and GetEventDamage()>0 then self:chainLightningHit(GetTriggerUnit()) end
             if self.areaChannel and GetEventDamageSource()==self.caster and GetEventDamage()>0 then
                 self:stopAreaChannel()
             end

@@ -2,13 +2,15 @@
 
 Source iteration: v0.1.3-alpha5. The distributed release remains v0.1.2-beta1.
 
+Unpackaged experiment after alpha5: a mixed Human/Orc crowd, with blue Human and red Orc team colors. The fixed Human target list remains unchanged for this first mixture test.
+
 Fixed in alpha5: selection is registered on Player 0's unit-selection event, not neutral units' individual events. The icon preview now precedes GO; clicks, walking and elapsed time begin when the icons depart the center.
 
 Fixed in alpha4: the crowd now translates the shared selector's historical Mortar Team/Siege Engine keys to native `hmtm`/`hmtt` IDs. Alpha3 failed at startup when `hmtn` could not create a unit. The regression now runs the actual shared Human roster and rejects invalid native IDs instead of accepting every mocked creation request.
 
 The Skill Training card opens a shared briefing with placeholder Lorem ipsum text and one Start Training choice. That choice enters the south arena directly. The shared toolbar offers Menu, Redo and Pause; live briefing pages retain Resume and Exit.
 
-The prototype uses the shared Human roster's 17 ground entries (48–92 units). Regular unit counts independently vary from four to eight, each hero has one, and each summon type shares a random four-to-eight-unit budget across its levels. Any indivisible remainder is distributed in roster order. This includes workers, Militia, normal ground military units, heroes and all three Water Elemental levels. Flying entries are excluded. All are neutral-passive owned, blue, invulnerable and selectable, so clicking cannot interrupt their walking or populate the player's hero bar. Native collision and movement speeds are retained.
+The prototype uses the shared Human and Orc mobile ground rosters (56–104 units). Regular unit counts independently vary from two to four per race, each hero has one, and each summon type shares a random three-to-six-unit budget across its levels. Any indivisible remainder is distributed in roster order. This includes workers, Militia, normal ground military units, heroes and all three Water Elemental and Spirit Wolf levels. Flying entries and stationary Serpent Wards are excluded. All are neutral-passive owned, invulnerable and selectable, with blue Human and red Orc team colors, so clicking cannot interrupt their walking or populate the player's hero bar. Native collision and movement speeds are retained.
 
 A shared three-second countdown shows 3, 2, 1. The fixed target row (Footman, Footman, Priest, Knight) then appears at screen center with 200% icon size. After a 0.4-second hold, GO appears and the icons smoothly move and shrink over 0.3 seconds to normal-size icons at the top right, below the toolbar. Gameplay, elapsed time and independent walking begin on GO. Selections during the preview cannot advance the targets.
 
@@ -24,7 +26,7 @@ Redo randomizes a fresh crowd. Menu/load frame restoration retains countdown/ani
 
 - Briefing has the placeholder and Start Training; starting centers the arena.
 - Units fill the view without being obscured by the toolbar or lower interface.
-- All units are Human ground models and independently wander without becoming permanently stuck.
+- Human and Orc ground models are mixed throughout the arena, with blue Humans and red Orcs, and independently wander without becoming permanently stuck.
 - Countdown and the 0.4-second central preview prevent premature clicks; GO appears when the icons begin moving below the toolbar and the exercise timer starts.
 - Click a Priest, Knight and two different Footmen in any order. Correct units become transparent and their icons dim. Re-clicking the same Footman cannot complete both slots.
 - Wrong selections do not advance the targets; the fourth correct selection shows the shared success card.
@@ -33,4 +35,4 @@ Redo randomizes a fresh crowd. Menu/load frame restoration retains countdown/ani
 - Exit and entering another exercise remove the entire crowd and restore camera/time state.
 - Save/load preserves the crowd and resumes movement without duplicate units or timers.
 
-Further target variations, race mixing, penalties and performance scoring remain undecided. Do not produce another alpha until requested.
+Further target variations, additional race mixtures, penalties and performance scoring remain undecided. Do not produce another alpha until requested.
