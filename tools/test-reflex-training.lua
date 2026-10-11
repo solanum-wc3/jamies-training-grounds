@@ -37,7 +37,12 @@ function AddSpecialEffectTarget(model,unit) return {model=model,unit=unit} end
 function JTG.ScopeTrackEffect(scope,effect) scope[#scope+1]=effect;return effect end
 function CreateTrigger() return {} end
 function JTG.ScopeTrackTrigger(_,trigger) return trigger end
-function TriggerRegisterUnitEvent(trigger,unit) unit.trigger=trigger end
+local selectionTrigger
+function TriggerRegisterPlayerUnitEvent(trigger,player,event)
+    assert(player==0 and event==EVENT_PLAYER_UNIT_SELECTED)
+    selectionTrigger=trigger
+end
+function TriggerRegisterUnitEvent() error('Reflex selection must register the selecting player') end
 function TriggerAddAction(trigger,callback) trigger.action=callback end
 local selectedUnit
 function GetTriggerUnit() return selectedUnit end
@@ -107,7 +112,7 @@ assert(menu.resumeAction and menu.exitAction and menu.backAction)
 local session = {active=true,scope={},presentationScope={},descriptor={capabilities={}},scene={centerX=4864,centerY=3456}}
 local activity = JTG.CreateReflexTrainingActivity(session)
 activity:setup(session); activity:start()
-assert(#tracked == 21 and #activity.units == 21 and #timers == 3)
+assert(#tracked == 21 and #activity.units == 21 and #timers == 2)
 local counts = {}
 for _, unit in ipairs(tracked) do counts[unit.code] = (counts[unit.code] or 0) + 1 end
 assert(counts.hpea==4 and counts.Hamg==1)
@@ -118,7 +123,7 @@ for _, unit in ipairs(tracked) do
     assert(unit.owner == 15 and unit.code ~= 'hgry')
     assert(unit.x >= activity.minX and unit.x <= activity.maxX and unit.y >= activity.minY and unit.y <= activity.maxY)
 end
-local function click(unit) selectedUnit=unit;unit.trigger.action() end
+local function click(unit) selectedUnit=unit;selectionTrigger.action() end
 local footmen,priest,knight={},nil,nil
 for _,unit in ipairs(tracked) do
     if unit.code=='hfoo' then footmen[#footmen+1]=unit end
@@ -126,42 +131,47 @@ for _,unit in ipairs(tracked) do
     if unit.code=='hkni' then knight=unit end
 end
 click(footmen[1]);assert(activity.correct==0,'Countdown accepted a target')
-timers[1]();assert(#orders==0,'Crowd moved before GO')
+activity:update();assert(#orders==0,'Crowd moved before GO')
 assert(activity.status.text:find('3') and not activity.icons[1].visible)
-timers[3]();assert(activity.countdown==2)
-timers[3]();assert(activity.countdown==1)
-timers[3]();assert(activity.started and timers[3].paused)
+timers[2]();assert(activity.countdown==2)
+timers[2]();assert(activity.countdown==1)
+timers[2]();assert(not activity.started and timers[2].paused)
 assert(activity.icons[1].visible and activity.icons[1].w==0.064)
 assert(activity.icons[1].texture=='icon:hfoo' and activity.icons[2].texture=='icon:hfoo')
-for _=1,9 do timers[2]() end
-assert(activity.icons[1].y==0.30,'Popup did not hold for 0.2 seconds')
-for _=1,8 do timers[2]() end
+for _=1,19 do timers[1]() end
+assert(activity.icons[1].y==0.30 and not activity.started and activity.elapsed==0,
+    'Popup must hold 0.4 seconds before GO and the exercise timer')
+click(footmen[1]);assert(activity.correct==0,'Preview accepted a target before GO')
+timers[1]();assert(activity.started and activity.elapsed==0 and #timers==3)
+assert(activity.status.text:find('GO!',1,true))
+local movementTimer=timers[3]
+for _=1,5 do timers[1]() end
 assert(activity.icons[1].y>0.30 and activity.icons[1].y<0.484,'Icons did not animate between positions')
 activity:hidePresentationForMenu()
 assert(not activity.icons[1].visible and not activity.status.visible)
 click(footmen[1]);assert(activity.correct==0,'Hidden exercise accepted a target')
 activity:restorePresentation();assert(activity.icons[1].visible)
-for _=1,15 do timers[2]() end
+for _=1,15 do timers[1]() end
 assert(activity.icons[1].y==0.484 and activity.icons[1].w==0.032)
-assert(timers[2].paused,'Finished cue should not continue its animation timer')
-click(tracked[1].code=='hpea' and tracked[1] or {trigger=footmen[1].trigger})
+assert(timers[1].paused,'Finished cue should not continue its animation timer')
+click(tracked[1].code=='hpea' and tracked[1] or {})
 assert(activity.correct==0,'Wrong unit advanced targets')
 click(footmen[1]);assert(activity.correct==1 and footmen[1].alpha==100 and activity.icons[1].alpha==65)
 click(footmen[1]);assert(activity.correct==1,'Same Footman counted twice')
 click(priest);assert(activity.correct==2 and activity.completed[3],'Targets must allow any order')
-for _=1,12 do timers[1]() end
+for _=1,12 do movementTimer() end
 assert(#orders >= 21, 'Walkers did not receive independent orders')
 local first = activity.units[1]
 assert(first.targetX ~= activity.units[2].targetX or first.targetY ~= activity.units[2].targetY)
 local before = #orders
-for _=1,12 do timers[1]() end
+for _=1,12 do movementTimer() end
 assert(#orders > before, 'Blocked walkers did not choose a new destination')
 for _, order in ipairs(orders) do
     assert(order.order == 'move' and order.x >= activity.minX and order.x <= activity.maxX)
     assert(order.y >= activity.minY and order.y <= activity.maxY)
 end
 first.unit.x = activity.maxX + 100
-timers[1](); assert(first.unit.x < activity.maxX)
+movementTimer(); assert(first.unit.x < activity.maxX)
 local count, previousOrders = #tracked, #orders
 activity:hidePresentationForMenu(); activity:restorePresentation()
 activity:discardPresentationForLoad(); activity:rebuildPresentation()
@@ -173,8 +183,8 @@ assert(not activity.icons[1].visible and not activity.status.visible)
 for _,unit in ipairs(tracked) do assert(unit.paused) end
 activity:hidePresentationForMenu();activity:restorePresentation()
 assert(activity.resultCard.spec.visible,'Completed result did not restore')
-activity:cleanup(); timers[1](); assert(#orders == previousOrders)
-session.active = false; timers[1](); activity:afterCleanup(); assert(#activity.units == 0)
+activity:cleanup(); movementTimer(); assert(#orders == previousOrders)
+session.active = false; movementTimer(); activity:afterCleanup(); assert(#activity.units == 0)
 useMaximum=true
 local upperSession={active=true,scope={},presentationScope={},descriptor={capabilities={}},scene={centerX=4864,centerY=3456}}
 local upper=JTG.CreateReflexTrainingActivity(upperSession);upper:setup(upperSession)

@@ -2,13 +2,15 @@
 
 Source iteration: v0.1.3-alpha4. The distributed release remains v0.1.2-beta1.
 
+Unpackaged correction after alpha4: selection is registered on Player 0's unit-selection event, not neutral units' individual events. The icon preview now precedes GO; clicks, walking and elapsed time begin when the icons depart the center.
+
 Fixed in alpha4: the crowd now translates the shared selector's historical Mortar Team/Siege Engine keys to native `hmtm`/`hmtt` IDs. Alpha3 failed at startup when `hmtn` could not create a unit. The regression now runs the actual shared Human roster and rejects invalid native IDs instead of accepting every mocked creation request.
 
 The Skill Training card opens a shared briefing with placeholder Lorem ipsum text and one Start Training choice. That choice enters the south arena directly. The shared toolbar offers Menu, Redo and Pause; live briefing pages retain Resume and Exit.
 
 The prototype uses the shared Human roster's 17 ground entries (48–92 units). Regular unit counts independently vary from four to eight, each hero has one, and each summon type shares a random four-to-eight-unit budget across its levels. Any indivisible remainder is distributed in roster order. This includes workers, Militia, normal ground military units, heroes and all three Water Elemental levels. Flying entries are excluded. All are neutral-passive owned, blue, invulnerable and selectable, so clicking cannot interrupt their walking or populate the player's hero bar. Native collision and movement speeds are retained.
 
-A shared three-second countdown shows 3, 2, 1, GO. On GO, the fixed target row (Footman, Footman, Priest, Knight) appears at screen center with 200% icon size. After a 0.2-second hold it smoothly moves and shrinks over 0.3 seconds to normal-size icons at the top right, below the toolbar. Gameplay and independent walking begin on GO.
+A shared three-second countdown shows 3, 2, 1. The fixed target row (Footman, Footman, Priest, Knight) then appears at screen center with 200% icon size. After a 0.4-second hold, GO appears and the icons smoothly move and shrink over 0.3 seconds to normal-size icons at the top right, below the toolbar. Gameplay, elapsed time and independent walking begin on GO. Selections during the preview cannot advance the targets.
 
 The player must select two distinct Footmen, one Priest and one Knight, in any order. Each correct selection dims one target icon and gives the unit persistent transparency, a green tint and the native Banish target effect (verified in the local ability skin data). This is a visual marker; it does not apply Banish's gameplay effects. Repeated selections of the same unit and incorrect selections do not advance the targets. Selection during countdowns, menus or pauses is ignored. Four correct selections stop the crowd and show the shared success card with Redo and Menu. There is no time limit, penalty or performance score yet.
 
@@ -23,7 +25,7 @@ Redo randomizes a fresh crowd. Menu/load frame restoration retains countdown/ani
 - Briefing has the placeholder and Start Training; starting centers the arena.
 - Units fill the view without being obscured by the toolbar or lower interface.
 - All units are Human ground models and independently wander without becoming permanently stuck.
-- Countdown prevents premature clicks; four large icons appear on GO and visibly move below the toolbar.
+- Countdown and the 0.4-second central preview prevent premature clicks; GO appears when the icons begin moving below the toolbar and the exercise timer starts.
 - Click a Priest, Knight and two different Footmen in any order. Correct units become transparent and their icons dim. Re-clicking the same Footman cannot complete both slots.
 - Wrong selections do not advance the targets; the fourth correct selection shows the shared success card.
 - Judge density, arena proportions and whether edge recovery causes distracting jumps.

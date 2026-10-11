@@ -5,7 +5,7 @@ local WIDTH, HEIGHT = 1800, 1000
 local MIN_COPIES, MAX_COPIES, COLUMNS, ROWS = 4, 8, 15, 8
 local TICK = 0.25
 local TARGETS = {"hfoo", "hfoo", "hmpr", "hkni"}
-local CUE_TICK, CUE_HOLD, CUE_MOVE = 0.02, 0.2, 0.3
+local CUE_TICK, CUE_HOLD, CUE_MOVE = 0.02, 0.4, 0.3
 
 function JTG.OpenReflexTrainingMenu(originCategory, pauseGame, restorePage, restoreData)
     local category = originCategory or "skills"
@@ -43,8 +43,8 @@ function JTG.CreateReflexTrainingActivity(session)
         started = false, completed = {}, correct = 0, countdown = 3, presentationVisible = true}
     function activity:refreshStatus()
         if not self.status then return end
-        local text = not self.started and tostring(self.countdown) or
-            (self.cueElapsed < CUE_HOLD and "GO!" or "")
+        local text = not self.started and (self.countdown>0 and tostring(self.countdown) or "") or
+            (self.elapsed < 0.5 and "GO!" or "")
         BlzFrameSetText(self.status, "|cffffcc00" .. text .. "|r")
         BlzFrameSetVisible(self.status,self.presentationVisible and not self.finished and text~="")
     end
@@ -61,7 +61,7 @@ function JTG.CreateReflexTrainingActivity(session)
             local size = 0.064 + (0.032 - 0.064) * t
             BlzFrameSetSize(icon,size,size)
             BlzFrameSetAlpha(icon,self.completed[index] and 65 or 255)
-            BlzFrameSetVisible(icon,self.presentationVisible and self.started and not self.finished)
+            BlzFrameSetVisible(icon,self.presentationVisible and self.cueVisible and not self.finished)
         end
     end
     function activity:showResult()
@@ -124,6 +124,7 @@ function JTG.CreateReflexTrainingActivity(session)
     function activity:update()
         if self.finished or not self.started or self.paused then return end
         self.elapsed = self.elapsed + TICK
+        self:refreshStatus()
         for _, walker in ipairs(self.units) do
             local unit = walker.unit
             if GetUnitTypeId(unit) ~= 0 and not IsUnitType(unit, UNIT_TYPE_DEAD) then
@@ -204,6 +205,9 @@ function JTG.CreateReflexTrainingActivity(session)
         assert(#roster <= #slots, "Reflex crowd exceeds separated spawn capacity")
         Shuffle(roster); Shuffle(slots)
         local selected = JTG.ScopeTrackTrigger(current.scope,CreateTrigger())
+        -- Register the selecting PLAYER, not an event on neutral-owned units.
+        -- Unit-event context does not reliably supply GetTriggerPlayer().
+        TriggerRegisterPlayerUnitEvent(selected,Player(0),EVENT_PLAYER_UNIT_SELECTED,nil)
         TriggerAddAction(selected,JTG.GuardSession(current,function()
             if GetTriggerPlayer() ~= Player(0) then return end
             self:selectTarget(GetTriggerUnit())
@@ -225,7 +229,6 @@ function JTG.CreateReflexTrainingActivity(session)
                 stalled = 0, nextChoice = GetRandomReal(0, 1.5)}
             self.units[#self.units + 1] = walker
             self.walkersByUnit[unit] = walker
-            TriggerRegisterUnitEvent(selected,unit,EVENT_UNIT_SELECTED)
         end
         self:createPresentation()
     end
@@ -236,17 +239,22 @@ function JTG.CreateReflexTrainingActivity(session)
             SetCameraPosition(self.centerX, self.centerY)
             ClearSelection()
         end
-        JTG.StartScopedTimer(session, session.scope, TICK, true, function() self:update() end)
         self.cueTimer = JTG.StartScopedTimer(session, session.scope, CUE_TICK, true, function()
-            if not self.started or self.finished or self.paused or self.cueElapsed >= CUE_HOLD+CUE_MOVE then return end
+            if not self.cueVisible or self.finished or self.paused or self.cueElapsed >= CUE_HOLD+CUE_MOVE then return end
             self.cueElapsed = math.min(CUE_HOLD+CUE_MOVE,self.cueElapsed+CUE_TICK)
+            if not self.started and self.cueElapsed>=CUE_HOLD then
+                self.started=true
+                self.elapsed=0
+                if GetLocalPlayer()==Player(0) then ClearSelection() end
+                JTG.StartScopedTimer(session,session.scope,TICK,true,function() self:update() end)
+            end
             self:refreshIcons(); self:refreshStatus()
             if self.cueElapsed >= CUE_HOLD+CUE_MOVE then PauseTimer(self.cueTimer) end
         end)
         JTG.Training.Countdown(self,session,3,function(remaining)
             self.countdown = remaining; self:refreshStatus()
         end,function()
-            self.countdown,self.started,self.cueElapsed = 0,true,0
+            self.countdown,self.cueVisible,self.cueElapsed = 0,true,0
             self:refreshStatus(); self:refreshIcons()
         end)
     end
