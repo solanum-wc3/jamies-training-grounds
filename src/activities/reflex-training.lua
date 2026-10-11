@@ -270,10 +270,14 @@ function JTG.CreateReflexTrainingActivity(session)
             end
             local damage=JTG.ScopeTrackTrigger(current.scope,CreateTrigger())
             for _,owner in ipairs({Player(1),Player(2)}) do
-                TriggerRegisterPlayerUnitEvent(damage,owner,EVENT_PLAYER_UNIT_DAMAGING,nil)
+                TriggerRegisterPlayerUnitEvent(damage,owner,EVENT_PLAYER_UNIT_DAMAGED,nil)
             end
             TriggerAddAction(damage,JTG.GuardSession(current,function()
-                if self.walkersByUnit[GetTriggerUnit()] then BlzSetEventDamage(0) end
+                if self.walkersByUnit[GetTriggerUnit()] then
+                    -- Keep a concentrated volley from killing a target between refreshes.
+                    local life=GetUnitState(GetTriggerUnit(),UNIT_STATE_LIFE)
+                    BlzSetEventDamage(math.min(GetEventDamage(),math.max(0,life-1)))
+                end
             end))
         end
         for row = 0, ROWS - 1 do
@@ -344,6 +348,16 @@ function JTG.CreateReflexTrainingActivity(session)
             SetCameraField(CAMERA_FIELD_ANGLE_OF_ATTACK, 304, 0)
             SetCameraPosition(self.centerX, self.centerY)
             ClearSelection()
+        end
+        if self.combat then
+            JTG.StartScopedTimer(session,session.scope,1,true,function()
+                if self.finished or self.paused then return end
+                for _,walker in ipairs(self.units) do
+                    if GetUnitTypeId(walker.unit)~=0 and not IsUnitType(walker.unit,UNIT_TYPE_DEAD) then
+                        SetUnitState(walker.unit,UNIT_STATE_LIFE,BlzGetUnitMaxHP(walker.unit))
+                    end
+                end
+            end)
         end
         if self.layout==2 and self.mode=="identify" then self:crossCrowd() end
         self.cueTimer = JTG.StartScopedTimer(session, session.scope, CUE_TICK, true, function()

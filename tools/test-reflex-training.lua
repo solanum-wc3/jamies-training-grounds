@@ -41,14 +41,20 @@ function CreateTrigger() return {} end
 function JTG.ScopeTrackTrigger(_,trigger) return trigger end
 local selectionTrigger,damageTrigger
 ALLIANCE_PASSIVE="passive"
-EVENT_PLAYER_UNIT_DAMAGING="damaging"
+EVENT_PLAYER_UNIT_DAMAGED="damaging"
 local alliances={}
 function GetPlayerAlliance(left,right) return alliances[left..":"..right]~=false end
 function SetPlayerAlliance(left,right,kind,value) alliances[left..":"..right]=value end
+UNIT_STATE_LIFE="life"
+function GetUnitState(unit) return unit.life or 100 end
+function SetUnitState(unit,state,value) unit.life=value end
+function BlzGetUnitMaxHP() return 100 end
+local incomingDamage=10
+function GetEventDamage() return incomingDamage end
 local interceptedDamage
 function BlzSetEventDamage(value) interceptedDamage=value end
 function TriggerRegisterPlayerUnitEvent(trigger,player,event)
-    if event==EVENT_PLAYER_UNIT_DAMAGING then damageTrigger=trigger;return end
+    if event==EVENT_PLAYER_UNIT_DAMAGED then damageTrigger=trigger;return end
     assert(player==0 and event==EVENT_PLAYER_UNIT_SELECTED)
     selectionTrigger=trigger
 end
@@ -240,6 +246,7 @@ for _,layout in ipairs({2,3}) do
         assert((coordinate<center)==(walker.color==PLAYER_COLOR_BLUE),'Races mixed before divided setup')
     end
     local orderCount=#orders
+    local firstTimer=#timers+1
     split:start()
     if layout==2 then
         assert(split.combat and not GetPlayerAlliance(1,2) and not GetPlayerAlliance(2,1))
@@ -247,7 +254,12 @@ for _,layout in ipairs({2,3}) do
             assert(walker.unit.owner==(walker.color==PLAYER_COLOR_BLUE and 1 or 2))
             assert(not walker.unit.invulnerable and walker.unit.acquire==600)
         end
-        selectedUnit=split.units[1].unit;damageTrigger.action();assert(interceptedDamage==0)
+        selectedUnit=split.units[1].unit;damageTrigger.action();assert(interceptedDamage==10,'Normal attacks must deal damage')
+        selectedUnit.life=5;damageTrigger.action();assert(interceptedDamage==4,'Lethal volley must leave target alive')
+        split:setPaused(true);timers[firstTimer]();assert(selectedUnit.life==5)
+        split:setPaused(false);timers[firstTimer]();assert(selectedUnit.life==100,'One-second refresh must restore full health during countdown')
+        split.finished=true;selectedUnit.life=40;timers[firstTimer]();assert(selectedUnit.life==40)
+        split.finished=false
 
         assert(#orders==orderCount+#split.units,'Crossing must begin before countdown')
         assert(orders[#orders].order=='attack')
