@@ -1,6 +1,6 @@
 # Reflex Training prototype
 
-Source changes after v0.1.3-alpha2; these changes are not packaged yet. The distributed release remains v0.1.2-beta1.
+Source iteration: v0.1.3-alpha3. The distributed release remains v0.1.2-beta1.
 
 The Skill Training card opens a shared briefing with placeholder Lorem ipsum text and one Start Training choice. That choice enters the south arena directly. The shared toolbar offers Menu, Redo and Pause; live briefing pages retain Resume and Exit.
 
