@@ -79,11 +79,12 @@ local oldImmediate=IssueImmediateOrder
 local holds={}
 function IssueImmediateOrder(unit,order) holds[#holds+1]={unit=unit,order=order};return true end
 chain.chainTargets={firstHit,nextHit,{id='hfoo',x=500,y=0}}
-orders={};chain:updateChainCompanions();assert(#orders>0)
+orders={};chain:updateChainCompanions(0.49);assert(#orders==0,'Footmen reacted before random delay')
+chain:updateChainCompanions(0.51);assert(#orders>0)
 local moving=chain.chainMoving[1]
 firstHit.x,firstHit.y=moving.x,moving.y
-chain:updateChainCompanions();assert(holds[#holds].unit==firstHit and holds[#holds].order=='holdposition')
-chain.target.x=800;chain:updateChainCompanions();assert(chain.chainMoving[1].x==800)
+chain:updateChainCompanions(1);assert(holds[#holds].unit==firstHit and holds[#holds].order=='holdposition')
+chain.target.x=800;chain:updateChainCompanions(1);assert(chain.chainMoving[1].x==800)
 IssueImmediateOrder=oldImmediate
 
 GetRandomReal,IssuePointOrder,UnitAddItemById,JTG.ScopeAdd,SetImagePosition,ShowImage=

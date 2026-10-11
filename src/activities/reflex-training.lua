@@ -1,4 +1,4 @@
--- Recognition prototype. Neutral ownership
+-- Recognition and reaction training. Neutral ownership
 -- keeps selection possible without player commands interrupting the walkers.
 JTG = JTG or {}
 local WIDTH, HEIGHT = 1800, 1000
@@ -14,13 +14,17 @@ function JTG.OpenReflexTrainingMenu(originCategory, pauseGame, restorePage, rest
         title = "Reflex Training", activityId = "skills.reflex",
         originCategory = category, pageId = "root", restoreData = {},
         pauseGame = pauseGame == true,
-        body = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-        choices = {{label = "Start Training", action = function()
-            release()
-            JTG.StartActivityAfterCleanup("skills.reflex", category, {}, nil, "new-crowd")
-        end}},
+        body = "Choose a training mode. Identify the requested unit types in any order, or click each Rejuvenation-marked unit as quickly as possible through ten trials.",
+        choices = {},
         backAction = function() JTG.UI.ShowCategory(category) end,
     }
+    for _, mode in ipairs({{id="identify",label="Identify Units"},{id="reflex",label="Reflex Test"}}) do
+        local id=mode.id
+        spec.choices[#spec.choices+1]={label=mode.label,action=function()
+            release()
+            JTG.StartActivityAfterCleanup("skills.reflex",category,{mode=id},nil,"new-crowd")
+        end}
+    end
     if pauseGame then
         spec.resumeAction = function() release(); JTG.ResumeActivity() end
         spec.exitAction = function()
@@ -39,12 +43,16 @@ local function Shuffle(list)
 end
 
 function JTG.CreateReflexTrainingActivity(session)
-    local activity = {units = {}, walkersByUnit = {}, elapsed = 0, finished = false,
+    local carry=session.restartData or {}
+    local activity = {mode=carry.mode or "identify", layout=GetRandomInt(1,3), vertical=GetRandomInt(0,1)==1, reactions={}, reactionElapsed=0, units = {}, walkersByUnit = {}, elapsed = 0, finished = false,
         started = false, completed = {}, correct = 0, countdown = 3, presentationVisible = true}
     function activity:refreshStatus()
         if not self.status then return end
         local text = not self.started and (self.countdown>0 and tostring(self.countdown) or "") or
             (self.elapsed < 0.5 and "GO!" or "")
+        if self.started and self.mode=="reflex" and text=="" then
+            text="Click the marked unit: "..self.correct.."/10"
+        end
         BlzFrameSetText(self.status, "|cffffcc00" .. text .. "|r")
         BlzFrameSetVisible(self.status,self.presentationVisible and not self.finished and text~="")
     end
@@ -61,14 +69,20 @@ function JTG.CreateReflexTrainingActivity(session)
             local size = 0.064 + (0.032 - 0.064) * t
             BlzFrameSetSize(icon,size,size)
             BlzFrameSetAlpha(icon,self.completed[index] and 65 or 255)
-            BlzFrameSetVisible(icon,self.presentationVisible and self.cueVisible and not self.finished)
+            BlzFrameSetVisible(icon,self.mode=="identify" and self.presentationVisible and self.cueVisible and not self.finished)
         end
     end
     function activity:showResult()
         JTG.UI.HideToolbar()
         self:refreshStatus(); self:refreshIcons()
+        local details="You found two Footmen, one Priest and one Knight."
+        if self.mode=="reflex" then
+            local sum,best=0,math.huge
+            for _,time in ipairs(self.reactions) do sum=sum+time;best=math.min(best,time) end
+            details=string.format("10 targets clicked. Average: %.2fs. Fastest: %.2fs.",sum/#self.reactions,best)
+        end
         JTG.UI.ShowResultCard(self.resultCard,{title="Well done!",tone="success",
-            details="You found two Footmen, one Priest and one Knight.",visible=self.presentationVisible,
+            details=details,visible=self.presentationVisible,
             actions={retry={},menu={}}})
     end
     function activity:createPresentation()
@@ -91,9 +105,37 @@ function JTG.CreateReflexTrainingActivity(session)
         self.resultCard=JTG.UI.CreateResultCard(session,{name="JTGReflexResult",width=0.40,detailsHeight=0.07})
         self:refreshStatus(); self:refreshIcons()
     end
+    function activity:markNextTarget()
+        local previous=self.marked
+        local candidates={}
+        for _,walker in ipairs(self.units) do
+            if walker.unit~=previous then candidates[#candidates+1]=walker.unit end
+        end
+        self.marked=candidates[GetRandomInt(1,#candidates)]
+        self.reactionElapsed=0
+        self.marker=JTG.ScopeTrackEffect(session.scope,AddSpecialEffectTarget(
+            "Abilities\\Spells\\NightElf\\Rejuvenation\\RejuvenationTarget.mdl",self.marked,"origin"))
+    end
     function activity:selectTarget(unit)
         local walker = self.walkersByUnit[unit]
-        if not self.started or self.finished or self.paused or not self.presentationVisible or not walker or walker.accepted then return end
+        if not self.started or self.finished or self.paused or not self.presentationVisible or not walker or self.mode=="identify" and walker.accepted then return end
+        if self.mode=="reflex" then
+            if unit~=self.marked then return end
+            self.reactions[#self.reactions+1]=self.reactionElapsed
+            self.correct=self.correct+1
+            BlzSetSpecialEffectAlpha(self.marker,0)
+            self.marked=nil
+            if self.correct==10 then
+                self.finished=true
+                for _,entry in ipairs(self.units) do PauseUnit(entry.unit,true) end
+                self:showResult()
+            else
+                self.marked=unit
+                self:markNextTarget()
+                self:refreshStatus()
+            end
+            return
+        end
         local code = GetUnitTypeId(unit)
         for index, target in ipairs(TARGETS) do
             if not self.completed[index] and code == FourCC(target) then
@@ -183,6 +225,7 @@ function JTG.CreateReflexTrainingActivity(session)
         for _, entry in ipairs(choices) do
             local choice=entry.definition
             local count = choice.hero and 1 or GetRandomInt(MIN_COPIES, MAX_COPIES)
+            if choice.rawcode=="hfoo" then count=GetRandomInt(4,6) end
             local family = JTG.GetSurroundCustomSummonFamily(choice.rawcode)
             if family and not choice.hero then
                 local index = (familyIndices[family] or 0) + 1
@@ -207,6 +250,16 @@ function JTG.CreateReflexTrainingActivity(session)
         end
         assert(#roster <= #slots, "Reflex crowd exceeds separated spawn capacity")
         Shuffle(roster); Shuffle(slots)
+        local raceSlots,raceIndices={},{}
+        if self.layout~=1 then
+            raceSlots={[PLAYER_COLOR_BLUE]={},[PLAYER_COLOR_RED]={}}
+            for _,slot in ipairs(slots) do
+                local firstHalf=self.vertical and slot.x<self.centerX or not self.vertical and slot.y<self.centerY
+                local color=firstHalf and PLAYER_COLOR_BLUE or PLAYER_COLOR_RED
+                local group=raceSlots[color];group[#group+1]=slot
+            end
+            for _,color in ipairs({PLAYER_COLOR_BLUE,PLAYER_COLOR_RED}) do Shuffle(raceSlots[color]) end
+        end
         local selected = JTG.ScopeTrackTrigger(current.scope,CreateTrigger())
         -- Register the selecting PLAYER, not an event on neutral-owned units.
         -- Unit-event context does not reliably supply GetTriggerPlayer().
@@ -221,6 +274,11 @@ function JTG.CreateReflexTrainingActivity(session)
         for index, entry in ipairs(roster) do
             local rawcode=entry.rawcode
             local slot = slots[index]
+            if self.layout~=1 then
+                raceIndices[entry.color]=(raceIndices[entry.color] or 0)+1
+                slot=raceSlots[entry.color][raceIndices[entry.color]]
+                assert(slot,"Reflex race exceeds its half-arena capacity")
+            end
             local unit = JTG.ScopeTrackUnit(current.scope,
                 CreateUnit(Player(PLAYER_NEUTRAL_PASSIVE), FourCC(rawcode), slot.x, slot.y, GetRandomReal(0, 360)))
             assert(unit ~= nil,"Reflex could not create native unit "..rawcode)
@@ -229,12 +287,20 @@ function JTG.CreateReflexTrainingActivity(session)
             SetUnitAcquireRange(unit, 0)
             SetUnitCreepGuard(unit, false)
             assert(not IsUnitType(unit, UNIT_TYPE_FLYING), "Flying unit in Reflex ground crowd")
-            local walker = {unit = unit, lastX = GetUnitX(unit), lastY = GetUnitY(unit),
+            local walker = {unit = unit, color=entry.color, lastX = GetUnitX(unit), lastY = GetUnitY(unit),
                 stalled = 0, nextChoice = GetRandomReal(0, 1.5)}
             self.units[#self.units + 1] = walker
             self.walkersByUnit[unit] = walker
         end
         self:createPresentation()
+    end
+    function activity:crossCrowd()
+        for _,walker in ipairs(self.units) do
+            walker.targetX=self.vertical and (2*self.centerX-GetUnitX(walker.unit)) or GetUnitX(walker.unit)
+            walker.targetY=self.vertical and GetUnitY(walker.unit) or (2*self.centerY-GetUnitY(walker.unit))
+            walker.stalled=0
+            IssuePointOrder(walker.unit,"attack",walker.targetX,walker.targetY)
+        end
     end
     function activity:start()
         if GetLocalPlayer() == Player(0) then
@@ -243,12 +309,24 @@ function JTG.CreateReflexTrainingActivity(session)
             SetCameraPosition(self.centerX, self.centerY)
             ClearSelection()
         end
+        if self.layout==2 then self:crossCrowd() end
         self.cueTimer = JTG.StartScopedTimer(session, session.scope, CUE_TICK, true, function()
             if not self.cueVisible or self.finished or self.paused or self.cueElapsed >= CUE_HOLD+CUE_MOVE then return end
             self.cueElapsed = math.min(CUE_HOLD+CUE_MOVE,self.cueElapsed+CUE_TICK)
             if not self.started and self.cueElapsed>=CUE_HOLD then
                 self.started=true
                 self.elapsed=0
+                if self.layout==3 then
+                    for _,walker in ipairs(self.units) do self:chooseDestination(walker) end
+                end
+                if self.mode=="reflex" then
+                    self:markNextTarget()
+                    JTG.StartScopedTimer(session,session.scope,0.01,true,function()
+                        if not self.finished and not self.paused and self.marked then
+                            self.reactionElapsed=self.reactionElapsed+0.01
+                        end
+                    end)
+                end
                 if GetLocalPlayer()==Player(0) then ClearSelection() end
                 JTG.StartScopedTimer(session,session.scope,TICK,true,function() self:update() end)
             end
@@ -262,11 +340,13 @@ function JTG.CreateReflexTrainingActivity(session)
             self:refreshStatus(); self:refreshIcons()
         end)
     end
-    function activity:captureResetState() return {} end
+    function activity:captureResetState() return {mode=self.mode} end
     function activity:hidePresentationForMenu()
+        if self.marker then BlzSetSpecialEffectAlpha(self.marker,0) end
         JTG.Training.SetPresentation(self,session,false,nil,function() self:refreshIcons() end)
     end
     function activity:restorePresentation()
+        if self.marker and self.marked and not self.finished then BlzSetSpecialEffectAlpha(self.marker,255) end
         JTG.Training.SetPresentation(self,session,true,function()
             self:refreshIcons()
             if self.finished then self:showResult() end

@@ -73,7 +73,7 @@ local planned = {
 
 JTG.RegisterActivity({
     id = "skills.reflex", category = "skills", title = "Reflex Training",
-    description = "Find the requested units in a moving crowd.",
+    description = "Identify unit types or react to marked targets in a moving crowd.",
     artwork = "JTGMenu\\ReflexTraining.dds", status = "available", sceneId = "arena.south",
     cameraDistance = 1650,
     capabilities = {restart = true, menu = true, pause = true, quests = false},

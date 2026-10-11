@@ -33,6 +33,7 @@ function SetUnitInvulnerable() end
 function SetUnitAcquireRange() end
 function SetUnitCreepGuard() end
 function SetUnitVertexColor(unit,r,g,b,alpha) unit.alpha=alpha end
+function BlzSetSpecialEffectAlpha(effect,alpha) effect.alpha=alpha end
 function PauseUnit(unit,paused) unit.paused=paused end
 function AddSpecialEffectTarget(model,unit) return {model=model,unit=unit} end
 function JTG.ScopeTrackEffect(scope,effect) scope[#scope+1]=effect;return effect end
@@ -111,14 +112,14 @@ function JTG.StartActivityAfterCleanup(id) launched = id end
 dofile('src/infrastructure/training.lua')
 dofile('src/activities/reflex-training.lua')
 JTG.OpenReflexTrainingMenu('skills', false)
-assert(menu.pageId == 'root' and #menu.choices == 1 and menu.choices[1].label == 'Start Training')
+assert(menu.pageId == 'root' and #menu.choices == 2 and menu.choices[1].label == 'Identify Units' and menu.choices[2].label == 'Reflex Test')
 menu.choices[1].action(); assert(launched == 'skills.reflex')
 JTG.OpenReflexTrainingMenu('skills', true)
 assert(menu.resumeAction and menu.exitAction and menu.backAction)
 local session = {active=true,scope={},presentationScope={},descriptor={capabilities={}},scene={centerX=4864,centerY=3456}}
 local activity = JTG.CreateReflexTrainingActivity(session)
 activity:setup(session); activity:start()
-assert(#tracked == 20 and #activity.units == 20 and #timers == 2)
+assert(#tracked == 22 and #activity.units == 22 and #timers == 2)
 local counts = {}
 for _, unit in ipairs(tracked) do counts[unit.code] = (counts[unit.code] or 0) + 1 end
 assert(counts.hpea==2 and counts.Hamg==1 and counts.opeo==2 and counts.Obla==1)
@@ -215,5 +216,50 @@ local realSession={active=true,scope={},presentationScope={},descriptor={capabil
 local real=JTG.CreateReflexTrainingActivity(realSession);real:setup(realSession)
 local realCounts={}
 for _,walker in ipairs(real.units) do realCounts[walker.unit.code]=(realCounts[walker.unit.code] or 0)+1 end
-assert(realCounts.hmtm==4 and realCounts.hmtt==4 and realCounts.ocat==4 and #real.units==104)
+assert(realCounts.hmtm==4 and realCounts.hmtt==4 and realCounts.ocat==4 and #real.units==106)
 print('Passed: Reflex population bounds, shared countdown, animated target cue, distinct any-order clicks, ethereal marking, movement, menu/load restoration, completion and cleanup guards.')
+
+-- Both divided layouts must assign separate halves, not simply fill sorted
+-- slots until one race runs out. Unequal populations still stay separated.
+for _,layout in ipairs({2,3}) do
+    local splitSession={active=true,scope={},presentationScope={},descriptor={capabilities={}},scene={centerX=4864,centerY=3456}}
+    local split=JTG.CreateReflexTrainingActivity(splitSession)
+    split.layout,split.vertical=layout,layout==2
+    split:setup(splitSession)
+    for _,walker in ipairs(split.units) do
+        local coordinate=split.vertical and walker.unit.x or walker.unit.y
+        local center=split.vertical and split.centerX or split.centerY
+        assert((coordinate<center)==(walker.color==PLAYER_COLOR_BLUE),'Races mixed before divided setup')
+    end
+    local orderCount=#orders
+    split:start()
+    if layout==2 then
+        assert(#orders==orderCount+#split.units,'Crossing must begin before countdown')
+        assert(orders[#orders].order=='attack')
+    else assert(#orders==orderCount,'Divided random walkers moved before countdown') end
+end
+local reflexSession={active=true,scope={},presentationScope={},restartData={mode='reflex'},descriptor={capabilities={}},scene={centerX=4864,centerY=3456}}
+local reflex=JTG.CreateReflexTrainingActivity(reflexSession)
+reflex.layout=1;reflex:setup(reflexSession)
+local timerStart=#timers
+reflex:start()
+local cue,countdown=timers[timerStart+1],timers[timerStart+2]
+countdown();countdown();countdown()
+for _=1,20 do cue() end
+assert(reflex.started and reflex.marked and not reflex.icons[1].visible)
+local reactionTimer=timers[timerStart+3]
+reflex:setPaused(true);reactionTimer();assert(reflex.reactionElapsed==0)
+reflex:setPaused(false)
+for trial=1,10 do
+    for _=1,12 do reactionTimer() end
+    local marked,marker=reflex.marked,reflex.marker
+    reflex:selectTarget({});assert(reflex.correct==trial-1,'Wrong click counted')
+    reflex:hidePresentationForMenu();assert(marker.alpha==0)
+    reflex:restorePresentation();assert(marker.alpha==255)
+    reflex:selectTarget(marked)
+    assert(reflex.correct==trial and marker.alpha==0)
+    if trial<10 then assert(reflex.marked~=marked) end
+end
+assert(reflex.finished and #reflex.reactions==10 and reflex.resultCard.spec.details:find('Average:'))
+assert(reflex:captureResetState().mode=='reflex','Redo lost mode')
+print('Passed: divided crossing/random setups and ten timed Rejuvenation clicks with wrong-click, pause and presentation guards.')

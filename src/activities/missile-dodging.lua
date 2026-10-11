@@ -711,12 +711,15 @@ function JTG.CreateMissileDodgingActivity(session)
         return self.chainTargets[1]
     end
 
-    function activity:updateChainCompanions()
+    function activity:updateChainCompanions(dt)
         if self.finished or not Alive(self.target) then return end
         self.chainMoving=self.chainMoving or {}
+        self.chainDelays=self.chainDelays or {}
         local offsets={{0,120},{-120,-80},{120,-80}}
         for index,unit in ipairs(self.chainTargets or {}) do
-            if Alive(unit) then
+            self.chainDelays[index]=(self.chainDelays[index] or GetRandomReal(0.5,1))-(dt or 0.25)
+            if Alive(unit) and self.chainDelays[index]<=0 then
+                self.chainDelays[index]=GetRandomReal(0.5,1)
                 local x,y=GetUnitX(self.target)+offsets[index][1],GetUnitY(self.target)+offsets[index][2]
                 local dx,dy=GetUnitX(unit)-x,GetUnitY(unit)-y
                 if dx*dx+dy*dy>48^2 then
@@ -1650,7 +1653,7 @@ function JTG.CreateMissileDodgingActivity(session)
         end
         if self.danger.ability=="AOcl" and self.target then
             self:chainLightningTarget()
-            JTG.StartScopedTimer(current,current.scope,0.25,true,function() self:updateChainCompanions() end)
+            JTG.StartScopedTimer(current,current.scope,0.05,true,function() self:updateChainCompanions(0.05) end)
         end
         self.devourValid = self.target ~= nil and not IsUnitType(self.target, UNIT_TYPE_HERO) and
             not IsUnitType(self.target, UNIT_TYPE_FLYING) and not IsUnitType(self.target, UNIT_TYPE_MECHANICAL) and
