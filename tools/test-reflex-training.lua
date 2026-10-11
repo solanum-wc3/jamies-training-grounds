@@ -29,8 +29,8 @@ function GetUnitX(unit) return unit.x end
 function GetUnitY(unit) return unit.y end
 function SetUnitPosition(unit, x, y) unit.x, unit.y = x, y end
 function SetUnitColor(unit, color) unit.color = color end
-function SetUnitInvulnerable() end
-function SetUnitAcquireRange() end
+function SetUnitInvulnerable(unit,value) unit.invulnerable=value end
+function SetUnitAcquireRange(unit,value) unit.acquire=value end
 function SetUnitCreepGuard() end
 function SetUnitVertexColor(unit,r,g,b,alpha) unit.alpha=alpha end
 function BlzSetSpecialEffectAlpha(effect,alpha) effect.alpha=alpha end
@@ -39,8 +39,16 @@ function AddSpecialEffectTarget(model,unit) return {model=model,unit=unit} end
 function JTG.ScopeTrackEffect(scope,effect) scope[#scope+1]=effect;return effect end
 function CreateTrigger() return {} end
 function JTG.ScopeTrackTrigger(_,trigger) return trigger end
-local selectionTrigger
+local selectionTrigger,damageTrigger
+ALLIANCE_PASSIVE="passive"
+EVENT_PLAYER_UNIT_DAMAGING="damaging"
+local alliances={}
+function GetPlayerAlliance(left,right) return alliances[left..":"..right]~=false end
+function SetPlayerAlliance(left,right,kind,value) alliances[left..":"..right]=value end
+local interceptedDamage
+function BlzSetEventDamage(value) interceptedDamage=value end
 function TriggerRegisterPlayerUnitEvent(trigger,player,event)
+    if event==EVENT_PLAYER_UNIT_DAMAGING then damageTrigger=trigger;return end
     assert(player==0 and event==EVENT_PLAYER_UNIT_SELECTED)
     selectionTrigger=trigger
 end
@@ -91,7 +99,7 @@ function JTG.GetSurroundCustomRaceColumns(race)
         {kind="unit",enabled=true,rawcode="hfoo"},
         {kind="unit",enabled=true,rawcode="hmpr"},
         {kind="unit",enabled=true,rawcode="hkni"},
-        {kind="unit",enabled=false,rawcode="hgry"}}}
+        {kind="unit",enabled=false,rawcode="hgry"},{kind="unit",enabled=true,rawcode="ushd"}}}
 end
 function JTG.GetSurroundCustomSummonFamily(rawcode)
     if rawcode=='hwat' or rawcode=='hwt2' or rawcode=='hwt3' then return 'AHwe' end
@@ -123,11 +131,11 @@ assert(#tracked == 22 and #activity.units == 22 and #timers == 2)
 local counts = {}
 for _, unit in ipairs(tracked) do counts[unit.code] = (counts[unit.code] or 0) + 1 end
 assert(counts.hpea==2 and counts.Hamg==1 and counts.opeo==2 and counts.Obla==1)
-assert(counts.hwat==1 and counts.hwt2==1 and counts.hwt3==1 and counts.osw1==1 and counts.osw2==1 and counts.osw3==1,
+assert(counts.hwat==1 and counts.hwt2==1 and counts.hwt3==1 and counts.osw1==2 and counts.osw2==1 and counts.osw3==nil,
     'Summon population must be divided across levels')
 assert(camera.x == 4864 and camera.y == 3456)
 for _, unit in ipairs(tracked) do
-    assert(unit.owner == 15 and unit.code ~= 'hgry')
+    assert(unit.owner == 15 and unit.code ~= 'hgry' and unit.code~='ushd')
     assert(unit.color==(unit.code:sub(1,1):lower()=='o' and PLAYER_COLOR_RED or PLAYER_COLOR_BLUE))
     assert(unit.x >= activity.minX and unit.x <= activity.maxX and unit.y >= activity.minY and unit.y <= activity.maxY)
 end
@@ -234,19 +242,30 @@ for _,layout in ipairs({2,3}) do
     local orderCount=#orders
     split:start()
     if layout==2 then
+        assert(split.combat and not GetPlayerAlliance(1,2) and not GetPlayerAlliance(2,1))
+        for _,walker in ipairs(split.units) do
+            assert(walker.unit.owner==(walker.color==PLAYER_COLOR_BLUE and 1 or 2))
+            assert(not walker.unit.invulnerable and walker.unit.acquire==600)
+        end
+        selectedUnit=split.units[1].unit;damageTrigger.action();assert(interceptedDamage==0)
+
         assert(#orders==orderCount+#split.units,'Crossing must begin before countdown')
         assert(orders[#orders].order=='attack')
     else assert(#orders==orderCount,'Divided random walkers moved before countdown') end
 end
 local reflexSession={active=true,scope={},presentationScope={},restartData={mode='reflex'},descriptor={capabilities={}},scene={centerX=4864,centerY=3456}}
 local reflex=JTG.CreateReflexTrainingActivity(reflexSession)
-reflex.layout=1;reflex:setup(reflexSession)
+reflex.layout=2;reflex:setup(reflexSession)
+assert(#reflex.units==math.floor(reflex.fullPopulation*0.8+0.5))
+for _,walker in ipairs(reflex.units) do assert(walker.unit.code~='osw3') end
+local stationaryOrders=#orders
 local timerStart=#timers
 reflex:start()
 local cue,countdown=timers[timerStart+1],timers[timerStart+2]
 countdown();countdown();countdown()
 for _=1,20 do cue() end
 assert(reflex.started and reflex.marked and not reflex.icons[1].visible)
+reflex:update();assert(#orders==stationaryOrders,'Reflex mode must never move, even in a crossing layout')
 local reactionTimer=timers[timerStart+3]
 reflex:setPaused(true);reactionTimer();assert(reflex.reactionElapsed==0)
 reflex:setPaused(false)

@@ -161,12 +161,13 @@ function JTG.CreateReflexTrainingActivity(session)
         walker.targetX = GetRandomReal(self.minX + 64, self.maxX - 64)
         walker.targetY = GetRandomReal(self.minY + 64, self.maxY - 64)
         walker.stalled = 0
-        IssuePointOrder(walker.unit, "move", walker.targetX, walker.targetY)
+        IssuePointOrder(walker.unit, self.layout==2 and "attack" or "move", walker.targetX, walker.targetY)
     end
     function activity:update()
         if self.finished or not self.started or self.paused then return end
         self.elapsed = self.elapsed + TICK
         self:refreshStatus()
+        if self.mode=="reflex" then return end
         for _, walker in ipairs(self.units) do
             local unit = walker.unit
             if GetUnitTypeId(unit) ~= 0 and not IsUnitType(unit, UNIT_TYPE_DEAD) then
@@ -184,7 +185,7 @@ function JTG.CreateReflexTrainingActivity(session)
                 walker.lastX, walker.lastY = x, y
                 if self.elapsed >= walker.nextChoice then
                     local tx, ty = x - (walker.targetX or x), y - (walker.targetY or y)
-                    if walker.targetX == nil or tx * tx + ty * ty < 64 * 64 or walker.stalled >= 1.5 then
+                    if walker.targetX == nil or tx * tx + ty * ty < 64 * 64 or walker.stalled >= 1.5 and self.layout~=2 then
                         self:chooseDestination(walker)
                         walker.nextChoice = self.elapsed + GetRandomReal(0.5, 1.5)
                     end
@@ -213,7 +214,7 @@ function JTG.CreateReflexTrainingActivity(session)
         for _,race in ipairs({{id="human",color=PLAYER_COLOR_BLUE},{id="orc",color=PLAYER_COLOR_RED}}) do
             for _, column in ipairs(JTG.GetSurroundCustomRaceColumns(race.id)) do
                 for _, choice in ipairs(column) do
-                    if choice.kind == "unit" and choice.enabled then
+                    if choice.kind == "unit" and choice.enabled and choice.rawcode~="osw3" and choice.rawcode~="ushd" then
                         choices[#choices + 1] = {definition=choice,color=race.color}
                         local family = JTG.GetSurroundCustomSummonFamily(choice.rawcode)
                         if family then families[family] = (families[family] or 0) + 1 end
@@ -239,6 +240,41 @@ function JTG.CreateReflexTrainingActivity(session)
             end
             for _ = 1, count do roster[#roster + 1] = {
                 rawcode=JTG.GetSurroundCustomSpawnRawcode(choice.rawcode),color=entry.color} end
+        end
+        self.fullPopulation=#roster
+        if self.mode=="reflex" then
+            -- Remove random duplicates only: retain every model and unique hero.
+            local wanted=math.floor(#roster*0.8+0.5)
+            local counts={}
+            for _,entry in ipairs(roster) do counts[entry.rawcode]=(counts[entry.rawcode] or 0)+1 end
+            while #roster>wanted do
+                local removable={}
+                for index,entry in ipairs(roster) do
+                    if counts[entry.rawcode]>1 then removable[#removable+1]=index end
+                end
+                assert(#removable>0,"Reflex density reduction exhausted duplicate models")
+                local index=removable[GetRandomInt(1,#removable)]
+                counts[roster[index].rawcode]=counts[roster[index].rawcode]-1
+                table.remove(roster,index)
+            end
+        end
+        self.combat=self.mode=="identify" and self.layout==2
+        if self.combat then
+            for _,pair in ipairs({{Player(1),Player(2),false},{Player(2),Player(1),false},
+                {Player(0),Player(1),true},{Player(1),Player(0),true},
+                {Player(0),Player(2),true},{Player(2),Player(0),true}}) do
+                local left,right,allied=pair[1],pair[2],pair[3]
+                local previous=GetPlayerAlliance(left,right,ALLIANCE_PASSIVE)
+                JTG.ScopeBorrow(current.scope,function() SetPlayerAlliance(left,right,ALLIANCE_PASSIVE,previous) end)
+                SetPlayerAlliance(left,right,ALLIANCE_PASSIVE,allied)
+            end
+            local damage=JTG.ScopeTrackTrigger(current.scope,CreateTrigger())
+            for _,owner in ipairs({Player(1),Player(2)}) do
+                TriggerRegisterPlayerUnitEvent(damage,owner,EVENT_PLAYER_UNIT_DAMAGING,nil)
+            end
+            TriggerAddAction(damage,JTG.GuardSession(current,function()
+                if self.walkersByUnit[GetTriggerUnit()] then BlzSetEventDamage(0) end
+            end))
         end
         for row = 0, ROWS - 1 do
             for column = 0, COLUMNS - 1 do
@@ -280,11 +316,11 @@ function JTG.CreateReflexTrainingActivity(session)
                 assert(slot,"Reflex race exceeds its half-arena capacity")
             end
             local unit = JTG.ScopeTrackUnit(current.scope,
-                CreateUnit(Player(PLAYER_NEUTRAL_PASSIVE), FourCC(rawcode), slot.x, slot.y, GetRandomReal(0, 360)))
+                CreateUnit(self.combat and Player(entry.color==PLAYER_COLOR_BLUE and 1 or 2) or Player(PLAYER_NEUTRAL_PASSIVE), FourCC(rawcode), slot.x, slot.y, GetRandomReal(0, 360)))
             assert(unit ~= nil,"Reflex could not create native unit "..rawcode)
             SetUnitColor(unit, entry.color)
-            SetUnitInvulnerable(unit, true)
-            SetUnitAcquireRange(unit, 0)
+            SetUnitInvulnerable(unit, not self.combat)
+            SetUnitAcquireRange(unit, self.combat and 600 or 0)
             SetUnitCreepGuard(unit, false)
             assert(not IsUnitType(unit, UNIT_TYPE_FLYING), "Flying unit in Reflex ground crowd")
             local walker = {unit = unit, color=entry.color, lastX = GetUnitX(unit), lastY = GetUnitY(unit),
@@ -309,14 +345,14 @@ function JTG.CreateReflexTrainingActivity(session)
             SetCameraPosition(self.centerX, self.centerY)
             ClearSelection()
         end
-        if self.layout==2 then self:crossCrowd() end
+        if self.layout==2 and self.mode=="identify" then self:crossCrowd() end
         self.cueTimer = JTG.StartScopedTimer(session, session.scope, CUE_TICK, true, function()
             if not self.cueVisible or self.finished or self.paused or self.cueElapsed >= CUE_HOLD+CUE_MOVE then return end
             self.cueElapsed = math.min(CUE_HOLD+CUE_MOVE,self.cueElapsed+CUE_TICK)
             if not self.started and self.cueElapsed>=CUE_HOLD then
                 self.started=true
                 self.elapsed=0
-                if self.layout==3 then
+                if self.layout==3 and self.mode=="identify" then
                     for _,walker in ipairs(self.units) do self:chooseDestination(walker) end
                 end
                 if self.mode=="reflex" then

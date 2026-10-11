@@ -14,7 +14,7 @@ local oldRandom,oldPoint,oldItem,oldAdd,oldPosition,oldShow=
     GetRandomReal,IssuePointOrder,UnitAddItemById,JTG.ScopeAdd,SetImagePosition,ShowImage
 local orders,items,cleanups={},{},{}
 function GetRandomReal(low,high)
-    assert((low==2 and high==2.5) or (low==0.5 and high==1))
+    assert((low==2 and high==2.5) or (low==0.5 and high==1) or (low==1.5 and high==2))
     return (low+high)/2
 end
 function IssuePointOrder(unit,order,x,y) orders[#orders+1]={order=order,x=x,y=y};return true end
@@ -79,12 +79,12 @@ local oldImmediate=IssueImmediateOrder
 local holds={}
 function IssueImmediateOrder(unit,order) holds[#holds+1]={unit=unit,order=order};return true end
 chain.chainTargets={firstHit,nextHit,{id='hfoo',x=500,y=0}}
-orders={};chain:updateChainCompanions(0.49);assert(#orders==0,'Footmen reacted before random delay')
+orders={};chain:updateChainCompanions(1.49);assert(#orders==0,'Footmen reacted before random delay')
 chain:updateChainCompanions(0.51);assert(#orders>0)
 local moving=chain.chainMoving[1]
 firstHit.x,firstHit.y=moving.x,moving.y
-chain:updateChainCompanions(1);assert(holds[#holds].unit==firstHit and holds[#holds].order=='holdposition')
-chain.target.x=800;chain:updateChainCompanions(1);assert(chain.chainMoving[1].x==800)
+chain:updateChainCompanions(2);assert(holds[#holds].unit==firstHit and holds[#holds].order=='holdposition')
+chain.target.x=800;chain:updateChainCompanions(2);assert(chain.chainMoving[1].x==800)
 IssueImmediateOrder=oldImmediate
 
 GetRandomReal,IssuePointOrder,UnitAddItemById,JTG.ScopeAdd,SetImagePosition,ShowImage=

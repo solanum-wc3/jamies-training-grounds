@@ -717,9 +717,9 @@ function JTG.CreateMissileDodgingActivity(session)
         self.chainDelays=self.chainDelays or {}
         local offsets={{0,120},{-120,-80},{120,-80}}
         for index,unit in ipairs(self.chainTargets or {}) do
-            self.chainDelays[index]=(self.chainDelays[index] or GetRandomReal(0.5,1))-(dt or 0.25)
+            self.chainDelays[index]=(self.chainDelays[index] or GetRandomReal(1.5,2))-(dt or 0.25)
             if Alive(unit) and self.chainDelays[index]<=0 then
-                self.chainDelays[index]=GetRandomReal(0.5,1)
+                self.chainDelays[index]=GetRandomReal(1.5,2)
                 local x,y=GetUnitX(self.target)+offsets[index][1],GetUnitY(self.target)+offsets[index][2]
                 local dx,dy=GetUnitX(unit)-x,GetUnitY(unit)-y
                 if dx*dx+dy*dy>48^2 then
