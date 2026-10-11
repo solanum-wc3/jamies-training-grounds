@@ -30,6 +30,13 @@ for _,choice in ipairs(screen.choices) do
 end
 local oldPath,oldCollision,oldAbility,oldField,oldImage,oldLevel=
     IsTerrainPathable,BlzGetUnitCollisionSize,BlzGetUnitAbility,BlzGetAbilityRealLevelField,SetImagePosition,SetUnitAbilityLevel
+local oldPosition,oldUnitPathing=SetUnitPosition,SetUnitPathing
+function SetUnitPathing(unit,enabled) unit.pathing=enabled end
+function SetUnitPosition(unit,x,y)
+    -- Emulate native collision displacement if exact placement is not used.
+    unit.x=x+((unit.id=='egol' or unit.id=='otrb') and unit.pathing~=false and 64 or 0)
+    unit.y=y
+end
 function BlzGetUnitCollisionSize(unit) return unit.id=='egol' and 50 or 16 end
 function IsTerrainPathable(_,y) return y>-160 end
 local function session(state) return {restartData=state,scope={},presentationScope={},scene={centerX=0,centerY=0},descriptor={capabilities={}}} end
@@ -37,6 +44,7 @@ local a=JTG.CreateMissileDodgingActivity(session({dangerIndex=indices.Devour,mov
 local wisp,mine={id='ewsp',x=0,y=0},{id='egol',x=0,y=0}
 a:placeBelowBuilding(wisp,mine,256)
 assert(wisp.x==mine.x and wisp.y==0 and mine.y==288 and wisp.facing==90)
+assert(mine.facing==270 and mine.pathing==true)
 a:placeBelowBuilding(wisp,mine,256,128)
 assert(wisp.y==0 and mine.y==160,'Wisp mine must move two building squares south')
 -- Even when ground terrain reports clear, the flying Wisp must remain below
@@ -52,6 +60,7 @@ local wispSetup=JTG.CreateMissileDodgingActivity(wispSession);wispSetup:setup(wi
 local spawnedMine
 for _,unit in ipairs(wispSetup.supports) do if unit.id=='egol' then spawnedMine=unit end end
 assert(spawnedMine and spawnedMine.y==wispSetup.pawn.y+160)
+assert(spawnedMine.x==wispSetup.pawn.x and spawnedMine.facing==270 and spawnedMine.pathing==true)
 assert(wispSetup.pawn.y==wispSetup.caster.y and wispSetup.pawn.y==0,
     'Worker target must stay at scene height, aligned with the missile caster')
 for i=#wispSession.scope,1,-1 do wispSession.scope[i]() end
@@ -81,5 +90,6 @@ for i,d in ipairs(JTG.DodgeDangers) do if d.ability=='AHtc' or d.ability=='AOws'
 end end
 IsTerrainPathable,BlzGetUnitCollisionSize,BlzGetUnitAbility,BlzGetAbilityRealLevelField,SetImagePosition,SetUnitAbilityLevel=
     oldPath,oldCollision,oldAbility,oldField,oldImage,oldLevel
+SetUnitPosition,SetUnitPathing=oldPosition,oldUnitPathing
 JTG.UI.ShowActivityBriefing,JTG.Controller.session=oldBriefing,oldSession
 print('Passed: Devour potion eligibility/bearer, exact briefing, shared picker gaps, one-column Area races, southern building entry, final-five-second TC aura and live full-radius Clap/Stomp circles.')

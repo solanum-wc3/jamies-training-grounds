@@ -85,6 +85,7 @@ end
 function JTG.GetSurroundCustomSummonFamily(rawcode)
     if rawcode=='hwat' or rawcode=='hwt2' or rawcode=='hwt3' then return 'AHwe' end
 end
+function JTG.GetSurroundCustomSpawnRawcode(rawcode) return rawcode end
 function JTG.UI.ShowActivityBriefing(spec) menu = spec end
 function JTG.UI.SetGameplayMenuPaused() end
 function JTG.UI.ShowCategory() end
@@ -181,4 +182,19 @@ local upperCounts={}
 for _,walker in ipairs(upper.units) do upperCounts[walker.unit.code]=(upperCounts[walker.unit.code] or 0)+1 end
 assert(upperCounts.hpea==8 and upperCounts.Hamg==1)
 assert(upperCounts.hwat==3 and upperCounts.hwt2==3 and upperCounts.hwt3==2)
+-- Exercise the actual shared roster, rather than a mock that accepts invalid
+-- native IDs. Previously the nonexistent hmtn produced nil in Warcraft.
+dofile('src/activities/surrounds.lua')
+local nativeIds={hpea=true,hmil=true,hfoo=true,hrif=true,hkni=true,hsor=true,hmpr=true,
+    hspt=true,hmtm=true,hmtt=true,Hamg=true,Hmkg=true,Hpal=true,Hblm=true,hwat=true,hwt2=true,hwt3=true}
+local originalCreateUnit=CreateUnit
+function CreateUnit(owner,code,x,y,facing)
+    assert(nativeIds[code],'Invalid Human ground native ID: '..tostring(code))
+    return originalCreateUnit(owner,code,x,y,facing)
+end
+local realSession={active=true,scope={},presentationScope={},descriptor={capabilities={}},scene={centerX=4864,centerY=3456}}
+local real=JTG.CreateReflexTrainingActivity(realSession);real:setup(realSession)
+local realCounts={}
+for _,walker in ipairs(real.units) do realCounts[walker.unit.code]=(realCounts[walker.unit.code] or 0)+1 end
+assert(realCounts.hmtm==8 and realCounts.hmtt==8 and #real.units==92)
 print('Passed: Reflex population bounds, shared countdown, animated target cue, distinct any-order clicks, ethereal marking, movement, menu/load restoration, completion and cleanup guards.')

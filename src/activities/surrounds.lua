@@ -487,6 +487,11 @@ function JTG.GetSurroundCustomSummonFamily(rawcode)
     return CUSTOM_UNIT_ABILITY_ICONS[rawcode]
 end
 
+-- Historical menu keys differ from the native Human siege-unit identifiers.
+function JTG.GetSurroundCustomSpawnRawcode(rawcode)
+    return ({hmtt = "hmtm", hmtn = "hmtt"})[rawcode] or rawcode
+end
+
 function JTG.GetSurroundCustomUnitIcon(rawcode)
     return CustomUnitIcon(rawcode)
 end

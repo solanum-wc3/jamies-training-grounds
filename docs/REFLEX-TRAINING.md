@@ -2,6 +2,8 @@
 
 Source iteration: v0.1.3-alpha3. The distributed release remains v0.1.2-beta1.
 
+Unpackaged fix after alpha3: the crowd now translates the shared selector's historical Mortar Team/Siege Engine keys to native `hmtm`/`hmtt` IDs. Alpha3 failed at startup when `hmtn` could not create a unit. The regression now runs the actual shared Human roster and rejects invalid native IDs instead of accepting every mocked creation request.
+
 The Skill Training card opens a shared briefing with placeholder Lorem ipsum text and one Start Training choice. That choice enters the south arena directly. The shared toolbar offers Menu, Redo and Pause; live briefing pages retain Resume and Exit.
 
 The prototype uses the shared Human roster's 17 ground entries (48–92 units). Regular unit counts independently vary from four to eight, each hero has one, and each summon type shares a random four-to-eight-unit budget across its levels. Any indivisible remainder is distributed in roster order. This includes workers, Militia, normal ground military units, heroes and all three Water Elemental levels. Flying entries are excluded. All are neutral-passive owned, blue, invulnerable and selectable, so clicking cannot interrupt their walking or populate the player's hero bar. Native collision and movement speeds are retained.

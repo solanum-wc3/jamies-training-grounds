@@ -191,7 +191,7 @@ function JTG.CreateReflexTrainingActivity(session)
                 count = math.floor(budget / families[family]) +
                     (index <= budget % families[family] and 1 or 0)
             end
-            for _ = 1, count do roster[#roster + 1] = choice.rawcode end
+            for _ = 1, count do roster[#roster + 1] = JTG.GetSurroundCustomSpawnRawcode(choice.rawcode) end
         end
         for row = 0, ROWS - 1 do
             for column = 0, COLUMNS - 1 do
@@ -215,6 +215,7 @@ function JTG.CreateReflexTrainingActivity(session)
             local slot = slots[index]
             local unit = JTG.ScopeTrackUnit(current.scope,
                 CreateUnit(Player(PLAYER_NEUTRAL_PASSIVE), FourCC(rawcode), slot.x, slot.y, GetRandomReal(0, 360)))
+            assert(unit ~= nil,"Reflex could not create native unit "..rawcode)
             SetUnitColor(unit, PLAYER_COLOR_BLUE)
             SetUnitInvulnerable(unit, true)
             SetUnitAcquireRange(unit, 0)

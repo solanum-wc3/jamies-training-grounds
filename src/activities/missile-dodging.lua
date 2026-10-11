@@ -1353,7 +1353,12 @@ function JTG.CreateMissileDodgingActivity(session)
         -- smaller than its footprint. Use the footprint, not terrain probes.
         -- Move the building north rather than moving the target/camera south.
         local distance=math.max(BlzGetUnitCollisionSize(building),footprintHalf)+padding
+        -- Match tutorial scene placement: prevent native collision correction
+        -- from moving the building sideways, while retaining its pathing mask.
+        SetUnitPathing(building,false)
         SetUnitPosition(building,x,y+distance-(southOffset or 0))
+        SetUnitPathing(building,true)
+        BlzSetUnitFacingEx(building,270)
         SetUnitX(unit,x);SetUnitY(unit,y)
         BlzSetUnitFacingEx(unit,90)
     end
@@ -1555,8 +1560,8 @@ function JTG.CreateMissileDodgingActivity(session)
             self.supports[#self.supports + 1] = self.home
         end
         if self.definition.mine then
-            local tree = self:spawn(p0, "etol", x - 550, y)
-            local mine = self:spawn(p0, "egol", x - 160, y)
+            local tree = self:spawn(p0, "etol", x - 550, y,270)
+            local mine = self:spawn(p0, "egol", x, y+160,270)
             SetResourceAmount(mine, 100000)
             self.supports[#self.supports + 1] = tree
             self.supports[#self.supports+1]=mine
