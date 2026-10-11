@@ -27,6 +27,23 @@ timers={};orders={};a=create('AHtb',false);a:start()
 assert(a.countdownRemaining==nil and #orders==1,'Redo must start without the entry delay')
 timers={};orders={};a=create('AOsh',false);a:start()
 assert(a.countdownRemaining==3 and #orders==0,'Directional Area trials must count down')
+-- Every Area shape has the same movable countdown, also on Redo. Only GO
+-- starts enemy orders and the survival timer; no global/pawn pause is applied.
+for _,raw in ipairs({'AOsh','AHtc','AHbz'}) do
+    timers={};orders={}
+    local area=create(raw,false)
+    area.updateAreaOrders=function() orders[#orders+1]='area-cast' end
+    local flags={}
+    area.flash=function(_,text) flags[#flags+1]=text end
+    area:start()
+    assert(area.countdownRemaining==3 and area.trialTime==0 and #orders==0)
+    assert(GetUnitMoveSpeed(area.pawn)>0 and not area.pawn.paused)
+    timers[1].callback();timers[1].callback()
+    assert(area.countdownRemaining==1 and area.trialTime==0 and #orders==0)
+    timers[1].callback()
+    assert(area.countdownRemaining==nil and orders[1]=='area-cast' and flags[4]=='GO!')
+    assert(#timers==2 and timers[2].delay==0.05)
+end
 local directionalIndex
 for index,danger in ipairs(JTG.DodgeDangers) do
     if danger.ability=='AOsh' then directionalIndex=index;break end

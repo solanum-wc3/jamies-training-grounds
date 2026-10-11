@@ -1788,13 +1788,19 @@ function JTG.CreateMissileDodgingActivity(session)
         local function beginTrial()
             self.countdownRemaining=nil
             self:clearFeedback()
-            if self.danger.menuGroup=="Area" then self:updateAreaOrders() else self:tryAttack() end
+            if self.danger.menuGroup=="Area" then
+                self:flash("GO!","|cff00ff00")
+                self:updateAreaOrders()
+            else self:tryAttack() end
             if self.danger.menuGroup~="Devour" and self.danger.menuGroup~="Area" then
                 JTG.StartScopedTimer(session,session.scope,2.0,true,function() self:tryAttack() end)
             end
             JTG.StartScopedTimer(session,session.scope,0.05,true,function() self:updateTrial() end)
         end
-        if selection.startDelay or self.areaDirectional then
+        -- Area rounds always allow an initial repositioning window, including
+        -- Redo. Enemy scheduling and the survival clock start only on GO.
+        -- Leave the pawn unpaused at its normal movement speed throughout.
+        if selection.startDelay or self.danger.menuGroup=="Area" then
             JTG.Training.Countdown(self,session,3,function(remaining)
                 self.countdownRemaining=remaining
                 self:flash(tostring(remaining),"|cffffcc00")

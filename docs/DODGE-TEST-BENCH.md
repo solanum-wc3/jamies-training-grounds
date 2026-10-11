@@ -6,6 +6,8 @@ Current baseline: v0.1.2-beta1. Earlier candidate behavior and measurement repor
 
 The briefing offers **Disjoining** (Abilities or Attacks) and **Avoiding** (Area or Devour). Selecting the final dodge ability or movement unit starts the exercise directly, with a three-second initial countdown. The toolbar Menu returns to the current branch's threat selection; Devour returns to Movement/Ability. There is no Setups toolbar button. Native menu handoff is described separately in [Native menu handoff](NATIVE-LOG-HANDOFF.md).
 
+Every Area round, including Redo, shows 3, 2, 1, GO. The player's pawn can move during the countdown; enemy orders and the 15-second survival clock begin on GO. This applies to directional, radial and ground-targeted abilities.
+
 Disjoining requires three consecutive successes per stage. Stage one starts at attack/spell range plus 200 units, with both units movable and the target facing left. Stage two uses the same distance with the target locked. Stage three makes the enemy approach half range before launching, with the target locked. Locked Spirit Wolf replacement tests have two stages; Wind Walk against orb effects has one. Attack tests issue attack orders, rather than casting unrelated abilities.
 
 TOO EARLY, TOO LATE and WELL DONE resolve the trial after one second. Failure clears the streak; the third success ends the stage. Opening a menu or an end card clears temporary prompts. Confirmed launch, damage and debuff events inform scoring; the engine does not provide a general projectile enumeration API. A rejected cast is not proof of a successful disjoin.
