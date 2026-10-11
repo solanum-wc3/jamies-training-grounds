@@ -43,7 +43,13 @@ end
 function JTG.GetSurroundCustomRaceColumns()
     return {{{kind="unit",enabled=true,rawcode="hpea"},
         {kind="unit",enabled=true,rawcode="Hamg",hero=true},
+        {kind="unit",enabled=true,rawcode="hwat"},
+        {kind="unit",enabled=true,rawcode="hwt2"},
+        {kind="unit",enabled=true,rawcode="hwt3"},
         {kind="unit",enabled=false,rawcode="hgry"}}}
+end
+function JTG.GetSurroundCustomSummonFamily(rawcode)
+    if rawcode=='hwat' or rawcode=='hwt2' or rawcode=='hwt3' then return 'AHwe' end
 end
 function JTG.UI.ShowActivityBriefing(spec) menu = spec end
 function JTG.UI.SetGameplayMenuPaused() end
@@ -66,7 +72,12 @@ assert(menu.resumeAction and menu.exitAction and menu.backAction)
 local session = {active=true,scope={},descriptor={capabilities={}},scene={centerX=4864,centerY=3456}}
 local activity = JTG.CreateReflexTrainingActivity(session)
 activity:setup(session); activity:start()
-assert(#tracked == 12 and #activity.units == 12 and #timers == 1)
+assert(#tracked == 13 and #activity.units == 13 and #timers == 1)
+local counts = {}
+for _, unit in ipairs(tracked) do counts[unit.code] = (counts[unit.code] or 0) + 1 end
+assert(counts.hpea==6 and counts.Hamg==1)
+assert(counts.hwat==2 and counts.hwt2==2 and counts.hwt3==2,
+    'Summon population must be divided across levels')
 assert(camera.x == 4864 and camera.y == 3456)
 for _, unit in ipairs(tracked) do
     assert(unit.owner == 15 and unit.code ~= 'hgry')

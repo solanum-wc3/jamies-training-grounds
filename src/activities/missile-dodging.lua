@@ -1348,18 +1348,13 @@ function JTG.CreateMissileDodgingActivity(session)
 
     function activity:placeBelowBuilding(unit,building,footprintHalf)
         local padding=BlzGetUnitCollisionSize(unit)+16
-        local bx,by=GetUnitX(building),GetUnitY(building)
-        local distance=math.max(BlzGetUnitCollisionSize(building),32)+padding
-        local maximum=footprintHalf+padding
-        -- Building collision size can be smaller than its actual pathing mask.
-        -- Find its southern walkable edge instead of placing the pawn inside it.
-        while distance<maximum do
-            if not IsTerrainPathable(bx,by-distance+padding,PATHING_TYPE_WALKABILITY) and
-                    not IsTerrainPathable(bx-padding,by-distance,PATHING_TYPE_WALKABILITY) and
-                    not IsTerrainPathable(bx+padding,by-distance,PATHING_TYPE_WALKABILITY) then break end
-            distance=distance+16
-        end
-        SetUnitX(unit,bx);SetUnitY(unit,by-distance)
+        local x,y=GetUnitX(unit),GetUnitY(unit)
+        -- Wisps ignore ground pathing, and a mine's collision field is much
+        -- smaller than its footprint. Use the footprint, not terrain probes.
+        -- Move the building north rather than moving the target/camera south.
+        local distance=math.max(BlzGetUnitCollisionSize(building),footprintHalf)+padding
+        SetUnitPosition(building,x,y+distance)
+        SetUnitX(unit,x);SetUnitY(unit,y)
         BlzSetUnitFacingEx(unit,90)
     end
 

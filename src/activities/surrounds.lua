@@ -483,6 +483,10 @@ function JTG.GetSurroundCustomRaceColumns(race)
     return CUSTOM_RACE_COLUMNS[race] or {}
 end
 
+function JTG.GetSurroundCustomSummonFamily(rawcode)
+    return CUSTOM_UNIT_ABILITY_ICONS[rawcode]
+end
+
 function JTG.GetSurroundCustomUnitIcon(rawcode)
     return CustomUnitIcon(rawcode)
 end

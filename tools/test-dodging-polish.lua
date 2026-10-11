@@ -36,7 +36,23 @@ local function session(state) return {restartData=state,scope={},presentationSco
 local a=JTG.CreateMissileDodgingActivity(session({dangerIndex=indices.Devour,movementUnit={unit='hfoo'}}))
 local wisp,mine={id='ewsp',x=0,y=0},{id='egol',x=0,y=0}
 a:placeBelowBuilding(wisp,mine,256)
-assert(wisp.x==mine.x and wisp.y<=-192 and wisp.facing==90)
+assert(wisp.x==mine.x and wisp.y==0 and mine.y==288 and wisp.facing==90)
+-- Even when ground terrain reports clear, the flying Wisp must remain below
+-- the mine's visual/pathing footprint, at the original missile-target position.
+function IsTerrainPathable() return false end
+local peon,burrow={id='opeo',x=100,y=200},{id='otrb',x=36,y=200}
+a:placeBelowBuilding(peon,burrow,96)
+assert(peon.x==100 and peon.y==200 and burrow.x==100 and burrow.y==328)
+local wispIndex
+for i,p in ipairs(JTG.DodgePawns) do if p.mine then wispIndex=i;break end end
+local wispSession=session({dangerIndex=1,pawnIndex=wispIndex})
+local wispSetup=JTG.CreateMissileDodgingActivity(wispSession);wispSetup:setup(wispSession)
+local spawnedMine
+for _,unit in ipairs(wispSetup.supports) do if unit.id=='egol' then spawnedMine=unit end end
+assert(spawnedMine and spawnedMine.y> wispSetup.pawn.y+256)
+assert(wispSetup.pawn.y==wispSetup.caster.y and wispSetup.pawn.y==0,
+    'Worker target must stay at scene height, aligned with the missile caster')
+for i=#wispSession.scope,1,-1 do wispSession.scope[i]() end
 for i,p in ipairs(JTG.DodgePawns) do if p.item=='pnvu' then potionIndex=i end end
 local potionSession=session({dangerIndex=indices.Devour,pawnIndex=potionIndex})
 local potion=JTG.CreateMissileDodgingActivity(potionSession);potion:setup(potionSession)

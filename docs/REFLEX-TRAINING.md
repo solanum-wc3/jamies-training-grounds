@@ -1,10 +1,10 @@
 # Reflex Training prototype
 
-Source iteration: v0.1.3-alpha1. The distributed release remains v0.1.2-beta1.
+Source iteration: v0.1.3-alpha2. The distributed release remains v0.1.2-beta1.
 
 The Skill Training card opens a shared briefing with placeholder Lorem ipsum text and one Start Training choice. That choice enters the south arena directly. The shared toolbar offers Menu, Redo and Pause; live briefing pages retain Resume and Exit. No scoring, targets or round logic is implemented yet.
 
-The first prototype uses the shared Human roster's 17 ground entries, six copies each (102 units). This includes workers, Militia, normal ground military units, heroes and all three Water Elemental levels. Flying entries are excluded. All are neutral-passive owned, blue, invulnerable and selectable, so clicking cannot interrupt their walking or populate the player's hero bar. Native collision and movement speeds are retained.
+The prototype uses the shared Human roster's 17 ground entries (70 units). Regular units have six copies, each hero has one, and each summon type shares six copies across its levels: two Water Elementals per level. Any indivisible remainder is distributed in roster order. This includes workers, Militia, normal ground military units, heroes and all three Water Elemental levels. Flying entries are excluded. All are neutral-passive owned, blue, invulnerable and selectable, so clicking cannot interrupt their walking or populate the player's hero bar. Native collision and movement speeds are retained.
 
 The initial arena is 1,800 units wide by 1,000 deep, centered at the south arena's center (4864, 3456). Camera target distance is 1650, rotation 90 and attack angle 304, with the target at the arena center. This is an approximate screen-fitting first layout; actual visible footprint depends on screen aspect ratio, UI and camera perspective and needs native testing.
 

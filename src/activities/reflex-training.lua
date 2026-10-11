@@ -90,12 +90,29 @@ function JTG.CreateReflexTrainingActivity(session)
         local roster, slots = {}, {}
         -- Reuse the shared racial roster, including heroes and summon levels.
         -- Human entries marked unavailable here are the flying units.
+        local choices, families = {}, {}
         for _, column in ipairs(JTG.GetSurroundCustomRaceColumns("human")) do
             for _, choice in ipairs(column) do
                 if choice.kind == "unit" and choice.enabled then
-                    for _ = 1, COPIES do roster[#roster + 1] = choice.rawcode end
+                    choices[#choices + 1] = choice
+                    local family = JTG.GetSurroundCustomSummonFamily(choice.rawcode)
+                    if family then families[family] = (families[family] or 0) + 1 end
                 end
             end
+        end
+        local familyIndices = {}
+        for _, choice in ipairs(choices) do
+            local count = choice.hero and 1 or COPIES
+            local family = JTG.GetSurroundCustomSummonFamily(choice.rawcode)
+            if family and not choice.hero then
+                local index = (familyIndices[family] or 0) + 1
+                familyIndices[family] = index
+                -- Keep one population budget per summon type, split across
+                -- its levels; distribute any remainder in roster order.
+                count = math.floor(COPIES / families[family]) +
+                    (index <= COPIES % families[family] and 1 or 0)
+            end
+            for _ = 1, count do roster[#roster + 1] = choice.rawcode end
         end
         for row = 0, ROWS - 1 do
             for column = 0, COLUMNS - 1 do

@@ -19,7 +19,7 @@ Current baseline: **v0.1.2-beta1** (10 October 2026). Archived reports describe 
 
 ## Current development
 
-[Reflex Training prototype](REFLEX-TRAINING.md) describes the v0.1.3-alpha1 crowd stage and its native test focus. It is newer than the published beta1 baseline.
+[Reflex Training prototype](REFLEX-TRAINING.md) describes the v0.1.3-alpha2 crowd stage and its native test focus. It is newer than the published beta1 baseline.
 
 ## Editable work and inventories
 

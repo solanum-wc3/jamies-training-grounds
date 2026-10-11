@@ -27,6 +27,7 @@ function SetUnitCreepGuard(unit,value) unit.creepGuard=value end
 function RemoveGuardPosition(unit) unit.guardRemoved=true end
 function SetUnitX(unit,x) unit.x=x end
 function SetUnitY(unit,y) unit.y=y end
+function SetUnitPosition(unit,x,y) unit.x=x;unit.y=y end
 function SetUnitFacing(unit,facing) unit.facing=facing end
 function BlzSetUnitFacingEx(unit,facing) unit.facing=facing end
 function SetUnitMoveSpeed(unit,speed) unit.speed=speed end
