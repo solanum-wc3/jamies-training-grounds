@@ -37,6 +37,7 @@ assert(not JTG.DodgeStats(a.definition,true):find('Projectile Speed:',1,true))
 assert(a.definition.castPoint==0 and a.definition.fadeDuration==0.6)
 a.status={}
 a:refreshStatus();assert(a.status.text:find('|cff5aff6eready|r',1,true))
+assert(a.status.text:find('|r  -  ',1,true),'Status separator must be plain ASCII')
 emit(a.pawn,EVENT_PLAYER_UNIT_SPELL_CHANNEL,'AOmi')
 assert(a.status.text:find('|cffff4b4bwindup|r',1,true) and a.pawn.tint[2]==75)
 emit(a.pawn,EVENT_PLAYER_UNIT_SPELL_EFFECT,'AOmi')

@@ -93,7 +93,7 @@ JTG.RegisterActivity({
     id = "skills.missile_dodging", category = "skills", title = "Dodging",
     description = "Test dodge methods against attacks, missiles, artillery and area spells.",
     artwork = "JTGMenu\\MissileDodging.dds", status = "available", sceneId = "arena.south",
-    capabilities = {restart = true, next = true, menu = true, pause = true, quests = true},
+    capabilities = {restart = true, next = true, menu = true, pause = true, quests = false},
     menu = JTG.OpenMissileDodgingMenu, factory = JTG.CreateMissileDodgingActivity,
 })
 

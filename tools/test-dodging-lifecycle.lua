@@ -69,7 +69,7 @@ function IssueImmediateOrder(unit,order)
 end
 function CreateTimer() return {} end
 function TimerStart(timer,period,repeating,callback) timer.callback=callback; timer.period=period; lastTimer=timer end
-function CreateQuest() return {} end
+function CreateQuest() error('Dodging must not create quests') end
 function BlzCreateFrameByType() return {} end
 JTG.UI={HideActivityBriefing=function() end, CreateResultCard=function() return {} end, ShowResultCard=function() end,
     ShowToolbar=function() end, HideToolbar=function() end, HideResultCard=function() end}

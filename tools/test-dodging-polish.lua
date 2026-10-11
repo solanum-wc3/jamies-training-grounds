@@ -59,8 +59,8 @@ local wispSession=session({dangerIndex=1,pawnIndex=wispIndex})
 local wispSetup=JTG.CreateMissileDodgingActivity(wispSession);wispSetup:setup(wispSession)
 local spawnedMine
 for _,unit in ipairs(wispSetup.supports) do if unit.id=='egol' then spawnedMine=unit end end
-assert(spawnedMine and spawnedMine.y==wispSetup.pawn.y+160)
-assert(spawnedMine.x==wispSetup.pawn.x and spawnedMine.facing==270 and spawnedMine.pathing==true)
+assert(spawnedMine and spawnedMine.y==wispSetup.pawn.y+32)
+assert(spawnedMine.x==wispSetup.pawn.x-160 and spawnedMine.facing==270 and spawnedMine.pathing==true)
 assert(wispSetup.pawn.y==wispSetup.caster.y and wispSetup.pawn.y==0,
     'Worker target must stay at scene height, aligned with the missile caster')
 for i=#wispSession.scope,1,-1 do wispSession.scope[i]() end

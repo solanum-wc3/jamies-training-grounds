@@ -8,6 +8,8 @@ The briefing offers **Disjoining** (Abilities or Attacks) and **Avoiding** (Area
 
 Every Area round, including Redo, shows 3, 2, 1, GO. The player's pawn can move during the countdown; enemy orders and the 15-second survival clock begin on GO. This applies to directional, radial and ground-targeted abilities.
 
+Dodging creates no quest and keeps its Quest control inactive. Status labels use an ASCII separator to avoid broken character encoding. The Wisp mine is placed 160 units west and 32 units north of the pawn, with standard 270-degree building facing and exact placement; the pawn and camera anchors remain fixed.
+
 Disjoining requires three consecutive successes per stage. Stage one starts at attack/spell range plus 200 units, with both units movable and the target facing left. Stage two uses the same distance with the target locked. Stage three makes the enemy approach half range before launching, with the target locked. Locked Spirit Wolf replacement tests have two stages; Wind Walk against orb effects has one. Attack tests issue attack orders, rather than casting unrelated abilities.
 
 TOO EARLY, TOO LATE and WELL DONE resolve the trial after one second. Failure clears the streak; the third success ends the stage. Opening a menu or an end card clears temporary prompts. Confirmed launch, damage and debuff events inform scoring; the engine does not provide a general projectile enumeration API. A rejected cast is not proof of a successful disjoin.

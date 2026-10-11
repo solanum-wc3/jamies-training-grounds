@@ -735,7 +735,7 @@ function JTG.CreateMissileDodgingActivity(session)
 
     function activity:refreshStatus()
         if not self.status then return end
-        BlzFrameSetText(self.status,"|cffffcc00"..self.danger.name.."|r  â€”  "..self.definition.name..
+        BlzFrameSetText(self.status,"|cffffcc00"..self.danger.name.."|r  -  "..self.definition.name..
             ((self.danger.menuGroup=="Area" or self.danger.menuGroup=="Devour" and not self.abilityDevour) and ("\nSurvive: "..math.max(0,math.ceil(15-self.trialTime)).." seconds") or
             self.arena and ("\nHits: "..self.hitCount) or ("\nStage "..self.stage.."/"..self.stageLimit.."   Consecutive dodges: "..self.streak.."/3"))..
             "\nEnemy: "..phaseText(self.enemyPhase or "waiting").."   Dodge: "..phaseText(self.dodgePhase or "ready"))
@@ -1346,7 +1346,7 @@ function JTG.CreateMissileDodgingActivity(session)
         self:refreshStatus()
     end
 
-    function activity:placeBelowBuilding(unit,building,footprintHalf,southOffset)
+    function activity:placeBelowBuilding(unit,building,footprintHalf,southOffset,westOffset)
         local padding=BlzGetUnitCollisionSize(unit)+16
         local x,y=GetUnitX(unit),GetUnitY(unit)
         -- Wisps ignore ground pathing, and a mine's collision field is much
@@ -1356,7 +1356,7 @@ function JTG.CreateMissileDodgingActivity(session)
         -- Match tutorial scene placement: prevent native collision correction
         -- from moving the building sideways, while retaining its pathing mask.
         SetUnitPathing(building,false)
-        SetUnitPosition(building,x,y+distance-(southOffset or 0))
+        SetUnitPosition(building,x-(westOffset or 0),y+distance-(southOffset or 0))
         SetUnitPathing(building,true)
         BlzSetUnitFacingEx(building,270)
         SetUnitX(unit,x);SetUnitY(unit,y)
@@ -1565,8 +1565,9 @@ function JTG.CreateMissileDodgingActivity(session)
             SetResourceAmount(mine, 100000)
             self.supports[#self.supports + 1] = tree
             self.supports[#self.supports+1]=mine
-            -- Two 64-unit building squares closer; retain the pawn/camera anchor.
-            self:placeBelowBuilding(self.pawn,mine,256,128)
+            -- Lower another two building squares and restore the earlier
+            -- westward mine offset, retaining the pawn/camera anchor.
+            self:placeBelowBuilding(self.pawn,mine,256,256,160)
         end
         if self.definition.support=="otrb" and self.helper then
             self:placeBelowBuilding(self.pawn,self.helper,96)
@@ -1734,30 +1735,6 @@ function JTG.CreateMissileDodgingActivity(session)
                 SetUnitState(self.helper, UNIT_STATE_MANA, BlzGetUnitMaxMana(self.helper))
             end
         end))
-        local quest = JTG.ScopeTrackQuest(current.scope, CreateQuest())
-        QuestSetTitle(quest, "Dodging")
-        QuestSetRequired(quest, true); QuestSetDiscovered(quest, true)
-        QuestSetIconPath(quest, "ReplaceableTextures\\CommandButtons\\BTNPhaseShift.blp")
-        QuestSetDescription(quest, JTG.FormatSurroundQuestText(
-            "Opponent: " .. self.danger.name .. "\nCategory: " .. self.danger.category ..
-            "\nDodge method: " .. self.definition.name .. "\n\n" ..
-            (self.danger.menuGroup=="Devour" and (self.abilityDevour and "Your pawn cannot move. Dodge the approaching Kodo's Devour three times in a row. There is one stage.\n\n" or "Avoid being devoured for 15 seconds. The Kodo issues Devour every 2â€“2.5 seconds and Move every 0.5â€“1 second. Entering half range triggers Devour immediately. The red circle shows its Devour range.\n\n") or
-            self.danger.menuGroup=="Area" and "Avoid being hit by the enemy ability for 15 seconds.\n\n" or self.arena and "This is an unscored enclosed-arena test. Your units remain within the marked boundary. " ..
-                "The opponent repeatedly uses the selected attack or spell. Devour continually pursues its target.\n\n" or
-                "Avoid one successfully cast missile. A hit immediately restarts this stage. " ..
-                "Stage 1 starts at maximum range facing away and allows running. " ..
-                "Stage 2 uses maximum range without walking. Stage 3 uses half range without walking. " ..
-                "TOO EARLY means the caster stopped before launching; TOO LATE means the missile hit. " ..
-                "WELL DONE means a confirmed cast did not hit during its resolution window.\n\n") ..
-            "Enemy colours: yellow before wind-up, red during wind-up, green after firing. "..
-            "Dodger colours: green when ready, red during casting, yellow during activation or fade, green once the effect is active. "..
-            "Green does not mean the unit is safe from every attack. Attack wind-up colours use estimated animation timing.\n\n"..
-            (InvisibilityMethod(self.definition) and "Invisibility must finish fading before it can protect the unit. Preventing targeting before firing and disjoining an airborne projectile are different outcomes. This timing may require becoming invisible before the shot.\n\n" or "")..
-            "Dodge abilities remain usable. Some targets are invalid for some spells.\n\n" ..
-            "{Button: Redo} restores the same test. {Button: Setups} lets you select another " ..
-            "opponent or dodge method. Helpers are provided only where the dodge needs one. " ..
-            "Select a helper yourself to use a staff, load a unit or cast on the pawn.\n\n" ..
-            (self.danger.note or "") .. "\n" .. (self.definition.note or "")))
         JTG.ResetWorldFog(p0); JTG.ScopeRevealScene(current.scope, current.scene, p0)
         JTG.ScopeRevealScene(current.scope,current.scene,p1)
         if self.danger.menuGroup=="Area" then
