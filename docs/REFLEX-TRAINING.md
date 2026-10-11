@@ -1,8 +1,8 @@
 # Reflex Training prototype
 
-Source iteration: v0.1.3-alpha5. The distributed release remains v0.1.2-beta1.
+Source iteration: v0.1.3-alpha6. The distributed release remains v0.1.2-beta1.
 
-Unpackaged experiment after alpha5: a mixed Human/Orc crowd, with blue Human and red Orc team colors. The fixed Human target list remains unchanged for this first mixture test.
+In alpha6: a mixed Human/Orc crowd, with blue Human and red Orc team colors. The fixed Human target list remains unchanged for this first mixture test.
 
 Fixed in alpha5: selection is registered on Player 0's unit-selection event, not neutral units' individual events. The icon preview now precedes GO; clicks, walking and elapsed time begin when the icons depart the center.
 
