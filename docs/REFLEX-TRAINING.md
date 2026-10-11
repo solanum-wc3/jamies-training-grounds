@@ -1,8 +1,8 @@
 # Reflex Training prototype
 
-Source iteration: v0.1.3-alpha4. The distributed release remains v0.1.2-beta1.
+Source iteration: v0.1.3-alpha5. The distributed release remains v0.1.2-beta1.
 
-Unpackaged correction after alpha4: selection is registered on Player 0's unit-selection event, not neutral units' individual events. The icon preview now precedes GO; clicks, walking and elapsed time begin when the icons depart the center.
+Fixed in alpha5: selection is registered on Player 0's unit-selection event, not neutral units' individual events. The icon preview now precedes GO; clicks, walking and elapsed time begin when the icons depart the center.
 
 Fixed in alpha4: the crowd now translates the shared selector's historical Mortar Team/Siege Engine keys to native `hmtm`/`hmtt` IDs. Alpha3 failed at startup when `hmtn` could not create a unit. The regression now runs the actual shared Human roster and rejects invalid native IDs instead of accepting every mocked creation request.
 
