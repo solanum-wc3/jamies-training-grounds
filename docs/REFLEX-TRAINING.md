@@ -1,6 +1,6 @@
 # Reflex Training prototype
 
-Last packaged iteration: v0.1.3-alpha6. The modes and layouts described below are unpackaged changes after alpha6. The distributed release remains v0.1.2-beta1.
+Last packaged iteration: v0.1.3-alpha7. This includes both training modes and the three randomized crowd layouts. The distributed release remains v0.1.2-beta1.
 
 In alpha6: a mixed Human/Orc crowd, with blue Human and red Orc team colors. The fixed Human target list remains unchanged for this first mixture test.
 
