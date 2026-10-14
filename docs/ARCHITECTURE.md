@@ -4,7 +4,7 @@
 
 `v0.1.2-beta1` is the current tested release. It is assembled reproducibly from the accepted `v0.0.1-alpha.5` foundation, maintained Lua modules and packaged assets. The foundation remains immutable and is verified by hash during every build.
 
-The map contains four tutorials and eight exercises, listed in the [activity catalogue](ACTIVITIES.md). Economy, Bat Splitting and Dodging use the shared tutorial/training procedures introduced during 0.1.2. Earlier migration specifications and candidate checklists are preserved under [`archive/`](archive/README.md) as historical context rather than current instructions.
+The published beta contains four tutorials and eight exercises. Current alpha49 development has five tutorials and ten exercises/demonstrations, listed in the [activity catalogue](ACTIVITIES.md), including the authored Heroes tutorial, Reflex Training and Hotkey Trainer. Economy, Bat Splitting and Dodging use shared tutorial/training procedures. [Development status](DEVELOPMENT-STATUS.md) separates implementation from native acceptance. Earlier migration specifications and candidate checklists remain under [`archive/`](archive/README.md) as historical context.
 
 ## Source and build boundary
 
@@ -56,6 +56,6 @@ Development builds include the automated lifecycle check and collision research 
 
 `src/infrastructure/tutorial.lua` owns the shared tutorial runner. Explicit authored hooks retain progression, optional topics and checkpoint scenes. Every entry receives a generation so revisiting the same step cannot revive stale callbacks. Presentation restoration never repeats world actions.
 
-`src/infrastructure/training.lua` owns scoped countdown and visibility procedures used by Bat Splitting and Dodging. Scoring and native enemy commands remain activity-specific. Economy separates its scene provider (`economy-layout.lua`) from authored JSON steps and tutorial progression. See [Tutorial standard](TUTORIAL-STANDARD.md).
+`src/infrastructure/training.lua` owns shared countdowns, visibility, completion-attempt identity, response scoring and score appearance. Hotkey and Reflex register their presentation roots, frame lists and rebuild aliases through `InstallPresentation`; native selection recovery remains an explicit Hotkey hook. Other exercises retain their existing shared visibility hooks. Clocks, stage progression, high-score storage and native enemy commands remain activity-specific. Economy separates its scene provider (`economy-layout.lua`) from authored JSON steps and tutorial progression. See [Tutorial standard](TUTORIAL-STANDARD.md).
 
 Development modules also provide Economy layout/order exports and automated Dodging timing trials. Diagnostic Preload files are machine-readable evidence, not a supported arbitrary-text export facility.

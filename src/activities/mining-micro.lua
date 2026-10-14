@@ -9,17 +9,7 @@ local RACES = {
 }
 
 local MINING_MICRO_INTRO =
-    "In some situations, such as when mining with less than 5 workers, " ..
-    "the game slows down the movement speed of Human and Orc gold " ..
-    "workers, to normalize gold income.|n|n" ..
-    "By manually giving mining orders, you can temporarily bypass that " ..
-    "slowdown.|n|n" ..
-    "With four workers - especially on short, diagonal mine positions - " ..
-    "this can recover much of the income you'd normally need five workers " ..
-    "for, freeing up a worker to build or to harvest lumber, which can give " ..
-    "you an edge in the early game.|n|n" ..
-    "Here, you can train this micro skill.|n" ..
-    "Check the Quest log for tips on how to do it!"
+    "When mining with less than 5 workers, the game slows down the movement speed of Human and Orc gold workers, to normalize gold income.\n\nBy manually giving mining orders, you can temporarily bypass that slowdown.\n\nWith four workers - especially on short, diagonal mine positions - this can recover much of the income you'd normally need five workers for, freeing up a worker to build, or to harvest lumber, which can give you an edge in the early game.\n\nHere, you can train this micro skill.\nCheck the {Button: Quest Log} for explanations on how to do it!"
 
 local QUEST_ICONS = {
     slowdown = "ReplaceableTextures\\CommandButtons\\BTNMove.blp",
@@ -44,7 +34,7 @@ local QUESTS = {
             "cycle is completed.|n|n" ..
             "If you give the command before he enters the mine for the " ..
             "second time, this will reset the cycle, and delay the slowdown." ..
-            "|n|nThis slowdown only happens for mines with four workers, " ..
+            "|n|nThis slowdown only happens for mines with less than 5 workers, " ..
             "and it only happens for Humans and Orcs. You cannot raise " ..
             "efficiency in Undead or Night Elf gold mines, nor in Human " ..
             "or Orc gold mines with five workers.",
@@ -187,6 +177,7 @@ function JTG.OpenMiningMicroMenu(originCategory, pauseGame, restorePage, restore
         releaseMenuPause()
         local restartData = {
             race = selection.race,
+            duration = selection.duration,
             orientation = GetRandomInt(0, 3),
             skipQuestHighlight = returningFromActiveRun,
         }
@@ -199,7 +190,8 @@ function JTG.OpenMiningMicroMenu(originCategory, pauseGame, restorePage, restore
                 originCategory or "skills", restartData)
         end
     end
-    local function showBriefing()
+    local showBriefing
+    showBriefing = function(page)
         local spec = {
             title = "Mining Micro",
             activityId = "skills.gold_mine",
@@ -207,16 +199,24 @@ function JTG.OpenMiningMicroMenu(originCategory, pauseGame, restorePage, restore
             headingArtwork = "JTGMenu\\GoldMineMicroBriefing.dds",
             headingArtworkWidth = 0.176,
             headingArtworkHeight = 0.086,
-            body = MINING_MICRO_INTRO,
+            body = JTG.Tutorial.FormatNarration(MINING_MICRO_INTRO),
             choices = {
-                {label="Human",action=function() selection.race="human"; launch() end},
-                {label="Orc",action=function() selection.race="orc"; launch() end},
+                {label="Human",action=function() selection.race="human"; showBriefing('duration') end},
+                {label="Orc",action=function() selection.race="orc"; showBriefing('duration') end},
             },
             backAction = function() JTG.UI.ShowCategory("skills") end,
             pauseGame = pauseGame == true,
             pageId = "root",
             restoreData = selection,
         }
+        if page=='duration' then
+            spec.body='Choose how long you want to practice.'
+            spec.pageId='duration'
+            spec.choices={
+                {label='One Minute',action=function() selection.duration=60;launch() end},
+                {label='Unlimited',action=function() selection.duration=nil;launch() end}}
+            spec.backAction=function() showBriefing('root') end
+        end
         if pauseGame then
             spec.resumeAction = resumeCurrentRun
             spec.exitAction = function()
@@ -228,7 +228,7 @@ function JTG.OpenMiningMicroMenu(originCategory, pauseGame, restorePage, restore
         end
         JTG.UI.ShowActivityBriefing(spec)
     end
-    showBriefing()
+    showBriefing(restorePage)
 end
 
 function JTG.CreateMiningMicroActivity(session)
@@ -238,6 +238,12 @@ function JTG.CreateMiningMicroActivity(session)
         orientation = math.floor(tonumber(selection.orientation) or 0) % 4,
         lanes = {},
         playerGoldMined = 0,
+        duration = selection.duration==60 and 60 or nil,
+        elapsed = 0,
+        playerLumberMined = 0,
+        previousPlayerLumber = 0,
+        presentationVisible = true,
+        finished = false,
         previousPlayerGold = 0,
         locallyPaused = false,
         highlightQuestOnStart = selection.skipQuestHighlight ~= true,
@@ -290,14 +296,59 @@ function JTG.CreateMiningMicroActivity(session)
     end
 
     function activity:updateCounters()
-        if self.locallyPaused then return end
+        if self.locallyPaused or self.finished then return end
         local currentGold = GetPlayerState(Player(0), PLAYER_STATE_RESOURCE_GOLD)
         if currentGold > self.previousPlayerGold then
             self.playerGoldMined = self.playerGoldMined +
                 (currentGold - self.previousPlayerGold)
         end
         self.previousPlayerGold = currentGold
+        local lumber=GetPlayerState(Player(0),PLAYER_STATE_RESOURCE_LUMBER)
+        self.playerLumberMined=self.playerLumberMined+math.max(0,lumber-self.previousPlayerLumber)
+        self.previousPlayerLumber=lumber
         for index = 1, 3 do self:updateLaneCounter(index) end
+        if self.running and self.duration then
+            self.elapsed=math.min(self.duration,self.elapsed+0.10)
+            self:refreshTimer()
+            if self.elapsed>=self.duration-0.00001 then self:finishTimedRun() end
+        end
+    end
+
+    function activity:refreshTimer()
+        if self.timeFrame then
+            BlzFrameSetText(self.timeFrame,string.format('|cffffcc00Time: %.1fs|r',math.max(0,60-self.elapsed)))
+            BlzFrameSetVisible(self.timeFrame,self.presentationVisible and not self.finished)
+        end
+    end
+    function activity:createTimedPresentation()
+        if not self.duration then return end
+        self.timeFrame=JTG.ScopeTrackFrame(session.presentationScope,
+            BlzCreateFrameByType('TEXT','JTGMiningTime',BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI,0),'',0))
+        BlzFrameSetSize(self.timeFrame,0.30,0.03)
+        BlzFrameSetAbsPoint(self.timeFrame,FRAMEPOINT_TOPLEFT,0.012,0.55)
+        BlzFrameSetScale(self.timeFrame,1.48);BlzFrameSetEnable(self.timeFrame,false)
+        self.resultCard=JTG.UI.CreateResultCard(session,{name='JTGMiningResult',width=0.44,detailsHeight=0.12})
+        self:refreshTimer()
+    end
+    function activity:showTimedResult()
+        local expected=self.expectedLoss
+        local percent=expected>0 and string.format('%.1f%%',self.recoveredGold*100/expected) or 'N/A (no reference loss)'
+        JTG.UI.HideToolbar()
+        JTG.UI.ShowResultCard(self.resultCard,{title='ONE MINUTE COMPLETE',tone='success',
+            details='Expected gold loss mitigated: '..percent..'\nLumber harvested: '..self.playerLumberMined..
+                '\nGold recovered: '..self.recoveredGold..' / '..expected,visible=self.presentationVisible,
+            actions={retry={},menu={}}})
+    end
+    function activity:finishTimedRun()
+        self.finished=true
+        local full=GetPlayerState(self.lanes[1].owner,PLAYER_STATE_RESOURCE_GOLD)
+        local baseline=GetPlayerState(self.lanes[3].owner,PLAYER_STATE_RESOURCE_GOLD)
+        self.expectedLoss=full-baseline;self.recoveredGold=self.playerGoldMined-baseline
+        for _,lane in ipairs(self.lanes) do
+            for _,worker in ipairs(lane.workers) do PauseUnit(worker,true) end
+            PauseUnit(lane.hall,true)
+        end
+        self:refreshTimer();self:showTimedResult()
     end
 
     function activity:setOverlayVisible(visible)
@@ -423,11 +474,13 @@ function JTG.CreateMiningMicroActivity(session)
         self.previousPlayerGold = 0
         self:createScenario()
         self:createTrainingQuests()
+        self:createTimedPresentation()
         self.updateTimer = JTG.StartScopedTimer(current, current.scope,
             0.10, true, function() self:updateCounters() end)
     end
 
     function activity:start(current)
+        self.running=true
         if GetLocalPlayer() == Player(0) then
             SetCameraPosition(ARENA_CENTER_X, ARENA_CENTER_Y)
         end
@@ -440,6 +493,7 @@ function JTG.CreateMiningMicroActivity(session)
     function activity:captureResetState()
         return {
             race = self.race,
+            duration = self.duration,
             orientation = self.orientation,
             skipQuestHighlight = true,
         }
@@ -448,21 +502,29 @@ function JTG.CreateMiningMicroActivity(session)
     function activity:captureRotatedState()
         return {
             race = self.race,
+            duration = self.duration,
             orientation = (self.orientation + 1) % 4,
             skipQuestHighlight = true,
         }
     end
 
     function activity:restorePresentation()
+        self.presentationVisible=true
         self:setOverlayVisible(true)
+        self:refreshTimer()
+        if self.finished then self:showTimedResult();return end
         if JTG.UI then JTG.UI.ShowToolbar(session.descriptor.capabilities) end
     end
 
     function activity:hidePresentationForMenu()
+        self.presentationVisible=false
         self:setOverlayVisible(false)
+        self:refreshTimer()
+        if self.resultCard then JTG.UI.HideResultCard(self.resultCard) end
     end
 
     function activity:rebuildPresentation()
+        self:createTimedPresentation()
         for index, lane in ipairs(self.lanes) do
             lane.counterFrame = nil
             self:createLaneCounter(lane, index)
@@ -470,6 +532,7 @@ function JTG.CreateMiningMicroActivity(session)
     end
 
     function activity:discardPresentationForLoad()
+        self.timeFrame=nil;self.resultCard=nil
         for _, lane in ipairs(self.lanes) do
             if lane.counterFrame ~= nil then BlzDestroyFrame(lane.counterFrame) end
             lane.counterFrame = nil

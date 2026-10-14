@@ -1,6 +1,6 @@
 # Implemented activity catalogue
 
-This page describes player-facing content in v0.1.2-beta1. Planned catalogue cards without factories are intentionally omitted.
+This page describes current development, v0.1.3-alpha49. The published v0.1.2-beta1 contains four tutorials and eight exercises; development adds Heroes, Reflex Training and Hotkey Trainer. Planned catalogue cards without factories are intentionally omitted. Availability is not a claim of completed in-game acceptance.
 
 | Activity | Category | Scene | Main variants | Source |
 | --- | --- | --- | --- | --- |
@@ -8,7 +8,8 @@ This page describes player-facing content in v0.1.2-beta1. Planned catalogue car
 | Unit Controls | Learn to Play | South arena | Selection, interface and command practice | `src/activities/unit-controls-tutorial.lua` |
 | Hotkey Setup | Learn to Play | South arena | QWERTY/QWERTZ comparison and setup guidance; file export disabled | `src/activities/hotkey-setup-tutorial.lua` |
 | Economy & Workers | Learn to Play | Four racial bases | Worker mechanics, resource gathering, defense practice, food and upkeep | `src/activities/economy-tutorial.lua` |
-| Mining Micro | Skill Training | North arena | Human/Orc; rotated but geometrically identical mine layouts | `src/activities/mining-micro.lua` |
+| Heroes | Learn to Play | South showcase / north demonstrations | 47 narration stops; hero levels, XP trials, items; optional Attack Dice and six-way XP display | `src/activities/heroes-tutorial.lua` |
+| Mining Micro | Skill Training | North arena | Human/Orc; Unlimited or One Minute; rotated identical mine layouts | `src/activities/mining-micro.lua` |
 | Body Blocking | Skill Training | South arena | Racial training sequences or custom runner/blocker; Normal/Hard | `src/activities/body-blocking.lua` |
 | Surrounds | Skill Training | South arena | Racial training setups or custom army of up to 12 units | `src/activities/surrounds.lua` |
 | Gargoyle Surrounds | Skill Training | South arena | Gargoyles form ground surrounds by entering Stone Form; Undead and neutral-hero setups | `src/activities/surrounds.lua` |
@@ -16,8 +17,10 @@ This page describes player-facing content in v0.1.2-beta1. Planned catalogue car
 | Power Building | Tools & Extras | South arena | Human building selector; 1–10 Peasant comparison | `src/activities/power-building.lua` |
 | Bat Splitting | Skill Training | Arena 1 northern boundary | 6/8/10 Gryphons versus fixed-target bats; direct/splash results | `src/activities/bat-splitting.lua` |
 | Dodging | Skill Training | South arena | Disjoining Abilities/Attacks; Avoiding Area/Devour; grouped dodge abilities and racial movement selection | `src/activities/missile-dodging.lua` |
+| Reflex Training (WIP) | Tools & Extras | South arena | One to four races; Identify Units stages or buff/debuff Reflex Test | `src/activities/reflex-training.lua` |
+| Hotkey Trainer | Tools & Extras | South arena | Five race/Neutral pools; timed stages, native bindings and missed-command review | `src/activities/hotkey-training.lua` |
 
-Four tutorials and eight exercises are implemented. Planned cards are not playable. Dodging modes and diagnostic limitations are described in [Dodge test bench](DODGE-TEST-BENCH.md).
+Five tutorials and ten exercises/demonstrations are accessible in development. Planned cards are not playable. Dodging modes and diagnostic limitations are described in [Dodge test bench](DODGE-TEST-BENCH.md).
 
 ## Shared behavior
 
@@ -29,4 +32,4 @@ Body Blocking, Surrounds, Gargoyle Surround and Windwalk Pop use shared result c
 
 Tutorials use player-paced text and explicit navigation rather than advancing when temporary messages disappear. Quest entries provide durable reference material. Camera uses match-like terrain and fog behavior; Unit Controls and Hotkey Setup use controlled arenas; Economy uses four racial bases with active-race vision.
 
-All four tutorials use the shared presentation helpers in `JTG.Tutorial`. See [TUTORIAL-STANDARD.md](TUTORIAL-STANDARD.md) for confirmed ownership, checkpoint, camera and lifecycle rules.
+All five tutorials use the shared runner and presentation helpers in `JTG.Tutorial`. See [TUTORIAL-STANDARD.md](TUTORIAL-STANDARD.md) for confirmed ownership, checkpoint, camera and lifecycle rules.

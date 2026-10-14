@@ -345,7 +345,8 @@ end
 local function CreateIllustratedCard(name, parent, descriptor, width, height, artWidth, artHeight,
         labelWidth, labelScale, leftInset)
     local isAvailable = descriptor.status == "available"
-    local status = isAvailable and "" or "\n|cffaaaaaaPLANNED|r"
+    local status = descriptor.cardStatus and ("\n|cffaaaaaa" .. descriptor.cardStatus .. "|r") or
+        (isAvailable and "" or "\n|cffaaaaaaPLANNED|r")
     local button = CreateButton(name, parent,
         "|cffffcc00" .. (descriptor.cardTitle or descriptor.title) .. "|r" .. status, width, height)
     local art = BlzCreateFrameByType("BACKDROP", name .. "Artwork", button, "", 0)
@@ -373,7 +374,11 @@ local function CreateIllustratedActivityCard(name, parent, descriptor)
         descriptor.artworkWidth or 0.098,
         descriptor.artworkHeight or 0.048,
         0.120, 0.84, descriptor.labelInset or 0.020)
-    if descriptor.centerArtwork == true then
+    if descriptor.artworkAlignTop == true then
+        BlzFrameClearAllPoints(art)
+        BlzFrameSetPoint(art, FRAMEPOINT_TOPRIGHT, button, FRAMEPOINT_TOPRIGHT,
+            -0.004 + (descriptor.artworkOffsetX or 0), 0)
+    elseif descriptor.centerArtwork == true then
         BlzFrameClearAllPoints(art)
         BlzFrameSetPoint(art, FRAMEPOINT_CENTER, button,
             FRAMEPOINT_CENTER, descriptor.artworkOffsetX or 0,
@@ -440,7 +445,7 @@ local function CreateTooltipSlice(name, parent, texture, width, height, point)
     return slice
 end
 
-local function AttachTooltip(button, description, side)
+local function AttachTooltip(button, description, side, scope)
     description = WrapTooltipText(description)
     tooltipCount = tooltipCount + 1
     local tooltip = BlzCreateFrameByType("FRAME", "JTGTooltip" .. tooltipCount,
@@ -486,7 +491,8 @@ local function AttachTooltip(button, description, side)
     BlzFrameSetPoint(label, FRAMEPOINT_TOPLEFT, tooltip, FRAMEPOINT_TOPLEFT, 0.006, -0.006)
     BlzFrameSetVisible(tooltip, false)
     BlzFrameSetTooltip(button, tooltip)
-    table.insert(UI.tooltips, tooltip)
+    if scope then JTG.ScopeTrackFrame(scope,tooltip)
+    else table.insert(UI.tooltips, tooltip) end
     local function updateText(text)
         text = WrapTooltipText(text)
         -- Let the engine measure wrapped text at this fixed width; the height
@@ -505,6 +511,10 @@ local function AttachTooltip(button, description, side)
     end
     updateText(description)
     return tooltip, label, updateText
+end
+
+function UI.AttachActivityTooltip(scope,button,description)
+    return AttachTooltip(button,description,nil,scope)
 end
 
 local function HookNativeCloseButtons()
@@ -767,16 +777,45 @@ end
 
 UI.ReleaseFrameFocus = ReleaseFrameFocus
 
+local BUTTON_SOUND_FILES={
+    ["menu-open"]={file="Sound\\Interface\\GamePause.flac",label="PauseGame"},
+    ["normal"]={file="Sound\\Interface\\BigButtonClick.flac",label="GlueScreenClick"},
+}
 local function PlayButtonSound(kind)
-    if kind == false then return end
-    local sound = kind == "return" and UI.returnButtonSound or UI.normalButtonSound
-    if sound ~= nil then
-        StopSound(sound, false, false)
-        StartSound(sound)
+    if kind==false then return end
+    kind=kind=='menu-open' and 'menu-open' or 'normal'
+    local entry=BUTTON_SOUND_FILES[kind]
+    UI.buttonSounds=UI.buttonSounds or {}
+    local sound=UI.buttonSounds[kind]
+    if not sound then
+        sound=CreateSoundFromLabel(entry.label,false,false,false,10,10)
+        UI.buttonSounds[kind]=sound
+    end
+    if sound then
+        if UI.activeButtonSound then StopSound(UI.activeButtonSound,false,false) end
+        if GetLocalPlayer()==Player(0) then StartSound(sound) end
+        UI.activeButtonSound=sound
     end
 end
 
 UI.PlayButtonSound = PlayButtonSound
+
+local FEEDBACK_LABELS={quest='QuestNew',startup='MarkOfChaos',result='ItemIllusion',failure='ReceiveLumber',
+    credits='ReviveOrc',incorrect='StampedeHit',correct='PhaseShift'}
+function UI.PlayFeedbackSound(kind)
+    local label=FEEDBACK_LABELS[kind]
+    if not label then return end
+    UI.feedbackSounds=UI.feedbackSounds or {}
+    local sound=UI.feedbackSounds[kind]
+    if not sound then
+        sound=CreateSoundFromLabel(label,false,false,false,10,10)
+        UI.feedbackSounds[kind]=sound
+    end
+    if sound and GetLocalPlayer()==Player(0) then
+        StopSound(sound,false,false)
+        StartSound(sound)
+    end
+end
 
 -- Opening tutorial cue, separate from the arrows used for later UI lessons.
 function UI.CreateWelcomeArrow(scope, root, target, name)
@@ -958,6 +997,15 @@ function UI.ShowResultCard(card, presentation)
     BlzFrameClearAllPoints(card.panel)
     BlzFrameSetAbsPoint(card.panel, FRAMEPOINT_CENTER, 0.40, card.centerY)
     BlzFrameSetVisible(card.panel, presentation.visible ~= false)
+    if presentation.visible ~= false then
+        local session=card.session or (JTG.Controller and JTG.Controller.session)
+        local state=session or card
+        local attempt=state.resultAttempt or 1
+        if state.resultCueAttempt~=attempt then
+            state.resultCueAttempt=attempt
+            UI.PlayFeedbackSound(presentation.tone=='failure' and 'failure' or 'result')
+        end
+    end
 end
 
 function UI.HideResultCard(card)
@@ -1091,6 +1139,7 @@ function UI.ShowSkillRace(raceId)
 end
 
 function UI.ShowInfo(which)
+    if which=="credits" and not (UI.currentView and UI.currentView.kind=="info" and UI.currentView.id=="credits") then UI.PlayFeedbackSound("credits") end
     HideActivityPresentationForMenu()
     UI.HideAllPanels()
     if UI.gameplayMenuPaused then UI.ShowPausedActivityToolbar()
@@ -1301,8 +1350,8 @@ local function RefreshActivityBriefingChoices()
             end
             local enabled = choice.enabled ~= false
             BlzFrameSetEnable(button, enabled)
-            BlzFrameSetAlpha(button, enabled and 255 or 145)
-            BlzFrameSetTextColor(button, not enabled and
+            BlzFrameSetAlpha(button, enabled and not choice.selected and 255 or 145)
+            BlzFrameSetTextColor(button, (not enabled or choice.selected) and
                 BlzConvertColor(255, 145, 145, 145) or (choice.primary and
                 BlzConvertColor(255, 255, 204, 0) or
                 BlzConvertColor(255, 255, 255, 255)))
@@ -1426,9 +1475,13 @@ function UI.ShowActivityBriefing(spec)
     UI.activityBriefingBackAction = spec.backAction
     BlzFrameSetTextColor(UI.activityBriefingBack, BlzConvertColor(255, 255, 255, 255))
     UI.activityBriefingResumeAction = spec.resumeAction
-    UI.activityBriefingExitAction = spec.exitAction or JTG.ExitActivityFromMenu
+    -- Shared Exit rebuilds this exact page without a running exercise. Old
+    -- selector closures must not resurrect Resume or leave cleaned-up actors.
+    UI.activityBriefingExitAction = spec.resumeAction and JTG.ExitActivityFromMenu or
+        spec.exitAction or JTG.ExitActivityFromMenu
     UI.activityBriefingPrimaryAction = spec.primaryAction
-    local showPrimary = spec.primaryAction ~= nil or spec.primaryLabel ~= nil
+    local showPrimary = spec.resumeAction == nil and
+        (spec.primaryAction ~= nil or spec.primaryLabel ~= nil)
     BlzFrameSetVisible(UI.activityBriefingPrimary, showPrimary)
     if showPrimary then
         BlzFrameSetText(UI.activityBriefingPrimary,
@@ -1522,7 +1575,7 @@ local function CreateRootPanel()
         if firstCategoryButton == nil then firstCategoryButton = button end
         UI.categoryButtons[category.id] = button
         AttachTooltip(button, category.summary, index % 2 == 0 and "left" or "right")
-        RegisterClick(button, function() UI.ShowCategory(category.id) end)
+        RegisterClick(button, function() UI.ShowCategory(category.id) end, "menu-open")
     end
     BlzFrameClearAllPoints(subtitle)
     BlzFrameSetPoint(subtitle, FRAMEPOINT_TOP, title, FRAMEPOINT_BOTTOM, 0, 0)
@@ -1556,8 +1609,11 @@ local function HasAvailableRaceActivity(categoryId, raceId)
 end
 
 local function CreateCategoryPanel(category, categoryIndex)
+    local learnBody = category.id == "learn" and JTG.Tutorial.FormatNarration(
+        "In the tutorials you can navigate through them by using the {Button: Topics} and {Button: Optional} buttons.")
     local shell = CreateStandardMenuShell("JTGCategoryPanel" .. categoryIndex,
-        category.title, category.description or category.summary, -0.087)
+        category.title, learnBody or category.description or category.summary,
+        category.id == "learn" and -0.112 or -0.087)
     local panel = shell.panel
     local sectioned = UsesSectionedCatalogue(category.id)
     UI.panels["category_" .. category.id] = panel
@@ -1577,8 +1633,10 @@ local function CreateCategoryPanel(category, categoryIndex)
             column = (index - 1) % 2
             row = math.floor((index - 1) / 2)
         end
-        column = descriptor.catalogueColumn or column
-        row = descriptor.catalogueRow or row
+        if category.id == "skills" then
+            column = descriptor.catalogueColumn or column
+            row = descriptor.catalogueRow or row
+        end
         local name = "JTGActivity" .. categoryIndex .. "x" .. index
         local frame
         local button
@@ -1595,8 +1653,8 @@ local function CreateCategoryPanel(category, categoryIndex)
         end
         BlzFrameSetPoint(frame, FRAMEPOINT_TOP, panel, FRAMEPOINT_TOP,
             centeredColumns and (-0.120 + column * 0.240) or (-0.192 + column * 0.192),
-            (sectioned and -0.1522 or -0.100) -
-                row * (sectioned and 0.0562 or (learn and 0.072 or 0.055)))
+            (sectioned and -0.1522 or (learn and -0.125 or -0.100)) -
+                row * (sectioned and 0.0562 or (learn and 0.062 or 0.055)))
         if sectioned and row == 0 then
             if column == 0 then generalLeft = frame
             else generalRight = frame end
@@ -1973,7 +2031,7 @@ local function CreateActivityBriefingPanel()
     local resume = CreateFooterButton("JTGActivityBriefingResume", panel, "Resume",
         "right", function()
         if UI.activityBriefingResumeAction ~= nil then UI.activityBriefingResumeAction() end
-    end, "return")
+    end)
     BlzFrameSetTextColor(resume, BlzConvertColor(255, 255, 255, 255))
     UI.activityBriefingResume = resume
     BlzFrameSetVisible(resume, false)
@@ -1997,12 +2055,12 @@ local function CreateToolbar()
 
     local restart = toolbarButton("JTGToolbarRestart", "Redo")
     AttachTooltip(restart, "Cleanly reset the current activity and begin it again.", "left")
-    RegisterClick(restart, JTG.ResetActivity)
+    RegisterClick(restart, JTG.ResetActivity, "toolbar")
     UI.toolbarButtons.restart = restart
     UI.PlaceToolbarButton(restart, 6, bar)
     local menu = toolbarButton("JTGToolbarMenu", "Menu")
     AttachTooltip(menu, "Change this exercise's configuration or return to the training menus.", "left")
-    RegisterClick(menu, JTG.OpenTrainingMenu)
+    RegisterClick(menu, JTG.OpenTrainingMenu, "menu-open")
     UI.toolbarButtons.menu = menu
     UI.PlaceToolbarButton(menu, 1, bar)
 
@@ -2010,7 +2068,7 @@ local function CreateToolbar()
     AttachTooltip(lastRunner, "Restart the exercise against the previous runner.", "left")
     BlzFrameSetEnable(lastRunner, false)
     BlzFrameSetAlpha(lastRunner, 145)
-    RegisterClick(lastRunner, JTG.LastRunnerActivity)
+    RegisterClick(lastRunner, JTG.LastRunnerActivity, "SpiritTouch")
     UI.toolbarButtons.lastRunner = lastRunner
     UI.PlaceToolbarButton(lastRunner, 2, bar)
 
@@ -2018,21 +2076,21 @@ local function CreateToolbar()
     AttachTooltip(rotate,
         "Restart with the mine, main building and lumber position rotated.",
         "left")
-    RegisterClick(rotate, JTG.RotateActivity)
+    RegisterClick(rotate, JTG.RotateActivity, "toolbar")
     UI.toolbarButtons.rotate = rotate
     UI.PlaceToolbarButton(rotate, 8, bar)
 
     local setups = toolbarButton("JTGToolbarSetups", "Setups")
     AttachTooltip(setups,
         "Choose another unit setup for this exercise.", "left")
-    RegisterClick(setups, JTG.ToggleActivitySetups)
+    RegisterClick(setups, JTG.ToggleActivitySetups, "menu-open")
     UI.toolbarButtons.setups = setups
     UI.PlaceToolbarButton(setups, 3, bar)
 
     local nextStage = toolbarButton("JTGToolbarNext", "Next")
     AttachTooltip(nextStage,
         "Continue to the next runner or unit setup.", "left")
-    RegisterClick(nextStage, JTG.NextActivityStage)
+    RegisterClick(nextStage, JTG.NextActivityStage, "toolbar")
     UI.toolbarButtons.next = nextStage
     UI.PlaceToolbarButton(nextStage, 5, bar)
 
@@ -2040,7 +2098,7 @@ local function CreateToolbar()
     AttachTooltip(squares,
         "Display unit obstruction areas, snap points and the finer grid.",
         "left")
-    RegisterClick(squares, JTG.ToggleActivitySquares)
+    RegisterClick(squares, JTG.ToggleActivitySquares, "Lever")
     UI.toolbarButtons.squares = squares
     UI.PlaceToolbarButton(squares, 8, bar)
 
@@ -2048,7 +2106,7 @@ local function CreateToolbar()
     -- effect, which is authored for the wider upper-button-bar controls.
     local pause = toolbarButton("JTGToolbarPause", "Pause")
     RegisterClick(pause, UI.ToggleExercisePause, function()
-        return UI.exercisePaused and "return" or "normal"
+        return "toolbar"
     end)
     UI.toolbarButtons.pause = pause
     -- Use Warcraft's authored rectangular Quest-button notification model.
@@ -2089,7 +2147,7 @@ local function CreatePausedActivityResume()
         FOOTER_BUTTON_WIDTH, FOOTER_BUTTON_HEIGHT)
     BlzFrameSetAbsPoint(resume, FRAMEPOINT_BOTTOMRIGHT, 0.675, 0.120)
     BlzFrameSetTextColor(resume, BlzConvertColor(255, 255, 255, 255))
-    RegisterClick(resume, JTG.ResumeActivity, "return")
+    RegisterClick(resume, JTG.ResumeActivity)
     BlzFrameSetVisible(resume, false)
     UI.pausedActivityResume = resume
 end
@@ -2290,21 +2348,25 @@ function UI.Initialize(restoring)
     BlzFrameSetLevel(UI.loadWarningText, 10000)
     BlzFrameSetEnable(UI.loadWarningText, false)
     BlzFrameSetVisible(UI.loadWarningText, false)
-    UI.normalButtonSound = CreateSound("Sound\\Interface\\BigButtonClick.wav", false, false, false, 10, 10, "")
-    UI.returnButtonSound = CreateSound("Sound\\Interface\\GamePause.wav", false, false, false, 10, 10, "")
+
     UI.clickTrigger = CreateTrigger()
     TriggerAddAction(UI.clickTrigger, function()
         local clickedFrame = BlzGetTriggerFrame()
         local action = UI.clickActions[GetHandleId(clickedFrame)]
         if action ~= nil then
             local soundKind = UI.clickSounds[GetHandleId(clickedFrame)]
-            if type(soundKind) == "function" then soundKind = soundKind() end
-            PlayButtonSound(soundKind)
-            ReleaseFrameFocus(clickedFrame)
-            if UI.gameplayMenuPaused or UI.exercisePaused then
+            local previousView=UI.currentView
+            local function dispatch()
                 action()
+                local kind=type(soundKind)=='function' and soundKind() or soundKind
+                if kind=='normal' and UI.menuVisible and UI.currentView~=previousView then kind='menu-open' end
+                PlayButtonSound(kind)
                 ReleaseFrameFocus(clickedFrame)
                 ReleaseKeyboardFocusAfterClick()
+            end
+            ReleaseFrameFocus(clickedFrame)
+            if UI.gameplayMenuPaused or UI.exercisePaused then
+                dispatch()
                 return
             end
             local epoch = UI.epoch
@@ -2312,9 +2374,7 @@ function UI.Initialize(restoring)
             TimerStart(releaseTimer, 0.00, false, function()
                 DestroyTimer(releaseTimer)
                 if UI.epoch ~= epoch then return end
-                action()
-                ReleaseFrameFocus(clickedFrame)
-                ReleaseKeyboardFocusAfterClick()
+                dispatch()
             end)
         end
     end)
@@ -2485,7 +2545,7 @@ function UI.Initialize(restoring)
         "- Implemented menu-to-game environment transition.", 1, true)
     CreateInfoPanel("credits", "Credits",
         "Project started by |cffffcc00Jamie|r and currently run by |cffffcc00Solanum|r.\n\n" ..
-        "Contributors: AoW, poison, floss2xdaily, Kaccel, MadPad09 and Solstice1221.\n\n" ..
+        "Contributors: AoW, poison, floss2xdaily, Kaccel, MadPad09, Solstice1221, Barren and Thae.\n\n" ..
         "Map adapted from Twisted Meadows by McCandish, MMC and W3Champions.\n\n" ..
         "Warcraft III belongs to Blizzard Entertainment.", 2)
     CreateActivityBriefingPanel()

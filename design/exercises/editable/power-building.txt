@@ -1,0 +1,21 @@
+Power Building — editable briefings
+
+Current implementation snapshot: 13 October 2026.
+Edit the text and blank lines directly. Formatting tags are preserved.
+Page labels and placeholders identify which menu uses the text.
+Edits here do not automatically update the map.
+This file covers briefing text, not unit tooltips, quest instructions or end cards.
+
+Source: src/activities/power-building.lua
+
+============================================================
+Main briefing
+============================================================
+
+Human peasants can assist each other when constructing. Each peasant after the first contributes 60% of the first builder's build speed, decreasing the time it takes to finish the building, but increases its gold and lumber cost by around 15% across its entire build time.
+
+Power building has diminishing returns, but it can be worth it. For example, the seconds gained from building a Town Hall at an expansion are always worth it in the long run, because you can start mining gold earlier. You just have to be able to afford the investment.
+
+Here you can choose a building to see a demonstration comparing 1 through 10 peasants.
+
+Your notes:

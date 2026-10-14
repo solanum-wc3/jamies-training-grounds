@@ -30,6 +30,7 @@ end
 
 local TUTORIAL_STEPS = {
     {
+        id = "camera.001",
         checkpoint = "welcome",
         groupStart = 1,
         wait = true,
@@ -42,6 +43,7 @@ local TUTORIAL_STEPS = {
         },
     },
     {
+        id = "camera.002",
         checkpoint = "movement",
         groupStart = 2,
         wait = true,
@@ -52,6 +54,7 @@ local TUTORIAL_STEPS = {
         },
     },
     {
+        id = "camera.003",
         groupStart = 3,
         wait = true,
         lines = {
@@ -62,6 +65,7 @@ local TUTORIAL_STEPS = {
         },
     },
     {
+        id = "camera.004",
         groupStart = 4,
         wait = true,
         lines = {
@@ -71,6 +75,7 @@ local TUTORIAL_STEPS = {
         },
     },
     {
+        id = "camera.005",
         groupStart = 5,
         wait = true,
         lines = {
@@ -80,6 +85,7 @@ local TUTORIAL_STEPS = {
         },
     },
     {
+        id = "camera.006",
         groupStart = 6,
         wait = true,
         sectionEnd = true,
@@ -90,6 +96,7 @@ local TUTORIAL_STEPS = {
         },
     },
     {
+        id = "camera.007",
         checkpoint = "zooming",
         groupStart = 7,
         wait = true,
@@ -101,17 +108,25 @@ local TUTORIAL_STEPS = {
         trigger = "zoomQuest",
     },
     {
+        id = "camera.008",
         groupStart = 8,
         wait = true,
         lines = {
             "You can change the camera distance while in-game. The default control for this is rolling the {Input: Mouse Wheel}.",
+        },
+    },
+    {
+        id = "camera.zoom-advice",
+        groupStart = 9, wait = true,
+        lines = {
             "A closer camera makes controlling units easier, while having the camera further back can help to keep a clear view of a situation.",
             "It is best to set zoom to a default value that allows you to do both. You can always zoom in or out during play.",
             "Feel free to set the default value to something that feels right for you!",
         },
     },
     {
-        groupStart = 9,
+        id = "camera.009",
+        groupStart = 10,
         wait = true,
         sectionEnd = true,
         lines = {
@@ -121,8 +136,9 @@ local TUTORIAL_STEPS = {
         },
     },
     {
+        id = "camera.010",
         checkpoint = "baseControl",
-        groupStart = 10,
+        groupStart = 11,
         wait = true,
         trigger = "mainBase",
         lines = {
@@ -132,7 +148,8 @@ local TUTORIAL_STEPS = {
         },
     },
     {
-        groupStart = 11,
+        id = "camera.011",
+        groupStart = 12,
         wait = true,
         trigger = "tertiaryBase",
         lines = {
@@ -141,7 +158,8 @@ local TUTORIAL_STEPS = {
         },
     },
     {
-        groupStart = 12,
+        id = "camera.012",
+        groupStart = 13,
         wait = true,
         trigger = "secondaryBase",
         lines = {
@@ -149,7 +167,8 @@ local TUTORIAL_STEPS = {
         },
     },
     {
-        groupStart = 13,
+        id = "camera.013",
+        groupStart = 14,
         wait = true,
         trigger = "mainBase",
         lines = {
@@ -157,7 +176,8 @@ local TUTORIAL_STEPS = {
         },
     },
     {
-        groupStart = 14,
+        id = "camera.014",
+        groupStart = 15,
         wait = true,
         lines = {
             "{Heading: JUMP TO BASE}",
@@ -169,7 +189,8 @@ local TUTORIAL_STEPS = {
         },
     },
     {
-        groupStart = 15,
+        id = "camera.015",
+        groupStart = 16,
         wait = true,
         trigger = "notificationProduction",
         lines = {
@@ -181,7 +202,8 @@ local TUTORIAL_STEPS = {
         },
     },
     {
-        groupStart = 16,
+        id = "camera.016",
+        groupStart = 17,
         wait = true,
         trigger = "notificationAttack",
         lines = {
@@ -192,8 +214,10 @@ local TUTORIAL_STEPS = {
         },
     },
     {
-        groupStart = 17,
+        id = "camera.017",
+        groupStart = 18,
         wait = true,
+        trigger = "idleWorkers",
         lines = {
             "{Heading: IDLE WORKERS}",
             "You can automatically center the camera on idle worker units, and cycle through them.",
@@ -203,7 +227,8 @@ local TUTORIAL_STEPS = {
         },
     },
     {
-        groupStart = 18,
+        id = "camera.018",
+        groupStart = 19,
         wait = true,
         sectionEnd = true,
         trigger = "idleWorkerQuest",
@@ -213,8 +238,9 @@ local TUTORIAL_STEPS = {
         },
     },
     {
+        id = "camera.019",
         checkpoint = "armyControl",
-        groupStart = 19,
+        groupStart = 20,
         wait = true,
         trigger = "armyCenter",
         lines = {
@@ -223,19 +249,29 @@ local TUTORIAL_STEPS = {
         },
     },
     {
-        groupStart = 20,
+        id = "camera.020",
+        groupStart = 21,
         wait = true,
         lines = {
             "By pressing {Input: F1}, {Input: F2} or {Input: F3}, you can select your hero units.",
             "{Input: Double-tapping} the key centers the camera on the hero.",
+        },
+    },
+    {
+        id = "camera.021",
+        groupStart = 22,
+        wait = true,
+        lines = {
             "Which hero is bound to which key depends on the order you trained them in the current game, with your first hero always being bound to {Input: F1} and so on.",
             "Alternatively, you can {Input: click the hero icons} on the top left of the screen.",
             "These keys cannot be changed in-game.",
+            "",
             "Try moving the camera to your heroes!",
         },
     },
     {
-        groupStart = 21,
+        id = "camera.022",
+        groupStart = 23,
         wait = true,
         lines = {
             "If you want to freely assign units or buildings to keys, you have to use {Term: Control Groups}.",
@@ -246,7 +282,8 @@ local TUTORIAL_STEPS = {
         },
     },
     {
-        groupStart = 22,
+        id = "camera.023",
+        groupStart = 24,
         wait = true,
         lines = {
             "Control groups can be used to control and divide your army according to type and function.",
@@ -254,7 +291,8 @@ local TUTORIAL_STEPS = {
         },
     },
     {
-        groupStart = 23,
+        id = "camera.024",
+        groupStart = 25,
         wait = true,
         lines = {
             "After forming it, {Input: pressing 1} will select the units of Control Group 1.",
@@ -263,7 +301,8 @@ local TUTORIAL_STEPS = {
         },
     },
     {
-        groupStart = 24,
+        id = "camera.025",
+        groupStart = 26,
         wait = true,
         sectionEnd = true,
         lines = {
@@ -272,7 +311,8 @@ local TUTORIAL_STEPS = {
         },
     },
     {
-        groupStart = 25,
+        id = "camera.026",
+        groupStart = 27,
         terminal = true,
         trigger = "highlightMenuAndOptional",
         lines = {
@@ -414,6 +454,9 @@ local IMPORTED_LAYOUT = {
 local CreateTutorialButton = JTG.Tutorial.CreateButton
 
 local function CreateBaseUnit(scope, owner, rawcode, x, y, facing)
+    if rawcode=='opeo' then
+        return JTG.Tutorial.CreateMobileUnit(scope,owner,FourCC(rawcode),x,y,facing)
+    end
     return JTG.Tutorial.CreateSceneUnit(scope,owner,FourCC(rawcode),x,y,facing)
 end
 
@@ -582,8 +625,8 @@ function JTG.CreateCameraTutorialActivity(session)
     end
 
     function activity:revealQuestsThrough(stepIndex)
-        if stepIndex >= 7 then self:createZoomQuest(true, true) end
-        if stepIndex >= 18 then self:createIdleWorkerQuest(true, true) end
+        if stepIndex >= JTG.Tutorial.StepIndex(TUTORIAL_STEPS,'camera.007') then self:createZoomQuest(true, true) end
+        if stepIndex >= JTG.Tutorial.StepIndex(TUTORIAL_STEPS,'camera.018') then self:createIdleWorkerQuest(true, true) end
     end
 
     function activity:findOwnedUnit(rawcode, x, y, radius)
@@ -646,7 +689,13 @@ function JTG.CreateCameraTutorialActivity(session)
     end
 
     function activity:provideNotificationResources()
-        if self.notificationResourcesAdded then return end
+        if self.notificationResourcesAdded then
+            -- Explicit revisits must still be able to train and research.
+            for _,state in ipairs({PLAYER_STATE_RESOURCE_GOLD,PLAYER_STATE_RESOURCE_LUMBER}) do
+                SetPlayerState(CAMERA_PLAYER,state,math.max(2000,GetPlayerState(CAMERA_PLAYER,state)))
+            end
+            return
+        end
         self.notificationResourcesAdded = true
         local oldGold = GetPlayerState(CAMERA_PLAYER,
             PLAYER_STATE_RESOURCE_GOLD)
@@ -700,24 +749,29 @@ function JTG.CreateCameraTutorialActivity(session)
             {2816.0, -5760.0},
             {3328.0, -4096.0},
         }
-        for _, site in ipairs(sites) do
-            if not IsTerrainPathable(site[1], site[2],
-                    PATHING_TYPE_BUILDABILITY) and
-                    IssueBuildOrderById(peon, FourCC("otrb"),
-                        site[1], site[2]) then
-                return true
+        for _,site in ipairs(sites) do
+            if not IsTerrainPathable(site[1],site[2],PATHING_TYPE_BUILDABILITY) then
+                self.demoBurrowSite=site
+                if IssueBuildOrderById(peon,FourCC('otrb'),site[1],site[2]) then return true end
+                self.demoBurrowSite=nil
             end
         end
         -- If the footprint test rejected every nearby site, put the Peon on
         -- the clearest approach and retry the first site after pathing settles.
         SetUnitPosition(peon, 2944.0, -5760.0)
-        return IssueBuildOrderById(peon, FourCC("otrb"),
-            sites[1][1], sites[1][2])
+        self.demoBurrowSite=sites[1]
+        local accepted=IssueBuildOrderById(peon,FourCC('otrb'),sites[1][1],sites[1][2])
+        if not accepted then self.demoBurrowSite=nil end
+        return accepted
     end
 
     function activity:startNotificationProduction()
         if self.notificationProductionStarted then return end
         self.notificationProductionStarted = true
+        local scope=self.tutorialStepScope or session.scope
+        local oldResearch=GetPlayerTechCount(CAMERA_PLAYER,FourCC('Rome'),true)
+        JTG.ScopeBorrow(scope,function() SetPlayerTechResearched(CAMERA_PLAYER,FourCC('Rome'),oldResearch) end)
+        SetPlayerTechResearched(CAMERA_PLAYER,FourCC('Rome'),0)
         self:provideNotificationResources()
         self:enableWarpTen()
 
@@ -728,27 +782,43 @@ function JTG.CreateCameraTutorialActivity(session)
         local warMill = self:findOwnedUnit("ofor",
             4192.0, -5024.0, 256.0)
 
-        local completionTrigger = JTG.ScopeTrackTrigger(session.scope,
+        self.notificationProductionBuildings={fortress,barracks,warMill}
+
+        local completionTrigger = JTG.ScopeTrackTrigger(scope,
             CreateTrigger())
         TriggerRegisterPlayerUnitEvent(completionTrigger, CAMERA_PLAYER,
             EVENT_PLAYER_UNIT_TRAIN_FINISH, nil)
         TriggerRegisterPlayerUnitEvent(completionTrigger, CAMERA_PLAYER,
+            EVENT_PLAYER_UNIT_CONSTRUCT_START, nil)
+        TriggerRegisterPlayerUnitEvent(completionTrigger, CAMERA_PLAYER,
             EVENT_PLAYER_UNIT_CONSTRUCT_FINISH, nil)
-        TriggerAddAction(completionTrigger, JTG.GuardSession(session,
+        TriggerAddAction(completionTrigger, JTG.Tutorial.GuardStep(session,self,
             function()
                 local eventId = GetTriggerEventId()
                 if eventId == EVENT_PLAYER_UNIT_TRAIN_FINISH then
+                    local source=GetTriggerUnit()
+                    if source~=fortress and source~=barracks then return end
                     local trained = GetTrainedUnit()
+                    if trained~=nil and (GetUnitTypeId(trained)==FourCC('opeo') or GetUnitTypeId(trained)==FourCC('ogru')) then
+                        JTG.ScopeTrackUnit(scope,trained)
+                    end
                     if trained ~= nil and
                             GetUnitTypeId(trained) == FourCC("opeo") then
                         self.demoPeon = trained
-                        -- Completion belongs to the live construction, not its narration.
-                        JTG.StartScopedTimer(session,session.scope,0.10,false,function()
+                        -- The demonstration build belongs to this production visit.
+                        JTG.Tutorial.ScheduleStep(session,self,0.10,function()
                             self:orderDemoBurrow(trained)
                         end)
                     elseif trained ~= nil and
                             GetUnitTypeId(trained) == FourCC("ogru") then
                         IssuePointOrder(trained, "move", -708.0, -4572.0)
+                    end
+                elseif eventId == EVENT_PLAYER_UNIT_CONSTRUCT_START then
+                    local structure=GetConstructingStructure()
+                    local site=self.demoBurrowSite
+                    if structure and site and GetUnitTypeId(structure)==FourCC('otrb') and
+                        math.abs(GetUnitX(structure)-site[1])<64 and math.abs(GetUnitY(structure)-site[2])<64 then
+                        JTG.ScopeTrackUnit(scope,structure)
                     end
                 elseif eventId == EVENT_PLAYER_UNIT_CONSTRUCT_FINISH then
                     local structure = GetConstructedStructure()
@@ -772,13 +842,32 @@ function JTG.CreateCameraTutorialActivity(session)
 
     end
 
-    function activity:startNotificationAttack()
-        for _, oldGhoul in ipairs(self.demoGhouls or {}) do
-            if oldGhoul ~= nil and GetUnitTypeId(oldGhoul) ~= 0 then
-                RemoveUnit(oldGhoul)
+    function activity:stopNotificationProduction()
+        self:disableWarpTen()
+        for _,building in pairs(self.notificationProductionBuildings or {}) do
+            if GetUnitTypeId(building)~=0 then IssueImmediateOrder(building,'cancel') end
+        end
+        self.notificationProductionBuildings=nil
+        self.notificationProductionStarted=false
+        self.demoPeon=nil;self.demoBurrowSite=nil
+    end
+
+    function activity:stopNotificationAttack()
+        for _,ghoul in ipairs(self.demoGhouls or {}) do
+            if GetUnitTypeId(ghoul)~=0 and GetWidgetLife(ghoul)>0.405 then KillUnit(ghoul) end
+        end
+        JTG.Tutorial.ClearScene(self,'notification-attack')
+        self.demoGhouls={}
+        for _,task in ipairs(self.attackRepairTasks or {}) do
+            if task.started and task.tree and GetUnitTypeId(task.unit)~=0 and GetWidgetLife(task.unit)>0.405 then
+                IssueTargetOrder(task.unit,'harvest',task.tree)
             end
         end
-        self.demoGhouls = {}
+        self.attackRepairTasks={}
+    end
+
+    function activity:startNotificationAttack()
+        self:stopNotificationAttack()
 
         local mainTower = self:findOwnedUnit("owtw",
             3776.0, -3776.0, 256.0)
@@ -786,11 +875,20 @@ function JTG.CreateCameraTutorialActivity(session)
             -5056.0, -3904.0, 256.0)
         local repairPeons = self:findNearestLumberPeons(
             3776.0, -3776.0, 2)
+        for _,peon in ipairs(repairPeons) do
+            local work=self.workerActivities[GetHandleId(peon)]
+            self.attackRepairTasks[#self.attackRepairTasks+1]={unit=peon,
+                tree=work and work.targetKind=='destructable' and self:findDestructable(work.targetX,work.targetY) or nil}
+        end
+        -- Each revisit restores the live targets before launching the attack.
+        for _,tower in ipairs({mainTower,tertiaryTower}) do
+            SetUnitState(tower,UNIT_STATE_LIFE,BlzGetUnitMaxHP(tower))
+        end
         local spawnedGhouls = {}
 
         local function spawnAttacker(x, y, facing, target)
             if target == nil then return end
-            local ghoul = JTG.ScopeTrackUnit(session.scope,
+            local ghoul = JTG.ScopeTrackUnit(JTG.Tutorial.SceneScope(self,'notification-attack'),
                 CreateUnit(Player(1), FourCC("ugho"), x, y, facing))
             table.insert(spawnedGhouls, ghoul)
             table.insert(self.demoGhouls, ghoul)
@@ -812,15 +910,16 @@ function JTG.CreateCameraTutorialActivity(session)
         spawnAttacker(-4254.447, -3550.447, 225.0, tertiaryTower)
 
         self:schedule(3.0, function()
-            for _, peon in ipairs(repairPeons) do
+            for index, peon in ipairs(repairPeons) do
                 if peon ~= nil and mainTower ~= nil then
+                    self.attackRepairTasks[index].started=true
                     IssueImmediateOrder(peon, "stop")
                     IssueTargetOrder(peon, "repair", mainTower)
                 end
             end
         end)
         -- Retiring these exact spawned handles remains valid after narration.
-        JTG.StartScopedTimer(session,session.scope,10.0,false,function()
+        JTG.Tutorial.SceneTimer(session,self,'notification-attack',10.0,false,function()
             for _, ghoul in ipairs(spawnedGhouls) do
                 if ghoul ~= nil and GetUnitTypeId(ghoul) ~= 0 then
                     KillUnit(ghoul)
@@ -848,7 +947,29 @@ function JTG.CreateCameraTutorialActivity(session)
         SetPlayerColor(enemy, ConvertPlayerColor(0))
     end
 
+    function activity:prepareIdleWorkers()
+        if not self.idleWorkersScope then
+            self.idleWorkersScope=JTG.CreateScope('camera-idle-workers')
+            local scope=self.idleWorkersScope
+            JTG.ScopeAdd(session.scope,function() JTG.DisposeScope(scope) end)
+            self.idleWorkers={}
+            for _,point in ipairs({{3456,-5440},{-2432,-6848},{-4800,-4224}}) do
+                local worker=JTG.ScopeTrackUnit(scope,CreateUnit(CAMERA_PLAYER,FourCC('opeo'),point[1],point[2],270))
+                self.idleWorkers[#self.idleWorkers+1]=worker
+            end
+        end
+        for _,worker in ipairs(self.idleWorkers) do
+            IssueImmediateOrder(worker,'stop')
+        end
+    end
+
     function activity:runStepTrigger(step)
+        if not step or step.trigger~='notificationAttack' then self:stopNotificationAttack() end
+        local idleStep=step and (step.trigger=='idleWorkers' or step.trigger=='idleWorkerQuest')
+        if not idleStep and self.idleWorkersScope then
+            JTG.DisposeScope(self.idleWorkersScope)
+            self.idleWorkersScope=nil;self.idleWorkers=nil
+        end
         if step ~= nil and step.trigger == "zoomQuest" then
             self:createZoomQuest(true)
         elseif step ~= nil and step.trigger == "mainBase" then
@@ -866,7 +987,10 @@ function JTG.CreateCameraTutorialActivity(session)
             self:startNotificationAttack()
         elseif step ~= nil and step.trigger == "armyCenter" then
             self:takeCameraTo(-708.0, -4572.0, CAMERA_MOVE_DURATION)
+        elseif step ~= nil and step.trigger == "idleWorkers" then
+            self:prepareIdleWorkers()
         elseif step ~= nil and step.trigger == "idleWorkerQuest" then
+            self:prepareIdleWorkers()
             self:createIdleWorkerQuest(true)
         end
     end
@@ -888,7 +1012,7 @@ function JTG.CreateCameraTutorialActivity(session)
             return
         end
         self.step = index
-        self.complete = false
+        self.complete = spec.terminal == true
         self.checkpoint = spec.checkpoint or self.checkpoint
         self.waitingForContinue = spec.wait == true and
             spec.terminal ~= true
@@ -905,6 +1029,7 @@ function JTG.CreateCameraTutorialActivity(session)
     end
 
     function activity:showCompletion(recordInLog)
+        self:stopNotificationAttack()
         self.step = #TUTORIAL_STEPS
         self.complete = true
         self.waitingForContinue = false
@@ -924,6 +1049,7 @@ function JTG.CreateCameraTutorialActivity(session)
     end
 
     function activity:moveToMainBase()
+        self:stopNotificationAttack()
         -- Open on the southernmost tower; later base demonstrations target the hall.
         self:takeCameraTo(2560.0, -5376.0, CAMERA_MOVE_DURATION)
         self.cameraRemaining = CAMERA_MOVE_DURATION
@@ -982,6 +1108,7 @@ function JTG.CreateCameraTutorialActivity(session)
     function activity:beginOptionalSection(sectionId)
         local optional = OPTIONAL_SECTIONS[sectionId]
         if optional == nil then return end
+        self:stopNotificationAttack()
         if self.optionalReturnState == nil then
             self.optionalReturnState = {
                 step = self.step,
@@ -1018,6 +1145,8 @@ function JTG.CreateCameraTutorialActivity(session)
             self.advanceRemaining = saved.advanceRemaining
             self.cameraRemaining = saved.cameraRemaining
             self.narrationBlocks = CopyArray(saved.narrationBlocks)
+            self:runStepTrigger(TUTORIAL_STEPS[self.step])
+            self.tutorialActiveStep=TUTORIAL_STEPS[self.step]
         end
         self:renderNarration()
         self:refreshControls()
@@ -1078,59 +1207,50 @@ function JTG.CreateCameraTutorialActivity(session)
             end
             return
         end
-        local targetIndex = self.complete and #TUTORIAL_STEPS or
-            math.max(1, self.step - 1)
+        local targetIndex=math.max(1,self.step-1)
         if targetIndex == self.step and not self.complete then return end
-        local spec = TUTORIAL_STEPS[targetIndex]
-        self.step = targetIndex
-        self.checkpoint = spec.checkpoint or self.checkpoint
-        self.complete = false
-        self.waitingForContinue = spec.wait == true and
-            spec.terminal ~= true
-        if spec.terminal == true or self.waitingForContinue then
-            self.advanceRemaining = nil
-        else
-            self.advanceRemaining = spec.delay or 4.0
-        end
-        self:restoreNarrationThrough(targetIndex, true)
-        self:runStepTrigger(spec)
-        self:refreshControls()
+        self:restoreCheckpoint(targetIndex)
+    end
+
+    function activity:restoreCheckpoint(index)
+        self:abandonOptionalSection()
+        self.objectivesOpen=false
+        self:setObjectivesVisible(false)
+        JTG.Tutorial.RestoreAt(self,index,nil,function(targetIndex)
+            local spec=TUTORIAL_STEPS[targetIndex]
+            self:revealQuestsThrough(targetIndex)
+            self.step=targetIndex
+            self.checkpoint=spec.checkpoint or self.checkpoint
+            self.complete=spec.terminal==true
+            self.waitingForContinue=spec.wait==true and not self.complete
+            if spec.terminal or self.waitingForContinue then self.advanceRemaining=nil
+            else self.advanceRemaining=spec.delay or 4.0 end
+            self:restoreNarrationThrough(targetIndex,true)
+            self:runStepTrigger(spec)
+            self:refreshControls()
+            self.tutorialActiveStep=spec
+        end)
+    end
+
+    function activity:captureResetState()
+        local saved=self.optionalReturnState
+        return JTG.Tutorial.CaptureCheckpoint(self,saved and saved.step or self.step)
     end
 
     function activity:restoreZoomCheckpoint()
-        self:abandonOptionalSection()
-        self.objectivesOpen = false
-        self:setObjectivesVisible(false)
-        self:clearNarration()
-        self:revealQuestsThrough(7)
-        self:showStep(7, true)
+        self:restoreCheckpoint(JTG.Tutorial.StepIndex(TUTORIAL_STEPS,'camera.007'))
     end
 
     function activity:restoreMovementCheckpoint()
-        self:abandonOptionalSection()
-        self.objectivesOpen = false
-        self:setObjectivesVisible(false)
-        self:clearNarration()
-        self:revealQuestsThrough(2)
-        self:showStep(2, true)
+        self:restoreCheckpoint(JTG.Tutorial.StepIndex(TUTORIAL_STEPS,'camera.002'))
     end
 
     function activity:restoreBaseControlCheckpoint()
-        self:abandonOptionalSection()
-        self.objectivesOpen = false
-        self:setObjectivesVisible(false)
-        self:clearNarration()
-        self:revealQuestsThrough(10)
-        self:showStep(10, true)
+        self:restoreCheckpoint(JTG.Tutorial.StepIndex(TUTORIAL_STEPS,'camera.010'))
     end
 
     function activity:restoreArmyControlCheckpoint()
-        self:abandonOptionalSection()
-        self.objectivesOpen = false
-        self:setObjectivesVisible(false)
-        self:clearNarration()
-        self:revealQuestsThrough(19)
-        self:showStep(19, true)
+        self:restoreCheckpoint(JTG.Tutorial.StepIndex(TUTORIAL_STEPS,'camera.019'))
     end
 
     function activity:openMenu()
@@ -1722,7 +1842,8 @@ function JTG.CreateCameraTutorialActivity(session)
     function activity:start()
         if JTG.UI then JTG.UI.HideToolbar() end
         self:createPresentation()
-        self:restoreWelcomeCheckpoint()
+        local target=JTG.Tutorial.ResolveStep(TUTORIAL_STEPS,session.restartData)
+        if target>1 then self:restoreCheckpoint(target) else self:restoreWelcomeCheckpoint() end
     end
 
     function activity:setPaused(paused)
@@ -1766,6 +1887,7 @@ function JTG.CreateCameraTutorialActivity(session)
     end
 
     function activity:cleanup()
+        self:stopNotificationAttack()
         self:clearArrow()
         ClearTextMessages()
         -- Units made manually while refining the imported layout are not
@@ -1786,6 +1908,12 @@ function JTG.CreateCameraTutorialActivity(session)
         self.actions = {}
     end
 
-    JTG.Tutorial.InstallRunner(activity, session, {id="learn.camera", player=CAMERA_PLAYER, steps=TUTORIAL_STEPS, entries = {"showStep", "showOptionalStep", "showCompletion", "goBack"}})
+    JTG.Tutorial.InstallRunner(activity, session, {id="learn.camera", player=CAMERA_PLAYER, steps=TUTORIAL_STEPS, requireStableIds=true, entries = {"showStep", "showOptionalStep", "showOptionalCompletion", "showCompletion",
+            "restoreWelcomeCheckpoint", "restoreZoomCheckpoint", "restoreMovementCheckpoint",
+            "restoreBaseControlCheckpoint", "restoreArmyControlCheckpoint", "returnFromOptionalSection"},
+        sceneExit=function(self,previous,nextStep)
+            if previous.trigger=='notificationAttack' and (not nextStep or nextStep.trigger~='notificationAttack') then self:stopNotificationAttack() end
+            if previous.trigger=='notificationProduction' then self:stopNotificationProduction() end
+        end})
     return activity
 end

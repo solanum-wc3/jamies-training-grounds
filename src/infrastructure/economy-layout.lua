@@ -136,8 +136,8 @@ function JTG.CreateEconomyLayout(session)
     -- Match Camera: use the authored working positions after structures have
     -- claimed their footprints. A ring around the hall is for checkpoint
     -- recovery, not for the initial resource-gathering layout.
-    local u=JTG.ScopeTrackUnit(session.scope,CreateUnit(owner,raw,p.x,p.y,p.facing))
-    SetUnitPathing(u,true);SetUnitColor(u,ConvertPlayerColor(f.color))
+    local u=JTG.Tutorial.CreateMobileUnit(session.scope,owner,raw,p.x,p.y,p.facing)
+    SetUnitColor(u,ConvertPlayerColor(f.color))
     self.units[#self.units+1]=u;self.placements[#self.placements+1]={unit=u,placement=p}
     if self.trackEconomyUnit then self:trackEconomyUnit(u,index,true) end
    end

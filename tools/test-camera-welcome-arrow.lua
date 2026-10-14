@@ -72,3 +72,10 @@ for _,spec in ipairs({{'unit-controls-tutorial','CreateUnitControlsTutorialActiv
     assert(not tutorial.frames.welcomeArrow.visible and not tutorial.welcomeArrowState)
 end
 print('Passed: Unit Controls and Hotkey Setup welcome-only arrows blink ten times, remain standing, and clear with narration or menu dismissal.')
+
+-- Authored narration breaks are actual Continue stops, not inline notes.
+local steps=activity.tutorialSpec.steps
+local zoom=JTG.Tutorial.ResolveStep(steps,{stepId='camera.008'})
+assert(steps[zoom].wait and #steps[zoom].lines==1)
+assert(steps[zoom+1].id=='camera.zoom-advice' and steps[zoom+1].wait)
+assert(steps[zoom+1].lines[1]:find('A closer camera',1,true))

@@ -1,0 +1,19 @@
+Bat Splitting — editable briefings
+
+Current implementation snapshot: 13 October 2026.
+Edit the text and blank lines directly. Formatting tags are preserved.
+Page labels and placeholders identify which menu uses the text.
+Edits here do not automatically update the map.
+This file covers briefing text, not unit tooltips, quest instructions or end cards.
+
+Source: src/activities/bat-splitting.lua
+
+============================================================
+Main briefing
+============================================================
+
+When playing against Orc, using flying units runs risk of being easily countered by the relatively cheap Batriders, using their {Term: Unstable Concoction} ability.
+
+In this training you can practice quickly and efficiently spacing out your flying units to avoid splash damage.
+
+Your notes:

@@ -88,3 +88,42 @@ for _,name in ipairs({'camera','unit-controls','hotkey-setup','economy'}) do
  assert(not s:find('SetCameraPosition',1,true),'Instant camera move in '..name)
 end
 print('Passed: shared tutorial runner, A-B-A/optional/disposal guards, narration visibility, disabled clicks, formatting, camera and checkpoint contracts.')
+
+-- Heading announcements cover entry and delayed append, while redraws remain silent.
+local questSounds=0
+function CreateSoundFromLabel(label) assert(label=='QuestNew');return {} end
+function StartSound() questSounds=questSounds+1 end
+function KillSoundWhenDone() end
+local headed={frames={},buttonEnabled={},actions={},narrationBlocks={},presentationVisible=true}
+function headed:appendNarration(text) self.narrationBlocks[#self.narrationBlocks+1]=T.FormatNarration(text) end
+function headed:showStep(index) self.narrationBlocks={};self:appendNarration('{Heading: SECTION '..index..'}') end
+T.InstallRunner(headed,{scope={}},{id='headings',player=0,steps={{id='one'},{id='two'}}})
+headed:showStep(1);assert(questSounds==0)
+headed:renderNarration();headed:renderNarration();assert(questSounds==0)
+headed:appendNarration('Ordinary continuation');assert(questSounds==0)
+headed:appendNarration('{Small Heading: DELAYED SECTION}');assert(questSounds==0)
+headed:showStep(2);assert(questSounds==0)
+headed:showStep(1);assert(questSounds==0)
+headed.presentationVisible=false;headed:renderNarration();assert(questSounds==0)
+headed.presentationVisible=true;headed:renderNarration();assert(questSounds==0)
+-- Direct-block tutorials (Economy/Hotkeys) share the same entry hook.
+function headed:directStep() local text=T.FormatNarration('{Heading: DIRECT}');self.narrationBlocks={text} end
+T.InstallRunner(headed,{scope={}},{id='direct',player=0,entries={'directStep'}})
+headed:directStep();assert(questSounds==0)
+assert(#{T.FormatNarration('{Hotkeys}')}==1,'Narration formatter leaks its replacement count')
+print('Passed: blue headings never produce quest-activation audio; formatter returns only text.')
+
+-- A Continue-triggered heading uses its transition sound alone, rather than
+-- also starting QuestNew from the shared narration announcement.
+local continueButton={}
+headed.toolbarSoundKinds={[continueButton]='normal'}
+T.BindClicks(headed,{})
+headed:registerClick(continueButton,function() headed:showStep(2) end)
+headed.presentationVisible=true
+local beforeQuest=questSounds
+local beforeClick=sounds
+clicked=continueButton;headed.clickTrigger.action()
+assert(questSounds==beforeQuest and sounds==beforeClick+1,'Continue played two transition sounds')
+headed:renderNarration();assert(questSounds==beforeQuest,'Redraw replayed a suppressed heading sound')
+headed:registerClick(continueButton,function() error('test failure') end)
+assert(not pcall(headed.clickTrigger.action) and not headed.suppressHeadingSound,'Failed action left heading sounds muted')

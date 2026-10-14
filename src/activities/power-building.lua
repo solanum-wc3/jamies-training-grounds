@@ -42,9 +42,7 @@ local BUILD_OFFSETS = {
 }
 
 local POWER_BUILDING_INTRO =
-    "Human peasants can assist each other when constructing. Each peasant after the first contributes 60% of the first builder's build speed, decreasing the time it takes to finish the building, but increases its gold and lumber cost by around 15% across its entire build time.|n|n" ..
-    "Power building has diminishing returns, but it can be worth it. For example, the seconds gained from building a Town Hall at an expansion are always worth it in the long run, because you can start mining gold earlier. You just have to be able to afford the investment.|n|n" ..
-    "Here you can choose a building to see a demonstration comparing 1 through 10 peasants!"
+    "Human peasants can assist each other when constructing. Each peasant after the first contributes 60% of the first builder's build speed, decreasing the time it takes to finish the building, but increases its gold and lumber cost by around 15% across its entire build time.\n\nPower building has diminishing returns, but it can be worth it. For example, the seconds gained from building a Town Hall at an expansion are always worth it in the long run, because you can start mining gold earlier. You just have to be able to afford the investment.\n\nHere you can choose a building to see a demonstration comparing 1 through 10 peasants."
 
 local POWER_BUILDING_QUEST_TEXT =
     "The formula for build time is: {Term: Base Time} / (1+{Term: 0.6*P}), " ..

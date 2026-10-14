@@ -100,3 +100,26 @@ for _,d in ipairs(JTG.DodgeDangers) do
     end
 end
 print('Passed: instant Impale, explicit area geometry, Concoction targets and removed Storm Spirit Dispel.')
+
+-- Projectile-only advice, including Burrow, follows presentation visibility.
+local savedHintVisible,savedHintText=BlzFrameSetVisible,BlzFrameSetText
+function BlzFrameSetVisible(frame,value) frame.visible=value end
+function BlzFrameSetText(frame,text) frame.text=text end
+local hintActivity=JTG.CreateMissileDodgingActivity({restartData={pawnIndex=1},scope={},presentationScope={}})
+hintActivity.methodHint={}
+hintActivity.danger={menuGroup='Homing'}
+for _,definition in ipairs({{category='Invisibility',unit='ucry'},
+    {category='Invisibility',unit='ucs2'},{category='Invisibility',unit='Obla'},
+    {unit='Ntin',item='pinv'},{unit='Ntin',item='clsd'}}) do
+    hintActivity.definition=definition
+    hintActivity:refreshMethodHint()
+    assert(hintActivity.methodHint.visible and hintActivity.methodHint.text=='This ability might not be able to dodge the projectile on reflex. However, your unit might be safe after the initial damage.')
+end
+hintActivity.presentationVisible=false;hintActivity:refreshMethodHint();assert(not hintActivity.methodHint.visible)
+hintActivity.presentationVisible=true;hintActivity.finished=true;hintActivity:refreshMethodHint();assert(not hintActivity.methodHint.visible)
+hintActivity.finished=false;hintActivity.danger.menuGroup='Area';hintActivity:refreshMethodHint();assert(not hintActivity.methodHint.visible)
+hintActivity.danger.menuGroup='Ranged';hintActivity.definition={unit='Hpal',category='Invulnerability'}
+hintActivity:refreshMethodHint();assert(not hintActivity.methodHint.visible)
+print('Passed: invisibility/Burrow projectile advice and menu/result/non-projectile visibility guards.')
+
+BlzFrameSetVisible,BlzFrameSetText=savedHintVisible,savedHintText

@@ -1,0 +1,421 @@
+Heroes tutorial — implementation work file
+Updated 15 October 2026. Stable IDs retain gaps where narration stops were removed.
+
+Main tutorial
+
+heroes.001 — welcome
+Scene: overview
+Trigger: Have the arrow blink while pointing at the "Next/Continue" button, the same way as in the opening section of the other tutorials.
+Trigger: Lock daytime at noon for the tutorial and restore it on exit.
+Trigger: Move the Night Elf and Tavern groups 300 units north; move Pit Lord 200 units left.
+Trigger: Presented heroes are vulnerable so armor is visible. Target Dummies display damage popups.
+Narration: {Heading: WELCOME}
+Narration: Welcome to the Heroes Tutorial!
+Narration: This tutorial deals with Warcraft III's most iconic aspect: Heroes.
+Narration:
+Narration: Once you are done reading a section and playing around with whichever mechanic you learn, press the {Button: Continue} or {Button: Next} button to move on!
+Progression: Next.
+
+heroes.002 — basics
+Scene: overview
+Trigger: Center the camera on each of the racial altars, and switch between them at five-second intervals.
+Narration: {Heading: BASICS}
+Narration: In every game, you can create up to three hero units at your {Term: Altar}.
+Narration: You can recruit the first as soon as you finish the building, and the others once you upgrade your main building to Tier 2 and Tier 3, respectively.
+Narration:
+Narration: Every race has four unique heroes to choose from.
+Action: altar-tour
+Progression: Continue.
+
+heroes.003 — basics
+Scene: overview
+Trigger: Center the camera on the Tavern.
+Narration: In addition to this, all races can choose from nine neutral heroes at the {Term: Tavern} building.
+Narration: The Tavern is usually located somewhere in the middle of the map.
+Action: tavern-camera
+Progression: Continue.
+
+heroes.004 — basics
+Scene: overview
+Narration: Recruiting at the {Term: Tavern} becomes possible 135 seconds after the game starts, and also requires you to have built an {Term: Altar}.
+Progression: Continue.
+
+heroes.005 — basics
+Scene: overview
+Narration: Heroes are a serious presence on any battlefield, either on their own, or through the way their abilities support and synergize with the rest of your army.
+Narration:
+Narration: For this reason, your choice of heroes is incredibly significant for how you are going to play a game.
+Progression: Next.
+
+heroes.006 — levels
+Scene: overview
+Narration: {Heading: LEVELS}
+Narration: Heroes start out stronger than your basic military units, and they only get stronger as the game goes on.
+Narration: This is because they gain experience and rise in level.
+Progression: Continue.
+
+heroes.007 — levels
+Scene: archmages
+Trigger: Move the camera to the center of Arena2.
+Trigger: Hide the displayed heroes in Arena1.
+Trigger: Spawn in a level 1 Archmage with no ability selected, and a level 10 Archmage with all abilities selected, under player control. They should be 600 units apart.
+Trigger: Restrict their movement to Arena2.
+Narration: A starting hero is level 1, and may go up to level 10 in a game.
+Narration: However, in many games heroes will barely reach level 6.
+Progression: Continue.
+
+heroes.008 — levels
+Scene: archmages-target
+Trigger: Spawn in a little straw man as an enemy unit training dummy with infinite health, and have the Archmages attack it.
+Narration: Compare the two Archmages!
+Narration: You will notice that the level 10 Archmage is significantly stronger, with more health, more mana, and more attack damage.
+Progression: Continue.
+
+heroes.009 — levels
+Scene: archmages-target
+Narration: If you look closer, even their attack speed and armor are different.
+Narration: Also, the higher level Archmage has more and stronger abilities.
+Progression: Continue.
+
+heroes.011 — levels
+Scene: archmages-target
+Narration: {Heading: ATTRIBUTES}
+Narration: Unlike regular units, heroes have three attributes: {Term: Strength}, {Term: Agility} and {Term: Intelligence}.
+Narration: Each hero has different starting attribute values and gains attribute points at different rates.
+Progression: Continue.
+
+heroes.012 — levels
+Scene: archmages-target
+Narration: Each point of {Term: Strength} raises the hero's health by 25 points and their HP regeneration by 0.05 points per second.
+Progression: Continue.
+
+heroes.013 — levels
+Scene: archmages-target
+Narration: Each point of {Term: Intelligence} raises the hero's mana by 15 points and their mana regeneration by 0.05 points per second.
+Progression: Continue.
+
+heroes.014 — levels
+Scene: archmages-target
+Narration: Each point of {Term: Agility} raises the hero's attack speed by 2% and their armor by 0.3.
+Narration: {Term: Armor} reduces the damage from attacks that is applied to a unit's health.
+Narration: For a detailed demonstration of armor, check out the {Menu: Unit Comparison} demonstration in {Menu: Tools & Extras}.
+Narration: In addition to armor, heroes have a flat 30% damage reduction against spells.
+Progression: Continue.
+
+heroes.015 — levels
+Scene: archmages-target
+Narration: Aside from these general effects of {Term: Strength}, {Term: Agility} and {Term: Intelligence}, every hero has a {Term: Primary Attribute}.
+Narration: Heroes gain one point of extra damage for every point of their primary attribute.
+Narration: For the details about the damage values of heroes, check out the {Button: Optional} button.
+Progression: Continue.
+
+heroes.016 — levels
+Scene: archmages-target
+Narration: On every level-up, a hero gains attribute points. Most heroes gain six points in total.
+Narration: These are divided across the three attributes in a way unique to that hero.
+Narration: This means that heroes can gain attributes at very different rates.
+Progression: Continue.
+
+heroes.017 — levels
+Scene: archmages-target
+Narration: Some heroes, including the Archmage, Keeper of the Grove, Lich, Alchemist and Firelord, gain more than six attribute points per level on average.
+Narration: The exact increase shown at a particular level depends on their attribute growth rates.
+Progression: Continue.
+
+heroes.018 — levels
+Scene: archmages-target
+Narration: {Heading: ABILITIES}
+Narration: In addition to attribute points, every hero gains one {Term: Ability} point per level.
+Narration: You can then freely choose which ability you want to raise.
+Progression: Continue.
+
+heroes.019 — levels
+Scene: archmages-target
+Narration: Every hero has three regular abilities, and one {Term: Ultimate} ability.
+Narration: Regular abilities have three levels, while ultimate abilities have only one level.
+Progression: Continue.
+
+heroes.020 — levels
+Scene: archmages-target
+Narration: Level 1 regular abilities can be chosen at any level.
+Narration: Level 2 regular abilities can be chosen starting at level 3.
+Narration: Level 3 regular abilities can be chosen starting at level 5.
+Narration: The {Term: Ultimate} ability can be chosen starting at level 6.
+Progression: Continue.
+
+heroes.021 — levels
+Scene: archmages-target
+Narration: Raising a regular ability to its next level will always make it significantly better with no drawbacks.
+Narration: A higher level will make it more effective, and it can lower its cost or cooldown.
+Progression: Continue.
+
+heroes.022 — levels
+Scene: archmages-target
+Narration: Since many hero abilities cost mana, and since mana is a scarce resource with a low regeneration rate, it is almost always best to max out two regular abilities before putting a point in the third.
+Narration: For the same reason, it makes sense to avoid using level 1 regular abilities, and instead wait for their second level to be unlocked.
+Progression: Continue.
+
+heroes.023 — levels
+Scene: archmages-target
+Narration: The exception is using a level 1 ability as soon as possible, so you can take advantage of your hero's mana regeneration.
+Progression: Next.
+
+heroes.024 — hero-showcase
+Scene: showcase
+Trigger: Change back to Arena1. Despawn the two heroes in Arena2.
+Trigger: Transition all heroes into player control. Spawn a training dummy 500 units under each altar and the tavern.
+Trigger: Make a "+" and a "-" button on the right side of the screen.
+Trigger: The buttons should work such that selecting a hero and pressing the "+" button raises its level by 1, while pressing the "-" button lowers it by 1, resetting all learned abilities.
+Trigger: Set all heroes' levels to 1.
+Trigger: Make it so that no heroes are assigned to F1, F2 or F3, and no hero icons are displayed in the top-left corner of the screen.
+Narration: Check out the different heroes!
+Narration: You can use the {Button: +} and {Button: -} buttons to raise and lower the heroes' levels, to see what changes about them when you do.
+Progression: Next.
+
+heroes.025 — experience
+Scene: xp-initial
+Trigger: Move back to Arena2.
+Trigger: Spawn in a gnoll in the center of the arena. Movement should be disabled for this gnoll.
+Trigger: The player should have vision of the whole Arena2.
+Trigger: Around the center of the arena, there should be a golden circle with a radius of 1200 units (2400-unit diameter).
+Narration: {Heading: EXPERIENCE}
+Narration: {Yellow Font: Your} heroes can get experience from any enemy or neutral unit that {Yellow Font: your army} kills.
+Narration: A unit killed by your buildings, including the living buildings of Night Elves, generates no experience for your heroes.
+Narration: A unit killed by neutral or enemy units does not generate experience for your heroes either.
+Progression: Next.
+
+heroes.026 — xp-range
+Scene: xp-initial
+Narration: {Heading: XP RANGE}
+Narration: Experience is {Yellow Font: divided equally} between all of your heroes who are {Yellow Font: within 1200 units} of the source.
+Narration: If no heroes are within 1200 units, experience is divided equally between all of your heroes {Yellow Font: on the entire map}.
+Progression: Continue.
+
+heroes.028 — xp-range
+Scene: xp-range-1
+Trigger: Outside of the 1200 circle, spawn four Footmen, a level 1 Paladin, a level 1 Archmage, and a level 1 Mountain King. Each of the heroes should be 1 XP away from the next level.
+Narration: Kill this Gnoll using your army, leaving one hero behind outside of the 1200 unit circle!
+Narration:
+Narration: Afterwards, check your heroes' experience bars in the interface!
+Progression: Continue.
+
+heroes.029 — xp-range
+Scene: xp-range-2
+Trigger: Reset both army and gnoll.
+Narration: Kill the Gnoll just using your Footmen, leaving all heroes behind outside of the 1200 unit circle!
+Narration:
+Narration: Afterwards, check your heroes' experience bars in the interface!
+Progression: Continue.
+
+heroes.030 — xp-range
+Scene: xp-range-3
+Trigger: Reset both army and gnoll.
+Narration: Kill the Gnoll using your army, leaving two heroes behind outside of the 1200 unit circle!
+Narration:
+Narration: Afterwards, check your heroes' experience bars in the interface!
+Progression: Next.
+
+heroes.031 — xp-amounts
+Scene: xp-empty
+Trigger: Remove both army and gnoll.
+Narration: {Heading: XP AMOUNTS}
+Narration: If you kill a unit, the amount of XP gained is displayed in a small blue number over the heroes.
+Narration: Broadly speaking, units give XP based on their level, with summoned units giving half as much.
+Narration:
+Narration: A higher level unit gives more XP.
+Narration: Generally, the levels of player-controlled units are equal to their Food Cost, with some exceptions.
+Progression: Continue.
+
+heroes.032 — xp-amounts
+Scene: xp-empty
+Narration: If you want the detailed breakdown of experience values, check out the {Menu: Optional} topic on the toolbar.
+Narration: Once you are done with it, you will be returned to this part of the tutorial.
+Progression: Continue.
+
+heroes.033 — xp-amounts
+Scene: xp-empty
+Narration: The amount of XP a hero gains can be modified.
+Narration: For example, as soon as your main building reaches tier 2, your first hero gains a {Yellow Font: +15% bonus} until you start training a second hero.
+Narration: This is called the {Term: Solo Hero Bonus}.
+Progression: Continue.
+
+heroes.034 — xp-amounts
+Scene: xp-empty
+Narration: Another modifier applies to the neutral {Term: Creeps} spread around the map.
+Narration: Experience gained from creeps is always lower than for an enemy unit.
+Narration: XP from creeps is {Yellow Font: reduced by 20% per hero level}. This means starting at level 5, heroes gain no experience from creeps at all.
+Progression: Continue.
+
+heroes.035 — xp-amounts
+Scene: xp-empty
+Narration: The last way to modify experience gain comes from a {Term: Hex} or the {Term: Polymorph} spell, which turn the hero into an animal, {Yellow Font: reducing any experience they gain by 100%}.
+Progression: Continue.
+
+heroes.036 — xp-amounts
+Scene: xp-empty
+Narration: Modified experience gain affects your decisions in two ways.
+Narration: First, a hero whose experience gain is reduced {Yellow Font: still gets an equal part of the experience} before it is reduced.
+Narration: This means that if a hero's experience gain is reduced, you may want to {Yellow Font: keep him outside of the 1200 unit experience range}, so as little experience as possible is lost.
+Progression: Continue.
+
+heroes.037 — xp-amounts
+Scene: xp-modifier-4
+Trigger: Spawn in a 1200 unit radius golden circle around the middle of the Arena2.
+Trigger: Spawn in four footmen, a Mountain King and a Paladin outside of the circle. The Mountain King should be level 4. The Paladin should be level 2, 35 XP away from level 3.
+Trigger: Spawn in a level 3 gnoll creep of some kind at 1/4 health in the middle of the circle, that cannot move.
+Narration: Attack the Gnoll using your army and both heroes!
+Narration: Pay attention to the experience amounts!
+Progression: Continue.
+
+heroes.039 — xp-amounts
+Scene: xp-modifier-paladin
+Trigger: Reset the Gnoll and army. The Paladin is level 2, 35 XP from level 3. The Mountain King is level 5 and starts inside the 1200-radius circle. Only the Paladin should attack.
+Narration: Attack the Gnoll again using only your Paladin! Keep the Mountain King within the circle.
+Narration: Pay attention to the experience amounts!
+Progression: Continue.
+
+heroes.040 — xp-amounts
+Scene: xp-modifier-outside
+Trigger: Reset both Gnoll and the army and the heroes, especially the Paladin's experience.
+Narration: You may have noticed that the Mountain King did not gain any experience last time.
+Narration: Attack the Gnoll one last time, using your army, but leave the Mountain King outside of the 1200 range circle!
+Narration: Pay attention to the experience amount of your Paladin!
+Progression: Continue.
+
+heroes.041 — xp-amounts
+Scene: empty
+Trigger: Remove the army, the gnoll and the circle.
+Narration: As you can see, how you handle distance can make a difference.
+Progression: Continue.
+
+heroes.042 — xp-amounts
+Scene: empty
+Narration: Another thing that can make a difference is the order in which you kill units.
+Narration: When a hero is very close to a level-up, you should kill higher level creeps first.
+Narration: That way, any experience that flows over into the next level is not reduced by the new level's lower creep XP rate.
+Progression: Next.
+
+heroes.043 — items
+Scene: items
+Trigger: Center the camera over Arena2.
+Trigger: Spawn in all four racial shops and a Goblin Merchant and a Marketplace in equal spacing 500 units from the middle of the arena. Set the timers for the items to be ready. Spawn in a main building of tier 3 for each race in the corners of the arena respectively.
+Trigger: Spawn in a Paladin, an Archmage, and a Mountain King under player control in the middle of the arena.
+Trigger: Spawn all items from the drop table of Twisted Meadows, ordered by camp size where they can be dropped.
+Trigger: Set the player's Gold and Lumber to 10,000 each.
+Trigger: Spawn in a training dummy next to the heroes.
+Narration: {Heading: ITEMS}
+Narration: One of the advantages of heroes is that they can carry and use items.
+Narration: Through the {Term: Backpacks} research, some units can learn to carry them, but they cannot use them.
+Progression: Continue.
+
+heroes.044 — items
+Scene: items
+Narration: Items can have all kinds of different effects and advantages.
+Narration: They can be gained either as random {Term: Drops} from {Term: Creeps}, or by buying them from a neutral {Term: Goblin Merchant} or your own shop building.
+Narration: Items can also be sold for some instant Gold.
+Progression: Continue.
+
+heroes.045 — items
+Scene: items
+Narration: To pick up an item from the ground, you have to {Input: right-click it}.
+Narration: When you have selected more than one hero, the one in active selection will pick it up.
+Progression: Continue.
+
+heroes.046 — items
+Scene: items
+Narration: To remove an item from a hero's inventory, {Input: right-click it, and then left-click} where you want to put it.
+Narration: You can put items on the ground, into the inventory of other heroes or units, or sell them to shops.
+Progression: Continue.
+
+heroes.047 — items
+Scene: items
+Narration: You can also destroy an item on the ground with an {Input: Attack Command}.
+Progression: Continue.
+
+heroes.048 — items
+Scene: items
+Narration: To buy an item from a shop, you have to {Input: move your hero into range}, and then select the item by {Input: clicking it or pressing its hotkey}.
+Narration: If several heroes are within range of a shop, you can change the active patron by {Input: right-clicking the hero} you want it to sell to.
+Progression: Continue.
+
+heroes.049 — items
+Scene: items
+Narration: Some items in shops have to be unlocked, either by a simple timer, or by upgrading your main building to tier 2 or 3.
+Progression: Continue.
+
+heroes.050 — items
+Scene: items
+Narration: {Heading: END OF TUTORIAL}
+Narration: This concludes the Heroes tutorial. Press the {Button: Menu} button to choose another tutorial!
+Progression: Menu (completed).
+
+Optional: dice
+
+heroes.dice.001 — welcome
+Scene: dice
+Trigger: Use Arena2, with full vision.
+Trigger: Spawn in all heroes, in the same color scheme as in Arena1. Arrange them in five groups, depending on their attack dice. From left to right: 2D4, 2D6, 2D12, 2D11, 3D10
+Trigger: The heroes should be arranged in ordered columns of five, filled bottom to top, 300 units apart. Between the last column of one group and the first of the next, there should be 600 units distance.
+Trigger: 400 units below the first column of any group, there should be text on the ground in enlarged white font: "2D4", "2D6", "2D12", "2D11", and "3D10".
+Trigger: For this optional section, display the "+" and "-" buttons.
+Narration: {Heading: BONUS: ATTACK DICE}
+Narration: A hero's attack damage is mostly determined by their primary attribute.
+Narration: In addition to that, some {Term: Dice} are rolled and added on top.
+Progression: Continue.
+
+heroes.dice.002 — welcome
+Scene: dice
+Trigger: Move the camera to the leftmost text. After it has arrived, move it to the right-most text. After it has arrived, move it to the middle of the arena.
+Narration: Most heroes fall into one of three categories, rolling either two four-sided, two six-sided or two twelve-sided dice for every attack.
+Narration: The only exceptions are the Night Elf Warden with two eleven-sided dice, and the Goblin Alchemist with three ten-sided dice.
+Action: dice-tour
+Progression: Continue.
+
+heroes.dice.003 — welcome
+Scene: dice
+Narration: {Heading: OPTIONAL TOPIC COMPLETE}
+Narration: This optional topic is complete.
+Narration: Press the {Button: Next} button to return to the tutorial section you previously left.
+Progression: Next.
+
+Optional: xp
+
+heroes.xp.001 — welcome
+Scene: xp-numbers
+Trigger: I want six buttons on the right side of the screen: one called "Hero" four racial buttons, and a Neutral button for the Tavern heroes' summons.
+Trigger: Depending on which button is pressed there should be a demonstration in Arena2.
+Trigger: "Hero" arranges 10 neutral heroes left to right, in ascending levels. Below each hero, display two lines of text: "Level X" and "Y XP", with the values from the Quest Log.
+Trigger: Each of the racial buttons should arrange one of each racial unit, including summons of that respective race, and buildings that can yield XP, arranged in groups left to right, according to unit level and food costs. Sort the groups first by unit level, then by food cost in ascending order within each level. Below each group, display three lines of text: "Unit Level: X", "Food Cost: Y", and "Z XP".
+Narration: {Heading: BONUS: XP NUMBERS}
+Narration: Use the {Button: buttons} on the right to navigate through the different units to see which units have which level.
+Narration: Consult the {Button: Quest Log} for a listing of all precise experience values.
+Progression: Continue.
+
+heroes.xp.002 — welcome
+Scene: xp-numbers
+Narration: {Heading: OPTIONAL TOPIC COMPLETE}
+Narration: This optional topic is complete.
+Narration: Press the {Button: Next} button to return to the tutorial section you previously left.
+Progression: Next.
+
+Minor Quest: XP Numbers
+Heroes require 100 times the new level in experience.
+So getting from level 1 to level 2 requires 200 XP, while getting from level 5 to level 6 requires 600 XP.
+
+XP from {Term: Regular Player Units} depends on their level, which is often equal to their food cost:
+- level 1 -> 25 XP
+- level 2 -> 40 XP
+- level 3 -> 60 XP
+- level 4 -> 85 XP
+- level 5 -> 115 XP
+- level 6 -> 150 XP
+XP from {Term: Summons} is halved.
+XP from {Term: Creeps} is multiplied by 80%, 70%, 60% and 50% at hero levels 1, 2, 3 and 4, and by 0% at level 5 and above.
+
+XP from {Term: Enemy Heroes} also depends on their level:
+- level 1 -> 100 XP
+- level 2 -> 120 XP
+- level 3 -> 160 XP
+- level 4 -> 220 XP
+- level 5 -> 300 XP
+Any level above 5 adds another 100 XP.

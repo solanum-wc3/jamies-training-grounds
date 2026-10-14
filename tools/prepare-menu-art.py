@@ -11,6 +11,7 @@ ROOT_CARD_SIZE = (256, 128)
 CATEGORY_CARD_SIZE = (416, 200)
 
 CARDS = {
+    "HeroesTutorial": ("heroes-tutorial-source.png", 1.0, 0.50, 0.50, "contain"),
     "GargoyleSurrounds": ("gargoyle-surrounds-source.png", 1.0, 0.50, 0.50, "gargoyle_card"),
     "CombatMicro": ("combat-micro-source.png", 1.0, 0.50, 0.50, "contain"),
     # Keep the original card treatment: a centered 2:1 crop at the authored

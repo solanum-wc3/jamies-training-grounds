@@ -10,7 +10,7 @@
 
 - Python 3 with Pillow when regenerating image assets; `lupa` when running Lua regression fixtures
 
-The normal map build uses the committed generated assets and does not require Python.
+The normal map build uses committed generated assets and does not require Python. It refreshes Hotkey/Reflex briefing Lua and Heroes narration/data from maintained author inputs using Node.js. Author files are never overwritten. Development builds use empty audit defaults on a fresh checkout; explicitly prepared local Hotkey binding/history files under `work/` override those defaults.
 
 ## Clean-checkout setup
 
@@ -28,9 +28,11 @@ pnpm run build:all
 
 `build:all` creates and validates:
 
-- `outputs/Jamies-Training-Grounds-v0.1.2-beta1.w3x`
+- `outputs/Jamies-Training-Grounds-<version>.w3x`
 
-- `outputs/Jamies-Training-Grounds-v0.1.2-beta1-dev.w3x`
+- `outputs/Jamies-Training-Grounds-<version>-dev.w3x`
+
+`<version>` is configured in `tools/build-infrastructure.cjs`; it is independent of the published beta release. `--mode=release` selects packaging without development tools and does not publish anything.
 
 The builder verifies Lua syntax, archive round-tripping, the immutable foundation hash, unchanged archive members, the development-tool boundary and shared-system invariants. A failed check stops the build.
 
@@ -124,3 +126,11 @@ node tools/build-infrastructure.cjs --mode=development --output-dir=work/mainten
 ```
 
 This runs the same archive validations without replacing the files in `outputs/`. The default builder behavior remains unchanged.
+
+## Checkpoint and audit reproducibility
+
+`pnpm run test:reliability` includes generated-text, Heroes-data, clean-build-input checks and 39 Lua fixture files. `lupa` must be installed in the Python environment; the runner also accepts an existing local runtime under ignored `work/lua-test-runtime`.
+
+Fresh development builds do not require player-specific audit files. For automated Hotkey comparisons, first run `python tools/prepare-hotkey-comparison.py <CustomKeys.txt>` with the layout the tester will use. This creates `work/hotkey-comparison-bindings.lua`. Without it, normal training and manual diagnostics remain available, but no automated keyboard sequence is assumed. Audit exclusions/history are optional and may be prepared separately. See [Hotkey comparison](HOTKEY-COMPARISON.md) and [full audit](HOTKEY-FULL-AUDIT.md).
+
+Current source/acceptance state is tracked in [development status](DEVELOPMENT-STATUS.md); the published release's historical evidence remains in [release status](RELEASE-STATUS.md).

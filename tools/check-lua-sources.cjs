@@ -3,13 +3,16 @@ const fs = require('node:fs');
 const path = require('node:path');
 const parser = require('luaparse');
 const root = path.resolve(__dirname, '..');
+require('./prepare-exercise-briefings.cjs').prepare(true);
+require('./prepare-heroes-tutorial.cjs').prepare(true);
 const source = fs.readFileSync(path.join(__dirname, 'build-infrastructure.cjs'), 'utf8');
 const shared = source.match(/const sharedModulePaths = (\[[\s\S]*?\n\]);/);
 const modules = source.match(/const modulePaths = (\[[\s\S]*?\n\]);/);
 if (!shared || !modules) throw new Error('Builder module list was not found');
 const sharedPaths = Function(`return ${shared[1]};`)();
 for (const development of [false, true]) {
-    const paths = Function('sharedModulePaths', 'isDevelopment', `return ${modules[1]};`)(sharedPaths, development);
+    const paths = Function('sharedModulePaths', 'isDevelopment', 'fs', 'path', 'root',
+        `return ${modules[1]};`)(sharedPaths, development, fs, path, root);
     const blocks = paths.map(file => {
         const lua = fs.readFileSync(path.join(root, file), 'utf8');
         try { parser.parse(lua, {luaVersion: '5.3'}); }

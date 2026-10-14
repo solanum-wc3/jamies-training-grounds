@@ -6,7 +6,7 @@ JTG.Controller.session=nil
 JTG.OpenMissileDodgingMenu('skills',false)
 assert(screen.body:find('It is possible to dodge and evade many attacks and abilities.',1,true))
 screen.choices[1].action()
-assert(screen.body:find('Do disjoin a projectile',1,true))
+assert(screen.body:find('To disjoin a projectile',1,true))
 screen.choices[1].action()
 assert(screen.body:find("All but the Raider's Ensnare ability are spells.",1,true))
 local indices={}

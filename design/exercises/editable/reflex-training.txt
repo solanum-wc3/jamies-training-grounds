@@ -1,0 +1,34 @@
+Reaction Training — editable briefings
+
+Authoritative briefing text (runtime copy is generated).
+Edit the text and blank lines directly. Formatting tags are preserved.
+Page labels and placeholders identify which menu uses the text.
+Edits here are included automatically by the next map build.
+This file covers briefing text, not unit tooltips, quest instructions or end cards.
+
+Source: src/activities/reflex-training.lua
+
+============================================================
+Selection page 1
+============================================================
+
+This exercise is a work in progress.
+
+Choose a training mode.
+
+Identify Units: find the requested units in any order. Each stage adds one unit to the list, from one request up to ten.
+
+Reflex Test: recognize the prompted buff or debuff and click its affected unit as quickly as possible through ten trials.
+
+Your notes:
+
+
+============================================================
+Selection page 2
+============================================================
+
+Select which races' units you want to see.
+
+[DYNAMIC TEXT — selected unit/ability or selection summary]
+
+Your notes:

@@ -38,6 +38,10 @@ for index, danger in ipairs(JTG.DodgeDangers) do
         danger.kind == 'immediate' and 'immediate' or 'target'
     assert(last[1] == expected, danger.name)
     if danger.ability=='AOcl' then assert(last[3]==chainTarget) end
+    if danger.ability=='AUim' then
+        if danger.menuGroup=='Homing' then assert(last[1]=='target' and last[3]==activity.target)
+        else assert(last[1]=='point' and last[3]==activity.target.x and last[4]==activity.target.y) end
+    end
     assert(last[2] == (danger.groundAttack and 'attackground' or danger.kind == 'attack' and 'attack' or danger.order), danger.name)
     assert(activity.attempts == 1 and activity.accepted == 1)
     accept = false

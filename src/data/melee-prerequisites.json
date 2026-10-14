@@ -1,0 +1,3770 @@
+{
+  "game": "Installed Warcraft III 3.0.0.24268 melee data",
+  "aliases": {
+    "TWN1": [
+      "htow",
+      "ogre",
+      "etol",
+      "unpl"
+    ],
+    "TWN2": [
+      "hkee",
+      "ostr",
+      "etoa",
+      "unp1"
+    ],
+    "TWN3": [
+      "hcas",
+      "ofrt",
+      "etoe",
+      "unp2"
+    ],
+    "TALT": [
+      "halt",
+      "oalt",
+      "eate",
+      "uaod"
+    ]
+  },
+  "records": [
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "AHab",
+      "name": "Brilliance Aura",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "AHad",
+      "name": "Devotion Aura",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "AHav",
+      "name": "Avatar",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "AHbh",
+      "name": "Bash",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "AHbn",
+      "name": "Banish",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "AHbz",
+      "name": "Blizzard",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "AHdr",
+      "name": "Siphon Mana",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "AHds",
+      "name": "Divine Shield",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "AHfs",
+      "name": "Flame Strike",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "AHhb",
+      "name": "Holy Light",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "AHmt",
+      "name": "Mass Teleport",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "AHpx",
+      "name": "Phoenix",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "AHre",
+      "name": "Resurrection",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "AHta",
+      "name": "Reveal",
+      "requirements": {
+        "requires": "Rhse"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "AHtb",
+      "name": "Storm Bolt",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "AHtc",
+      "name": "Thunder Clap",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "AHwe",
+      "name": "Summon Water Elemental",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "Aall",
+      "name": "Aall",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "Aclf",
+      "name": "Cloud",
+      "requirements": {
+        "requires": "Rhcd"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "Acmg",
+      "name": "Control Magic",
+      "requirements": {
+        "requires": "Rhss"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "Adef",
+      "name": "Defend",
+      "requirements": {
+        "requires": "Rhde"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "Adis",
+      "name": "Dispel Magic",
+      "requirements": {
+        "requires": "Rhpt"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "Adts",
+      "name": "Magic Sentry",
+      "requirements": {
+        "requires": "Rhse"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "Afbk",
+      "name": "Feedback",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "Afbt",
+      "name": "Feedback",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "Afla",
+      "name": "Flare",
+      "requirements": {
+        "requires": "Rhfl"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "Aflk",
+      "name": "Flak Cannons",
+      "requirements": {
+        "requires": "Rhfc"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "Afsh",
+      "name": "Fragmentation Shards",
+      "requirements": {
+        "requires": "Rhfs"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "Agyb",
+      "name": "Flying Machine Bombs",
+      "requirements": {
+        "requires": "Rhgb"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "Agyv",
+      "name": "True Sight",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "Ahan",
+      "name": "Animal War Training",
+      "requirements": {
+        "requires": "Rhan"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "Ahea",
+      "name": "Heal",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "Ahlh",
+      "name": "Improved Lumber Harvesting",
+      "requirements": {
+        "requires": "Rhlh"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "Ahri",
+      "name": "Long Rifles",
+      "requirements": {
+        "requires": "Rhri"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "Ahrp",
+      "name": "Repair",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "Ahsb",
+      "name": "Sundering Blades",
+      "requirements": {
+        "requires": "Rhsb"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "Aihn",
+      "name": "Unit Inventory",
+      "requirements": {
+        "requires": "Rhpm"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "Ainf",
+      "name": "Inner Fire",
+      "requirements": {
+        "requires": "Rhpt",
+        "requiresamount": "2"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "Aivs",
+      "name": "Invisibility",
+      "requirements": {
+        "requires": "Rhst"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "Amic",
+      "name": "Call To Arms",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "Amil",
+      "name": "Call to Arms",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "Amim",
+      "name": "Spell Immunity",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "Amls",
+      "name": "Aerial Shackles",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "Aply",
+      "name": "Polymorph",
+      "requirements": {
+        "requires": "Rhst",
+        "requiresamount": "2"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "Aroc",
+      "name": "Barrage",
+      "requirements": {
+        "requires": "Rhrt"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "Aslo",
+      "name": "Slow",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "Asph",
+      "name": "Sphere",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "Asps",
+      "name": "Spell Steal",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "ability",
+      "raw": "Asth",
+      "name": "Storm Hammers",
+      "requirements": {
+        "requires": "Rhhb"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "item",
+      "raw": "mcri",
+      "name": "Mechanical Critter",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "item",
+      "raw": "oslo",
+      "name": "Orb of Slow",
+      "requirements": {
+        "requires": "hcas"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "item",
+      "raw": "phea",
+      "name": "Potion of Healing",
+      "requirements": {
+        "requires": "TWN2"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "item",
+      "raw": "plcl",
+      "name": "Lesser Clarity Potion",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "item",
+      "raw": "pman",
+      "name": "Potion of Mana",
+      "requirements": {
+        "requires": "TWN2"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "item",
+      "raw": "sreg",
+      "name": "Scroll of Regeneration",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "item",
+      "raw": "ssan",
+      "name": "Staff of Sanctuary",
+      "requirements": {
+        "requires": "hcas"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "item",
+      "raw": "stwp",
+      "name": "Scroll of Town Portal",
+      "requirements": {
+        "requires": "TWN2"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "item",
+      "raw": "tsct",
+      "name": "Ivory Tower",
+      "requirements": {
+        "requires": "hkee"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "research",
+      "raw": "Rhac",
+      "name": "Improved Masonry",
+      "requirements": {
+        "requires": "",
+        "requires1": "hkee",
+        "requires2": "hcas",
+        "requirescount": "3"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "research",
+      "raw": "Rhan",
+      "name": "Animal War Training",
+      "requirements": {
+        "requires": "hlum,hbla,hcas"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "research",
+      "raw": "Rhar",
+      "name": "Iron Plating",
+      "requirements": {
+        "requires": "",
+        "requires1": "hkee",
+        "requires2": "hcas",
+        "requirescount": "3"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "research",
+      "raw": "Rhcd",
+      "name": "Cloud",
+      "requirements": {
+        "requires": "hcas"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "research",
+      "raw": "Rhde",
+      "name": "Defend",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "research",
+      "raw": "Rhfc",
+      "name": "Flak Cannons",
+      "requirements": {
+        "requires": "hkee"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "research",
+      "raw": "Rhfl",
+      "name": "Flare",
+      "requirements": {
+        "requires": "hkee"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "research",
+      "raw": "Rhfs",
+      "name": "Fragmentation Shards",
+      "requirements": {
+        "requires": "hcas"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "research",
+      "raw": "Rhgb",
+      "name": "Flying Machine Bombs",
+      "requirements": {
+        "requires": "hcas"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "research",
+      "raw": "Rhhb",
+      "name": "Storm Hammers",
+      "requirements": {
+        "requires": "hcas"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "research",
+      "raw": "Rhla",
+      "name": "Studded Leather Armor",
+      "requirements": {
+        "requires": "",
+        "requires1": "hkee",
+        "requires2": "hcas",
+        "requirescount": "3"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "research",
+      "raw": "Rhlh",
+      "name": "Improved Lumber Harvesting",
+      "requirements": {
+        "requires": "",
+        "requires1": "hkee",
+        "requirescount": "2"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "research",
+      "raw": "Rhme",
+      "name": "Iron Forged Swords",
+      "requirements": {
+        "requires": "",
+        "requires1": "hkee",
+        "requires2": "hcas",
+        "requirescount": "3"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "research",
+      "raw": "Rhpm",
+      "name": "Backpack",
+      "requirements": {
+        "requires": ""
+      }
+    },
+    {
+      "race": "human",
+      "kind": "research",
+      "raw": "Rhpt",
+      "name": "Priest Adept Training",
+      "requirements": {
+        "requires": "",
+        "requires1": "hcas",
+        "requirescount": "2"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "research",
+      "raw": "Rhra",
+      "name": "Black Gunpowder",
+      "requirements": {
+        "requires": "",
+        "requires1": "hkee",
+        "requires2": "hcas",
+        "requirescount": "3"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "research",
+      "raw": "Rhri",
+      "name": "Long Rifles",
+      "requirements": {
+        "requires": "hkee"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "research",
+      "raw": "Rhrt",
+      "name": "Barrage",
+      "requirements": {
+        "requires": "hcas"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "research",
+      "raw": "Rhsb",
+      "name": "Sundering Blades",
+      "requirements": {
+        "requires": "hlum,hcas,hbla"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "research",
+      "raw": "Rhse",
+      "name": "Magic Sentry",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "research",
+      "raw": "Rhss",
+      "name": "Control Magic",
+      "requirements": {
+        "requires": "hvlt,hcas"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "research",
+      "raw": "Rhst",
+      "name": "Sorceress Adept Training",
+      "requirements": {
+        "requires": "",
+        "requires1": "hcas",
+        "requirescount": "2"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "unit/building",
+      "raw": "Hamg",
+      "name": "Archmage",
+      "requirements": {
+        "requires": "",
+        "requires1": "hkee",
+        "requires2": "hcas",
+        "requirescount": "3"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "unit/building",
+      "raw": "Hblm",
+      "name": "Blood Mage",
+      "requirements": {
+        "requires": "",
+        "requires1": "hkee",
+        "requires2": "hcas",
+        "requirescount": "3"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "unit/building",
+      "raw": "Hmkg",
+      "name": "Mountain King",
+      "requirements": {
+        "requires": "",
+        "requires1": "hkee",
+        "requires2": "hcas",
+        "requirescount": "3"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "unit/building",
+      "raw": "Hpal",
+      "name": "Paladin",
+      "requirements": {
+        "requires": "",
+        "requires1": "hkee",
+        "requires2": "hcas",
+        "requirescount": "3"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "unit/building",
+      "raw": "halt",
+      "name": "Altar of Kings",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "unit/building",
+      "raw": "harm",
+      "name": "Workshop",
+      "requirements": {
+        "requires": "hkee,hbla"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "unit/building",
+      "raw": "hars",
+      "name": "Arcane Sanctum",
+      "requirements": {
+        "requires": "hkee"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "unit/building",
+      "raw": "hatw",
+      "name": "Arcane Tower",
+      "requirements": {
+        "requires": ""
+      }
+    },
+    {
+      "race": "human",
+      "kind": "unit/building",
+      "raw": "hbar",
+      "name": "Barracks",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "unit/building",
+      "raw": "hbla",
+      "name": "Blacksmith",
+      "requirements": {
+        "requires": "htow"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "unit/building",
+      "raw": "hcas",
+      "name": "Castle",
+      "requirements": {
+        "requires": "halt"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "unit/building",
+      "raw": "hctw",
+      "name": "Cannon Tower",
+      "requirements": {
+        "requires": "harm"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "unit/building",
+      "raw": "hdhw",
+      "name": "Dragonhawk Rider",
+      "requirements": {
+        "requires": ""
+      }
+    },
+    {
+      "race": "human",
+      "kind": "unit/building",
+      "raw": "hfoo",
+      "name": "Footman",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "unit/building",
+      "raw": "hgra",
+      "name": "Gryphon Aviary",
+      "requirements": {
+        "requires": "hkee,hlum"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "unit/building",
+      "raw": "hgry",
+      "name": "Gryphon Rider",
+      "requirements": {
+        "requires": "hcas"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "unit/building",
+      "raw": "hgtw",
+      "name": "Guard Tower",
+      "requirements": {
+        "requires": "hlum"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "unit/building",
+      "raw": "hgyr",
+      "name": "Flying Machine",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "unit/building",
+      "raw": "hhou",
+      "name": "Farm",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "unit/building",
+      "raw": "hkee",
+      "name": "Keep",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "unit/building",
+      "raw": "hkni",
+      "name": "Knight",
+      "requirements": {
+        "requires": "hcas,hbla"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "unit/building",
+      "raw": "hlum",
+      "name": "Lumber Mill",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "unit/building",
+      "raw": "hmpr",
+      "name": "Priest",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "unit/building",
+      "raw": "hmtm",
+      "name": "Mortar Team",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "unit/building",
+      "raw": "hmtt",
+      "name": "Siege Engine",
+      "requirements": {
+        "requires": "hcas"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "unit/building",
+      "raw": "hpea",
+      "name": "Peasant",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "unit/building",
+      "raw": "hrif",
+      "name": "Rifleman",
+      "requirements": {
+        "requires": "hbla"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "unit/building",
+      "raw": "hrtt",
+      "name": "Siege Engine",
+      "requirements": {
+        "requires": "hcas"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "unit/building",
+      "raw": "hsor",
+      "name": "Sorceress",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "unit/building",
+      "raw": "hspt",
+      "name": "Spellbreaker",
+      "requirements": {
+        "requires": "hvlt,hkee"
+      }
+    },
+    {
+      "race": "human",
+      "kind": "unit/building",
+      "raw": "htow",
+      "name": "Town Hall",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "unit/building",
+      "raw": "hvlt",
+      "name": "Arcane Vault",
+      "requirements": {}
+    },
+    {
+      "race": "human",
+      "kind": "unit/building",
+      "raw": "hwtw",
+      "name": "Scout Tower",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "ACsk",
+      "name": "Resistant Skin",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "AOae",
+      "name": "Endurance Aura",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "AOcl",
+      "name": "Chain Lightning",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "AOcr",
+      "name": "Critical Strike",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "AOeq",
+      "name": "Earthquake",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "AOfs",
+      "name": "Far Sight",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "AOhw",
+      "name": "Healing Wave",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "AOhx",
+      "name": "Hex",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "AOmi",
+      "name": "Mirror Image",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "AOre",
+      "name": "Reincarnation",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "AOsf",
+      "name": "Feral Spirit",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "AOsh",
+      "name": "Shockwave",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "AOsw",
+      "name": "Serpent Ward",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "AOvd",
+      "name": "Big Bad Voodoo",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "AOwk",
+      "name": "Wind Walk",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "AOws",
+      "name": "War Stomp",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "AOww",
+      "name": "Bladestorm",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "Aakb",
+      "name": "War Drums",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "Aall",
+      "name": "Aall",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "Aast",
+      "name": "Ancestral Spirit",
+      "requirements": {
+        "requires": "Rowt",
+        "requiresamount": "2"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "Ablo",
+      "name": "Bloodlust",
+      "requirements": {
+        "requires": "Rost",
+        "requiresamount": "2"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "Abof",
+      "name": "Burning Oil",
+      "requirements": {
+        "requires": "Robf"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "Absk",
+      "name": "Berserk",
+      "requirements": {
+        "requires": "Robk"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "Abtl",
+      "name": "Battle Stations",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "Acpf",
+      "name": "Corporeal Form",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "Adcn",
+      "name": "Disenchant",
+      "requirements": {
+        "requires": "Rowt",
+        "requiresamount": "1"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "Adev",
+      "name": "Devour",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "Aens",
+      "name": "Ensnare",
+      "requirements": {
+        "requires": "Roen"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "Aeye",
+      "name": "Sentry Ward",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "Ahwd",
+      "name": "Healing Ward",
+      "requirements": {
+        "requires": "Rowd",
+        "requiresamount": "2"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "Aion",
+      "name": "Unit Inventory",
+      "requirements": {
+        "requires": "Ropm"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "Aliq",
+      "name": "Liquid Fire",
+      "requirements": {
+        "requires": "Rolf"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "Alsh",
+      "name": "Lightning Shield",
+      "requirements": {
+        "requires": "Rost"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "Aobk",
+      "name": "Berserker Upgrade",
+      "requirements": {
+        "requires": "Robk"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "Aobs",
+      "name": "Brute Strength",
+      "requirements": {
+        "requires": "Robs"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "Aorb",
+      "name": "Reinforced Defenses",
+      "requirements": {
+        "requires": "Rorb"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "Aosp",
+      "name": "Spiked Barricades",
+      "requirements": {
+        "requires": "Rosp"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "Aotr",
+      "name": "Troll Regeneration",
+      "requirements": {
+        "requires": "Rotr"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "Apak",
+      "name": "Pack Mule",
+      "requirements": {
+        "requires": "Ropm"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "Apg2",
+      "name": "Purge",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "Asal",
+      "name": "Pillage",
+      "requirements": {
+        "requires": "Ropg"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "Aspl",
+      "name": "Spirit Link",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "Asta",
+      "name": "Stasis Trap",
+      "requirements": {
+        "requires": "Rowd"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "Astd",
+      "name": "Stand Down",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "Auco",
+      "name": "Unstable Concoction",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "Aven",
+      "name": "Envenomed Spears",
+      "requirements": {
+        "requires": "Rovs"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "Awar",
+      "name": "Pulverize",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "ability",
+      "raw": "Sbsk",
+      "name": "Berserker Upgrade",
+      "requirements": {
+        "requires": "Robk"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "item",
+      "raw": "hslv",
+      "name": "Healing Salve",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "item",
+      "raw": "oli2",
+      "name": "Orb of Lightning",
+      "requirements": {
+        "requires": "ofrt"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "item",
+      "raw": "phea",
+      "name": "Potion of Healing",
+      "requirements": {
+        "requires": "TWN2"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "item",
+      "raw": "plcl",
+      "name": "Lesser Clarity Potion",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "item",
+      "raw": "pman",
+      "name": "Potion of Mana",
+      "requirements": {
+        "requires": "TWN2"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "item",
+      "raw": "shas",
+      "name": "Scroll of Speed",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "item",
+      "raw": "stwp",
+      "name": "Scroll of Town Portal",
+      "requirements": {
+        "requires": "TWN2"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "item",
+      "raw": "tgrh",
+      "name": "Tiny Great Hall",
+      "requirements": {
+        "requires": "ofrt"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "research",
+      "raw": "Roar",
+      "name": "Steel Armor",
+      "requirements": {
+        "requires": "",
+        "requires1": "ostr",
+        "requires2": "ofrt",
+        "requirescount": "3"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "research",
+      "raw": "Robf",
+      "name": "Burning Oil",
+      "requirements": {
+        "requires": "ofrt"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "research",
+      "raw": "Robk",
+      "name": "Berserker Upgrade",
+      "requirements": {
+        "requires": "ofrt,ofor"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "research",
+      "raw": "Robs",
+      "name": "Brute Strength",
+      "requirements": {
+        "requires": "ostr"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "research",
+      "raw": "Roen",
+      "name": "Ensnare",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "research",
+      "raw": "Rolf",
+      "name": "Liquid Fire",
+      "requirements": {
+        "requires": "ofrt,ovln"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "research",
+      "raw": "Rome",
+      "name": "Steel Melee Weapons",
+      "requirements": {
+        "requires": "",
+        "requires1": "ostr",
+        "requires2": "ofrt",
+        "requirescount": "3"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "research",
+      "raw": "Ropg",
+      "name": "Pillage",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "research",
+      "raw": "Ropm",
+      "name": "Backpack",
+      "requirements": {
+        "requires": ""
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "research",
+      "raw": "Rora",
+      "name": "Steel Ranged Weapons",
+      "requirements": {
+        "requires": "",
+        "requires1": "ostr",
+        "requires2": "ofrt",
+        "requirescount": "3"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "research",
+      "raw": "Rorb",
+      "name": "Reinforced Defenses",
+      "requirements": {
+        "requires": "ostr"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "research",
+      "raw": "Rosp",
+      "name": "Spiked Barricades",
+      "requirements": {
+        "requires": "",
+        "requires1": "ostr",
+        "requires2": "ofrt",
+        "requirescount": "3"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "research",
+      "raw": "Rost",
+      "name": "Shaman Adept Training",
+      "requirements": {
+        "requires": "",
+        "requires1": "ofrt",
+        "requirescount": "2"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "research",
+      "raw": "Rotr",
+      "name": "Troll Regeneration",
+      "requirements": {
+        "requires": "ostr,ofor"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "research",
+      "raw": "Rovs",
+      "name": "Envenomed Spears",
+      "requirements": {
+        "requires": "ofrt"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "research",
+      "raw": "Rowd",
+      "name": "Witch Doctor Adept Training",
+      "requirements": {
+        "requires": "",
+        "requires1": "ofrt",
+        "requirescount": "2"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "research",
+      "raw": "Rows",
+      "name": "Pulverize Damage Increase",
+      "requirements": {
+        "requires": "ofor,ofrt"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "research",
+      "raw": "Rowt",
+      "name": "Spirit Walker Adept Training",
+      "requirements": {
+        "requires": "",
+        "requires1": "ofrt",
+        "requirescount": "2"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "research",
+      "raw": "Rwdm",
+      "name": "War Drums Damage Increase",
+      "requirements": {
+        "requires": "ofrt,ofor"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "unit/building",
+      "raw": "Obla",
+      "name": "Blademaster",
+      "requirements": {
+        "requires": "",
+        "requires1": "ostr",
+        "requires2": "ofrt",
+        "requirescount": "3"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "unit/building",
+      "raw": "Ofar",
+      "name": "Far Seer",
+      "requirements": {
+        "requires": "",
+        "requires1": "ostr",
+        "requires2": "ofrt",
+        "requirescount": "3"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "unit/building",
+      "raw": "Oshd",
+      "name": "Shadow Hunter",
+      "requirements": {
+        "requires": "",
+        "requires1": "ostr",
+        "requires2": "ofrt",
+        "requirescount": "3"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "unit/building",
+      "raw": "Otch",
+      "name": "Tauren Chieftain",
+      "requirements": {
+        "requires": "",
+        "requires1": "ostr",
+        "requires2": "ofrt",
+        "requirescount": "3"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "unit/building",
+      "raw": "oalt",
+      "name": "Altar of Storms",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "unit/building",
+      "raw": "obar",
+      "name": "Barracks",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "unit/building",
+      "raw": "obea",
+      "name": "Beastiary",
+      "requirements": {
+        "requires": "ostr"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "unit/building",
+      "raw": "ocat",
+      "name": "Demolisher",
+      "requirements": {
+        "requires": "ofor,ostr"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "unit/building",
+      "raw": "odoc",
+      "name": "Witch Doctor",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "unit/building",
+      "raw": "ofor",
+      "name": "War Mill",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "unit/building",
+      "raw": "ofrt",
+      "name": "Fortress",
+      "requirements": {
+        "requires": "oalt"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "unit/building",
+      "raw": "ogre",
+      "name": "Great Hall",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "unit/building",
+      "raw": "ogru",
+      "name": "Grunt",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "unit/building",
+      "raw": "ohun",
+      "name": "Headhunter",
+      "requirements": {
+        "requires": "ofor",
+        "dependencyor": "otbk"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "unit/building",
+      "raw": "okod",
+      "name": "Kodo Beast",
+      "requirements": {
+        "requires": "ofor"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "unit/building",
+      "raw": "opeo",
+      "name": "Peon",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "unit/building",
+      "raw": "orai",
+      "name": "Raider",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "unit/building",
+      "raw": "oshm",
+      "name": "Shaman",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "unit/building",
+      "raw": "osld",
+      "name": "Spirit Lodge",
+      "requirements": {
+        "requires": "ostr"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "unit/building",
+      "raw": "ospm",
+      "name": "Spirit Walker",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "unit/building",
+      "raw": "ospw",
+      "name": "Spirit Walker",
+      "requirements": {
+        "dependencyor": "ospm"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "unit/building",
+      "raw": "ostr",
+      "name": "Stronghold",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "unit/building",
+      "raw": "otau",
+      "name": "Tauren",
+      "requirements": {
+        "requires": "ofor,ofrt"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "unit/building",
+      "raw": "otbk",
+      "name": "Berserker",
+      "requirements": {
+        "requires": "ofor"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "unit/building",
+      "raw": "otbr",
+      "name": "Batrider",
+      "requirements": {
+        "requires": "ovln"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "unit/building",
+      "raw": "otrb",
+      "name": "Burrow",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "unit/building",
+      "raw": "otto",
+      "name": "Tauren Totem",
+      "requirements": {
+        "requires": "ostr"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "unit/building",
+      "raw": "ovln",
+      "name": "Voodoo Lounge",
+      "requirements": {}
+    },
+    {
+      "race": "orc",
+      "kind": "unit/building",
+      "raw": "owtw",
+      "name": "Watch Tower",
+      "requirements": {
+        "requires": "ofor"
+      }
+    },
+    {
+      "race": "orc",
+      "kind": "unit/building",
+      "raw": "owyv",
+      "name": "Wind Rider",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "AEah",
+      "name": "Thorns Aura",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "AEar",
+      "name": "Trueshot Aura",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "AEbl",
+      "name": "Blink",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "AEer",
+      "name": "Entangling Roots",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "AEev",
+      "name": "Evasion",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "AEfk",
+      "name": "Fan of Knives",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "AEfn",
+      "name": "Force of Nature",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "AEim",
+      "name": "Immolation",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "AEmb",
+      "name": "Mana Burn",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "AEme",
+      "name": "Metamorphosis",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "AEsf",
+      "name": "Starfall",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "AEsh",
+      "name": "Shadow Strike",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "AEst",
+      "name": "Scout",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "AEsv",
+      "name": "Vengeance",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "AEtq",
+      "name": "Tranquility",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "AHfa",
+      "name": "Searing Arrows",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "Aadm",
+      "name": "Abolish Magic",
+      "requirements": {
+        "requires": "Resi"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "Aall",
+      "name": "Aall",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "Abrf",
+      "name": "Bear Form",
+      "requirements": {
+        "requires": "Redc",
+        "requiresamount": "2"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "Aco2",
+      "name": "Mount Hippogryph",
+      "requirements": {
+        "requires": "ehip"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "Aco3",
+      "name": "Pick up Archer",
+      "requirements": {
+        "requires": "ehip"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "Acor",
+      "name": "Corrosive Breath",
+      "requirements": {
+        "requires": "Recb"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "Acyc",
+      "name": "Cyclone",
+      "requirements": {
+        "requires": "Redt",
+        "requiresamount": "2"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "Adec",
+      "name": "Dismount",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "Adtn",
+      "name": "Detonate",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "Aeat",
+      "name": "Eat Tree",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "Aegr",
+      "name": "Elune's Grace",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "Aeib",
+      "name": "Improved Bows",
+      "requirements": {
+        "requires": "Reib"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "Aemk",
+      "name": "Marksmanship",
+      "requirements": {
+        "requires": "Remk"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "Aent",
+      "name": "Entangle Gold Mine",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "Aesn",
+      "name": "Sentinel",
+      "requirements": {
+        "requires": "Resc"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "Aews",
+      "name": "Well Spring",
+      "requirements": {
+        "requires": "Rews"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "Afa2",
+      "name": "Faerie Fire",
+      "requirements": {
+        "requires": "Reec"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "Afae",
+      "name": "Faerie Fire",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "Agra",
+      "name": "War Club",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "Aien",
+      "name": "Unit Inventory",
+      "requirements": {
+        "requires": "Repm"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "Alit",
+      "name": "Lightning Attack",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "Ambt",
+      "name": "Replenish Mana and Life",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "Amfl",
+      "name": "Mana Flare",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "Amgl",
+      "name": "Moon Glaive",
+      "requirements": {
+        "requires": "Remg"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "Amim",
+      "name": "Spell Immunity",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "Apsh",
+      "name": "Phase Shift",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "Ara2",
+      "name": "Roar",
+      "requirements": {
+        "requires": "Reeb"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "Arav",
+      "name": "Storm Crow Form",
+      "requirements": {
+        "requires": "Redt"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "Arej",
+      "name": "Rejuvenation",
+      "requirements": {
+        "requires": "Redc"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "Aren",
+      "name": "Renew",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "Aro1",
+      "name": "Root",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "Aro2",
+      "name": "Root",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "Aroa",
+      "name": "Roar",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "Arsk",
+      "name": "Resistant Skin",
+      "requirements": {
+        "requires": "Rers"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "Ashm",
+      "name": "Shadow Meld",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "Aspo",
+      "name": "Slow Poison",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "Assk",
+      "name": "Hardened Skin",
+      "requirements": {
+        "requires": "Rehs"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "Atau",
+      "name": "Taunt",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "Ault",
+      "name": "Ultravision",
+      "requirements": {
+        "requires": "Reuv"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "ability",
+      "raw": "Awha",
+      "name": "Gather",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "item",
+      "raw": "dust",
+      "name": "Dust of Appearance",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "item",
+      "raw": "moon",
+      "name": "Moonstone",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "item",
+      "raw": "oven",
+      "name": "Orb of Venom",
+      "requirements": {
+        "requires": "etoe"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "item",
+      "raw": "pams",
+      "name": "Anti-magic Potion",
+      "requirements": {
+        "requires": "etoe"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "item",
+      "raw": "phea",
+      "name": "Potion of Healing",
+      "requirements": {
+        "requires": "TWN2"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "item",
+      "raw": "plcl",
+      "name": "Lesser Clarity Potion",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "item",
+      "raw": "pman",
+      "name": "Potion of Mana",
+      "requirements": {
+        "requires": "TWN2"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "item",
+      "raw": "spre",
+      "name": "Staff of Preservation",
+      "requirements": {
+        "requires": "etoa"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "item",
+      "raw": "stwp",
+      "name": "Scroll of Town Portal",
+      "requirements": {
+        "requires": "TWN2"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "research",
+      "raw": "Recb",
+      "name": "Corrosive Breath",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "research",
+      "raw": "Redc",
+      "name": "Druid of the Claw Adept Training",
+      "requirements": {
+        "requires": "",
+        "requires1": "etoe",
+        "requirescount": "2"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "research",
+      "raw": "Redt",
+      "name": "Druid of the Talon Adept Training",
+      "requirements": {
+        "requires": "",
+        "requires1": "etoe",
+        "requirescount": "2"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "research",
+      "raw": "Reeb",
+      "name": "Mark of the Claw",
+      "requirements": {
+        "requires": "Redc",
+        "requiresamount": "2"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "research",
+      "raw": "Reec",
+      "name": "Mark of the Talon",
+      "requirements": {
+        "requires": "Redt"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "research",
+      "raw": "Rehs",
+      "name": "Hardened Skin",
+      "requirements": {
+        "requires": "etoe,eden"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "research",
+      "raw": "Reib",
+      "name": "Improved Bows",
+      "requirements": {
+        "requires": "etoa"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "research",
+      "raw": "Rema",
+      "name": "Moon Armor",
+      "requirements": {
+        "requires": "",
+        "requires1": "etoa",
+        "requires2": "etoe",
+        "requirescount": "3"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "research",
+      "raw": "Remg",
+      "name": "Upgrade Moon Glaive",
+      "requirements": {
+        "requires": "edob,etoa"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "research",
+      "raw": "Remk",
+      "name": "Marksmanship",
+      "requirements": {
+        "requires": "edob,etoe"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "research",
+      "raw": "Renb",
+      "name": "Nature's Blessing",
+      "requirements": {
+        "requires": "etoa"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "research",
+      "raw": "Repb",
+      "name": "Vorpal Blades",
+      "requirements": {
+        "requires": "etoa,edob"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "research",
+      "raw": "Repm",
+      "name": "Backpack",
+      "requirements": {
+        "requires": ""
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "research",
+      "raw": "Rerh",
+      "name": "Reinforced Hides",
+      "requirements": {
+        "requires": "",
+        "requires1": "etoa",
+        "requires2": "etoe",
+        "requirescount": "3"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "research",
+      "raw": "Rers",
+      "name": "Resistant Skin",
+      "requirements": {
+        "requires": "etoe,eden"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "research",
+      "raw": "Resc",
+      "name": "Sentinel",
+      "requirements": {
+        "requires": "edob"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "research",
+      "raw": "Resi",
+      "name": "Abolish Magic",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "research",
+      "raw": "Resm",
+      "name": "Strength of the Moon",
+      "requirements": {
+        "requires": "",
+        "requires1": "etoa",
+        "requires2": "etoe",
+        "requirescount": "3"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "research",
+      "raw": "Resw",
+      "name": "Strength of the Wild",
+      "requirements": {
+        "requires": "",
+        "requires1": "etoa",
+        "requires2": "etoe",
+        "requirescount": "3"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "research",
+      "raw": "Reuv",
+      "name": "Ultravision",
+      "requirements": {
+        "requires": "etoa"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "research",
+      "raw": "Rews",
+      "name": "Well Spring",
+      "requirements": {
+        "requires": "etoe"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "unit/building",
+      "raw": "Edem",
+      "name": "Demon Hunter",
+      "requirements": {
+        "requires": "",
+        "requires1": "etoa",
+        "requires2": "etoe",
+        "requirescount": "3",
+        "dependencyor": "Edmm"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "unit/building",
+      "raw": "Ekee",
+      "name": "Keeper of the Grove",
+      "requirements": {
+        "requires": "",
+        "requires1": "etoa",
+        "requires2": "etoe",
+        "requirescount": "3"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "unit/building",
+      "raw": "Emoo",
+      "name": "Priestess of the Moon",
+      "requirements": {
+        "requires": "",
+        "requires1": "etoa",
+        "requires2": "etoe",
+        "requirescount": "3"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "unit/building",
+      "raw": "Ewar",
+      "name": "Warden",
+      "requirements": {
+        "requires": "",
+        "requires1": "etoa",
+        "requires2": "etoe",
+        "requirescount": "3"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "unit/building",
+      "raw": "eaoe",
+      "name": "Ancient of Lore",
+      "requirements": {
+        "requires": "etoa,edob"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "unit/building",
+      "raw": "eaom",
+      "name": "Ancient of War",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "unit/building",
+      "raw": "eaow",
+      "name": "Ancient of Wind",
+      "requirements": {
+        "requires": "etoa"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "unit/building",
+      "raw": "earc",
+      "name": "Archer",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "unit/building",
+      "raw": "eate",
+      "name": "Altar of Elders",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "unit/building",
+      "raw": "ebal",
+      "name": "Glaive Thrower",
+      "requirements": {
+        "requires": "edob"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "unit/building",
+      "raw": "echm",
+      "name": "Chimaera",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "unit/building",
+      "raw": "edcm",
+      "name": "Druid of the Claw",
+      "requirements": {
+        "requires": "etoa"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "unit/building",
+      "raw": "eden",
+      "name": "Ancient of Wonders",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "unit/building",
+      "raw": "edob",
+      "name": "Hunter's Hall",
+      "requirements": {
+        "requires": "etol"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "unit/building",
+      "raw": "edoc",
+      "name": "Druid of the Claw",
+      "requirements": {
+        "requires": "etoa",
+        "dependencyor": "edcm"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "unit/building",
+      "raw": "edos",
+      "name": "Chimaera Roost",
+      "requirements": {
+        "requires": "etoe"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "unit/building",
+      "raw": "edot",
+      "name": "Druid of the Talon",
+      "requirements": {
+        "dependencyor": "edtm"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "unit/building",
+      "raw": "edry",
+      "name": "Dryad",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "unit/building",
+      "raw": "edtm",
+      "name": "Druid of the Talon",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "unit/building",
+      "raw": "efdr",
+      "name": "Faerie Dragon",
+      "requirements": {
+        "requires": "eden"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "unit/building",
+      "raw": "ehip",
+      "name": "Hippogryph",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "unit/building",
+      "raw": "ehpr",
+      "name": "Hippogryph Rider",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "unit/building",
+      "raw": "emow",
+      "name": "Moon Well",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "unit/building",
+      "raw": "emtg",
+      "name": "Mountain Giant",
+      "requirements": {
+        "requires": "etoa,eden"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "unit/building",
+      "raw": "esen",
+      "name": "Huntress",
+      "requirements": {
+        "requires": "edob"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "unit/building",
+      "raw": "etoa",
+      "name": "Tree of Ages",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "unit/building",
+      "raw": "etoe",
+      "name": "Tree of Eternity",
+      "requirements": {
+        "requires": "eate"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "unit/building",
+      "raw": "etol",
+      "name": "Tree of Life",
+      "requirements": {}
+    },
+    {
+      "race": "nightelf",
+      "kind": "unit/building",
+      "raw": "etrp",
+      "name": "Ancient Protector",
+      "requirements": {
+        "requires": "edob"
+      }
+    },
+    {
+      "race": "nightelf",
+      "kind": "unit/building",
+      "raw": "ewsp",
+      "name": "Wisp",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "ACmi",
+      "name": "Spell Immunity",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "AUa2",
+      "name": "Animate Dead",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "AUau",
+      "name": "Unholy Aura",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "AUav",
+      "name": "Vampiric Aura",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "AUcb",
+      "name": "Carrion Beetles",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "AUcs",
+      "name": "Carrion Swarm",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "AUdc",
+      "name": "Death Coil",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "AUdd",
+      "name": "Death And Decay",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "AUdp",
+      "name": "Death Pact",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "AUdr",
+      "name": "Dark Ritual",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "AUfn",
+      "name": "Frost Nova",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "AUfu",
+      "name": "Frost Armor",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "AUim",
+      "name": "Impale",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "AUin",
+      "name": "Inferno",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "AUls",
+      "name": "Locust Swarm",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "AUsl",
+      "name": "Sleep",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "AUts",
+      "name": "Spiked Carapace",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "Aabs",
+      "name": "Absorb Mana",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "Aaha",
+      "name": "Gather",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "Aall",
+      "name": "Aall",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "Aam2",
+      "name": "Anti-magic Shell",
+      "requirements": {
+        "requires": "Ruba"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "Aap1",
+      "name": "Disease Cloud",
+      "requirements": {
+        "requires": "Rupc"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "Aave",
+      "name": "Destroyer Form",
+      "requirements": {
+        "requires": "Rusp"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "Abur",
+      "name": "Burrow",
+      "requirements": {
+        "requires": "Rubu"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "Acan",
+      "name": "Cannibalize",
+      "requirements": {
+        "requires": "Ruac"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "Acn2",
+      "name": "Cannibalize",
+      "requirements": {
+        "requires": "Ruac"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "Acri",
+      "name": "Cripple",
+      "requirements": {
+        "requires": "Rune",
+        "requiresamount": "2"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "Acrs",
+      "name": "Curse",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "Advm",
+      "name": "Devour Magic",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "Aexh",
+      "name": "Exhume Corpses",
+      "requirements": {
+        "requires": "Ruex"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "Afak",
+      "name": "Orb of Annihilation",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "Afr2",
+      "name": "Frost Attack",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "Afra",
+      "name": "Frost Attack",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "Afrc",
+      "name": "Frost Attack",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "Afrz",
+      "name": "Freezing Breath",
+      "requirements": {
+        "requires": "Rufb"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "Agyd",
+      "name": "Create Corpse",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "Ahrl",
+      "name": "Ahrl",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "Aiun",
+      "name": "Unit Inventory",
+      "requirements": {
+        "requires": "Rupm"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "Alam",
+      "name": "Sacrifice",
+      "requirements": {
+        "requires": "usap"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "Amed",
+      "name": "Drop Corpse",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "Amel",
+      "name": "Get Corpse",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "Aps2",
+      "name": "Possession",
+      "requirements": {
+        "requires": "Ruba",
+        "requiresamount": "2"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "Apts",
+      "name": "Disease Cloud",
+      "requirements": {
+        "requires": "Rupc"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "Arai",
+      "name": "Raise Dead",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "Arpl",
+      "name": "Essence of Blight",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "Arpm",
+      "name": "Spirit Touch",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "Arst",
+      "name": "Restore",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "Asac",
+      "name": "Sacrifice",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "Astn",
+      "name": "Stone Form",
+      "requirements": {
+        "requires": "Rusf"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "Atru",
+      "name": "True Sight",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "Augf",
+      "name": "Ghoul Frenzy",
+      "requirements": {
+        "requires": "Rugf"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "Augh",
+      "name": "Shade",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "Auhf",
+      "name": "Unholy Frenzy",
+      "requirements": {
+        "requires": "Rune"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "Auns",
+      "name": "Unsummon Building",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "Ausm",
+      "name": "Skeletal Mastery",
+      "requirements": {
+        "requires": "Rusm"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "ability",
+      "raw": "Aweb",
+      "name": "Web",
+      "requirements": {
+        "requires": "Ruwb"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "item",
+      "raw": "dust",
+      "name": "Dust of Appearance",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "item",
+      "raw": "ocor",
+      "name": "Orb of Corruption",
+      "requirements": {
+        "requires": "unp2"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "item",
+      "raw": "phea",
+      "name": "Potion of Healing",
+      "requirements": {
+        "requires": "TWN2"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "item",
+      "raw": "pman",
+      "name": "Potion of Mana",
+      "requirements": {
+        "requires": "TWN2"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "item",
+      "raw": "ritd",
+      "name": "Ritual Dagger",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "item",
+      "raw": "rnec",
+      "name": "Rod of Necromancy",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "item",
+      "raw": "skul",
+      "name": "Sacrificial Skull",
+      "requirements": {
+        "requires": ""
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "item",
+      "raw": "stwp",
+      "name": "Scroll of Town Portal",
+      "requirements": {
+        "requires": "TWN2"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "item",
+      "raw": "wneg",
+      "name": "Wand of Negation",
+      "requirements": {
+        "requires": "unp1"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "research",
+      "raw": "Ruac",
+      "name": "Cannibalize",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "research",
+      "raw": "Ruar",
+      "name": "Unholy Armor",
+      "requirements": {
+        "requires": "",
+        "requires1": "unp1",
+        "requires2": "unp2",
+        "requirescount": "3"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "research",
+      "raw": "Ruba",
+      "name": "Banshee Adept Training",
+      "requirements": {
+        "requires": "",
+        "requires1": "unp2",
+        "requirescount": "2"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "research",
+      "raw": "Rubu",
+      "name": "Burrow",
+      "requirements": {
+        "requires": "unp1,ugrv"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "research",
+      "raw": "Rucr",
+      "name": "Creature Carapace",
+      "requirements": {
+        "requires": "",
+        "requires1": "unp1",
+        "requires2": "unp2",
+        "requirescount": "3"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "research",
+      "raw": "Ruex",
+      "name": "Exhume Corpses",
+      "requirements": {
+        "requires": "unp1"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "research",
+      "raw": "Rufb",
+      "name": "Freezing Breath",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "research",
+      "raw": "Rugf",
+      "name": "Ghoul Frenzy",
+      "requirements": {
+        "requires": "ugrv,unp2"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "research",
+      "raw": "Rume",
+      "name": "Unholy Strength",
+      "requirements": {
+        "requires": "",
+        "requires1": "unp1",
+        "requires2": "unp2",
+        "requirescount": "3"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "research",
+      "raw": "Rune",
+      "name": "Necromancer Adept Training",
+      "requirements": {
+        "requires": "",
+        "requires1": "unp2",
+        "requirescount": "2"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "research",
+      "raw": "Rupc",
+      "name": "Disease Cloud",
+      "requirements": {
+        "requires": "unp2"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "research",
+      "raw": "Rupm",
+      "name": "Backpack",
+      "requirements": {
+        "requires": ""
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "research",
+      "raw": "Rura",
+      "name": "Creature Attack",
+      "requirements": {
+        "requires": "",
+        "requires1": "unp1",
+        "requires2": "unp2",
+        "requirescount": "3"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "research",
+      "raw": "Rusf",
+      "name": "Stone Form",
+      "requirements": {
+        "requires": "ugrv,unp2"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "research",
+      "raw": "Rusm",
+      "name": "Skeletal Mastery",
+      "requirements": {
+        "requires": "unpl"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "research",
+      "raw": "Rusp",
+      "name": "Destroyer Form",
+      "requirements": {
+        "requires": "unp2,utom"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "research",
+      "raw": "Ruwb",
+      "name": "Web",
+      "requirements": {
+        "requires": "ugrv,unp1"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "unit/building",
+      "raw": "Ucrl",
+      "name": "Crypt Lord",
+      "requirements": {
+        "requires": "",
+        "requires1": "unp1",
+        "requires2": "unp2",
+        "requirescount": "3"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "unit/building",
+      "raw": "Udea",
+      "name": "Death Knight",
+      "requirements": {
+        "requires": "",
+        "requires1": "unp1",
+        "requires2": "unp2",
+        "requirescount": "3"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "unit/building",
+      "raw": "Udre",
+      "name": "Dreadlord",
+      "requirements": {
+        "requires": "",
+        "requires1": "unp1",
+        "requires2": "unp2",
+        "requirescount": "3"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "unit/building",
+      "raw": "Ulic",
+      "name": "Lich",
+      "requirements": {
+        "requires": "",
+        "requires1": "unp1",
+        "requires2": "unp2",
+        "requirescount": "3"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "unit/building",
+      "raw": "uabo",
+      "name": "Abomination",
+      "requirements": {
+        "requires": "unp2"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "unit/building",
+      "raw": "uaco",
+      "name": "Acolyte",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "unit/building",
+      "raw": "uaod",
+      "name": "Altar of Darkness",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "unit/building",
+      "raw": "uban",
+      "name": "Banshee",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "unit/building",
+      "raw": "ubon",
+      "name": "Boneyard",
+      "requirements": {
+        "requires": "unp2"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "unit/building",
+      "raw": "ubsp",
+      "name": "Destroyer",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "unit/building",
+      "raw": "ucry",
+      "name": "Crypt Fiend",
+      "requirements": {
+        "requires": "ugrv",
+        "dependencyor": "ucrm"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "unit/building",
+      "raw": "ufro",
+      "name": "Frost Wyrm",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "unit/building",
+      "raw": "ugar",
+      "name": "Gargoyle",
+      "requirements": {
+        "requires": "ugrv,unp1",
+        "dependencyor": "ugrm"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "unit/building",
+      "raw": "ugho",
+      "name": "Ghoul",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "unit/building",
+      "raw": "ugol",
+      "name": "Haunted Gold Mine",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "unit/building",
+      "raw": "ugrv",
+      "name": "Graveyard",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "unit/building",
+      "raw": "umtw",
+      "name": "Meat Wagon",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "unit/building",
+      "raw": "unec",
+      "name": "Necromancer",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "unit/building",
+      "raw": "unp1",
+      "name": "Halls of the Dead",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "unit/building",
+      "raw": "unp2",
+      "name": "Black Citadel",
+      "requirements": {
+        "requires": "uaod"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "unit/building",
+      "raw": "unpl",
+      "name": "Necropolis",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "unit/building",
+      "raw": "uobs",
+      "name": "Obsidian Statue",
+      "requirements": {
+        "requires": "utom",
+        "dependencyor": "ubsp"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "unit/building",
+      "raw": "usap",
+      "name": "Sacrificial Pit",
+      "requirements": {
+        "requires": "unp1"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "unit/building",
+      "raw": "usep",
+      "name": "Crypt",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "unit/building",
+      "raw": "ushd",
+      "name": "Shade",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "unit/building",
+      "raw": "uslh",
+      "name": "Slaughterhouse",
+      "requirements": {
+        "requires": "unp1,ugrv"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "unit/building",
+      "raw": "utod",
+      "name": "Temple of the Damned",
+      "requirements": {
+        "requires": "unp1,ugrv"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "unit/building",
+      "raw": "utom",
+      "name": "Tomb of Relics",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "unit/building",
+      "raw": "uzg1",
+      "name": "Spirit Tower",
+      "requirements": {
+        "requires": "ugrv"
+      }
+    },
+    {
+      "race": "undead",
+      "kind": "unit/building",
+      "raw": "uzg2",
+      "name": "Nerubian Tower",
+      "requirements": {}
+    },
+    {
+      "race": "undead",
+      "kind": "unit/building",
+      "raw": "uzig",
+      "name": "Ziggurat",
+      "requirements": {}
+    }
+  ]
+}

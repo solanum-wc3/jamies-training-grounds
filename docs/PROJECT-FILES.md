@@ -7,10 +7,11 @@ This inventory distinguishes maintained source, generated output, immutable refe
 - `src/activities/` — implemented tutorial, training and demonstration behavior
 - `src/infrastructure/` — shared runtime plus development-only diagnostics
 - `src/config/` — packaged Warcraft III interface configuration
-- `src/data/` — replaceable CustomKeys and shortcut-setup source data
+- `src/data/` — CustomKeys inputs, native Hotkey/tech inventories, practice pools, Heroes data and development sound inventory
 - `design/menu-art/` — editable menu artwork used by the texture generator
 - `design/overlays/` — editable unit-obstruction-square artwork
-- `design/tutorials/` — authored Economy JSON, source export and editable drafts
+- `design/tutorials/` — authored Economy/Heroes JSON, layout inputs and editable snapshots
+- `design/exercises/editable/` — editable briefing files; Hotkey/Reflex text is authoritative and generated automatically, other files are manual-import work files
 - `design/dodge-catalog.json` — native danger/dodger catalogue; activation measurements and timing audit JSON retain evidence
 - `tools/` — build, extraction and asset-preparation utilities
 - `docs/ARCHITECTURE.md` and `docs/ARCHITECTURE-TODO.md` — current architecture and backlog
@@ -49,6 +50,8 @@ The following files are not used by the current packaged map but may still be us
 Embedded CustomKeys data remains committed, although player-facing exports are disabled. It can be replaced or regenerated from `src/data/`; it is not proof that arbitrary clean text export works.
 
 `src/generated/economy-script.lua`, `economy-layout.lua` and `dodge-catalog.lua` are regenerated from maintained design inputs. `dodge-timing-methods.lua` and `melee-tech.lua` are generated/native-derived data; preserve them for clean-checkout builds.
+
+`src/generated/exercise-briefings.lua` and `heroes-tutorial.lua` are refreshed by the build from maintained text/JSON. Hotkey catalogue and sound data have dedicated preparation tools. The two small Hotkey audit default tables support fresh development builds; local generated bindings/history under `work/` override them without becoming production inputs. Do not commit a player's diagnostic reports or local binding fixture merely to make a build succeed.
 
 The map preview source is `reference/legacy/arthas-jaina-preview.png`, with `war3mapPreview.tga` alongside it. Current builds inherit the browser artwork as `war3mapMap.blp` from the accepted foundation; the terrain minimap is restored separately in game.
 

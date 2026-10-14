@@ -4,6 +4,7 @@
 /build/
 /node_modules/
 /.pnpm-store/
+/debug.log
 __pycache__/
 *.pyc
 

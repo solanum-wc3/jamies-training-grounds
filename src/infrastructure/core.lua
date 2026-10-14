@@ -164,8 +164,85 @@ local function ScopeTrack(scope, resource, disposer, disposeOnLoad)
     return resource
 end
 
+local unitScopes = {}
 function JTG.ScopeTrackUnit(scope, unit)
-    return ScopeTrack(scope, unit, RemoveUnit, false)
+    if unit~=nil and not unitScopes[unit] then unitScopes[unit]=scope end
+    return ScopeTrack(scope, unit, function(value)
+        if unitScopes[value]==scope then unitScopes[value]=nil end
+        RemoveUnit(value)
+    end, false)
+end
+
+local function SnapshotWorldUnits()
+    local group=CreateGroup()
+    if group==nil then return nil end
+    local area=GetWorldBounds()
+    if area==nil then DestroyGroup(group);return nil end
+    GroupEnumUnitsInRect(group,area,nil)
+    local result={}
+    local size=BlzGroupGetSize(group)
+    if type(size)~='number' then DestroyGroup(group);RemoveRect(area);return nil end
+    for index=0,size-1 do
+        local unit=BlzGroupUnitAt(group,index)
+        if unit~=nil then result[unit]=true end
+    end
+    DestroyGroup(group);RemoveRect(area)
+    return result
+end
+
+-- Summons have their own native event. Only engine replacement abilities
+-- need a deferred scan; ordinary casts must not enumerate the entire map.
+local replacementAbilities = {}
+for _,raw in ipairs({'Acoa','Aco2','Aco3','Acoh','Adec','AOmi',
+    'AEme','Abrf','Arav','Aave','Astn','Amil','Amic','ANrg'}) do
+    replacementAbilities[FourCC(raw)]=true
+end
+
+-- Native summons and split/merge results can create handles that activity
+-- code never receives. Keep them under the same ownership rules as their caster.
+function JTG.TrackSessionGeneratedUnits(session)
+    session.existingUnits=SnapshotWorldUnits()
+    local trigger=JTG.ScopeTrackTrigger(session.scope,CreateTrigger())
+    local slots=type(bj_MAX_PLAYER_SLOTS)=='number' and bj_MAX_PLAYER_SLOTS or 28
+    for index=0,slots-1 do
+        TriggerRegisterPlayerUnitEvent(trigger,Player(index),EVENT_PLAYER_UNIT_SUMMON,nil)
+        TriggerRegisterPlayerUnitEvent(trigger,Player(index),EVENT_PLAYER_UNIT_SPELL_EFFECT,nil)
+    end
+    TriggerAddAction(trigger,JTG.GuardSession(session,function()
+        if GetTriggerEventId()==EVENT_PLAYER_UNIT_SUMMON then
+            local parent,child=GetSummoningUnit(),GetSummonedUnit()
+            local scope=parent and unitScopes[parent]
+            if child and scope and not unitScopes[child] then
+                if scope.disposed then RemoveUnit(child) else JTG.ScopeTrackUnit(scope,child) end
+            end
+            return
+        end
+        local caster=GetTriggerUnit()
+        local scope=caster and unitScopes[caster]
+        if not scope or not session.existingUnits or not replacementAbilities[GetSpellAbilityId()] then return end
+        local x,y,owner=GetUnitX(caster),GetUnitY(caster),GetOwningPlayer(caster)
+        -- Engine morph/merge products may appear after the effect callback.
+        -- Use the session scope so a disposed child scope still gets cleanup.
+        local function collectProducts()
+            for unit in pairs(SnapshotWorldUnits() or {}) do
+                if not session.existingUnits[unit] and not unitScopes[unit] and GetOwningPlayer(unit)==owner then
+                    local dx,dy=GetUnitX(unit)-x,GetUnitY(unit)-y
+                    if dx*dx+dy*dy<=600*600 then
+                        if scope.disposed then RemoveUnit(unit) else JTG.ScopeTrackUnit(scope,unit) end
+                    end
+                end
+            end
+        end
+        JTG.StartScopedTimer(session,session.scope,0.00,false,collectProducts)
+        JTG.StartScopedTimer(session,session.scope,0.10,false,collectProducts)
+    end))
+end
+
+function JTG.CleanupSessionGeneratedUnits(session)
+    if not session.existingUnits then return end
+    for unit in pairs(SnapshotWorldUnits() or {}) do
+        if not session.existingUnits[unit] and not unitScopes[unit] then RemoveUnit(unit) end
+    end
 end
 
 function JTG.ScopeTrackTimer(scope, timer)
@@ -429,6 +506,9 @@ function JTG.StopActivity(reason)
         end
     end
     if not JTG.DisposeScope(session.presentationScope) then ok = false end
+    -- Sweep orphaned native products before borrowed map state is restored.
+    local swept, sweepMessage=pcall(JTG.CleanupSessionGeneratedUnits,session)
+    if not swept then ok=false;print('JTG generated-unit cleanup warning: '..tostring(sweepMessage)) end
     if not JTG.DisposeScope(session.scope) then ok = false end
     if not RunActivityFinalizers(session, reason) then ok = false end
     JTG.ResetWorldFog(Player(0))
@@ -474,6 +554,7 @@ function JTG.StartActivity(id, originCategory, restartData, preservedCameraDista
     }
     controller.session = session
     controller.state = "setting_up"
+    JTG.TrackSessionGeneratedUnits(session)
     local made, activity = pcall(descriptor.factory, session)
     if not made then
         ControllerFailure(activity)
@@ -509,6 +590,9 @@ function JTG.StartActivity(id, originCategory, restartData, preservedCameraDista
         end
     end
     -- Camera distance belongs to the player. Activities may recenter the
+    if JTG.Training and JTG.Training.ResumeQuestHint then
+        JTG.Training.ResumeQuestHint(session.activity,session)
+    end
     -- camera, but retain the distance present when they were entered or reset
     -- unless their descriptor explicitly requests a particular distance.
     if GetLocalPlayer() == Player(0) then
@@ -525,6 +609,12 @@ end
 -- Warcraft resolve the new melee start against stale unit footprints.
 function JTG.StartActivityAfterCleanup(id, originCategory, restartData,
         preservedCameraDistance, reason)
+    local previous=JTG.Controller.session
+    if previous and previous.id==id and reason~='briefing-restart' and reason~='new-crowd' then
+        restartData=restartData or {}
+        restartData._setupVisits=previous.restartData and previous.restartData._setupVisits
+        restartData._questHelp=previous.restartData and previous.restartData._questHelp
+    end
     local cameraDistance = preservedCameraDistance
     if cameraDistance == nil and GetLocalPlayer() == Player(0) then
         cameraDistance = GetCameraField(CAMERA_FIELD_TARGET_DISTANCE)
@@ -556,6 +646,18 @@ function JTG.ResetActivity()
         if captured then restartData = data
         else print("JTG reset-state warning: " .. tostring(data)) end
     end
+    restartData=restartData or {}
+    restartData._setupVisits=session.restartData and session.restartData._setupVisits
+    if id=='skills.body_blocking' and JTG.Training and JTG.Training.RecordBodyBlockingRedo then
+        JTG.Training.RecordBodyBlockingRedo(session.activity,session,restartData)
+    elseif (id=='skills.surround' or id=='skills.gargoyle') and JTG.Training and JTG.Training.RecordFailure then
+        local movingToNext=session.activity.setupProgressionRequested==true
+        local sameSetup=restartData.setupIndex==session.activity.setupIndex and
+            restartData.runnerIndex==session.activity.runnerIndex
+        if not movingToNext and sameSetup then JTG.Training.RecordFailure(session.activity,session,false) end
+    end
+    restartData._questHelp=session.restartData and session.restartData._questHelp
+    -- Carry first-visit labels through direct and deferred resets alike.
     -- Exercises that recreate collision-sensitive setups at identical
     -- coordinates get one frame for Warcraft to retire the old footprints.
     -- Rebuilding directly in the click callback can otherwise make the next
@@ -638,6 +740,8 @@ function JTG.LastRunnerActivity()
         session.activity, session)
     if not captured or restartData == nil then return false end
     local id, category = session.id, JTG.Controller.lastCategory
+    restartData._setupVisits=session.restartData and session.restartData._setupVisits
+    restartData._questHelp=session.restartData and session.restartData._questHelp
     local cameraDistance = nil
     if GetLocalPlayer() == Player(0) then
         cameraDistance = GetCameraField(CAMERA_FIELD_TARGET_DISTANCE)
@@ -687,16 +791,14 @@ function JTG.ExitActivity()
     if JTG.UI then JTG.UI.ShowCategory(category) end
 end
 
--- End an activity while preserving the menu page the player is currently
--- browsing. This is separate from the exercise/result Exit action, which
--- intentionally returns to the originating catalogue.
+-- Exit disposes gameplay but preserves the exact currently browsed menu page.
 function JTG.ExitActivityFromMenu()
-    local restoreBriefing = JTG.UI and JTG.UI.IsActivityBriefingOpen and
-        JTG.UI.IsActivityBriefingOpen()
+    local session=JTG.Controller.session
+    local category=JTG.Controller.lastCategory or
+        (session and session.descriptor and session.descriptor.category) or 'skills'
+    local view=JTG.UI and JTG.UI.currentView
     JTG.StopActivity("menu-exit")
-    if JTG.UI and JTG.UI.OnActivityExitedInMenu then
-        JTG.UI.OnActivityExitedInMenu(restoreBriefing)
-    end
+    if JTG.UI then JTG.UI.RestoreLoadedView(view or {kind='category',id=category}) end
 end
 
 function JTG.OpenActivityMenu(id, originCategory, restorePage, restoreData)

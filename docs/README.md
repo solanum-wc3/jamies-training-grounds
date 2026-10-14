@@ -1,9 +1,11 @@
 # Documentation guide
 
-Current baseline: **v0.1.2-beta1** (10 October 2026). Archived reports describe earlier builds and are not current specifications.
+Published baseline: **v0.1.2-beta1** (10 October 2026). Current source/testing build: **v0.1.3-alpha49**. See [development status](DEVELOPMENT-STATUS.md) for acceptance and next tests. Archived reports describe earlier builds and are not current specifications.
 
 ## Current guidance
 
+- [Development workflow](../AGENTS.md) and [contribution rules](../CONTRIBUTING.md)
+- [Development status](DEVELOPMENT-STATUS.md) — current checkpoint, build and outstanding tests
 - [Release status](RELEASE-STATUS.md) — validation, limitations and distribution
 - [Activity catalogue](ACTIVITIES.md) — playable content and placeholders
 - [Build and test](BUILD-AND-TEST.md) — dependencies, packaging and native acceptance
@@ -19,7 +21,9 @@ Current baseline: **v0.1.2-beta1** (10 October 2026). Archived reports describe 
 
 ## Current development
 
-[Reflex Training prototype](REFLEX-TRAINING.md) describes the crowd stage and recognition mechanic in v0.1.3-alpha8, with its native test focus. These changes are newer than the published beta1 baseline.
+[Consolidation status](CONSOLIDATION-2026-10-14.md) records the completed reliability work and the remaining native acceptance checks.
+
+[Reflex Training (WIP)](REFLEX-TRAINING.md) describes crowd layouts, race selection, identification stages and buff/debuff recognition. [Hotkey Trainer](HOTKEY-TRAINING.md) describes current-layout command recognition, practice stages, prompt preparation and the audited command catalogue. [Heroes](HEROES-TUTORIAL.md) describes the authored lesson and optional displays. These are newer than the published beta1 baseline and include native test guidance.
 
 ## Editable work and inventories
 
@@ -28,3 +32,7 @@ Current baseline: **v0.1.2-beta1** (10 October 2026). Archived reports describe 
 ## Historical evidence
 
 [archive](archive/README.md) retains completed implementation plans, candidate checklists and measurement results. The [0.1.2 archive](archive/v0.1.2/README.md) includes the standardization audits, alpha reports and native timing measurements. Keep their original findings and limitations intact; link current conclusions from current guidance.
+
+[Melee prerequisites](MELEE-PREREQUISITES.md) inventories the four racial tech trees used to prepare individual Hotkey Trainer prompts.
+
+The shared scene transition/reset contract and position-check hooks are documented in [TUTORIAL-STANDARD.md](TUTORIAL-STANDARD.md). The authored Heroes tutorial, optional demonstrations and acceptance checks are described in [HEROES-TUTORIAL.md](HEROES-TUTORIAL.md).

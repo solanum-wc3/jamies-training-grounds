@@ -6,7 +6,7 @@ local RACES = {{"human", "Human"}, {"orc", "Orc"}, {"undead", "Undead"},
 
 local BRIEFING = {
     root = "It is possible to dodge and evade many attacks and abilities.\n\nWhen it takes the form of a missile that flies at your unit, it is possible to {Term: Disjoin} that missile, meaning to make it miss its target, effectively dodging it.\nWhen the ability merely has a range or an area of effect, it is possible to {Term: Avoid} the ability.\n\nBoth of these techniques have two advantages: You are making your enemy waste resources (Time, Cooldowns or Mana), and you are preventing your own units from being damaged or disabled.\n\nChoose which kind of dodging you want to train!",
-    disjoining = "Do disjoin a projectile, you need to make your unit stop being a valid target after the attacker has thrown it, but before it has hit your unit.\nIf you do this before the attacker has thrown it, you have avoided the effects, but it has cost your enemy nothing.\n\nChoose which kinds of projectiles you want to disjoin!",
+    disjoining = "To disjoin a projectile, you need to make your unit stop being a valid target after the attacker has thrown it, but before it has hit your unit.\nIf you do this before the attacker has thrown it, you have avoided the effects, but it has cost your enemy nothing.\n\nChoose which kinds of projectiles you want to disjoin!",
     homing = "Choose which ability you want to try to disjoin!\n\nAll but the Raider's Ensnare ability are spells.\nOrb effects are technically just modified ranged attacks.",
     ranged = "Choose which attack projectile you want to try to disjoin!",
     avoiding = "In this training there are two categories of things to avoid.\nThe first being abilities with an {Term: Area} effect, meaning they do not target a unit.\nThey either target the ground, or a direction, or automatically affect an area around the unit that uses them.\n\nThe other category is a specialized training to avoid the {Term: Devour} ability of the Orc's {Gold Font: Kodo Beast}.\n\nChoose what you want to train against!",
@@ -59,6 +59,9 @@ end
 
 local function InvalidTargetReason(danger,entry)
     local raw=entry.targetSupport and entry.support or entry.unit
+    if danger.menuGroup=="Ranged" and not (entry.item or entry.supportItem) and (raw=="uobs" or raw=="ubsp") then
+        return "Does not disjoin this projectile."
+    end
     local devourItem=entry.item or entry.supportItem
     if danger.menuGroup=="Devour" then
         if devourItem=="pnvu" then return nil end
@@ -764,7 +767,14 @@ function JTG.CreateMissileDodgingActivity(session)
         BlzSetUnitAttackCooldown(self.caster, 2.0, 0); BlzSetUnitAttackCooldown(self.caster, 2.0, 1)
     end
 
+    function activity:refreshMethodHint()
+        if not self.methodHint then return end
+        local relevant=(self.danger.menuGroup=="Homing" or self.danger.menuGroup=="Ranged") and InvisibilityMethod(self.definition)
+        BlzFrameSetText(self.methodHint,"This ability might not be able to dodge the projectile on reflex. However, your unit might be safe after the initial damage.")
+        BlzFrameSetVisible(self.methodHint,relevant and self.presentationVisible and not self.finished)
+    end
     function activity:refreshStatus()
+        self:refreshMethodHint()
         if not self.status then return end
         BlzFrameSetText(self.status,"|cffffcc00"..self.danger.name.."|r  -  "..self.definition.name..
             ((self.danger.menuGroup=="Area" or self.danger.menuGroup=="Devour" and not self.abilityDevour) and ("\nSurvive: "..math.max(0,math.ceil(15-self.trialTime)).." seconds") or
@@ -781,6 +791,13 @@ function JTG.CreateMissileDodgingActivity(session)
         BlzFrameSetEnable(self.status, false)
         BlzFrameSetAbsPoint(self.status, FRAMEPOINT_TOP, 0.40, 0.505)
         BlzFrameSetTextAlignment(self.status, TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_CENTER)
+        self.methodHint=JTG.ScopeTrackFrame(session.presentationScope,
+            BlzCreateFrameByType("TEXT","JTGDodgeMethodHint",BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI,0),"",0))
+        BlzFrameSetSize(self.methodHint,0.56,0.045)
+        BlzFrameSetAbsPoint(self.methodHint,FRAMEPOINT_BOTTOM,0.40,0.19)
+        BlzFrameSetFont(self.methodHint,"Fonts\\FRIZQT__.TTF",0.012,0)
+        BlzFrameSetTextAlignment(self.methodHint,TEXT_JUSTIFY_BOTTOM,TEXT_JUSTIFY_CENTER)
+        BlzFrameSetEnable(self.methodHint,false)
         self:refreshStatus()
         self.resultCard = JTG.UI.CreateResultCard(session, {name = "JTGDodgingResult", width = 0.40, detailsHeight = 0.09})
         self.feedback = JTG.ScopeTrackFrame(session.presentationScope,
@@ -989,6 +1006,7 @@ function JTG.CreateMissileDodgingActivity(session)
         if self.feedback then BlzFrameSetVisible(self.feedback,false); BlzFrameSetText(self.feedback,"") end
     end
     function activity:showDevourResult()
+        self:refreshMethodHint()
         local eaten=self.devourEaten
         JTG.UI.HideToolbar()
         self:clearFeedback()
@@ -1032,6 +1050,7 @@ function JTG.CreateMissileDodgingActivity(session)
     end
 
     function activity:showAreaResult()
+        self:refreshMethodHint()
         JTG.UI.HideToolbar(); self:clearFeedback()
         JTG.UI.ShowResultCard(self.resultCard,{title=self.areaHit and "DODGE FAILED" or "DODGE SUCCESSFUL",
             tone=self.areaHit and "failure" or "success",
@@ -1123,6 +1142,7 @@ function JTG.CreateMissileDodgingActivity(session)
     end
 
     function activity:showSuccess()
+        self:refreshMethodHint()
         JTG.UI.HideToolbar()
         self:clearFeedback()
         JTG.UI.ShowResultCard(self.resultCard, {title = "DODGE SUCCESSFUL", tone = "success",
@@ -1349,7 +1369,9 @@ function JTG.CreateMissileDodgingActivity(session)
                     return
                 end
             else BlzEndUnitAbilityCooldown(self.caster, FourCC(self.danger.ability)) end
-            if self.danger.kind == "point" then
+            if self.danger.ability=="AUim" and self.danger.menuGroup=="Homing" then
+                accepted=IssueTargetOrder(self.caster,self.danger.order,self.target)
+            elseif self.danger.kind == "point" then
                 local tx,ty=GetUnitX(self.target),GetUnitY(self.target)
                 if self.areaDirectional then
                     -- Native point orders outside cast range try to approach.
@@ -1836,6 +1858,7 @@ function JTG.CreateMissileDodgingActivity(session)
     function activity:toggleSetups() JTG.OpenActivityMenu("skills.missile_dodging", "skills") end
     function activity:hidePresentationForMenu()
         JTG.Training.SetPresentation(self,session,false)
+        self:refreshMethodHint()
         for _, image in ipairs(self.arenaImages or {}) do ShowImage(image, false) end
         for _, image in ipairs(self.devourImages or {}) do ShowImage(image, false) end
         for _, image in ipairs(self.areaFootprintImages or {}) do ShowImage(image, false) end
@@ -1852,14 +1875,14 @@ function JTG.CreateMissileDodgingActivity(session)
             else self:showSuccess() end
         end
     end
-    function activity:discardPresentationForLoad() self.status = nil; self.resultCard = nil; self.feedback = nil; self.arenaImages = {}; self.devourImages={}; self.areaFootprintImages={} end
+    function activity:discardPresentationForLoad() self.status = nil; self.methodHint=nil; self.resultCard = nil; self.feedback = nil; self.arenaImages = {}; self.devourImages={}; self.areaFootprintImages={} end
     function activity:rebuildPresentation() self:createPresentation(); self:restorePresentation() end
     function activity:cleanup()
         self.finished=true
         self:clearFeedback()
         if GetLocalPlayer()==Player(0) then ClearSelection() end
         JTG.UI.HideActivityBriefing()
-        self.status, self.feedback, self.resultCard = nil, nil, nil
+        self.status, self.feedback, self.resultCard, self.methodHint = nil, nil, nil, nil
         self.pawn, self.target, self.caster, self.helper, self.home = nil, nil, nil, nil, nil
         self.supports, self.controlledUnits, self.arenaImages, self.devourImages = {}, {}, {}, {}
         self.areaFootprintImages={}; self.areaFootprint=nil; self.devourAuraHero=nil

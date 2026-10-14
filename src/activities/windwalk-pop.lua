@@ -4,13 +4,7 @@
 JTG = JTG or {}
 
 local WINDWALK_POP_INTRO =
-    "Orcs have a unique way to free a unit from being surrounded.\n" ..
-    "During Blademaster's {Term: Windwalk}, he has no unit collision.\n" ..
-    "This allows him \"pop out\" a surrounded unit, after getting " ..
-    "collision again.\n\n" ..
-    "In these trainings, you can practice freeing units from surrounds " ..
-    "like this,\nor you can learn the counterplay against a Windwalk Pop.\n\n" ..
-    "Check the {Button: Quest Log} for precise instructions!"
+    "Orcs have a unique way to free a unit from being surrounded.\nDuring Blademaster's {Term: Windwalk}, he has no unit collision.\nThis allows him \"pop out\" a surrounded unit, after getting collision again.\n\nIn these trainings, you can practice freeing units from surrounds like this,\nor you can learn the counterplay against a Windwalk Pop.\n\nCheck the {Button: Quest Log} for precise instructions!"
 
 local WINDWALK_POP_QUEST_TEXT =
     "When using {Button: Wind Walk}, the Blademaster immediately loses unit " ..
@@ -884,6 +878,12 @@ function JTG.CreateWindwalkPopActivity(session)
     end
 
     function activity:startCountdown()
+        if JTG.Training and JTG.Training.ShowSetupLabel then
+            local index,total=1,1
+            if IsCourseMode(self.mode) then index,total=self.courseStage,4
+            elseif self.mode=='timed' then index,total=self.timedStage,10 end
+            JTG.Training.ShowSetupLabel(self,session,'Setup',index,total,self.mode..':'..index)
+        end
         self.countdownActive = true
         self.countdownValue = 3
         self:setTrainingUnitsPaused(true)
@@ -964,16 +964,6 @@ function JTG.CreateWindwalkPopActivity(session)
         self:updateTimerUI()
     end
 
-    function activity:playPopSuccessSound()
-        local successSound = CreateSound(
-            "Sound\\Interface\\QuestActivateWhat1.wav", false, false,
-            false, 10, 10, "DefaultEAXON")
-        SetSoundChannel(successSound, 5)
-        SetSoundVolume(successSound, 72)
-        StartSound(successSound)
-        KillSoundWhenDone(successSound)
-    end
-
     function activity:startPopDetection()
         if self.mode == "timed" then
             self.timedPending = {}
@@ -1009,7 +999,7 @@ function JTG.CreateWindwalkPopActivity(session)
                         local dx = GetUnitX(unit) - entry.startX
                         local dy = GetUnitY(unit) - entry.startY
                         if dx * dx + dy * dy >= 100.0 * 100.0 then
-                            self:playPopSuccessSound()
+
                             self:completeTimedTarget(entry, index)
                             if self.finished then return end
                         end
@@ -1036,7 +1026,7 @@ function JTG.CreateWindwalkPopActivity(session)
                 local movedX = GetUnitX(target) - self.popOriginX
                 local movedY = GetUnitY(target) - self.popOriginY
                 if movedX * movedX + movedY * movedY >= 100.0 * 100.0 then
-                    self:playPopSuccessSound()
+
                     self:markPoppedUnit(target)
                     self:finish("success", "WINDWALK POP SUCCESSFUL",
                         "The surrounded unit escaped after the Blademaster " ..
@@ -1066,6 +1056,11 @@ function JTG.CreateWindwalkPopActivity(session)
         end
         local horizontalCenter = (minX + maxX) * 0.5
         local verticalCenter = -(#rows - 1) * spacingY * 0.5
+        -- Native hero keys follow creation order. BM must precede the
+        -- Shadow Hunter and TC targets, including on the tenth timed stage.
+        local firstX=centerX+rawPositions[1].x-horizontalCenter
+        local firstY=centerY+rawPositions[1].y-verticalCenter
+        self:createBlademaster(Player(0), firstX-360.0, firstY-240.0,45.0)
         for index = 1, self.timedStage do
             local x = centerX + rawPositions[index].x - horizontalCenter
             local y = centerY + rawPositions[index].y - verticalCenter
@@ -1105,10 +1100,6 @@ function JTG.CreateWindwalkPopActivity(session)
         self.timedCompleted = 0
         self.surroundee = self.timedTargets[1]
         self.humanArmy = self.timedRings[1]
-        local firstX, firstY = GetUnitX(self.surroundee),
-            GetUnitY(self.surroundee)
-        self:createBlademaster(Player(0), firstX - 360.0, firstY - 240.0,
-            45.0)
     end
 
     function activity:createCourseArmy(owner, centerX, centerY)

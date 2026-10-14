@@ -1,0 +1,23 @@
+Gargoyle Surrounds — editable briefings
+
+Current implementation snapshot: 13 October 2026.
+Edit the text and blank lines directly. Formatting tags are preserved.
+Page labels and placeholders identify which menu uses the text.
+Edits here do not automatically update the map.
+This file covers briefing text, not unit tooltips, quest instructions or end cards.
+
+Source: src/activities/surrounds.lua
+
+============================================================
+Main briefing
+============================================================
+
+Since Gargoyles are flying units, they do not obstruct the movement of ground units. Their {Button: Stone Form} changes this: once they land as statues, they occupy space like ordinary ground units.
+
+In this, you can practice surrounding units using Stone Form.
+There is a {Term: Setup} for every ability that can help in a surround, which Undead can use, and some just for units.
+To select a specific unit setup, use the {Input: Setup button}.
+
+Check the {Button: Quest Log} for precise instructions on how to surround using Gargoyles!
+
+Your notes:

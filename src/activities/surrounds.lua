@@ -2,24 +2,10 @@
 JTG = JTG or {}
 
 local INTRO =
-    "Sometimes the best thing to do in a fight, is to run away, since any " ..
-    "unit that survives the battle can be healed and fight again.\n" ..
-    "Units have to stand still for a moment to do an attack, so they are " ..
-    "much less effective when having to chase an enemy.\n\n" ..
-    "By blocking a unit on all four sides, you can box them in and stop " ..
-    "their movement completely.\n" ..
-    "This can allow you to freely finish off enemy units, especially " ..
-    "important ones like heroes.\n\n" ..
-    "In this exercise you can practice surrounding units, by using your " ..
-    "own units and their abilities."
+    "Sometimes the best thing to do in a fight, is to run away, since any unit that survives the battle can be healed and fight again.\nUnits have to stand still for a moment to do an attack, so they are much less effective when having to chase an enemy.\n\nBy blocking a unit on all four sides, you can box them in and stop their movement completely.\nThis can allow you to freely finish off enemy units, especially important ones like heroes.\n\nIn this exercise you can practice surrounding units, by {Yellow Font: using your own units and their abilities}.\nYou will go through two stages for every slow ability of your race, and one or two just using your units."
 
 local GARGOYLE_INTRO =
-    "Since Gargoyles are flying units, they do not obstruct the " ..
-    "movement of ground units. Their {Button: Stone Form} changes this: " ..
-    "once they land as statues, they occupy space like ordinary ground " ..
-    "units.\n\n" ..
-    "In this, you can practice surrounding units using Stone Form.\n\n" ..
-    "Check the {Button: Quest Log} for precise instructions!"
+    "Since Gargoyles are flying units, they do not obstruct the movement of ground units. Their {Button: Stone Form} changes this: once they land as statues, they occupy space like ordinary ground units.\n\nIn this, you can practice surrounding units using Stone Form.\nThere is a {Term: Setup} for every ability that can help in a surround, which Undead can use, and some just for units.\nTo select a specific unit setup, use the {Input: Setup button}.\n\nCheck the {Button: Quest Log} for precise instructions on how to surround using Gargoyles!"
 
 local GARGOYLE_QUEST_TEXT =
     "Flying Gargoyles can overlap ground units because they have no ground " ..
@@ -569,6 +555,7 @@ local DISABLING_BUFFS = {
 function JTG.FormatSurroundQuestText(text)
     local formatted = text:gsub("{Button:%s*(.-)}", "|cffffcc00%1|r")
     formatted = formatted:gsub("{Gold Font:%s*(.-)}", "|cffffcc00%1|r")
+    formatted = formatted:gsub("{Yellow Font:%s*(.-)}", "|cffffcc00%1|r")
     formatted = formatted:gsub("{Term:%s*(.-)}", "|cffff9933%1|r")
     return formatted:gsub("{Input:%s*(.-)}", "|cff80ff80%1|r")
 end
@@ -750,7 +737,7 @@ function JTG.OpenSurroundsMenu(originCategory, pauseGame, restorePage,
             spec.headingArtworkWidth = 0.176
             spec.headingArtworkHeight = 0.086
         end
-        spec.body = spec.body or INTRO
+        spec.body = JTG.FormatSurroundQuestText(spec.body or INTRO)
         spec.pageId = page
         spec.restoreData = selection
         spec.pauseGame = pauseGame == true
@@ -1238,8 +1225,10 @@ local function CreateSurroundsActivity(session, gargoyleMode)
                 return
             end
             if self.resultAction == "next_round" then
+                self.setupProgressionRequested=true
                 self.runnerIndex = 2
             elseif self.resultAction == "next_setup" then
+                self.setupProgressionRequested=true
                 self.setupIndex = self.setupIndex + 1
                 self.runnerIndex = 1
             end
@@ -1405,7 +1394,11 @@ local function CreateSurroundsActivity(session, gargoyleMode)
             local unitId = FourCC(spec[1])
             for _ = 1, spec[2] do
                 number = number + 1
-                local angle = 2 * math.pi * (number - 1) / total
+                local formationSlot=number
+                if not self.gargoyleMode and setup.name=="Crypt Lord" then
+                    if number==1 then formationSlot=2 elseif number==2 then formationSlot=1 end
+                end
+                local angle = 2 * math.pi * (formationSlot - 1) / total
                 local radius = 190
                 local x = self.finishX + math.cos(angle) * radius
                 local y = self.laneY + math.sin(angle) * radius
@@ -1472,6 +1465,9 @@ local function CreateSurroundsActivity(session, gargoyleMode)
         if self.finished then return end
         self.finished = true
         self.running = false
+        if JTG.Training and JTG.Training.RecordFailure then
+            JTG.Training.RecordFailure(self,session,success)
+        end
         PauseUnit(self.runner, true)
         for _, unit in ipairs(self.army) do PauseUnit(unit, true) end
         self:setSetupsOpen(false)
@@ -1488,7 +1484,7 @@ local function CreateSurroundsActivity(session, gargoyleMode)
                 self.resultAction = "next_setup"
                 self.resultPrimaryLabel = "Next Setup"
                 self.resultDetailsText =
-                    "Both runners were surrounded with this setup."
+                    "The Grunt and Demon Hunter were surrounded with this setup."
             else
                 self.resultAction = "finish"
                 self.resultPrimaryLabel = "Finish"
@@ -1689,6 +1685,11 @@ local function CreateSurroundsActivity(session, gargoyleMode)
     end
 
     function activity:start(current)
+        if JTG.Training and JTG.Training.ShowSetupLabel then
+            local _,list=self:currentSetup()
+            JTG.Training.ShowSetupLabel(self,session,'Setup',self.setupIndex,#list,
+                self.race..':'..self.setupIndex)
+        end
         if GetLocalPlayer() == Player(0) then
             SetCameraPosition(current.scene.centerX, current.scene.centerY)
         end

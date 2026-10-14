@@ -1,0 +1,47 @@
+Surrounds — editable briefings
+
+Current implementation snapshot: 13 October 2026.
+Edit the text and blank lines directly. Formatting tags are preserved.
+Page labels and placeholders identify which menu uses the text.
+Edits here do not automatically update the map.
+This file covers briefing text, not unit tooltips, quest instructions or end cards.
+
+Source: src/activities/surrounds.lua
+
+============================================================
+Main briefing
+============================================================
+
+Sometimes the best thing to do in a fight, is to run away, since any unit that survives the battle can be healed and fight again.
+Units have to stand still for a moment to do an attack, so they are much less effective when having to chase an enemy.
+
+By blocking a unit on all four sides, you can box them in and stop their movement completely.
+This can allow you to freely finish off enemy units, especially important ones like heroes.
+
+In this exercise you can practice surrounding units, by {Yellow Font: using your own units and their abilities}.
+You will go through two stages for every slow ability of your race, and one or two just using your units.
+
+
+
+Your notes:
+
+============================================================
+Race Select Briefing after Start Training
+============================================================
+
+Choose the race you want to play!
+
+
+
+Your notes:
+
+
+============================================================
+Selection page 1
+============================================================
+
+Choose up to 12 units!
+
+[DYNAMIC TEXT — selected unit/ability or selection summary]
+
+Your notes:

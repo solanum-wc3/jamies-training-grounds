@@ -1,0 +1,58 @@
+Body Blocking — editable briefings
+
+Current implementation snapshot: 13 October 2026.
+Edit the text and blank lines directly. Formatting tags are preserved.
+Page labels and placeholders identify which menu uses the text.
+Edits here do not automatically update the map.
+This file covers briefing text, not unit tooltips, quest instructions or end cards.
+
+Source: src/activities/body-blocking.lua
+
+============================================================
+Main briefing
+============================================================
+
+Sometimes a valid strategy is simply to stop your opponent from doing what they are doing by standing in the way. Be it to get more hits in on them, or to stop them from effectively doing anything.
+
+This exercise trains you in blocking the movement of other units. You control a Footman, and using the Move, Stop and Hold Position commands, try to slow down a series of units for as long as possible.
+
+The usual {Button: Training} has you choose between the race of the units you want to practice against, and you will encounter a series of that race's units.
+Alternatively, you can freely customize which unit you want to practice with.
+
+Your notes:
+
+
+============================================================
+Selection page 1
+============================================================
+
+Choose the race of the units you want to practice blocking.
+
+Your notes:
+
+
+============================================================
+Selection page 2
+============================================================
+
+Choose a difficulty. Hard runners take a less predictable route.
+
+Your notes:
+
+
+============================================================
+Selection page 3
+============================================================
+
+Choose the race of the runner you want to block.
+
+Your notes:
+
+
+============================================================
+Selection page 4
+============================================================
+
+Choose the race of the unit you want to control.
+
+Your notes:

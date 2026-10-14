@@ -1,0 +1,30 @@
+Hotkey Trainer — editable briefings
+
+Authoritative briefing text (runtime copy is generated).
+Edit the text and blank lines directly. Formatting tags are preserved.
+Page labels and placeholders identify which menu uses the text.
+Edits here are included automatically by the next map build.
+This file covers briefing text, not unit tooltips, quest instructions or end cards.
+
+Source: src/activities/hotkey-training.lua
+
+============================================================
+Selection page 1
+============================================================
+
+This exercise allows you to practice your hotkeys.
+
+Try to correctly input as many hotkeys as you can in one minute!
+
+If you continue playing, you will cycle through all hotkeys of the race you choose, followed by all hotkeys you failed to correctly input.
+
+Your notes:
+
+
+============================================================
+Selection page 2
+============================================================
+
+Choose which race's hotkeys you want to practice.
+
+Your notes:

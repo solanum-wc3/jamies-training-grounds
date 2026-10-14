@@ -12,8 +12,10 @@
     "build:development": "node tools/build-infrastructure.cjs --mode=development",
     "build:all": "node tools/build-infrastructure.cjs --mode=release && node tools/build-infrastructure.cjs --mode=development",
     "extract:legacy-menu-assets": "node tools/extract-legacy-menu-assets.cjs",
+    "prepare:briefings": "node tools/prepare-exercise-briefings.cjs",
+    "check:briefings": "node tools/prepare-exercise-briefings.cjs --check",
     "check:lua": "node tools/check-lua-sources.cjs",
-    "test:reliability": "python tools/check-reliability.py"
+    "test:reliability": "node tools/test-exercise-briefings.cjs && node tools/test-heroes-data.cjs && node tools/test-build-inputs.cjs && python tools/check-reliability.py"
   },
   "dependencies": {
     "@jamiephan/stormlib": "0.2.1",

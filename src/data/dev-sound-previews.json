@@ -1,0 +1,526 @@
+{
+  "sounds": [
+    {
+      "name": "SoulPreservation",
+      "note": "Spooky Sound",
+      "files": [
+        "Abilities\\Spells\\Demon\\SoulPreservation\\SoulPreservation.flac"
+      ],
+      "label": "SoulPreservation",
+      "exactVariant": false,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "Banishcaster",
+      "note": "Interesting",
+      "files": [
+        "Abilities\\Spells\\Human\\Banish\\BanishCaster.flac"
+      ],
+      "label": "BanishCaster",
+      "exactVariant": false,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "CallToArmsWhat1",
+      "note": "Bells",
+      "files": [
+        "Abilities\\Spells\\Human\\CallToArms\\HumanCallToArmsWhat1.flac"
+      ],
+      "label": "TownHallCallToArms",
+      "exactVariant": false,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "PaladinDivineShieldDeath1",
+      "note": "Reverse divine shield sound",
+      "files": [
+        "Abilities\\Spells\\Human\\DivineShield\\PaladinDivineShieldDeath1.flac"
+      ],
+      "label": "DivineShieldDeath",
+      "exactVariant": false,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "Feedback",
+      "note": "Funny sound",
+      "files": [
+        "Abilities\\Spells\\Human\\Feedback\\Feedback.flac"
+      ],
+      "label": "Feedback",
+      "exactVariant": false,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "FragBombs",
+      "note": "Low far away explosion",
+      "files": [
+        "Abilities\\Spells\\Human\\FragmentationShards\\FragBombs.flac"
+      ],
+      "label": "FragShards",
+      "exactVariant": false,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "HealTarget",
+      "note": "nice sound for menus",
+      "files": [
+        "Abilities\\Spells\\Human\\Heal\\HealTarget.flac"
+      ],
+      "label": "Heal",
+      "exactVariant": false,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "PriestCastAttack1",
+      "note": "interesting sound goes woosh",
+      "files": [
+        "Abilities\\Spells\\Human\\InnerFire\\PriestCastAttack1.flac"
+      ],
+      "label": "InnerFireCast",
+      "exactVariant": false,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "ManaFlareStrike",
+      "note": "harsh sound",
+      "files": [
+        "Abilities\\Spells\\Human\\ManaFlare\\ManaFlareStrike.flac"
+      ],
+      "label": "ManaFlareMissile",
+      "exactVariant": false,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "ManaShieldCaster1",
+      "note": "Nice spell sound",
+      "files": [
+        "Abilities\\Spells\\Human\\ManaShield\\ManaShieldCaster1.flac"
+      ],
+      "label": "ManaShieldCastSound",
+      "exactVariant": false,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "MarkOfChaos",
+      "note": "Nice sound to start the map with",
+      "files": [
+        "Abilities\\Spells\\Human\\MarkOfChaos\\MarkOfChaos.flac"
+      ],
+      "label": "MarkOfChaos",
+      "exactVariant": false,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "Splat1",
+      "note": "sounds like something being dropped",
+      "files": [
+        "Abilities\\Spells\\Human\\Polymorph\\Splat1.flac"
+      ],
+      "label": "SplatDeath",
+      "exactVariant": false,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "SorceressCastAttack1",
+      "note": "interesting sound goes woosh",
+      "files": [
+        "Abilities\\Spells\\Human\\Slow\\SorceressCastAttack1.flac"
+      ],
+      "label": "SlowCaster",
+      "exactVariant": false,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "SpellStealMissile",
+      "note": "Interesting. snazzy and long",
+      "files": [
+        "Abilities\\Spells\\Human\\SpellSteal\\SpellStealMissile.flac"
+      ],
+      "label": "SpellStealMissileLaunch",
+      "exactVariant": false,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "SpellStealTarget",
+      "note": "interesting kaboosh",
+      "files": [
+        "Abilities\\Spells\\Human\\SpellSteal\\SpellStealTarget.flac"
+      ],
+      "label": "SpellStealTarget",
+      "exactVariant": false,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "Tomes",
+      "note": "tome sound",
+      "files": [
+        "Abilities\\Spells\\Items\\AIam\\Tomes.flac"
+      ],
+      "label": "Tome",
+      "exactVariant": false,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "AIamTomes",
+      "note": "longer tome sound",
+      "files": [
+        "Abilities\\Spells\\Items\\AIamTomes.flac"
+      ],
+      "label": "PowerupSound",
+      "exactVariant": false,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "ScrollOfProtection",
+      "note": "Sound of something being dropped - nice for wrong input on Hotkey Training",
+      "files": [
+        "Abilities\\Spells\\Items\\AIda\\ScrollofProtection.flac"
+      ],
+      "label": "ScrollofProtection",
+      "exactVariant": false,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "WandOfIllusionTarget1",
+      "note": "Nice woosh sound",
+      "files": [
+        "Abilities\\Spells\\Items\\AIil\\WandOfIllusionTarget1.flac"
+      ],
+      "label": "ItemIllusion",
+      "exactVariant": false,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "BundleOfLumber",
+      "note": "nice sound for the end card in Gold Micro",
+      "files": [
+        "Abilities\\Spells\\Items\\ResourceItems\\BundleOfLumber.flac"
+      ],
+      "label": "ReceiveLumber",
+      "exactVariant": false,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "ReceiveGold",
+      "note": "coin sound",
+      "files": [
+        "Abilities\\Spells\\Items\\ResourceItems\\ReceiveGold.flac"
+      ],
+      "label": "ReceiveGold",
+      "exactVariant": false,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "SpellShieldImpact1",
+      "note": "ding sound",
+      "files": [
+        "Abilities\\Spells\\Items\\SpellShieldAmulet\\SpellShieldImpact1.flac"
+      ],
+      "label": "SpellShieldAmulet",
+      "exactVariant": false,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "BarkSkinTarget",
+      "note": "Spooky atmospheric",
+      "files": [
+        "Abilities\\Spells\\NightElf\\Barkskin\\BarkSkinTarget1.flac"
+      ],
+      "label": "Barkskin",
+      "exactVariant": false,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "CorrosiveBreathMissileTarget",
+      "note": "Nice sound for the back button in menus (not toolbar)",
+      "files": [
+        "Abilities\\Spells\\NightElf\\CorrosiveBreath\\CorrosiveBreathMissileTarget1.flac"
+      ],
+      "label": "CorrosiveBreathMissileHit",
+      "exactVariant": false,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "EatTreeTarget1",
+      "note": "nice horror sound",
+      "files": [
+        "Abilities\\Spells\\NightElf\\EatTree\\EatTreeTarget1.flac"
+      ],
+      "label": "EatTreeMunch",
+      "exactVariant": false,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "PhaseShift1",
+      "note": "nice sound for opponent crossing the finish line in Surround, Body Block and Gargoyle Surround",
+      "files": [
+        "Abilities\\Spells\\NightElf\\FaerieDragonInvis\\PhaseShift1.flac"
+      ],
+      "label": "PhaseShift",
+      "exactVariant": false,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "FanofknivesMissileHit1",
+      "note": "potential menu button sound",
+      "files": [
+        "Abilities\\Spells\\NightElf\\FanOfKnives\\FanOfKnivesMissileHit1.flac"
+      ],
+      "label": "FanOfKnivesHit",
+      "exactVariant": true,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "FanofknivesMissileHit2",
+      "note": "potential menu button sound",
+      "files": [
+        "Abilities\\Spells\\NightElf\\FanOfKnives\\FanOfKnivesMissileHit2.flac"
+      ],
+      "label": "FanOfKnivesHit",
+      "exactVariant": true,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "ManaDrainTarget1",
+      "note": "woosh sound",
+      "files": [
+        "Abilities\\Spells\\NightElf\\ManaBurn\\ManaDrainTarget1.flac"
+      ],
+      "label": "ManaBurn",
+      "exactVariant": false,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "ShadowMeld1",
+      "note": "potential sound for exiting exercise",
+      "files": [
+        "Abilities\\Spells\\NightElf\\ShadowMeld\\ShadowMeld1.flac"
+      ],
+      "label": "ShadowMeld",
+      "exactVariant": false,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "Disenchant",
+      "note": "nice long woosh",
+      "files": [
+        "Abilities\\Spells\\Orc\\Disenchant\\Disenchant.flac"
+      ],
+      "label": "Disenchant",
+      "exactVariant": false,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "ReviveOrc",
+      "note": "nice sound for the credits page",
+      "files": [
+        "Abilities\\Spells\\Orc\\ReviveOrc\\ReviveOrc.flac"
+      ],
+      "label": "ReviveOrc",
+      "exactVariant": false,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "SpikeBarrierOn",
+      "note": "nice sharp physical sound",
+      "files": [
+        "Abilities\\Spells\\Orc\\SpikeBarrier\\SpikeBarrierOn.flac"
+      ],
+      "label": "SpikeBarrierOn",
+      "exactVariant": false,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "Aneu",
+      "note": "Shop Sound",
+      "files": [
+        "Abilities\\Spells\\Other\\Aneu\\Aneu.flac"
+      ],
+      "label": "NeutralBuildingActivate",
+      "exactVariant": false,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "Consecration",
+      "note": "nice metallic magic sound",
+      "files": [
+        "Abilities\\Spells\\Other\\Consecration\\Consecration.ogg"
+      ],
+      "label": "Consecration",
+      "exactVariant": false,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "DoomTarget",
+      "note": "interesting loop",
+      "files": [
+        "Abilities\\Spells\\Other\\Doom\\DoomTarget.flac"
+      ],
+      "label": "DoomTarget",
+      "exactVariant": false,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "Levelupcaster",
+      "note": "Level up sound for heroes",
+      "files": [
+        "Abilities\\Spells\\Other\\Levelup\\Levelupcaster.flac"
+      ],
+      "label": "LevelUp",
+      "exactVariant": false,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "Loading",
+      "note": "sound for loading into zeppelin or buildings",
+      "files": [
+        "Abilities\\Spells\\Other\\LoadUnload\\Loading.flac"
+      ],
+      "label": "LoadUnload",
+      "exactVariant": false,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "PeonRepair1",
+      "note": "nice short percussive sounds",
+      "files": [
+        "Abilities\\Spells\\Other\\Repair\\PeonRepair1.flac"
+      ],
+      "label": "Repair",
+      "exactVariant": true,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "PeonRepair2",
+      "note": "nice short percussive sounds",
+      "files": [
+        "Abilities\\Spells\\Other\\Repair\\PeonRepair2.flac"
+      ],
+      "label": "Repair",
+      "exactVariant": true,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "PeonRepair3",
+      "note": "nice short percussive sounds",
+      "files": [
+        "Abilities\\Spells\\Other\\Repair\\PeonRepair3.flac"
+      ],
+      "label": "Repair",
+      "exactVariant": true,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "RighteousFury",
+      "note": "Short loud woosh",
+      "files": [
+        "Abilities\\Spells\\Other\\RighteousFury\\RighteousFury.ogg"
+      ],
+      "label": "RighteousFury",
+      "exactVariant": false,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "StampedeHit1",
+      "note": "short percussive sound",
+      "files": [
+        "Abilities\\Spells\\Other\\Stampede\\StampedeHit1.flac"
+      ],
+      "label": "StampedeHit",
+      "exactVariant": false,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "VolcanicRockLaunch1",
+      "note": "teleportey sound",
+      "files": [
+        "Abilities\\Spells\\Other\\Volcano\\VolcanicRockLaunch1.flac"
+      ],
+      "label": "VolcanoMissileLaunch",
+      "exactVariant": false,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "CarrionSwarmDamage1",
+      "note": "nice short transition sounds",
+      "files": [
+        "Abilities\\Spells\\Undead\\CarrionSwarm\\CarrionSwarmDamage1.flac"
+      ],
+      "label": "CarrionSwarmDamage",
+      "exactVariant": true,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "CarrionSwarmDamage2",
+      "note": "nice short transition sounds",
+      "files": [
+        "Abilities\\Spells\\Undead\\CarrionSwarm\\CarrionSwarmDamage2.flac"
+      ],
+      "label": "CarrionSwarmDamage",
+      "exactVariant": true,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "CarrionSwarmDamage3",
+      "note": "nice short transition sounds",
+      "files": [
+        "Abilities\\Spells\\Undead\\CarrionSwarm\\CarrionSwarmDamage3.flac"
+      ],
+      "label": "CarrionSwarmDamage",
+      "exactVariant": true,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "GravemarkerDeath1",
+      "note": "nice transition sound",
+      "files": [
+        "Abilities\\Spells\\Undead\\Graveyard\\GravemarkerDeath1.flac"
+      ],
+      "label": "GraveMarkerDeath",
+      "exactVariant": false,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "SpiritTouch",
+      "note": "nice woosh sound",
+      "files": [
+        "Abilities\\Spells\\Undead\\ReplenishMana\\SpiritTouch.flac"
+      ],
+      "label": "SpiritTouch",
+      "exactVariant": false,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "WebMissileLaunch1",
+      "note": "transition sound",
+      "files": [
+        "Abilities\\Spells\\Undead\\Web\\WebMissileLaunch1.flac"
+      ],
+      "label": "WebMissileLaunch",
+      "exactVariant": false,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "Lever",
+      "note": "",
+      "files": [
+        "Doodads\\Cinematic\\DungeonLever\\Lever.flac"
+      ],
+      "label": "LeverDeath",
+      "exactVariant": false,
+      "verification": "installed-sound-table"
+    },
+    {
+      "name": "RockChunkDeath",
+      "note": "",
+      "files": [
+        "Doodads\\Terrain\\RockChunks\\RockChunksDeath1.flac",
+        "Doodads\\Terrain\\RockChunks\\RockChunksDeath2.flac",
+        "Doodads\\Terrain\\RockChunks\\RockChunksDeath3.flac"
+      ],
+      "label": "RockChunkDeath",
+      "exactVariant": false,
+      "verification": "installed-sound-table"
+    }
+  ]
+}

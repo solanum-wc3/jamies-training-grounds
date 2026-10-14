@@ -1,0 +1,31 @@
+# Hotkey comparison bench (alpha20 dev)
+
+Historical diagnostic record. Preserve the findings below; its alpha-specific setup is not the current exercise specification. See [Hotkey Trainer](HOTKEY-TRAINING.md) for current behavior and [development status](DEVELOPMENT-STATUS.md) before scheduling another audit.
+
+## Isolated visibility test (alpha21 dev)
+
+Native result, 2026-10-12: all four stages (255, 0, 1, 255) emitted Stop order 851972 and were recognized by the trainer, with the same source selected at every dispatch. Report archived in ignored `work/hotkey-visibility-alpha21.pld`. Command-button opacity alone did not reproduce the failure. This does not establish the effect of tooltip hiding or transition from the Reincarnation context in alpha20. The next comparison should examine those independently rather than replacing alpha 0 on assumption. Bench source units and shop patrons are now kept visible for inspection.
+
+Start a racial Hotkey Trainer, enter `-hotkey-visibility`, close chat and wait about 15 seconds without pressing keys or clicking. The same selected Footman receives the tester's Stop binding four times: command-frame alpha 255, 0, 1, then 255. No other commands or units intervene. Only the twelve native command-button alphas change; tooltip opacity remains unchanged. Wrong-answer selection recovery is suppressed during this isolated test to avoid introducing cancel/reselection between trials. Raw key notifications, native orders, trainer events, actual per-slot alpha and selection at dispatch are recorded.
+
+The first and last visible trials are controls. A failed visible control makes the comparison inconclusive. A failed alpha-0 or alpha-1 trial is retained as evidence and does not abort the recovery control. This diagnostic does not change normal trainer hiding until native results establish what works. The separate report `CustomMapData/JTG-Hotkey-Visibility.pld` is saved automatically. Frame-zero opacity itself remains a hypothesis, rather than a confirmed general engine limitation. Mock coverage checks the four settings, identical unit identity, progression past a hidden failure and the recovery control; it does not validate engine behavior.
+
+This bench tests the shared mechanisms with eight fixed commands supplied by the user: Stop, War Stomp, Shockwave, Grunt, Steel Melee Weapons, Healing Salve, Altar of Storms, and Reincarnation (learning). It works from any racial trainer selection, but the contexts are always these Orc cases. It has no one-minute deadline and never changes the normal high score.
+
+Start Hotkey Trainer, select Orc, and enter `-hotkey-compare`. The native command card is visible. Press the requested current-layout key, wait about a second, then click **Next**, regardless of whether the trainer recognized it. For Shockwave, also click open ground to complete the cast. For Altar, open Build, choose Altar and click empty ground. For Reincarnation, open Hero Abilities and choose Reincarnation. **Retry** reconstructs that context; **Card** switches visible/hidden native buttons; **Save** writes the evidence; **End** saves and resumes normal training. Menu/Resume hides and restores the bench controls.
+
+The display separates physical key notifications, a matching native order/action, the legacy recognition reference, and current trainer acceptance. Raw native events are observed independently of the trainer's input gates and command registration. Logging includes mismatching events and events during arming. The legacy reference uses its native-action matching approach for instant spells, training, research and purchases, plus its exact W/Q fallback for Shockwave. Stop, construction and skill choice were not handled by that legacy trainer and display `not covered`. This compares recognition approaches under the same current context; it does not run the entire legacy trainer or its global helper setup. The reference's 0.5-second correlation is the bench's observation window, rather than a reproduction of the legacy heartbeat.
+
+`-hotkey-compare-auto` starts a small forced-UI-key comparison. An explicitly generated development fixture contains only these eight bindings from the tester's CustomKeys.txt, plus a content hash, never a personal path or name. Prefix and entry dispatches are separated by 0.8 seconds, starting one second after selection. Each command is observed for two seconds after its last dispatched key. All eight are tested with the native card visible, then hidden. Each pass starts with Stop: no matching native Stop order means automation stops as inconclusive instead of diagnosing the rest. Unsupported bindings are recorded separately. Close chat after entering the command; ForceUIKey does not operate while chat is open. Do not press keys or click during this automated run.
+
+Forced UI dispatch does not establish physical-key capture. Targeted Shockwave and Altar placement can stop at targeting mode; a missing spell or construction event in automation is not proof of failure. These are reasons to compare the raw events and manual targeting, rather than assign a blanket pass/fail result.
+
+The report is saved automatically as observations arrive and when Next, Save or End is used, to `CustomMapData/JTG-Hotkey-Comparison.pld`. Each new run replaces the previous report. Preserve/read the automatic report before starting a manual run. The report includes dispatches, key notifications, independent orders/actions, current trainer confirmations, prerequisites, patron-order acceptance and final outcomes.
+
+Development preparation:
+
+1. Run `tools/prepare-hotkey-comparison.py PATH_TO_CUSTOMKEYS` before building. Its output is the ignored `work/hotkey-comparison-bindings.lua`; it is excluded from release builds. Missing exact raw-ID bindings are not guessed.
+2. Run reliability fixtures and Lua assembly checks.
+3. Build with `--mode=development`.
+
+The development wrapper rebinds the registered catalogue factory after loading. Regression coverage reproduces registration-before-wrapper order, verifies the menu entry reaches the wrapper, independent observations while normal recognition is disarmed, manual Next independent of recognition, and automated-control failure. These mocks do not prove ForceUIKey or command events work on the real Warcraft client.

@@ -54,6 +54,8 @@ local planned = {
     {"advanced.matchups", "advanced", "Matchup Plans", "Develop plans for common race matchups."},
 
     {"skills.micro", "skills", "Combat Micro", "Control mixed armies efficiently.", "JTGMenu\\CombatMicro.dds"},
+    {"skills.last_hitting", "skills", "Last Hitting", "Practice timing the finishing attack."},
+    {"skills.animation_cancel", "skills", "Cancel Micro", "Practice cancelling animations after an action takes effect."},
     {"skills.staffing", "skills", "Staffing Units", "Save and reposition units with a Staff.", nil, {"human", "nightelf"}, {
         human = "JTGMenu\\StaffingHuman.dds",
         nightelf = "JTGMenu\\StaffingNightElf.dds",
@@ -66,14 +68,21 @@ local planned = {
     {"skills.zeppelin", "skills", "Zeppelin Micro", "Load, unload and protect transported units.", "JTGMenu\\ZeppelinMicro.dds"},
 
     {"tools.demo", "tools", "Demo Mode", "Explore units and mechanics freely.", "JTGMenu\\DemoMode.dds"},
-    {"tools.hotkeys", "tools", "Hotkey Trainer", "Learn command-card and inventory hotkeys.", "JTGMenu\\HotkeyTraining.dds"},
     {"tools.quiz", "tools", "Warcraft III Quiz", "Test knowledge of units and mechanics."},
     {"tools.compare", "tools", "Unit Comparison", "Compare unit statistics and interactions.", "JTGMenu\\UnitComparison.dds"},
 }
 
 JTG.RegisterActivity({
-    id = "skills.reflex", category = "skills", title = "Reflex Training",
-    description = "Identify unit types or react to marked targets in a moving crowd.",
+    id = "tools.hotkeys", category = "tools", title = "Hotkey Trainer",
+    description = "Recognize commands and practice your current hotkey layout.",
+    artwork = "JTGMenu\\HotkeyTraining.dds", status = "available", sceneId = "arena.south",
+    capabilities = {menu = true, quests = false},
+    menu = JTG.OpenHotkeyTrainingMenu, factory = JTG.CreateHotkeyTrainingActivity,
+})
+
+JTG.RegisterActivity({
+    id = "skills.reflex", category = "tools", title = "Reflex Training", cardStatus = "WIP",
+    description = "Train your hand-eye coordination and your ability to read a battlefield!",
     artwork = "JTGMenu\\ReflexTraining.dds", status = "available", sceneId = "arena.south",
     cameraDistance = 1650,
     capabilities = {restart = true, menu = true, pause = true, quests = false},
@@ -254,7 +263,7 @@ end
 
 local skillColumns = {
     {"skills.body_blocking", "skills.surround", "skills.missile_dodging",
-        "skills.micro", "skills.reflex"},
+        "skills.micro"},
     {"skills.zeppelin", "skills.gold_mine", "skills.bat_splitter", "skills.staffing"},
     {"skills.gargoyle", "skills.windwalk", "skills.peon_micro", "skills.wisp_micro"},
 }
@@ -267,8 +276,39 @@ for column, ids in ipairs(skillColumns) do
     end
 end
 
+-- Added placeholders must use genuinely free cells, not automatic indices
+-- that overlap the explicitly grouped training buttons.
+local occupiedSkillCells={}
+for _,descriptor in ipairs(JTG.GetActivities('skills')) do
+    if descriptor.catalogueColumn~=nil then
+        occupiedSkillCells[descriptor.catalogueColumn*5+descriptor.catalogueRow]=true
+    end
+end
+for _,descriptor in ipairs(JTG.GetActivities('skills')) do
+    if descriptor.catalogueColumn==nil then
+        local cell=0
+        while occupiedSkillCells[cell] do cell=cell+1 end
+        assert(cell<15,'Skill Training catalogue exceeds its three-column layout')
+        descriptor.catalogueColumn=math.floor(cell/5)
+        descriptor.catalogueRow=cell%5
+        descriptor.menuOrder=cell+1
+        occupiedSkillCells[cell]=true
+    end
+end
+
 local economy=JTG.Registry.byId["learn.economy"]
 economy.status="available"
 economy.sceneId="tutorial.camera"
 economy.factory=JTG.CreateEconomyTutorialActivity
 economy.capabilities={menu=true,pause=true}
+
+local heroes=JTG.Registry.byId['learn.heroes']
+heroes.status='available'
+heroes.artwork='JTGMenu\\HeroesTutorial.dds'
+heroes.artworkWidth=0.1152
+heroes.artworkHeight=0.0576
+heroes.artworkAlignTop=true
+heroes.sceneId='arena.south'
+heroes.factory=JTG.CreateHeroesTutorialActivity
+heroes.labelInset=0.022
+heroes.capabilities={menu=false,pause=false,quests=true}

@@ -1,3 +1,6 @@
+function CreateSoundFromLabel() return {} end
+function StartSound() end
+function KillSoundWhenDone() end
 -- Run after tools/test-tutorial-layout-workspace.lua; validate script state and native orders.
 JTG.UI={ToolbarLayout={buttonWidth=.087,gap=.001,rowStep=.025,left=.446,top=.575},epoch=1}
 function JTG.UI.ClearWelcomeArrow() end
@@ -315,6 +318,27 @@ for i=3,#diagnostics do
  end
 end
 assert(peonRows==5,'Export must contain all five gold-mining Peons')
+
+function IsUnitHidden(unit) return unit.hidden==true end
+-- Continue to Orc must restore a harvest order even when the pre-handoff
+-- order field still claims to be harvesting.
+a:setRace(1)
+goldPeon.order='harvest'
+local restored=0
+local actualGathering=a.startGathering
+function a:startGathering(worker,race,preserve)
+ if worker==goldPeon and preserve==false then restored=restored+1 end
+ return actualGathering(self,worker,race,preserve)
+end
+a.step=index('orc-workers')-1;a.waitingForContinue=true;a.complete=false
+a:continueTutorial()
+assert(a.raceIndex==2 and restored==1,'Continue trusted a stale gold-worker harvest order')
+goldPeon.hidden=true;goldPeon.order=nil
+local retry=timers[#timers].fn
+retry();assert(not goldPeon.order,'Retry interrupted a hidden miner')
+goldPeon.hidden=false;retry();assert(goldPeon.order=='harvest','Retry failed after miner emerged')
+print('Passed: Continue restores stale mining orders while protecting workers inside the mine.')
+
 a:cleanup()
 for i=#session.scope,1,-1 do session.scope[i]() end
 for _,u in ipairs(a.units) do assert(u.removed) end

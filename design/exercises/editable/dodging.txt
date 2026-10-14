@@ -1,0 +1,172 @@
+Dodging — editable briefings
+
+Current implementation snapshot: 13 October 2026.
+Edit the text and blank lines directly. Formatting tags are preserved.
+Page labels and placeholders identify which menu uses the text.
+Edits here do not automatically update the map.
+This file covers briefing text, not unit tooltips, quest instructions or end cards.
+
+Source: src/activities/missile-dodging.lua
+
+============================================================
+how
+============================================================
+
+Choose whether you want to train avoiding the ability by movement or with the help of an ability of your own!
+
+Your notes:
+
+
+============================================================
+area
+============================================================
+
+Choose which {Term: Area} ability you want to practice avoiding!
+
+Your notes:
+
+
+============================================================
+devour
+============================================================
+
+The Kodo will continuously try to devour your unit in a small area. Try to avoid being devoured for 15 seconds!
+
+Choose whether you want to train avoiding the Kodo through Movement or whether you want to use your own ability!
+
+Choosing abilities turns this exercise into a timing training instead.
+
+Your notes:
+
+
+============================================================
+devourAbility
+============================================================
+
+Choose which ability you want to use to try to avoid the Kodo's Devour ability!
+
+Your notes:
+
+
+============================================================
+avoiding
+============================================================
+
+In this training there are two categories of things to avoid.
+The first being abilities with an {Term: Area} effect, meaning they do not target a unit.
+They either target the ground, or a direction, or automatically affect an area around the unit that uses them.
+
+The other category is a specialized training to avoid the {Term: Devour} ability of the Orc's {Gold Font: Kodo Beast}.
+
+Choose what you want to train against!
+
+Your notes:
+
+
+============================================================
+devourMovement
+============================================================
+
+Choose which unit you want to use to try to avoid the Kodo's Devour ability!
+Slower units can make this exercise significantly harder, or even impossible.
+
+Your notes:
+
+
+============================================================
+areaIntro
+============================================================
+
+To avoid an area ability, you have to move outside of the affected area, either through {Term: Movement}, or through the use of your own {Term: Ability}.
+
+In this training, the enemy will repeatedly try to hit your unit with its ability. You will succeed if you avoid it for 15 seconds.
+Depending on the ability, this can be very hard, or even impossible, so pay attention to telegraphing behavior through targeting and wind-up animations!
+
+Your notes:
+
+
+============================================================
+disjoining
+============================================================
+
+To disjoin a projectile, you need to make your unit stop being a valid target after the attacker has thrown it, but before it has hit your unit.
+If you do this before the attacker has thrown it, you have avoided the effects, but it has cost your enemy nothing.
+
+Choose which kinds of projectiles you want to disjoin!
+
+Your notes:
+
+
+============================================================
+root
+============================================================
+
+It is possible to dodge and evade many attacks and abilities.
+
+When it takes the form of a missile that flies at your unit, it is possible to {Term: Disjoin} that missile, meaning to make it miss its target, effectively dodging it.
+When the ability merely has a range or an area of effect, it is possible to {Term: Avoid} the ability.
+
+Both of these techniques have two advantages: You are making your enemy waste resources (Time, Cooldowns or Mana), and you are preventing your own units from being damaged or disabled.
+
+Choose which kind of dodging you want to train!
+
+Your notes:
+
+
+============================================================
+homing
+============================================================
+
+Choose which ability you want to try to disjoin!
+
+All but the Raider's Ensnare ability are spells.
+Orb effects are technically just modified ranged attacks.
+
+Your notes:
+
+
+============================================================
+ranged
+============================================================
+
+Choose which attack projectile you want to try to disjoin!
+
+Your notes:
+
+
+============================================================
+Selection page 5
+============================================================
+
+Choose what to dodge.
+
+Your notes:
+
+
+============================================================
+Ability disjoin — choose dodger
+============================================================
+
+Choose which ability you want to use to try to disjoin [chosen projectile]!
+You will advance through three stages after three successful disjoins.
+Be careful! Not every ability works quickly enough to be able to disjoin every projectile.
+
+Your notes:
+
+
+============================================================
+Attack disjoin — choose dodger
+============================================================
+
+Choose which ability you want to use to try to disjoin [chosen projectile]!
+
+Your notes:
+
+
+============================================================
+Area — choose dodge ability
+============================================================
+
+Choose which ability you want to use to try to avoid [chosen area ability]!
+
+Your notes:

@@ -1,0 +1,24 @@
+Mining Micro — editable briefings
+
+Current implementation snapshot: 13 October 2026.
+Edit the text and blank lines directly. Formatting tags are preserved.
+Page labels and placeholders identify which menu uses the text.
+Edits here do not automatically update the map.
+This file covers briefing text, not unit tooltips, quest instructions or end cards.
+
+Source: src/activities/mining-micro.lua
+
+============================================================
+Main briefing
+============================================================
+
+When mining with less than 5 workers, the game slows down the movement speed of Human and Orc gold workers, to normalize gold income.
+
+By manually giving mining orders, you can temporarily bypass that slowdown.
+
+With four workers - especially on short, diagonal mine positions - this can recover much of the income you'd normally need five workers for, freeing up a worker to build, or to harvest lumber, which can give you an edge in the early game.
+
+Here, you can train this micro skill.
+Check the {Button: Quest Log} for explanations on how to do it!
+
+Your notes:

@@ -100,7 +100,7 @@ Next: Demon Hunter.
 After surrounding the Demon Hunter, with another setup remaining:
 
 ```text
-Both runners were surrounded with this setup.
+The Grunt and Demon Hunter were surrounded with this setup.
 ```
 
 After the final setup:

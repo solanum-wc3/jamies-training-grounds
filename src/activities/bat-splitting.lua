@@ -1,6 +1,6 @@
 -- Fixed-target Concoctions. Redo preserves the current stage's approach.
 JTG = JTG or {}
-local INTRO = "When playing against Orc, using flying units runs risk of being easily countered by the relatively cheap Batriders, using their {Term: Unstable Concoction} ability.\n\nIn this training you can practice quickly spacing out your flying units to avoid splash damage."
+local INTRO = "When playing against Orc, using flying units runs risk of being easily countered by the relatively cheap Batriders, using their {Term: Unstable Concoction} ability.\n\nIn this training you can practice quickly and efficiently spacing out your flying units to avoid splash damage."
 local GROUPS = {{{2,4},{3,3},{4,2}}, {{4,4},{3,3,2}}, {{4,4,2},{5,5},{3,3,4}}}
 
 function JTG.OpenBatSplittingMenu(originCategory, pauseGame, restorePage, restoreData)
@@ -195,6 +195,9 @@ function JTG.CreateBatSplittingActivity(session)
         self:createPresentation()
     end
     function activity:start()
+        if JTG.Training.ShowSetupLabel then
+            JTG.Training.ShowSetupLabel(self,session,'Setup',self.stage,3,tostring(self.hard)..':'..self.stage)
+        end
         if GetLocalPlayer()==Player(0) then SetCameraPosition(self.startX,self.startY) end
         self:timer(0.10,function() self:update() end)
         JTG.Training.Countdown(self,session,3,function(remaining)

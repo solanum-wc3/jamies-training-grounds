@@ -1,5 +1,7 @@
 # Contributing
 
+The lightweight session workflow, including the user's pre-implementation review for nontrivial mechanics, is defined in [AGENTS.md](AGENTS.md). Current development and outstanding acceptance checks are summarized in [development status](docs/DEVELOPMENT-STATUS.md).
+
 ## Change history
 
 Keep each commit focused on one coherent change. A useful commit message explains:

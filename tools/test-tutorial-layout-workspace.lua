@@ -103,6 +103,7 @@ end
 function SetUnitPathing(u,v) u.pathing=v end
 function SetUnitPosition(u,x,y) u.x=x;u.y=y end
 function UnitAddAbility() end
+function GetUnitAbilityLevel() return 0 end
 function UnitMakeAbilityPermanent() end
 function GetWidgetLife(u) return u.removed and 0 or 1000 end
 function GetUnitCurrentOrder(u) return u.order or 0 end

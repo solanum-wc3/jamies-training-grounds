@@ -9,6 +9,7 @@ local EXPORT_ENABLED = false
 
 local STEPS = {
     {
+        id = "hotkeys.001",
         checkpoint = "welcome", wait = true, sectionEnd = true,
         lines = {
             "{Heading: WELCOME}",
@@ -18,6 +19,7 @@ local STEPS = {
         },
     },
     {
+        id = "hotkeys.002",
         checkpoint = "why", wait = true,
         lines = {
             "{Heading: WHY USE HOTKEYS?}",
@@ -27,6 +29,7 @@ local STEPS = {
         },
     },
     {
+        id = "hotkeys.003",
         wait = true,
         lines = {
             "Manually clicking every button for every ability or command slows you down significantly.",
@@ -35,12 +38,14 @@ local STEPS = {
         },
     },
     {
+        id = "hotkeys.004",
         wait = true,
         lines = {
             "You are effectively playing with one hand tied behind your back - your keyboard hand - and you are doing everything with your mouse hand.",
         },
     },
     {
+        id = "hotkeys.005",
         wait = true,
         lines = {
             "When using hotkeys, you distribute the load pretty evenly between your mouse hand and your keyboard hand.",
@@ -48,6 +53,7 @@ local STEPS = {
         },
     },
     {
+        id = "hotkeys.006",
         wait = true, sectionEnd = true,
         lines = {
             "One measurement of play is \"actions per minute\", or {Term: APM}.",
@@ -56,6 +62,7 @@ local STEPS = {
         },
     },
     {
+        id = "hotkeys.007",
         checkpoint = "which", wait = true,
         lines = {
             "{Heading: LEGACY HOTKEYS}",
@@ -65,6 +72,7 @@ local STEPS = {
         },
     },
     {
+        id = "hotkeys.008",
         wait = true, trigger = "commandArrow",
         lines = {
             "You can check out some of the units under your control.",
@@ -73,6 +81,7 @@ local STEPS = {
         },
     },
     {
+        id = "hotkeys.009",
         wait = true,
         lines = {
             "These days, nobody will seriously recommend playing with {Term: Legacy} Hotkeys.",
@@ -81,6 +90,7 @@ local STEPS = {
         },
     },
     {
+        id = "hotkeys.010",
         wait = true,
         lines = {
             "{Heading: GRID HOTKEYS}",
@@ -92,6 +102,7 @@ local STEPS = {
         },
     },
     {
+        id = "hotkeys.011",
         wait = true,
         lines = {
             "You can change your hotkey setup to Grid by going to {Menu: Input} -> {Menu: Key Bindings} in the game options, and selecting Grid there.",
@@ -99,6 +110,7 @@ local STEPS = {
         },
     },
     {
+        id = "hotkeys.012",
         wait = true,
         lines = {
             "{Heading: CUSTOM HOTKEYS}",
@@ -108,6 +120,7 @@ local STEPS = {
         },
     },
     {
+        id = "hotkeys.013",
         wait = true,
         lines = {
             "When setting your hotkeys to {Term: Grid}, you probably saw that there is a third option: {Term: Custom}.",
@@ -116,6 +129,7 @@ local STEPS = {
         },
     },
     {
+        id = "hotkeys.014",
         wait = true,
         lines = {
             "This is of course complicated, especially for a newbie.",
@@ -123,12 +137,14 @@ local STEPS = {
         },
     },
     {
+        id = "hotkeys.015",
         wait = true,
         lines = {
             "Again, to change the hotkey setup, you have to {Term: Quicksave} your game with {Input: F6}, leave this map, and go to the game options!",
         },
     },
     {
+        id = "hotkeys.016",
         wait = true,
         lines = {
             "Changing custom tooltips also requires you to go to {Menu: \\Users\\YourUserName\\Documents\\Warcraft III}, and into the folder {Menu: CustomKeyBindings}.",
@@ -136,6 +152,7 @@ local STEPS = {
         },
     },
     {
+        id = "hotkeys.017",
         wait = true, trigger = "highlightExport",
         lines = {
             "In the {Menu: Warcraft III} folder, there is also a folder called {Menu: CustomMapData}.",
@@ -145,6 +162,7 @@ local STEPS = {
         },
     },
     {
+        id = "hotkeys.018",
         wait = true,
         lines = {
             "This sets you up with a pretty involved adjustment of the hotkeys.",
@@ -153,6 +171,7 @@ local STEPS = {
         },
     },
     {
+        id = "hotkeys.019",
         wait = true,
         lines = {
             "It also changes around some of the positions of buttons.",
@@ -161,6 +180,7 @@ local STEPS = {
         },
     },
     {
+        id = "hotkeys.020",
         wait = true,
         lines = {
             "Of course you do not have to keep this hotkey setup.",
@@ -168,6 +188,7 @@ local STEPS = {
         },
     },
     {
+        id = "hotkeys.021",
         wait = true, sectionEnd = true,
         lines = {
             "Tip: If you want to play the campaign \"The Founding of Durotar\", or the new campaign of The Forsaken Kingdom, it is recommended you change your hotkey layout to {Term: Grid} again while you do.",
@@ -175,6 +196,7 @@ local STEPS = {
         },
     },
     {
+        id = "hotkeys.022",
         checkpoint = "resources", wait = true,
         lines = {
             "{Heading: HOTKEY RESOURCES}",
@@ -183,6 +205,7 @@ local STEPS = {
         },
     },
     {
+        id = "hotkeys.023",
         wait = true,
         lines = {
             "You have probably noticed that there is a part of the options menu called {Hotkeys}.",
@@ -191,6 +214,7 @@ local STEPS = {
         },
     },
     {
+        id = "hotkeys.024",
         wait = true,
         lines = {
             "People from the community have created their own interfaces to allow easy editing of all aspects of hotkeys.",
@@ -200,6 +224,7 @@ local STEPS = {
         },
     },
     {
+        id = "hotkeys.025",
         wait = true, sectionEnd = true,
         lines = {
             "Another such resource is the more involved hotkey editor by {Yellow Font: clemenscodes}.",
@@ -209,6 +234,7 @@ local STEPS = {
         },
     },
     {
+        id = "hotkeys.026",
         checkpoint = "inventory", wait = true,
         lines = {
             "{Heading: CHANGING INVENTORY HOTKEYS}",
@@ -219,6 +245,7 @@ local STEPS = {
         },
     },
     {
+        id = "hotkeys.027",
         wait = true,
         lines = {
             "When using {Term: Grid} or {Term: Custom}, an obvious location to put them in is the 2x3 cluster of TY (or TZ), GH and BN.",
@@ -227,6 +254,7 @@ local STEPS = {
         },
     },
     {
+        id = "hotkeys.028",
         wait = true,
         lines = {
             "The only way to do this is to use an extra program just to rebind a key combination onto the relevant {Input: Numpad} keyboard keys.",
@@ -234,6 +262,7 @@ local STEPS = {
         },
     },
     {
+        id = "hotkeys.029",
         wait = true,
         lines = {
             "The simplest tool to use for this can be found by using a search engine and typing in \"{Input: warcraft inventory hotkeys}\".",
@@ -242,6 +271,7 @@ local STEPS = {
         },
     },
     {
+        id = "hotkeys.030",
         wait = true,
         lines = {
             "However, be aware that this tool does not work properly if you have rebound the inventory hotkeys away from the {Input: Numpad} in the Warcraft options.",
@@ -250,6 +280,7 @@ local STEPS = {
         },
     },
     {
+        id = "hotkeys.031",
         wait = true, sectionEnd = true,
         lines = {
             "Since you need to have the program running while the game is running, it is easiest to start them at the same time.",
@@ -258,6 +289,7 @@ local STEPS = {
         },
     },
     {
+        id = "hotkeys.032",
         terminal = true, trigger = "highlightMenu",
         lines = {
             "{Heading: END OF TUTORIAL}",
@@ -274,13 +306,13 @@ if not EXPORT_ENABLED then
     end
 end
 
-local TOPICS = {
-    {label = "Welcome", step = 1},
-    {label = "Why Use Hotkeys", step = 2},
-    {label = "Which Hotkeys?", step = 7},
-    {label = "Hotkey Resources", step = 22},
-    {label = "The Inventory", step = 26},
-}
+local TOPICS = JTG.Tutorial.TopicSteps(STEPS, {
+    {label = "Welcome", stepId = "hotkeys.001"},
+    {label = "Why Use Hotkeys", stepId = "hotkeys.002"},
+    {label = "Which Hotkeys?", stepId = "hotkeys.007"},
+    {label = "Hotkey Resources", stepId = "hotkeys.022"},
+    {label = "The Inventory", stepId = "hotkeys.026"},
+})
 
 local UNIT_LAYOUT = {
     {rawcode = "Huth", x = 4864, y = 3510, facing = 270, hero = true},
@@ -418,13 +450,17 @@ function JTG.CreateHotkeySetupTutorialActivity(session)
     function activity:goBack()
         if self.step <= 1 and not self.complete then return end
         self:setTopicsVisible(false)
-        self:showStep(math.max(1, self.step - 1), -1)
+        local target=math.max(1,self.step-1)
+        while STEPS[target] and STEPS[target].hidden do target=target-1 end
+        JTG.Tutorial.RestoreAt(self,target,nil,function(index) self:showStep(index,-1) end)
     end
 
     function activity:restoreTopic(index)
         self:setTopicsVisible(false)
-        self:showStep(index)
+        JTG.Tutorial.RestoreAt(self,index,nil,function(target) self:showStep(target) end)
     end
+
+    function activity:restoreCheckpoint(index) return self:restoreTopic(index) end
 
     function activity:openMenu()
         JTG.Tutorial.OpenMenu(self,"learn")
@@ -665,8 +701,10 @@ function JTG.CreateHotkeySetupTutorialActivity(session)
             if self.paladin ~= nil then SelectUnit(self.paladin, true) end
         end
         self:createPresentation()
-        self:showStep(1)
+        self:showStep(JTG.Tutorial.ResolveStep(STEPS,session.restartData))
     end
+
+    function activity:captureResetState() return JTG.Tutorial.CaptureCheckpoint(self) end
 
     function activity:setPaused(paused)
         self.locallyPaused = paused == true
@@ -713,6 +751,6 @@ function JTG.CreateHotkeySetupTutorialActivity(session)
         self.actions = {}
     end
 
-    JTG.Tutorial.InstallRunner(activity, session, {id="learn.hotkey_setup", player=HOTKEY_PLAYER, steps=STEPS})
+    JTG.Tutorial.InstallRunner(activity, session, {id="learn.hotkey_setup", player=HOTKEY_PLAYER, steps=STEPS, requireStableIds=true})
     return activity
 end

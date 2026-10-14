@@ -1,0 +1,731 @@
+{
+  "steps": [
+    {
+      "id": "heroes.001",
+      "checkpoint": "welcome",
+      "wait": true,
+      "lines": [
+        "{Heading: WELCOME}",
+        "Welcome to the Heroes Tutorial!",
+        "This tutorial deals with Warcraft III's most iconic aspect: Heroes.",
+        "",
+        "Once you are done reading a section and playing around with whichever mechanic you learn, press the {Button: Continue} or {Button: Next} button to move on!"
+      ],
+      "authorTriggers": [
+        "Have the arrow blink while pointing at the \"Next/Continue\" button, the same way as in the opening section of the other tutorials.",
+        "Lock daytime at noon for the tutorial and restore it on exit.",
+        "Move the Night Elf and Tavern groups 300 units north; move Pit Lord 200 units left.",
+        "Presented heroes are vulnerable so armor is visible. Target Dummies display damage popups."
+      ],
+      "scene": "overview",
+      "sectionEnd": true
+    },
+    {
+      "id": "heroes.002",
+      "checkpoint": "basics",
+      "wait": true,
+      "lines": [
+        "{Heading: BASICS}",
+        "In every game, you can create up to three hero units at your {Term: Altar}.",
+        "You can recruit the first as soon as you finish the building, and the others once you upgrade your main building to Tier 2 and Tier 3, respectively.",
+        "",
+        "Every race has four unique heroes to choose from."
+      ],
+      "authorTriggers": [
+        "Center the camera on each of the racial altars, and switch between them at five-second intervals."
+      ],
+      "scene": "overview",
+      "sectionEnd": false,
+      "action": "altar-tour"
+    },
+    {
+      "id": "heroes.003",
+      "checkpoint": "basics",
+      "wait": true,
+      "lines": [
+        "In addition to this, all races can choose from nine neutral heroes at the {Term: Tavern} building.",
+        "The Tavern is usually located somewhere in the middle of the map."
+      ],
+      "authorTriggers": [
+        "Center the camera on the Tavern."
+      ],
+      "scene": "overview",
+      "sectionEnd": false,
+      "action": "tavern-camera"
+    },
+    {
+      "id": "heroes.004",
+      "checkpoint": "basics",
+      "wait": true,
+      "lines": [
+        "Recruiting at the {Term: Tavern} becomes possible 135 seconds after the game starts, and also requires you to have built an {Term: Altar}."
+      ],
+      "authorTriggers": [],
+      "scene": "overview",
+      "sectionEnd": false
+    },
+    {
+      "id": "heroes.005",
+      "checkpoint": "basics",
+      "wait": true,
+      "lines": [
+        "Heroes are a serious presence on any battlefield, either on their own, or through the way their abilities support and synergize with the rest of your army.",
+        "",
+        "For this reason, your choice of heroes is incredibly significant for how you are going to play a game."
+      ],
+      "authorTriggers": [],
+      "scene": "overview",
+      "sectionEnd": true
+    },
+    {
+      "id": "heroes.006",
+      "checkpoint": "levels",
+      "wait": true,
+      "lines": [
+        "{Heading: LEVELS}",
+        "Heroes start out stronger than your basic military units, and they only get stronger as the game goes on.",
+        "This is because they gain experience and rise in level."
+      ],
+      "authorTriggers": [],
+      "scene": "overview",
+      "sectionEnd": false
+    },
+    {
+      "id": "heroes.007",
+      "checkpoint": "levels",
+      "wait": true,
+      "lines": [
+        "A starting hero is level 1, and may go up to level 10 in a game.",
+        "However, in many games heroes will barely reach level 6."
+      ],
+      "authorTriggers": [
+        "Move the camera to the center of Arena2.",
+        "Hide the displayed heroes in Arena1.",
+        "Spawn in a level 1 Archmage with no ability selected, and a level 10 Archmage with all abilities selected, under player control. They should be 600 units apart.",
+        "Restrict their movement to Arena2."
+      ],
+      "scene": "archmages",
+      "sectionEnd": false
+    },
+    {
+      "id": "heroes.008",
+      "checkpoint": "levels",
+      "wait": true,
+      "lines": [
+        "Compare the two Archmages!",
+        "You will notice that the level 10 Archmage is significantly stronger, with more health, more mana, and more attack damage."
+      ],
+      "authorTriggers": [
+        "Spawn in a little straw man as an enemy unit training dummy with infinite health, and have the Archmages attack it."
+      ],
+      "scene": "archmages-target",
+      "sectionEnd": false
+    },
+    {
+      "id": "heroes.009",
+      "checkpoint": "levels",
+      "wait": true,
+      "lines": [
+        "If you look closer, even their attack speed and armor are different.",
+        "Also, the higher level Archmage has more and stronger abilities."
+      ],
+      "authorTriggers": [],
+      "scene": "archmages-target",
+      "sectionEnd": false
+    },
+    {
+      "id": "heroes.011",
+      "checkpoint": "levels",
+      "wait": true,
+      "lines": [
+        "{Heading: ATTRIBUTES}",
+        "Unlike regular units, heroes have three attributes: {Term: Strength}, {Term: Agility} and {Term: Intelligence}.",
+        "Each hero has different starting attribute values and gains attribute points at different rates."
+      ],
+      "authorTriggers": [],
+      "scene": "archmages-target",
+      "sectionEnd": false
+    },
+    {
+      "id": "heroes.012",
+      "checkpoint": "levels",
+      "wait": true,
+      "lines": [
+        "Each point of {Term: Strength} raises the hero's health by 25 points and their HP regeneration by 0.05 points per second."
+      ],
+      "authorTriggers": [],
+      "scene": "archmages-target",
+      "sectionEnd": false
+    },
+    {
+      "id": "heroes.013",
+      "checkpoint": "levels",
+      "wait": true,
+      "lines": [
+        "Each point of {Term: Intelligence} raises the hero's mana by 15 points and their mana regeneration by 0.05 points per second."
+      ],
+      "authorTriggers": [],
+      "scene": "archmages-target",
+      "sectionEnd": false
+    },
+    {
+      "id": "heroes.014",
+      "checkpoint": "levels",
+      "wait": true,
+      "lines": [
+        "Each point of {Term: Agility} raises the hero's attack speed by 2% and their armor by 0.3.",
+        "{Term: Armor} reduces the damage from attacks that is applied to a unit's health.",
+        "For a detailed demonstration of armor, check out the {Menu: Unit Comparison} demonstration in {Menu: Tools & Extras}.",
+        "In addition to armor, heroes have a flat 30% damage reduction against spells."
+      ],
+      "authorTriggers": [],
+      "scene": "archmages-target",
+      "sectionEnd": false
+    },
+    {
+      "id": "heroes.015",
+      "checkpoint": "levels",
+      "wait": true,
+      "lines": [
+        "Aside from these general effects of {Term: Strength}, {Term: Agility} and {Term: Intelligence}, every hero has a {Term: Primary Attribute}.",
+        "Heroes gain one point of extra damage for every point of their primary attribute.",
+        "For the details about the damage values of heroes, check out the {Button: Optional} button."
+      ],
+      "authorTriggers": [],
+      "scene": "archmages-target",
+      "sectionEnd": false
+    },
+    {
+      "id": "heroes.016",
+      "checkpoint": "levels",
+      "wait": true,
+      "lines": [
+        "On every level-up, a hero gains attribute points. Most heroes gain six points in total.",
+        "These are divided across the three attributes in a way unique to that hero.",
+        "This means that heroes can gain attributes at very different rates."
+      ],
+      "authorTriggers": [],
+      "scene": "archmages-target",
+      "sectionEnd": false
+    },
+    {
+      "id": "heroes.017",
+      "checkpoint": "levels",
+      "wait": true,
+      "lines": [
+        "Some heroes, including the Archmage, Keeper of the Grove, Lich, Alchemist and Firelord, gain more than six attribute points per level on average.",
+        "The exact increase shown at a particular level depends on their attribute growth rates."
+      ],
+      "authorTriggers": [],
+      "scene": "archmages-target",
+      "sectionEnd": false
+    },
+    {
+      "id": "heroes.018",
+      "checkpoint": "levels",
+      "wait": true,
+      "lines": [
+        "{Heading: ABILITIES}",
+        "In addition to attribute points, every hero gains one {Term: Ability} point per level.",
+        "You can then freely choose which ability you want to raise."
+      ],
+      "authorTriggers": [],
+      "scene": "archmages-target",
+      "sectionEnd": false
+    },
+    {
+      "id": "heroes.019",
+      "checkpoint": "levels",
+      "wait": true,
+      "lines": [
+        "Every hero has three regular abilities, and one {Term: Ultimate} ability.",
+        "Regular abilities have three levels, while ultimate abilities have only one level."
+      ],
+      "authorTriggers": [],
+      "scene": "archmages-target",
+      "sectionEnd": false
+    },
+    {
+      "id": "heroes.020",
+      "checkpoint": "levels",
+      "wait": true,
+      "lines": [
+        "Level 1 regular abilities can be chosen at any level.",
+        "Level 2 regular abilities can be chosen starting at level 3.",
+        "Level 3 regular abilities can be chosen starting at level 5.",
+        "The {Term: Ultimate} ability can be chosen starting at level 6."
+      ],
+      "authorTriggers": [],
+      "scene": "archmages-target",
+      "sectionEnd": false
+    },
+    {
+      "id": "heroes.021",
+      "checkpoint": "levels",
+      "wait": true,
+      "lines": [
+        "Raising a regular ability to its next level will always make it significantly better with no drawbacks.",
+        "A higher level will make it more effective, and it can lower its cost or cooldown."
+      ],
+      "authorTriggers": [],
+      "scene": "archmages-target",
+      "sectionEnd": false
+    },
+    {
+      "id": "heroes.022",
+      "checkpoint": "levels",
+      "wait": true,
+      "lines": [
+        "Since many hero abilities cost mana, and since mana is a scarce resource with a low regeneration rate, it is almost always best to max out two regular abilities before putting a point in the third.",
+        "For the same reason, it makes sense to avoid using level 1 regular abilities, and instead wait for their second level to be unlocked."
+      ],
+      "authorTriggers": [],
+      "scene": "archmages-target",
+      "sectionEnd": false
+    },
+    {
+      "id": "heroes.023",
+      "checkpoint": "levels",
+      "wait": true,
+      "lines": [
+        "The exception is using a level 1 ability as soon as possible, so you can take advantage of your hero's mana regeneration."
+      ],
+      "authorTriggers": [],
+      "scene": "archmages-target",
+      "sectionEnd": true
+    },
+    {
+      "id": "heroes.024",
+      "checkpoint": "hero-showcase",
+      "wait": true,
+      "lines": [
+        "Check out the different heroes!",
+        "You can use the {Button: +} and {Button: -} buttons to raise and lower the heroes' levels, to see what changes about them when you do."
+      ],
+      "authorTriggers": [
+        "Change back to Arena1. Despawn the two heroes in Arena2.",
+        "Transition all heroes into player control. Spawn a training dummy 500 units under each altar and the tavern.",
+        "Make a \"+\" and a \"-\" button on the right side of the screen.",
+        "The buttons should work such that selecting a hero and pressing the \"+\" button raises its level by 1, while pressing the \"-\" button lowers it by 1, resetting all learned abilities.",
+        "Set all heroes' levels to 1.",
+        "Make it so that no heroes are assigned to F1, F2 or F3, and no hero icons are displayed in the top-left corner of the screen."
+      ],
+      "scene": "showcase",
+      "sectionEnd": true
+    },
+    {
+      "id": "heroes.025",
+      "checkpoint": "experience",
+      "wait": true,
+      "lines": [
+        "{Heading: EXPERIENCE}",
+        "{Yellow Font: Your} heroes can get experience from any enemy or neutral unit that {Yellow Font: your army} kills.",
+        "A unit killed by your buildings, including the living buildings of Night Elves, generates no experience for your heroes.",
+        "A unit killed by neutral or enemy units does not generate experience for your heroes either."
+      ],
+      "authorTriggers": [
+        "Move back to Arena2.",
+        "Spawn in a gnoll in the center of the arena. Movement should be disabled for this gnoll.",
+        "The player should have vision of the whole Arena2.",
+        "Around the center of the arena, there should be a golden circle with a radius of 1200 units (2400-unit diameter)."
+      ],
+      "scene": "xp-initial",
+      "sectionEnd": true
+    },
+    {
+      "id": "heroes.026",
+      "checkpoint": "xp-range",
+      "wait": true,
+      "lines": [
+        "{Heading: XP RANGE}",
+        "Experience is {Yellow Font: divided equally} between all of your heroes who are {Yellow Font: within 1200 units} of the source.",
+        "If no heroes are within 1200 units, experience is divided equally between all of your heroes {Yellow Font: on the entire map}. "
+      ],
+      "authorTriggers": [],
+      "scene": "xp-initial",
+      "sectionEnd": false
+    },
+    {
+      "id": "heroes.028",
+      "checkpoint": "xp-range",
+      "wait": true,
+      "lines": [
+        "Kill this Gnoll using your army, leaving one hero behind outside of the 1200 unit circle!",
+        "",
+        "Afterwards, check your heroes' experience bars in the interface!"
+      ],
+      "authorTriggers": [
+        "Outside of the 1200 circle, spawn four Footmen, a level 1 Paladin, a level 1 Archmage, and a level 1 Mountain King. Each of the heroes should be 1 XP away from the next level."
+      ],
+      "scene": "xp-range-1",
+      "sectionEnd": false
+    },
+    {
+      "id": "heroes.029",
+      "checkpoint": "xp-range",
+      "wait": true,
+      "lines": [
+        "Kill the Gnoll just using your Footmen, leaving all heroes behind outside of the 1200 unit circle!",
+        "",
+        "Afterwards, check your heroes' experience bars in the interface!"
+      ],
+      "authorTriggers": [
+        "Reset both army and gnoll."
+      ],
+      "scene": "xp-range-2",
+      "sectionEnd": false
+    },
+    {
+      "id": "heroes.030",
+      "checkpoint": "xp-range",
+      "wait": true,
+      "lines": [
+        "Kill the Gnoll using your army, leaving two heroes behind outside of the 1200 unit circle!",
+        "",
+        "Afterwards, check your heroes' experience bars in the interface!"
+      ],
+      "authorTriggers": [
+        "Reset both army and gnoll."
+      ],
+      "scene": "xp-range-3",
+      "sectionEnd": true
+    },
+    {
+      "id": "heroes.031",
+      "checkpoint": "xp-amounts",
+      "wait": true,
+      "lines": [
+        "{Heading: XP AMOUNTS}",
+        "If you kill a unit, the amount of XP gained is displayed in a small blue number over the heroes.",
+        "Broadly speaking, units give XP based on their level, with summoned units giving half as much.",
+        "",
+        "A higher level unit gives more XP. ",
+        "Generally, the levels of player-controlled units are equal to their Food Cost, with some exceptions."
+      ],
+      "authorTriggers": [
+        "Remove both army and gnoll."
+      ],
+      "scene": "xp-empty",
+      "sectionEnd": false
+    },
+    {
+      "id": "heroes.032",
+      "checkpoint": "xp-amounts",
+      "wait": true,
+      "lines": [
+        "If you want the detailed breakdown of experience values, check out the {Menu: Optional} topic on the toolbar.",
+        "Once you are done with it, you will be returned to this part of the tutorial."
+      ],
+      "authorTriggers": [],
+      "scene": "xp-empty",
+      "sectionEnd": false
+    },
+    {
+      "id": "heroes.033",
+      "checkpoint": "xp-amounts",
+      "wait": true,
+      "lines": [
+        "The amount of XP a hero gains can be modified.",
+        "For example, as soon as your main building reaches tier 2, your first hero gains a {Yellow Font: +15% bonus} until you start training a second hero.",
+        "This is called the {Term: Solo Hero Bonus}."
+      ],
+      "authorTriggers": [],
+      "scene": "xp-empty",
+      "sectionEnd": false
+    },
+    {
+      "id": "heroes.034",
+      "checkpoint": "xp-amounts",
+      "wait": true,
+      "lines": [
+        "Another modifier applies to the neutral {Term: Creeps} spread around the map.",
+        "Experience gained from creeps is always lower than for an enemy unit.",
+        "XP from creeps is {Yellow Font: reduced by 20% per hero level}. This means starting at level 5, heroes gain no experience from creeps at all."
+      ],
+      "authorTriggers": [],
+      "scene": "xp-empty",
+      "sectionEnd": false
+    },
+    {
+      "id": "heroes.035",
+      "checkpoint": "xp-amounts",
+      "wait": true,
+      "lines": [
+        "The last way to modify experience gain comes from a {Term: Hex} or the {Term: Polymorph} spell, which turn the hero into an animal, {Yellow Font: reducing any experience they gain by 100%}."
+      ],
+      "authorTriggers": [],
+      "scene": "xp-empty",
+      "sectionEnd": false
+    },
+    {
+      "id": "heroes.036",
+      "checkpoint": "xp-amounts",
+      "wait": true,
+      "lines": [
+        "Modified experience gain affects your decisions in two ways.",
+        "First, a hero whose experience gain is reduced {Yellow Font: still gets an equal part of the experience} before it is reduced.",
+        "This means that if a hero's experience gain is reduced, you may want to {Yellow Font: keep him outside of the 1200 unit experience range}, so as little experience as possible is lost."
+      ],
+      "authorTriggers": [],
+      "scene": "xp-empty",
+      "sectionEnd": false
+    },
+    {
+      "id": "heroes.037",
+      "checkpoint": "xp-amounts",
+      "wait": true,
+      "lines": [
+        "Attack the Gnoll using your army and both heroes!",
+        "Pay attention to the experience amounts!"
+      ],
+      "authorTriggers": [
+        "Spawn in a 1200 unit radius golden circle around the middle of the Arena2.",
+        "Spawn in four footmen, a Mountain King and a Paladin outside of the circle. The Mountain King should be level 4. The Paladin should be level 2, 35 XP away from level 3.",
+        "Spawn in a level 3 gnoll creep of some kind at 1/4 health in the middle of the circle, that cannot move."
+      ],
+      "scene": "xp-modifier-4",
+      "sectionEnd": false
+    },
+    {
+      "id": "heroes.039",
+      "checkpoint": "xp-amounts",
+      "wait": true,
+      "lines": [
+        "Attack the Gnoll again using only your Paladin! Keep the Mountain King within the circle.",
+        "Pay attention to the experience amounts!"
+      ],
+      "authorTriggers": [
+        "Reset the Gnoll and army. The Paladin is level 2, 35 XP from level 3. The Mountain King is level 5 and starts inside the 1200-radius circle. Only the Paladin should attack."
+      ],
+      "scene": "xp-modifier-paladin",
+      "sectionEnd": false
+    },
+    {
+      "id": "heroes.040",
+      "checkpoint": "xp-amounts",
+      "wait": true,
+      "lines": [
+        "You may have noticed that the Mountain King did not gain any experience last time.",
+        "Attack the Gnoll one last time, using your army, but leave the Mountain King outside of the 1200 range circle!",
+        "Pay attention to the experience amount of your Paladin!"
+      ],
+      "authorTriggers": [
+        "Reset both Gnoll and the army and the heroes, especially the Paladin's experience."
+      ],
+      "scene": "xp-modifier-outside",
+      "sectionEnd": false
+    },
+    {
+      "id": "heroes.041",
+      "checkpoint": "xp-amounts",
+      "wait": true,
+      "lines": [
+        "As you can see, how you handle distance can make a difference."
+      ],
+      "authorTriggers": [
+        "Remove the army, the gnoll and the circle."
+      ],
+      "scene": "empty",
+      "sectionEnd": false
+    },
+    {
+      "id": "heroes.042",
+      "checkpoint": "xp-amounts",
+      "wait": true,
+      "lines": [
+        "Another thing that can make a difference is the order in which you kill units.",
+        "When a hero is very close to a level-up, you should kill higher level creeps first.",
+        "That way, any experience that flows over into the next level is not reduced by the new level's lower creep XP rate."
+      ],
+      "authorTriggers": [],
+      "scene": "empty",
+      "sectionEnd": true
+    },
+    {
+      "id": "heroes.043",
+      "checkpoint": "items",
+      "wait": true,
+      "lines": [
+        "{Heading: ITEMS}",
+        "One of the advantages of heroes is that they can carry and use items.",
+        "Through the {Term: Backpacks} research, some units can learn to carry them, but they cannot use them."
+      ],
+      "authorTriggers": [
+        "Center the camera over Arena2.",
+        "Spawn in all four racial shops and a Goblin Merchant and a Marketplace in equal spacing 500 units from the middle of the arena. Set the timers for the items to be ready. Spawn in a main building of tier 3 for each race in the corners of the arena respectively.",
+        "Spawn in a Paladin, an Archmage, and a Mountain King under player control in the middle of the arena.",
+        "Spawn all items from the drop table of Twisted Meadows, ordered by camp size where they can be dropped.",
+        "Set the player's Gold and Lumber to 10,000 each.",
+        "Spawn in a training dummy next to the heroes."
+      ],
+      "scene": "items",
+      "sectionEnd": false
+    },
+    {
+      "id": "heroes.044",
+      "checkpoint": "items",
+      "wait": true,
+      "lines": [
+        "Items can have all kinds of different effects and advantages.",
+        "They can be gained either as random {Term: Drops} from {Term: Creeps}, or by buying them from a neutral {Term: Goblin Merchant} or your own shop building.",
+        "Items can also be sold for some instant Gold."
+      ],
+      "authorTriggers": [],
+      "scene": "items",
+      "sectionEnd": false
+    },
+    {
+      "id": "heroes.045",
+      "checkpoint": "items",
+      "wait": true,
+      "lines": [
+        "To pick up an item from the ground, you have to {Input: right-click it}.",
+        "When you have selected more than one hero, the one in active selection will pick it up."
+      ],
+      "authorTriggers": [],
+      "scene": "items",
+      "sectionEnd": false
+    },
+    {
+      "id": "heroes.046",
+      "checkpoint": "items",
+      "wait": true,
+      "lines": [
+        "To remove an item from a hero's inventory, {Input: right-click it, and then left-click} where you want to put it.",
+        "You can put items on the ground, into the inventory of other heroes or units, or sell them to shops."
+      ],
+      "authorTriggers": [],
+      "scene": "items",
+      "sectionEnd": false
+    },
+    {
+      "id": "heroes.047",
+      "checkpoint": "items",
+      "wait": true,
+      "lines": [
+        "You can also destroy an item on the ground with an {Input: Attack Command}."
+      ],
+      "authorTriggers": [],
+      "scene": "items",
+      "sectionEnd": false
+    },
+    {
+      "id": "heroes.048",
+      "checkpoint": "items",
+      "wait": true,
+      "lines": [
+        "To buy an item from a shop, you have to {Input: move your hero into range}, and then select the item by {Input: clicking it or pressing its hotkey}.",
+        "If several heroes are within range of a shop, you can change the active patron by {Input: right-clicking the hero} you want it to sell to."
+      ],
+      "authorTriggers": [],
+      "scene": "items",
+      "sectionEnd": false
+    },
+    {
+      "id": "heroes.049",
+      "checkpoint": "items",
+      "wait": true,
+      "lines": [
+        "Some items in shops have to be unlocked, either by a simple timer, or by upgrading your main building to tier 2 or 3."
+      ],
+      "authorTriggers": [],
+      "scene": "items",
+      "sectionEnd": false
+    },
+    {
+      "id": "heroes.050",
+      "checkpoint": "items",
+      "wait": false,
+      "lines": [
+        "{Heading: END OF TUTORIAL}",
+        "This concludes the Heroes tutorial. Press the {Button: Menu} button to choose another tutorial!"
+      ],
+      "authorTriggers": [],
+      "scene": "items",
+      "sectionEnd": true,
+      "terminal": true
+    }
+  ],
+  "optional": {
+    "dice": [
+      {
+        "id": "heroes.dice.001",
+        "checkpoint": "welcome",
+        "wait": true,
+        "lines": [
+          "{Heading: BONUS: ATTACK DICE}",
+          "A hero's attack damage is mostly determined by their primary attribute.",
+          "In addition to that, some {Term: Dice} are rolled and added on top."
+        ],
+        "authorTriggers": [
+          "Use Arena2, with full vision.",
+          "Spawn in all heroes, in the same color scheme as in Arena1. Arrange them in five groups, depending on their attack dice. From left to right: 2D4, 2D6, 2D12, 2D11, 3D10",
+          "The heroes should be arranged in ordered columns of five, filled bottom to top, 300 units apart. Between the last column of one group and the first of the next, there should be 600 units distance.",
+          "400 units below the first column of any group, there should be text on the ground in enlarged white font: \"2D4\", \"2D6\", \"2D12\", \"2D11\", and \"3D10\".",
+          "For this optional section, display the \"+\" and \"-\" buttons."
+        ],
+        "scene": "dice"
+      },
+      {
+        "id": "heroes.dice.002",
+        "checkpoint": "welcome",
+        "wait": true,
+        "lines": [
+          "Most heroes fall into one of three categories, rolling either two four-sided, two six-sided or two twelve-sided dice for every attack.",
+          "The only exceptions are the Night Elf Warden with two eleven-sided dice, and the Goblin Alchemist with three ten-sided dice."
+        ],
+        "authorTriggers": [
+          "Move the camera to the leftmost text. After it has arrived, move it to the right-most text. After it has arrived, move it to the middle of the arena."
+        ],
+        "scene": "dice",
+        "action": "dice-tour"
+      },
+      {
+        "id": "heroes.dice.003",
+        "checkpoint": "welcome",
+        "wait": true,
+        "lines": [
+          "{Heading: OPTIONAL TOPIC COMPLETE}",
+          "This optional topic is complete.",
+          "Press the {Button: Next} button to return to the tutorial section you previously left."
+        ],
+        "authorTriggers": [],
+        "scene": "dice",
+        "optionalComplete": true
+      }
+    ],
+    "xp": [
+      {
+        "id": "heroes.xp.001",
+        "checkpoint": "welcome",
+        "wait": true,
+        "lines": [
+          "{Heading: BONUS: XP NUMBERS}",
+          "Use the {Button: buttons} on the right to navigate through the different units to see which units have which level.",
+          "Consult the {Button: Quest Log} for a listing of all precise experience values."
+        ],
+        "authorTriggers": [
+          "I want six buttons on the right side of the screen: one called \"Hero\" four racial buttons, and a Neutral button for the Tavern heroes' summons.",
+          "Depending on which button is pressed there should be a demonstration in Arena2.",
+          "\"Hero\" arranges 10 neutral heroes left to right, in ascending levels. Below each hero, display two lines of text: \"Level X\" and \"Y XP\", with the values from the Quest Log.",
+          "Each of the racial buttons should arrange one of each racial unit, including summons of that respective race, and buildings that can yield XP, arranged in groups left to right, according to unit level and food costs. Sort the groups first by unit level, then by food cost in ascending order within each level. Below each group, display three lines of text: \"Unit Level: X\", \"Food Cost: Y\", and \"Z XP\"."
+        ],
+        "scene": "xp-numbers"
+      },
+      {
+        "id": "heroes.xp.002",
+        "checkpoint": "welcome",
+        "wait": true,
+        "lines": [
+          "{Heading: OPTIONAL TOPIC COMPLETE}",
+          "This optional topic is complete.",
+          "Press the {Button: Next} button to return to the tutorial section you previously left."
+        ],
+        "authorTriggers": [],
+        "scene": "xp-numbers",
+        "optionalComplete": true
+      }
+    ]
+  },
+  "quest": "Heroes require 100 times the new level in experience.\nSo getting from level 1 to level 2 requires 200 XP, while getting from level 5 to level 6 requires 600 XP.\n\nXP from {Term: Regular Player Units} depends on their level, which is often equal to their food cost:\n- level 1 -> 25 XP\n- level 2 -> 40 XP\n- level 3 -> 60 XP\n- level 4 -> 85 XP\n- level 5 -> 115 XP\n- level 6 -> 150 XP\nXP from {Term: Summons} is halved.\nXP from {Term: Creeps} is multiplied by 80%, 70%, 60% and 50% at hero levels 1, 2, 3 and 4, and by 0% at level 5 and above.\n\nXP from {Term: Enemy Heroes} also depends on their level:\n- level 1 -> 100 XP\n- level 2 -> 120 XP\n- level 3 -> 160 XP\n- level 4 -> 220 XP\n- level 5 -> 300 XP\nAny level above 5 adds another 100 XP."
+}

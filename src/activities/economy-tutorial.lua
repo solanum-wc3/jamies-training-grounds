@@ -88,16 +88,17 @@ function JTG.CreateEconomyTutorialActivity(session)
 
     function activity:captureResetState()
         local index=self.jumpStep or self.step
-        return {step=index,stepId=STEPS[index].id}
+        return JTG.Tutorial.CaptureCheckpoint(self,index)
     end
     function activity:jumpToStep(index)
-        JTG.Tutorial.BeginEntry(self,'economy:checkpoint')
-        self:setTopicsVisible(false)
-        self:clearAttackers()
-        self.wolves={};self.wolfTargets={}
-        self:prepareCheckpoint(index,true)
-        self:showStep(index)
+        JTG.Tutorial.RestoreAt(self,index,function(target)
+            self:setTopicsVisible(false)
+            self:clearAttackers()
+            self.wolves={};self.wolfTargets={}
+            self:prepareCheckpoint(target,true)
+        end,function(target) self:showStep(target) end)
     end
+    function activity:restoreCheckpoint(index) return self:jumpToStep(index) end
     function activity:goBack() if self.step>1 then self:jumpToStep(self.step-1) end end
     function activity:restoreTopic(index) self:jumpToStep(index) end
 
@@ -357,6 +358,7 @@ function JTG.CreateEconomyTutorialActivity(session)
         end
     end
     function activity:setRace(index)
+        local ownershipChanged=self.ownedRace~=index
         self.raceIndex=index
         self:updateOwnership()
         -- Active faction is player-owned with unrestricted control. Only it shares sight.
@@ -365,26 +367,18 @@ function JTG.CreateEconomyTutorialActivity(session)
         end
         SetPlayerColor(ECONOMY_PLAYER,ConvertPlayerColor(self.factions[index].color))
         JTG.ResetWorldFog(ECONOMY_PLAYER)
-        -- Finish ownership and vision changes before restoring native work.
-        self.gatheringHandoff=(self.gatheringHandoff or 0)+1
-        local handoff=self.gatheringHandoff
-        self:startGathering(nil,index,true)
-        -- Only two bounded retries: engine handoffs can invalidate an accepted
-        -- order. Do not replace an active player order or construction task.
-        for _,delay in ipairs({0.25,0.75}) do
-            JTG.StartScopedTimer(session,session.scope,delay,false,function()
-                if self.raceIndex~=index or self.gatheringHandoff~=handoff then return end
-                for _,assignment in ipairs(self.placements) do
-                    local u,p=assignment.unit,assignment.placement
-                    if p.gathering and p.faction==self.factions[index].id and
-                            GetUnitTypeId(u)~=0 and GetWidgetLife(u)>0.405 then
-                        if self.recordEconomyOrderState then self:recordEconomyOrderState('handoff-'..delay,u,0) end
-                        local order=GetUnitCurrentOrder(u)
-                        if order==0 or order==OrderId('stop') then self:startGathering(u) end
-                    end
-                end
-            end)
+        -- Ownership, resources and fog are settled before the shared handoff.
+        local workers={}
+        for _,assignment in ipairs(self.placements) do
+            local u,p=assignment.unit,assignment.placement
+            if p.gathering and p.faction==self.factions[index].id then workers[#workers+1]=u end
         end
+        JTG.Tutorial.RestoreWorkerOrders(session,self,workers,function(unit,preserve)
+            self:startGathering(unit,index,preserve)
+        end,{force=ownershipChanged,isCurrent=function() return self.raceIndex==index end,
+            observe=function(unit,initial)
+                if not initial and self.recordEconomyOrderState then self:recordEconomyOrderState('handoff-retry',unit,0) end
+            end})
         self:focus(self:mainBuilding())
     end
     function activity:later(seconds,callback)
@@ -762,6 +756,11 @@ function JTG.CreateEconomyTutorialActivity(session)
         self.actions = {}
     end
 
-    JTG.Tutorial.InstallRunner(activity, session, {id="learn.economy", player=ECONOMY_PLAYER, steps=STEPS})
+    JTG.Tutorial.InstallRunner(activity, session, {id="learn.economy", player=ECONOMY_PLAYER, steps=STEPS, requireStableIds=true,
+        sceneExit=function(self,previous,nextStep)
+            local action=previous.action
+            if (action=='human-defense' or action=='orc-defense' or action=='nightelf-defense') and
+                (not nextStep or nextStep.action~=action) then self:killAttackers() end
+        end})
     return activity
 end

@@ -131,16 +131,7 @@ local REFERENCE_RUNNER_ID = FourCC("Hgam")
 local REFERENCE_LANE_OFFSET = 300.0
 
 local BODY_BLOCKING_INTRO =
-    "Sometimes a valid strategy is simply to stop your opponent from doing " ..
-    "what they are doing by standing in the way. Be it to get more hits in " ..
-    "on them, or to stop them from effectively doing anything.|n|n" ..
-    "This exercise trains you in blocking the movement of other units. You " ..
-    "control a Footman, and using the Move, Stop and Hold Position commands, " ..
-    "try to slow down a series of units for as long as possible.|n|n" ..
-    "The usual {Button: Training} has you choose between the race of the " ..
-    "units you want to practice against, and you will encounter a series of " ..
-    "that race's units.|nAlternatively, you can freely customize which unit " ..
-    "you want to practice with."
+    "Sometimes a valid strategy is simply to stop your opponent from doing what they are doing by standing in the way. Be it to get more hits in on them, or to stop them from effectively doing anything.\n\nThis exercise trains you in blocking the movement of other units. You control a Footman, and using the Move, Stop and Hold Position commands, try to slow down a series of units for as long as possible.\n\nThe usual {Button: Training} has you choose between the race of the units you want to practice against, and you will encounter a series of that race's units.\nAlternatively, you can freely customize which unit you want to practice with."
 
 local function FormatBodyBlockingText(text)
     return string.gsub(text, "{Button:%s*(.-)}", "|cffffcc00%1|r")
@@ -576,6 +567,7 @@ function JTG.CreateBodyBlockingActivity(session)
     end
 
     function activity:createRound()
+        JTG.Training.BeginAttempt(session)
         local runnerId, runnerName = self:currentRunner()
         self.runnerId, self.runnerName = runnerId, runnerName
         self.finished = false
@@ -879,10 +871,6 @@ function JTG.CreateBodyBlockingActivity(session)
                 self.streakLevel = nextLevel
                 DisplayTimedTextToPlayer(Player(0), 0, 0, 1.5,
                     "|cffffcc00" .. tostring(nextLevel * 2) .. ".0s BLOCK STREAK!|r")
-                if nextLevel == 1 then
-                    self.feedbackEffect = AddSpecialEffectTarget(
-                        "Abilities\\Spells\\Human\\InnerFire\\InnerFireTarget.mdl", self.blocker, "overhead")
-                end
             end
         else
             self.blockingActive = false
@@ -1181,6 +1169,10 @@ function JTG.CreateBodyBlockingActivity(session)
     end
 
     function activity:start(current)
+        if JTG.Training and JTG.Training.ShowSetupLabel and self.mode=='training' then
+            JTG.Training.ShowSetupLabel(self,session,'Runner',self.runnerIndex,#TRAINING_ROSTERS[self.race],
+                self.race..':'..self.runnerIndex)
+        end
         if GetLocalPlayer() == Player(0) then
             SetCameraPosition(current.scene.centerX, current.scene.centerY)
         end

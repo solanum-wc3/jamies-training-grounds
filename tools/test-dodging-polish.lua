@@ -93,3 +93,14 @@ IsTerrainPathable,BlzGetUnitCollisionSize,BlzGetUnitAbility,BlzGetAbilityRealLev
 SetUnitPosition,SetUnitPathing=oldPosition,oldUnitPathing
 JTG.UI.ShowActivityBriefing,JTG.Controller.session=oldBriefing,oldSession
 print('Passed: Devour potion eligibility/bearer, exact briefing, shared picker gaps, one-column Area races, southern building entry, final-five-second TC aura and live full-radius Clap/Stomp circles.')
+
+local rangedIndex
+for i,danger in ipairs(JTG.DodgeDangers) do if danger.menuGroup=='Ranged' and danger.unit=='ohun' then rangedIndex=i;break end end
+JTG.Controller.session=nil
+JTG.UI.ShowActivityBriefing=function(spec) screen=spec end
+JTG.OpenMissileDodgingMenu('skills',false,'abilities',{dangerIndex=rangedIndex})
+local statueChoice
+for _,choice in ipairs(screen.choices) do if choice.label=='Obsidian Statue: Destroyer Form' then statueChoice=choice end end
+assert(statueChoice and not statueChoice.enabled and statueChoice.tooltip=='Does not disjoin this projectile.')
+JTG.UI.ShowActivityBriefing=oldBriefing;JTG.Controller.session=oldSession
+print('Passed: Destroyer transformation disabled against regular ranged attacks with established tooltip.')

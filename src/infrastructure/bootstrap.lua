@@ -61,6 +61,10 @@ function JTG.Initialize()
     FogMaskEnable(true)
     BlzChangeMinimapTerrainTex("war3mapMap_ingame.blp")
     JTG.UI.Initialize()
+    if not JTG.startupSoundPlayed then
+        JTG.startupSoundPlayed=true
+        JTG.UI.PlayFeedbackSound("startup")
+    end
     for _, initializer in ipairs(JTG.BootstrapInitializers or {}) do
         local ok, message = pcall(initializer)
         if not ok then
