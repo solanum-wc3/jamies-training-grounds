@@ -5,12 +5,14 @@ Released 16 October 2026 after the user accepted alpha60 and authorized release 
 ## Release artifact
 
 - Map: `outputs/Jamies-Training-Grounds-v0.2.0.w3x`
-- Size: 4,207,717 bytes
-- SHA256: `c1b9fea3590313e707bd401d2b3d7c577a2ea469011175eb540b8fe2cffb3aca`
+- Size: 4,427,781 bytes
+- SHA256: `24c6f9ef71d6983b15ec6626e9e945d41d9649032b7c274827f8cfc38f2617ef`
 - Accepted source checkpoint before version/date changes: `73fcbcd` (alpha60)
 - Source milestone/tag: `v0.2.0` on `main`
 
 ## Validation and acceptance
+
+Preview correction, 16 October 2026: the user explicitly requested overwriting both published 0.2.0 map attachments rather than creating 0.2.1. Only `war3mapMap.blp` and `war3mapPreview.tga` differ from the original release; gameplay, metadata and the in-game terrain minimap are byte-identical. The authored PNG and generated assets are maintained separately from the immutable foundation. BLP mip/decode, TGA roundtrip and map packaging checks passed. The original release artifact was 4,207,717 bytes, SHA256 `c1b9fea3590313e707bd401d2b3d7c577a2ea469011175eb540b8fe2cffb3aca`; its original tag/source history is retained, with the artwork correction following on main.
 
 - All 45 Lua regression fixtures passed, including late native blight writes, overlapping source/non-source scenes and replacement guards.
 - Release/development Lua source assemblies passed syntax checks (32 and 49 modules).

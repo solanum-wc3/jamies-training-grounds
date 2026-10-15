@@ -66,6 +66,8 @@ Collision commands and export formats are documented in [`COLLISION-OBSTRUCTION-
 
 ## Asset preparation
 
+- Run `tools/prepare-map-preview.py` after changing `design/map-preview/map-selection.png`. It prepares browser BLP/TGA artwork without changing the in-game terrain minimap.
+
 - Run `tools/prepare-menu-art.py` after changing editable menu artwork.
 
 - Run `tools/prepare-surround-overlays.py` after changing the player or enemy obstruction-square images.

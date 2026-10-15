@@ -4,6 +4,8 @@ Updated 16 October 2026. The user accepted alpha60's final blight correction and
 
 Release commit/tag: `5a78bc5` / `v0.2.0`. Merged into `main` and pushed; both generic/latest and versioned public map downloads were verified identical to the validated release artifact on 16 October 2026. The public map is installed in the usual Warcraft III Onboarding Project folder. Pending workflow/roadmap edits were preserved separately and were not bundled into the release.
 
+The user subsequently explicitly authorized replacing the 0.2.0 assets with corrected map-selection artwork under the same version. Only the browser BLP and fallback TGA change; gameplay and the terrain minimap are identical. The replacement source is `design/map-preview/map-selection.png`, with preparation documented in the build guide. See release status for the new hash and original artifact history. The original Git tag is preserved; no history rewrite is needed.
+
 ## Alpha60: replacement buildings no longer block old blight cleanup
 
 Alpha59 native feedback accepts the other focused fixes but shows residual blight. The report drops from 663 immediate cells to 204 delayed cells because 459 acquire replacement building leases. These ordinary leases incorrectly suppressed blight cleanup. Separate native blight-source reservations from baseline retention; permit blight-only restoration with ordinary buildings still present, while protecting active sources, explicit mutations and new generations. Keep tile/variation repainting restricted to fully released cells. See [alpha60 testing](ALPHA60-TESTING.md). Added regression cases reproduce the failure and related overlaps; native rendering remains awaiting acceptance.

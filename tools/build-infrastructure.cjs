@@ -99,6 +99,8 @@ const modulePaths = [
     'src/infrastructure/bootstrap.lua',
 ];
 const assetPaths = [
+    ['war3mapMap.blp', 'src/assets/preview/war3mapMap.blp'],
+    ['war3mapPreview.tga', 'src/assets/preview/war3mapPreview.tga'],
     ['JTGOverlay\\HeroesXPRing.dds', 'src/assets/overlay/HeroesXPRing.dds'],
     ['JTGMenu\\EconomyAndWorkers.dds', 'src/assets/menu/EconomyAndWorkers.dds'],
     ['JTGMenu\\HeroesTutorial.dds', 'src/assets/menu/HeroesTutorial.dds'],

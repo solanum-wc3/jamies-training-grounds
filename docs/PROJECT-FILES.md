@@ -53,6 +53,6 @@ Embedded CustomKeys data remains committed, although player-facing exports are d
 
 `src/generated/exercise-briefings.lua` and `heroes-tutorial.lua` are refreshed by the build from maintained text/JSON. Hotkey catalogue and sound data have dedicated preparation tools. The two small Hotkey audit default tables support fresh development builds; local generated bindings/history under `work/` override them without becoming production inputs. Do not commit a player's diagnostic reports or local binding fixture merely to make a build succeed.
 
-The map preview source is `reference/legacy/arthas-jaina-preview.png`, with `war3mapPreview.tga` alongside it. Current builds inherit the browser artwork as `war3mapMap.blp` from the accepted foundation; the terrain minimap is restored separately in game.
+The maintained map-selection artwork is `design/map-preview/map-selection.png`. Run `tools/prepare-map-preview.py` to generate `src/assets/preview/war3mapMap.blp` (Reforged browser) and `war3mapPreview.tga` (preview fallback). The builder packages these explicitly. The original artwork remains immutable under `reference/legacy/`; `war3mapMap_ingame.blp` remains the foundation's terrain minimap and is restored separately in game. Artwork-only preparation does not replace a published release artifact.
 
 Unused Camera settings screenshot textures and their generator/build entries were removed after their Quest icons changed to native Reveal and Peon icons. The distributed beta1 map is unchanged; subsequent builds omit these unused assets.
