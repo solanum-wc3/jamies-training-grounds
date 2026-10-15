@@ -16,6 +16,8 @@ The item-section dummy defaults to Neutral. Switching the comparison dummy to Ne
 
 ## Standard lifecycle
 
+Alpha60 separates building baseline leases from native blight-source ownership. Alpha59's sound/control changes were accepted, but its delayed cleanup skipped cells reacquired by ordinary replacement buildings. Blight-only cleanup now remains eligible there; tiles and variation stay protected while the replacement is alive. A new blight source or explicit terrain writer still blocks obsolete cleanup. See [alpha60 testing](ALPHA60-TESTING.md).
+
 Alpha59 configures player 6's shared control for player 0 before play. The faction is reserved for hostile Target Dummies; Heroes changes/restores hostility but leaves control permission untouched. Alpha58 native isolation confirmed that runtime permission changes emit the upkeep cue. Food/XP were not the source. Optional XP Numbers uses generated building copies without ground texture, preserving stock gameplay objects and original display values. Native config persistence, grass rendering and dummy controls await alpha59 acceptance.
 
 Alpha57 retires inactive showcase actors rather than retaining hidden spreading buildings; returning recreates the showcase. Scene terrain leases restore original tiles, variation and blight after actor disposal. XP groups containing buildings use two rows with 576-unit cells and grid-aligned centers; summons and their captions have 200 additional vertical units of separation. Attack Dice uses roster metadata rather than hidden showcase actors.

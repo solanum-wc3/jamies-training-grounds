@@ -1,6 +1,10 @@
-# Development checkpoint: v0.1.3-alpha59
+# Development checkpoint: v0.1.3-alpha60
 
-Updated 15 October 2026. The public release remains v0.1.2-beta1; its download links and v0.1.2 patch notes are unchanged. Alpha59 is a testing build, not a completed milestone or a public release.
+Updated 16 October 2026. The public release remains v0.1.2-beta1; its download links and v0.1.2 patch notes are unchanged. Alpha60 is a testing build, not a completed milestone or a public release.
+
+## Alpha60: replacement buildings no longer block old blight cleanup
+
+Alpha59 native feedback accepts the other focused fixes but shows residual blight. The report drops from 663 immediate cells to 204 delayed cells because 459 acquire replacement building leases. These ordinary leases incorrectly suppressed blight cleanup. Separate native blight-source reservations from baseline retention; permit blight-only restoration with ordinary buildings still present, while protecting active sources, explicit mutations and new generations. Keep tile/variation repainting restricted to fully released cells. See [alpha60 testing](ALPHA60-TESTING.md). Added regression cases reproduce the failure and related overlaps; native rendering remains awaiting acceptance.
 
 ## Alpha59: confirmed sound source and presentation ground
 

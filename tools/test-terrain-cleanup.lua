@@ -36,6 +36,7 @@ function SetTerrainType(x,y,kind,variation,area,shape)
 end
 function SetBlightPoint(_,x,y,value) at(x,y).blight=value end
 function IsUnitIdType(raw) return raw=='ugrv' or raw=='htow' end
+function GetUnitAbilityLevel(u,raw) return u.raw=='ugrv' and raw=='Abgs' and 1 or 0 end
 function GetOwningPlayer(u) return u.owner end
 function CreateUnit(owner,raw,x,y)
  local u={owner=owner,raw=raw,x=x,y=y};live[u]=true
@@ -84,5 +85,36 @@ JTG.CreateScopedUnit(replacement,0,'ugrv',128,128,0)
 tick();tick();assert(at(128,128).blight,'Old cleanup erased a live replacement scene')
 JTG.DisposeScope(replacement);assert(not at(128,128).blight,'Replacement captured a contaminated baseline')
 tick();tick()
+-- Regression from alpha59: a passive replacement retained 459 terrain leases,
+-- wrongly suppressing the departed Undead scene's delayed blight cleanup.
+local undead=JTG.CreateScope('undead-before-human')
+JTG.CreateScopedUnit(undead,0,'ugrv',128,128,0)
+JTG.DisposeScope(undead)
+local human=JTG.CreateScope('human-replacement')
+local hall=JTG.CreateScopedUnit(human,0,'htow',128,128,0)
+at(128,128).kind='current-building-ground'
+at(128,128).blight=true
+tick()
+assert(not at(128,128).blight and not hall.removed,'Live Human building blocked departed blight cleanup')
+assert(at(128,128).kind=='current-building-ground','Old cleanup overwrote the replacement building ground')
+at(128,128).blight=true
+tick();assert(not at(128,128).blight,'Human lease suppressed the settled blight pass')
+JTG.DisposeScope(human);tick();tick()
+assert(at(128,128).kind=='grass','Baseline lost while a passive replacement retained it')
+-- An existing ordinary building also must not prevent source cleanup.
+local standing,spreading=JTG.CreateScope('standing-human'),JTG.CreateScope('concurrent-undead')
+JTG.CreateScopedUnit(standing,0,'htow',128,128,0)
+JTG.CreateScopedUnit(spreading,0,'ugrv',128,128,0)
+JTG.DisposeScope(spreading)
+assert(not at(128,128).blight,'Overlapping non-source blocked source disposal')
+tick();tick();JTG.DisposeScope(standing);tick();tick()
+-- Explicit terrain/blight writers retain conservative protection.
+local old=JTG.CreateScope('old-source')
+JTG.CreateScopedUnit(old,0,'ugrv',128,128,0);JTG.DisposeScope(old)
+local explicit=JTG.CreateScope('explicit-blight')
+JTG.ScopePreserveTerrain(explicit,0,128,128,128)
+at(128,128).blight=true;tick();tick()
+assert(at(128,128).blight,'Old cleanup erased an explicit replacement blight mutation')
+JTG.DisposeScope(explicit);tick();tick();assert(not at(128,128).blight)
 for _,timer in ipairs(timers) do assert(timer.destroyed,'Terrain cleanup timer leaked') end
 print('Passed: pre-spawn terrain snapshots, overlapping scope leases, source removal, ownership changes, original blight, tile variation and repeated scene cleanup.')

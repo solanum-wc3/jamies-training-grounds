@@ -56,6 +56,8 @@ Create native actors through `JTG.CreateScopedUnit` (or the Tutorial scene wrapp
 
 Released terrain receives bounded next-tick and half-second post-removal checks for late native writes. Its baseline remains available during that interval; cell generations prevent old callbacks from affecting replacement scenes. These timers intentionally outlive a disposed scene, own no scene actors and destroy themselves after the final check.
 
+Baseline retention is separate from blight-write ownership. A non-spreading replacement building must not block cleanup of departed blight; it only blocks repainting its live tile/variation. `CreateScopedUnit` tracks native blight abilities after creation, registering source release before unit tracking so reverse disposal removes the source first. Explicit `ScopePreserveTerrain` calls reserve mutation ownership by default; ordinary building capture uses a read-only baseline lease until source detection.
+
 Check first entry, Continue, Back, Topics, Menu/Resume, pause, exit and save/load. Include assertions that presentation operations do not create units or issue orders, that delayed actions cannot affect another step, and that neutral demonstrations grant control only for practice. Native movement, construction and combat still require an in-game pass.
 
 ## Reference-first implementation

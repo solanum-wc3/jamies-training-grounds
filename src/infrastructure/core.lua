@@ -196,8 +196,11 @@ end
 -- Capture terrain before a structure can apply blight. Do not move capture
 -- into ScopeTrackUnit: its CreateUnit argument has already been evaluated.
 function JTG.CreateScopedUnit(scope,owner,raw,x,y,facing)
-    if JTG.PreserveUnitTerrain then JTG.PreserveUnitTerrain(scope,owner,raw,x,y) end
-    return JTG.ScopeTrackUnit(scope,CreateUnit(owner,raw,x,y,facing))
+    local terrain
+    if JTG.PreserveUnitTerrain then terrain=JTG.PreserveUnitTerrain(scope,owner,raw,x,y) end
+    local unit=CreateUnit(owner,raw,x,y,facing)
+    if terrain and JTG.TrackTerrainBlightSource then JTG.TrackTerrainBlightSource(scope,unit,terrain) end
+    return JTG.ScopeTrackUnit(scope,unit)
 end
 
 local function SnapshotWorldUnits()
