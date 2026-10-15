@@ -43,6 +43,8 @@ GROUPS = [
     ['surrounds-formation'],
     ['catalog-layout'],
     ['windwalk-hero-order'],
+    ['course-progression'],
+    ['power-building'],
     ['native-log-handoff'],
     ['dodge-timing'],
     ['dodge-timing-batch'],

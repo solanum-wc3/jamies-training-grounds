@@ -405,7 +405,9 @@ for count=1,4 do
         local counts={}
         for _,walker in ipairs(group.units) do
             counts[walker.unit.code]=(counts[walker.unit.code] or 0)+1
-            assert(walker.unit.color==({1,0,3,2})[walker.raceIndex])
+            -- Project convention: Human blue, Orc red, Night Elf teal,
+            -- Undead purple. Keep this independent of the activity's table.
+            assert(walker.unit.color==({1,0,2,3})[walker.raceIndex])
             if layout~=1 then
                 local region=group.regions[walker.raceIndex]
                 assert(walker.unit.x>region.minX and walker.unit.x<region.maxX)

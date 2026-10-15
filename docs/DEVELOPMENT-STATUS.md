@@ -25,6 +25,8 @@ Detailed behavior remains in the relevant activity documents. Historical audits 
 
 The checkpoint is checked with Lua assembly validation, authored-briefing/data checks, 39 Lua regression fixtures and both packaging modes. Fresh-checkout build inputs are checked separately. These validate source, resource ownership, navigation and packaging; they do not establish Warcraft engine behavior.
 
+The subsequent [15 October source review](RELIABILITY-REVIEW-2026-10-15.md) extends the suite to 41 fixtures and corrects Reflex's Night Elf/Undead palette in source. Its maintenance builds are isolated under `work/`; the installed alpha49 remains unchanged. Wording proposals and conditional presentation/reset findings are recorded for review, not silently applied. The follow-up [legacy Demo Mode assessment](DEMO-MODE-PORT-REVIEW.md) is planning only.
+
 The user is testing alpha49. Highest-priority outstanding checks:
 
 1. Heroes: both comparison Archmages have levels 1/10; +/− work, preserve position/inventory and clear skills when lowering. Armor is visible and Night Elf heroes remain visible in daytime.

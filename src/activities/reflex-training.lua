@@ -12,8 +12,8 @@ local TARGETS = {"hfoo", "hfoo", "hmpr", "hkni"}
 local CUE_TICK, CUE_HOLD, CUE_MOVE = 0.02, 0.4, 0.3
 local RACES = {{id='human',name='Human',symbol='Human',color=1},
     {id='orc',name='Orc',symbol='Orc',color=0},
-    {id='nightelf',name='Night Elf',symbol='NightElf',color=3},
-    {id='undead',name='Undead',symbol='Undead',color=2}}
+    {id='nightelf',name='Night Elf',symbol='NightElf',color=2},
+    {id='undead',name='Undead',symbol='Undead',color=3}}
 -- Native ability IDs, order strings and buff IDs verified against the installed
 -- AbilityData.slk and the melee hotkey catalogue. No aura effects are included.
 JTG.ReflexEffects = {
