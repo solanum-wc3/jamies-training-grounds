@@ -22,7 +22,7 @@ const luaParser = req('luaparse');
 require('./prepare-exercise-briefings.cjs').prepare();
 require('./prepare-heroes-tutorial.cjs').prepare();
 
-const version = 'v0.1.3-alpha51';
+const version = 'v0.1.3-alpha56';
 const modeArgument = process.argv.find(argument => argument.startsWith('--mode='));
 const buildMode = modeArgument ? modeArgument.slice('--mode='.length) : 'release';
 assert(['release', 'development'].includes(buildMode),
@@ -102,6 +102,8 @@ const assetPaths = [
     ['JTGMenu\\HeroesTutorial.dds', 'src/assets/menu/HeroesTutorial.dds'],
     ['JTGMenu\\ArmorPlus.dds', 'src/assets/menu/ArmorPlus.dds'],
     ['JTGMenu\\ArmorMinus.dds', 'src/assets/menu/ArmorMinus.dds'],
+    ...['Unarmed','Light','Medium','Heavy','Building','Hero'].map(name=>
+        [`JTGMenu\\Armor${name}.dds`, `src/assets/menu/Armor${name}.dds`]),
     ['JTGMenu\\GargoyleSurrounds.dds', 'src/assets/menu/GargoyleSurrounds.dds'],
     ['JTGMenu\\GargoyleSurroundsBriefing.dds', 'src/assets/menu/GargoyleSurroundsBriefing.dds'],
     ['JTGMenu\\CombatMicro.dds', 'src/assets/menu/CombatMicro.dds'],

@@ -3,6 +3,7 @@ JTG={UI={epoch=1,exercisePaused=false}};PLAYER_NEUTRAL_PASSIVE=15;PLAYER_NEUTRAL
 PLAYER_COLOR_BLUE,PLAYER_COLOR_RED,PLAYER_COLOR_CYAN,PLAYER_COLOR_PURPLE,PLAYER_COLOR_LIGHT_GRAY=1,0,2,3,8
 local units,items,timers,images,tags,sounds,pans,triggers={}, {}, {}, {}, {}, {}, {}, {}
 local eventUnit,eventAbility
+local createdFrames,questFlashes={},0
 function GetTriggerUnit() return eventUnit end
 function GetSpellAbilityId() return eventAbility end
 local selected
@@ -29,6 +30,7 @@ function BlzGetUnitMaxHP(u) return u.hp end
 function BlzSetUnitMaxHP(u,v) u.hp=v end
 function GetOwningPlayer(u) return u.owner end
 function SetUnitOwner(u,v) u.owner=v end
+function SetUnitUseFood(u,value) u.useFood=value end
 function SetUnitColor(u,v) u.color=v end
 function SetUnitAcquireRange(u,v) u.acquire=v end
 function SetUnitCreepGuard() end
@@ -50,14 +52,25 @@ function GetHeroLevel(u) return u.level end
 function SetHeroXP(u,v) u.xp=v end
 function SetUnitState(u,_,v) u.mana=v end
 function GetUnitState() return 1000 end
-function GetPlayerHandicapXP() return .8 end
-function SetPlayerHandicapXP() end
+local xpHandicap,xpHandicapWrites=1,0
+function GetPlayerHandicapXP() return xpHandicap end
+function SetPlayerHandicapXP(_,value) xpHandicap=value;xpHandicapWrites=xpHandicapWrites+1 end
 function SelectHeroSkill(u,raw) if u.points>0 then u.abilities[raw]=(u.abilities[raw] or 0)+1;u.points=u.points-1 end end
 function GetUnitAbilityLevel(u,raw) return u.abilities[raw] or 0 end
 function UnitAddAbility(u,raw) u.abilities[raw]=1 end
 UNIT_IF_DEFENSE_TYPE='defenseType'
 function BlzSetUnitIntegerField(u,field,value) assert(field==UNIT_IF_DEFENSE_TYPE);u.defenseType=value;return true end
 function BlzSetUnitArmor(u,value) u.armor=value end
+ABILITY_SLF_TOOLTIP_NORMAL_EXTENDED='extendedTooltip'
+function BlzGetUnitAbility(u,raw)
+ if raw~='JHdP' and raw~='JHdM' then return nil end
+ u.tooltipAbilities=u.tooltipAbilities or {}
+ u.tooltipAbilities[raw]=u.tooltipAbilities[raw] or {}
+ return u.tooltipAbilities[raw]
+end
+function BlzSetAbilityStringLevelField(ability,field,level,text)
+ assert(field==ABILITY_SLF_TOOLTIP_NORMAL_EXTENDED and level==0);ability.text=text;return true
+end
 function BlzUnitHideAbility(u,raw,hidden) assert(raw=='ACsk' and hidden);u.hiddenResistance=true end
 function UnitMakeAbilityPermanent() end
 function UnitRemoveAbility(u,raw) u.abilities[raw]=nil end
@@ -110,12 +123,14 @@ function QuestSetRequired() end
 function QuestSetDiscovered(q,v) q.discovered=v end
 function QuestSetEnabled() end
 function BlzGetAbilityIcon(raw) return raw end
-function BlzCreateFrameByType(_,name) return {name=name} end
+function BlzCreateFrameByType(_,name)
+ local frame={name=name};createdFrames[#createdFrames+1]=frame;return frame
+end
 function BlzCreateFrame() return {} end
 function BlzDestroyFrame(f) f.removed=true end
 function BlzFrameSetSize(f,w,h) f.width=w;f.height=h end
-function BlzFrameSetAbsPoint() end
-function BlzFrameSetPoint() end
+function BlzFrameSetAbsPoint(frame,point,x,y) frame.absolute={point,x,y} end
+function BlzFrameSetPoint(frame,point,target,targetPoint,x,y) frame.anchor={point,target,targetPoint,x,y} end
 function BlzFrameSetAllPoints() end
 function BlzFrameSetText(f,v) f.text=v end
 function BlzFrameSetVisible(f,v) f.visible=v end
@@ -143,9 +158,12 @@ function FirstOfGroup(g) return g[1] end
 function GroupRemoveUnit(g,u) for i,x in ipairs(g) do if x==u then table.remove(g,i);return end end end
 function DestroyGroup() end
 function RemoveRect() end
-local resources={}
+local resources={foodcap=100,foodmax=100}
 function GetPlayerState(_,state) return resources[state] or 0 end
-function SetPlayerState(_,state,value) resources[state]=value end
+function SetPlayerState(_,state,value)
+ assert(state~='foodcap' and state~='foodmax','Heroes must leave food limits untouched')
+ resources[state]=value
+end
 function GetPlayerAlliance() return true end
 function SetPlayerAlliance() end
 local time,scale=0,1
@@ -154,7 +172,7 @@ function GetFloatGameState() return time end
 function SetFloatGameState(_,v) time=v end
 function GetTimeOfDayScale() return scale end
 function SetTimeOfDayScale(v) scale=v end
-function FlashQuestDialogButton() end
+function FlashQuestDialogButton() questFlashes=questFlashes+1 end
 function JTG.UI.SetQuestAvailable(v) JTG.UI.questAvailable=v end
 function JTG.UI.HideToolbar() end
 function JTG.UI.PlayFeedbackSound(cue) sounds[#sounds+1]=cue end
@@ -194,9 +212,20 @@ JTG.Controller.generation=session.generation
 local function step(id) for i,row in ipairs(JTG.HeroesScript.steps) do if row.id==string.format('heroes.%03d',id) then return i end end;error('Missing test stop '..id) end
 activity:setup(session);activity:start()
 assert(time==12 and scale==0 and not JTG.UI.questAvailable)
+assert(xpHandicapWrites==0 and resources.foodcap==100 and resources.foodmax==100)
+assert(activity.frames.topicsMenu.width==.185 and activity.frames.topicsMenu.height==JTG.TutorialMenuHeight(8))
+assert(activity.frames.optionalMenu.width==.185 and activity.frames.optionalMenu.height==JTG.TutorialMenuHeight(2))
+for _,frame in ipairs(createdFrames) do
+ assert(not frame.name:find('QuestHint',1,true),'Heroes created a second Quest highlight')
+ assert(not frame.name:find('Title',1,true),'Heroes popup has a nonstandard title')
+ if frame.name:find('JTGHeroestopics9',1,true) or frame.name:find('JTGHeroesoptional3',1,true) then
+  assert(frame.width==.10 and frame.height==.026 and frame.anchor[5]==.025,'Close is not in the standard footer')
+ end
+end
 assert(#activity.groups==5 and #units==30)
 assert(pans[#pans].x==4864 and pans[#pans].y==3456,'Showcase did not move to Arena1')
 for index,u in ipairs(units) do assert(u.owner==15 and (index<=5)==(buildings[u.raw]==true));if index>5 then assert(u.level==10) end end
+for _,u in ipairs(units) do assert(u.useFood==false,'Instructional unit contributes to upkeep') end
 local human,orc,undead,elf,tavern=table.unpack(activity.groups)
 assert(orc.x-human.x==900 and undead.x-orc.x==900 and orc.y-elf.y==600)
 assert(elf.color==2 and undead.color==3 and human.color==1 and orc.color==0 and tavern.color==8)
@@ -221,20 +250,30 @@ assert(not dummy.level and dummy.raw=='jHdm' and dummy.defenseType==2 and dummy.
  'Dummy is classified as a hero or has the wrong initial defense')
 assert(activity:adjustDummyArmor(dummy,1) and dummy.armor==1)
 assert(activity:adjustDummyArmor(dummy,-1) and activity:adjustDummyArmor(dummy,-1) and dummy.armor==-1)
+assert(dummy.tooltipAbilities.JHdP.text=='Current: -1' and dummy.tooltipAbilities.JHdM.text=='Current: -1')
 for _,defense in ipairs({3,5,7,0,1,2}) do
  assert(activity:adjustDummyArmor(dummy) and dummy.defenseType==defense and dummy.armor==-1)
  assert((dummy.abilities.ACsk~=nil)==(defense==5),'Hero-duration resistance leaked across armor types')
  if defense==5 then assert(dummy.hiddenResistance,'Passive resistance obscures Raise Armor') end
 end
 assert(activity:setDummyHostile(dummy,false) and dummy.owner==0)
+assert(dummy.abilities.JHdN and not dummy.abilities.JHdH,'Neutral dummy shows two mode buttons')
 assert(activity.actors[1].order=='stop' and activity.actors[2].order=='stop')
 assert(activity:setDummyHostile(dummy,true) and dummy.owner==6)
+assert(dummy.abilities.JHdH and not dummy.abilities.JHdN,'Hostile dummy shows two mode buttons')
 assert(activity.actors[1].order=='attack' and activity.actors[1].target==dummy)
 assert(not activity:setDummyHostile(activity.actors[1],true), 'Non-dummy changed faction')
+activity:showStep(step(9));activity:continueTutorial()
+assert(not activity.dummies[1].hostile and activity.actors[1].order=='stop',
+ 'Archmage dummy stayed hostile after the attack-speed narration')
+activity:restoreCheckpoint(step(9))
+assert(activity.dummies[1].hostile,'Back did not restore the attack-speed demonstration')
+dummy=activity.dummies[1].unit
+activity:adjustDummyArmor(dummy,-1)
 for _,t in ipairs(triggers) do
  if t.events[1] and t.events[1].event=='spellEffect' then
-  eventUnit,eventAbility=dummy,'JHdN';t.fn();assert(dummy.owner==0)
-  eventAbility='JHdH';t.fn();assert(dummy.owner==6)
+  eventUnit,eventAbility=dummy,'JHdH';t.fn();assert(dummy.owner==0)
+  eventAbility='JHdN';t.fn();assert(dummy.owner==6)
   eventAbility='JHdP';t.fn();assert(dummy.armor==0)
   eventAbility='JHdM';t.fn();assert(dummy.armor==-1)
   eventAbility='JHa3';t.fn();assert(dummy.defenseType==3)
@@ -258,6 +297,7 @@ activity:changeHeroLevel(-1)
 assert(old.removed and record.unit.x==old.x and record.unit.y==old.y and record.unit.level==1 and not record.unit.abilities.AHbz and record.unit.inventory[0]==carried)
 assert(record.unit.order=='stop' and record.unit.acquire==0 and not record.unit.invulnerable)
 activity:restoreCheckpoint(step(25));assert(activity.xpQuest.discovered and JTG.UI.questAvailable and #sounds==1 and sounds[1]=='quest')
+assert(questFlashes==1,'Quest unlock must use exactly one native flash')
 assert(images[#images].w==2400 and images[#images].h==2400 and images[#images].visible)
 for _,group in ipairs(activity.groups) do for _,hero in ipairs(group.heroes) do assert(hero.owner==15 and hero.suspended and hero.hidden) end end
 activity:restoreCheckpoint(step(28));assert(#activity.actors==8 and activity.gnoll.raw=='ngno')
@@ -270,7 +310,11 @@ assert(activity.narrationBlocks[1]:find('using your entire army',1,true))
 activity:showStep(step(40));assert(math.abs(activity.mountainKing.x-4864)>1200 and activity.paladin.xp==465)
 activity:openOptional('xp');assert(activity.worldScene=='xp-numbers' and #activity.actors==10 and #sounds==1)
 assert(activity.actors[1].raw=='Hpal' and activity.actors[1].skin=='Hart' and activity.actors[10].skin=='Harf')
-for i,u in ipairs(activity.actors) do assert(u.level==i and u.owner==15) end
+for i,u in ipairs(activity.actors) do
+ assert(u.level==i and u.owner==15)
+ assert(u.x==activity.practiceArena.centerX+((i-1)%5-2)*300)
+ assert(u.y==activity.practiceArena.centerY+350-math.floor((i-1)/5)*700)
+end
 local optionalActors=activity.actors;activity:selectXPDisplay('orc')
 for _,group in ipairs(activity.xpColumns) do
  for _,summon in ipairs(group.summons) do assert(summon.level==group.level and group.food==group.level) end
@@ -333,4 +377,15 @@ for _,i in ipairs(images) do assert(i.removed,'XP circle leaked') end
 for _,tag in ipairs(tags) do assert(tag.removed,'Showcase label leaked') end
 for _,item in ipairs(items) do if item~=carried then assert(item.removed,'Ground item leaked') end end
 assert(time==0 and scale==1,'Daytime lock leaked after exit')
+assert(xpHandicapWrites==0,'Unchanged XP rate was rewritten during setup/cleanup')
+-- Non-default XP rates still receive the correct demonstration rate and are
+-- restored on exit; normal entries must not call the native setter at all.
+xpHandicap=.8
+local alternate={active=true,scope=JTG.CreateScope('heroes-handicap'),
+ presentationScope=JTG.CreateScope('heroes-handicap-ui'),generation=2}
+local alternateActivity=JTG.CreateHeroesTutorialActivity(alternate)
+alternate.activity=alternateActivity;JTG.Controller.session=alternate
+alternateActivity:setup(alternate);assert(xpHandicap==1 and xpHandicapWrites==1)
+alternateActivity:cleanup();JTG.DisposeScope(alternate.presentationScope);JTG.DisposeScope(alternate.scope)
+assert(xpHandicap==.8 and xpHandicapWrites==2)
 print('Passed: 47 authored Hero stops, two optional topics, native rosters/skills, 1200-radius XP scenes, level controls, shops/items, fixed camera tours, ownership isolation, checkpoint replay and complete cleanup.')

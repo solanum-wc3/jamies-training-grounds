@@ -10,6 +10,7 @@ PLAYER_STATE_RESOURCE_GOLD,PLAYER_STATE_RESOURCE_LUMBER='gold','lumber'
 PLAYER_STATE_GOLD_GATHERED,PLAYER_STATE_LUMBER_GATHERED='gatheredGold','gatheredLumber'
 PLAYER_STATE_RESOURCE_HERO_TOKENS='heroTokens'
 EVENT_PLAYER_UNIT_TRAIN_FINISH,EVENT_PLAYER_UNIT_CONSTRUCT_START='train','construct'
+EVENT_PLAYER_UNIT_TRAIN_START,EVENT_PLAYER_UNIT_TRAIN_CANCEL='train-start','train-cancel'
 EVENT_PLAYER_UNIT_CONSTRUCT_FINISH,EVENT_PLAYER_UNIT_CONSTRUCT_CANCEL='built','cancelled'
 EVENT_PLAYER_UNIT_ISSUED_ORDER,EVENT_PLAYER_UNIT_ISSUED_POINT_ORDER,EVENT_PLAYER_UNIT_ISSUED_TARGET_ORDER='order','point','target'
 ALLIANCE_PASSIVE,MAP_CONTROL_COMPUTER='passive','computer'
@@ -95,9 +96,16 @@ function GetOrderPointX() return pointX end
 function GetOrderPointY() return pointY end
 function GetIssuedOrderId() return order end
 function GetTrainedUnit() return created end
+function GetTrainedUnitType() return created.raw end
 function GetConstructingStructure() return created end
 function GetConstructedStructure() return created end
 function GetCancelledStructure() return created end
+UNIT_TYPE_STRUCTURE='structure'
+function IsUnitType(u,kind)
+ return kind==UNIT_TYPE_STRUCTURE and (u.raw=='htow' or u.raw=='ogre' or u.raw=='hbar')
+end
+function GetUnitRallyUnit(u) return u.rallyUnit end
+function GetUnitRallyDestructable(u) return u.rallyTree end
 function ClearSelection() end
 function SetCameraPosition() end
 function JTG.UI.ShowToolbar() end
@@ -231,6 +239,50 @@ worker=lane.hall;order='TEST';denied='TEST';fire('order')
 order='TIER';fire('order');run:updateBuildMirror()
 assert(reference.hall.order=='hpea','Later economic action bypassed the unaffordable queue head')
 denied=nil;run:updateBuildMirror();assert(reference.hall.order=='TIER','Research/upgrade did not retry')
+-- Native dispatch can return true without starting production. Keep the job
+-- pending, retry only while idle, and never replay it during real training.
+worker=lane.hall;order='hpea';denied='hpea';fire('order');run:updateBuildMirror()
+local pending=mirror.jobs[#mirror.jobs]
+assert(not pending.issued and not pending.done,'Rejected training was discarded')
+denied=nil;run:updateBuildMirror()
+assert(pending.issued and not pending.done,'Unconfirmed training was discarded')
+reference.hall.order=0;run:updateBuildMirror();assert(not pending.issued and not pending.done)
+run:updateBuildMirror();assert(pending.issued and not pending.done,'Idle unconfirmed training was not retried')
+worker=reference.hall;created={raw='hpea'};fire('train-start')
+assert(pending.done and pending.confirmed and mirror.training[reference.hall]==pending)
+worker=lane.hall;order='hpea';fire('order');run:updateBuildMirror()
+local queued=mirror.jobs[#mirror.jobs]
+reference.hall.order=0;run:updateBuildMirror()
+assert(queued.issued and not queued.done,'Queued training was retried during active production')
+worker=reference.hall;created={raw='hpea'};fire('train-start')
+assert(queued.confirmed and queued.done and mirror.training[reference.hall]==queued)
+created=CreateUnit(reference.owner,'hpea',0,0);fire('train')
+assert(mirror.training[reference.hall]==queued,'Prior completion erased the next active training')
+created=CreateUnit(reference.owner,'hpea',0,0);fire('train')
+assert(not mirror.training[reference.hall])
+worker=lane.hall;created=CreateUnit(0,'hpea',0,0);fire('train')
+created=CreateUnit(0,'hpea',0,0);fire('train')
+-- A right-click on a mine is a rally action for buildings, not a worker
+-- harvest click. A worker finishing later follows the actual native rally.
+worker=lane.hall;order='smart';target=lane.mine;targetTree=nil;fire('target')
+run:updateBuildMirror()
+assert(reference.hall.target==reference.mine,'Right-click mine rally was not translated')
+lane.hall.rallyUnit=lane.mine
+order='hpea';fire('order');run:updateBuildMirror()
+worker=lane.hall;created=CreateUnit(0,'hpea',0,0);fire('train');local rallied=created
+worker=reference.hall;created=CreateUnit(reference.owner,'hpea',0,0);fire('train')
+run:updateBuildMirror()
+assert(mirror.pairs[rallied]==created and created.target==reference.mine,
+ 'New reference worker did not follow the native gold rally')
+-- The actual rally can differ from a stale cached resource or move to ground.
+worker=lane.hall;order='hpea';lane.hall.rallyUnit=nil;lane.hall.rallyTree=lane.tree
+fire('order');run:updateBuildMirror()
+created=CreateUnit(0,'hpea',0,0);fire('train');local lumberRallied=created
+worker=reference.hall;created=CreateUnit(reference.owner,'hpea',0,0);fire('train')
+run:updateBuildMirror();assert(mirror.pairs[lumberRallied].target==reference.tree)
+worker=lane.hall;order='smart';target=nil;pointX,pointY=lane.hall.x+200,lane.hall.y+300
+fire('point');run:updateBuildMirror()
+assert(reference.hall.pointX==pointX+reference.mineX-lane.mineX and not mirror.rallies[lane.hall])
 run:setPaused(true);worker=lane.workers[2];target=nil;targetTree=lane.tree;order='harvest';fire('target')
 local copy=mirror.pairs[worker];local old=copy.target
 run:updateBuildMirror();assert(copy.target==old,'Paused mirror advanced')

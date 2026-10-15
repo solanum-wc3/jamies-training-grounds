@@ -123,6 +123,7 @@ Unlike regular units, heroes have three attributes: {Term: Strength}, {Term: Agi
 Each hero has different starting attribute values and gains attribute points at different rates.
 
 Scene: `archmages-target`.
+Trigger: Set the Archmage target dummy to Neutral after the attack-speed comparison.
 Progression: Continue.
 
 Your notes:
@@ -623,14 +624,15 @@ XP from {Term: Regular Player Units} depends on their level, which is often equa
 - level 4 -> 85 XP
 - level 5 -> 115 XP
 - level 6 -> 150 XP
+
 XP from {Term: Summons} is halved.
+
 Experience gained from {Term: Creeps} depends on your hero's level:
 - Level 1: {Yellow Font: 80%}
 - Level 2: {Yellow Font: 70%}
 - Level 3: {Yellow Font: 60%}
 - Level 4: {Yellow Font: 50%}
 - Level 5 and above: {Yellow Font: 0%}
-
 These percentages apply to the hero's share of the experience. Heroes at level 5 or above still take a share when experience is divided, but gain no experience from it.
 
 XP from {Term: Enemy Heroes} also depends on their level:

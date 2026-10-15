@@ -119,7 +119,8 @@
         "Spawn in a little straw man as an enemy unit training dummy with infinite health, and have the Archmages attack it."
       ],
       "scene": "archmages-target",
-      "sectionEnd": false
+      "sectionEnd": false,
+      "dummyHostile": true
     },
     {
       "id": "heroes.009",
@@ -131,7 +132,8 @@
       ],
       "authorTriggers": [],
       "scene": "archmages-target",
-      "sectionEnd": false
+      "sectionEnd": false,
+      "dummyHostile": true
     },
     {
       "id": "heroes.011",
@@ -142,9 +144,12 @@
         "Unlike regular units, heroes have three attributes: {Term: Strength}, {Term: Agility} and {Term: Intelligence}.",
         "Each hero has different starting attribute values and gains attribute points at different rates."
       ],
-      "authorTriggers": [],
+      "authorTriggers": [
+        "Set the Archmage target dummy to Neutral after the attack-speed comparison."
+      ],
       "scene": "archmages-target",
-      "sectionEnd": false
+      "sectionEnd": false,
+      "dummyHostile": false
     },
     {
       "id": "heroes.012",
@@ -155,7 +160,8 @@
       ],
       "authorTriggers": [],
       "scene": "archmages-target",
-      "sectionEnd": false
+      "sectionEnd": false,
+      "dummyHostile": false
     },
     {
       "id": "heroes.013",
@@ -166,7 +172,8 @@
       ],
       "authorTriggers": [],
       "scene": "archmages-target",
-      "sectionEnd": false
+      "sectionEnd": false,
+      "dummyHostile": false
     },
     {
       "id": "heroes.014",
@@ -180,7 +187,8 @@
       ],
       "authorTriggers": [],
       "scene": "archmages-target",
-      "sectionEnd": false
+      "sectionEnd": false,
+      "dummyHostile": false
     },
     {
       "id": "heroes.015",
@@ -193,7 +201,8 @@
       ],
       "authorTriggers": [],
       "scene": "archmages-target",
-      "sectionEnd": false
+      "sectionEnd": false,
+      "dummyHostile": false
     },
     {
       "id": "heroes.016",
@@ -206,7 +215,8 @@
       ],
       "authorTriggers": [],
       "scene": "archmages-target",
-      "sectionEnd": false
+      "sectionEnd": false,
+      "dummyHostile": false
     },
     {
       "id": "heroes.017",
@@ -218,7 +228,8 @@
       ],
       "authorTriggers": [],
       "scene": "archmages-target",
-      "sectionEnd": false
+      "sectionEnd": false,
+      "dummyHostile": false
     },
     {
       "id": "heroes.018",
@@ -231,7 +242,8 @@
       ],
       "authorTriggers": [],
       "scene": "archmages-target",
-      "sectionEnd": false
+      "sectionEnd": false,
+      "dummyHostile": false
     },
     {
       "id": "heroes.019",
@@ -243,7 +255,8 @@
       ],
       "authorTriggers": [],
       "scene": "archmages-target",
-      "sectionEnd": false
+      "sectionEnd": false,
+      "dummyHostile": false
     },
     {
       "id": "heroes.020",
@@ -257,7 +270,8 @@
       ],
       "authorTriggers": [],
       "scene": "archmages-target",
-      "sectionEnd": false
+      "sectionEnd": false,
+      "dummyHostile": false
     },
     {
       "id": "heroes.021",
@@ -269,7 +283,8 @@
       ],
       "authorTriggers": [],
       "scene": "archmages-target",
-      "sectionEnd": false
+      "sectionEnd": false,
+      "dummyHostile": false
     },
     {
       "id": "heroes.022",
@@ -281,7 +296,8 @@
       ],
       "authorTriggers": [],
       "scene": "archmages-target",
-      "sectionEnd": false
+      "sectionEnd": false,
+      "dummyHostile": false
     },
     {
       "id": "heroes.023",
@@ -292,7 +308,8 @@
       ],
       "authorTriggers": [],
       "scene": "archmages-target",
-      "sectionEnd": true
+      "sectionEnd": true,
+      "dummyHostile": false
     },
     {
       "id": "heroes.024",
@@ -729,5 +746,5 @@
       }
     ]
   },
-  "quest": "Heroes require 100 times the new level in experience.\nSo getting from level 1 to level 2 requires 200 XP, while getting from level 5 to level 6 requires 600 XP.\n\nXP from {Term: Regular Player Units} depends on their level, which is often equal to their food cost:\n- level 1 -> 25 XP\n- level 2 -> 40 XP\n- level 3 -> 60 XP\n- level 4 -> 85 XP\n- level 5 -> 115 XP\n- level 6 -> 150 XP\nXP from {Term: Summons} is halved.\nExperience gained from {Term: Creeps} depends on your hero's level:\n- Level 1: {Yellow Font: 80%}\n- Level 2: {Yellow Font: 70%}\n- Level 3: {Yellow Font: 60%}\n- Level 4: {Yellow Font: 50%}\n- Level 5 and above: {Yellow Font: 0%}\n\nThese percentages apply to the hero's share of the experience. Heroes at level 5 or above still take a share when experience is divided, but gain no experience from it.\n\nXP from {Term: Enemy Heroes} also depends on their level:\n- level 1 -> 100 XP\n- level 2 -> 120 XP\n- level 3 -> 160 XP\n- level 4 -> 220 XP\n- level 5 -> 300 XP\nAny level above 5 adds another 100 XP."
+  "quest": "Heroes require 100 times the new level in experience.\nSo getting from level 1 to level 2 requires 200 XP, while getting from level 5 to level 6 requires 600 XP.\n\nXP from {Term: Regular Player Units} depends on their level, which is often equal to their food cost:\n- level 1 -> 25 XP\n- level 2 -> 40 XP\n- level 3 -> 60 XP\n- level 4 -> 85 XP\n- level 5 -> 115 XP\n- level 6 -> 150 XP\n\nXP from {Term: Summons} is halved.\n\nExperience gained from {Term: Creeps} depends on your hero's level:\n- Level 1: {Yellow Font: 80%}\n- Level 2: {Yellow Font: 70%}\n- Level 3: {Yellow Font: 60%}\n- Level 4: {Yellow Font: 50%}\n- Level 5 and above: {Yellow Font: 0%}\nThese percentages apply to the hero's share of the experience. Heroes at level 5 or above still take a share when experience is divided, but gain no experience from it.\n\nXP from {Term: Enemy Heroes} also depends on their level:\n- level 1 -> 100 XP\n- level 2 -> 120 XP\n- level 3 -> 160 XP\n- level 4 -> 220 XP\n- level 5 -> 300 XP\nAny level above 5 adds another 100 XP."
 }

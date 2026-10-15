@@ -680,7 +680,11 @@ for _,id in ipairs({'orc.opeo.build.otto','orc.Otch.learn.AOae'}) do
             trial.elapsed=1;trial:onKey(66);trial.elapsed=1.12;trial:resolveInput()
             assert(trial.incorrect==0,'Previously recognized opening key was penalized')
             trial.elapsed=2;trial:onKey(90);trial.elapsed=2.51;trial:resolveInput()
-            assert(trial.incorrect==1 and trial.submenuOpen,'Wrong entry closed submenu')
+            assert(trial.incorrect==1 and not trial.submenuOpen and not trial.skillMenuOpen,
+                'Wrong entry did not return to the main command grid')
+            trial.elapsed=3;trial:nativePrefix();trial:onKey(66)
+            trial.elapsed=3.12;trial:resolveInput()
+            assert(trial.incorrect==1 and trial.submenuOpen,'Retry opening key was penalized')
             trial.elapsed=10
         else trial.elapsed=0.51 end
         trial:nativeMatched('command-button');trial:onKey(81)

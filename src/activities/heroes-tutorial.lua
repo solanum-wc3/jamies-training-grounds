@@ -15,7 +15,7 @@ end
 T.TopicSteps(STEPS,TOPICS)
 function JTG.CreateHeroesTutorialActivity(session)
     local activity={frames={},actions={},buttonEnabled={},narrationBlocks={},groups={},actors={},dummies={},
-        presentationVisible=true,step=T.ResolveStep(STEPS,session.restartData),questHighlightRemaining=0,
+        presentationVisible=true,step=T.ResolveStep(STEPS,session.restartData),
         xpNumberChoice='hero'}
     JTG.InstallHeroesScenes(activity,session)
     function activity:clearArrow() JTG.UI.ClearWelcomeArrow(self) end
@@ -33,7 +33,6 @@ function JTG.CreateHeroesTutorialActivity(session)
         BlzFrameSetText(self.frames.pause,JTG.UI.exercisePaused and 'Unpause' or 'Pause')
         BlzFrameSetVisible(self.frames.continueHighlight,self.presentationVisible and canContinue and not self.topicsOpen and not self.optionalOpen)
         BlzFrameSetVisible(self.frames.menuHighlight,self.presentationVisible and self.complete and not self.topicsOpen and not self.optionalOpen)
-        BlzFrameSetVisible(self.frames.questHighlight,self.presentationVisible and self.questHighlightRemaining>0)
         local levels=self.presentationVisible and not self.topicsOpen and not self.optionalOpen and
             (self.worldScene=='showcase' or self.worldScene=='dice')
         for _,key in ipairs({'plus','minus'}) do BlzFrameSetVisible(self.frames[key],levels) end
@@ -52,8 +51,6 @@ function JTG.CreateHeroesTutorialActivity(session)
         self.xpQuestDiscovered=true;QuestSetDiscovered(self.xpQuest,true)
         JTG.UI.SetQuestAvailable(true)
         FlashQuestDialogButton()
-        self.questHighlightRemaining=10
-        BlzFrameSetSpriteAnimate(self.frames.questHighlight,0,0)
         JTG.UI.PlayFeedbackSound('quest');self:refreshControls()
     end
     function activity:cameraAction(action)
@@ -81,6 +78,14 @@ function JTG.CreateHeroesTutorialActivity(session)
     function activity:showStep(index)
         local step=assert(STEPS[index]);self.step=index;self.complete=step.terminal==true
         self:clearNarration();self:ensureWorld(step.scene)
+        if step.dummyHostile~=nil then
+            for _,record in ipairs(self.dummies) do
+                if record.scriptHostile~=step.dummyHostile then
+                    self:setDummyHostile(record.unit,step.dummyHostile)
+                    record.scriptHostile=step.dummyHostile
+                end
+            end
+        end
         self.narrationBlocks={T.FormatNarration(table.concat(step.lines,'\n'))}
         self:renderNarration();self:cameraAction(step.action)
         if step.checkpoint=='experience' or step.checkpoint=='xp-range' or step.checkpoint=='xp-amounts' or step.checkpoint=='items' then self:unlockXPQuest() end
@@ -142,12 +147,6 @@ function JTG.CreateHeroesTutorialActivity(session)
             {'topics','Topics',3},{'optional','Optional',4},{'continue','Continue',5},{'pause','Pause',7}})
         for _,key in ipairs({'continue','menu','pause'}) do T.CreateHighlight(self,scope,'JTGHeroes',suffix,key) end
         self.frames.welcomeArrow=JTG.UI.CreateWelcomeArrow(scope,root,self.frames.continue,'JTGHeroesWelcome'..suffix)
-        local quest=JTG.ScopeTrackFrame(scope,BlzCreateFrameByType('SPRITE','JTGHeroesQuestHint'..suffix,root,'',0))
-        local target=BlzGetFrameByName('UpperButtonBarQuestsButton',0)
-        BlzFrameSetSize(quest,.07,.026);BlzFrameSetPoint(quest,FRAMEPOINT_CENTER,target,FRAMEPOINT_CENTER,0,0)
-        BlzFrameSetModel(quest,'UI\\Feedback\\QuestButton\\UI-QuestButtonOn.mdl',0)
-        BlzFrameSetLevel(quest,3);BlzFrameSetSpriteAnimate(quest,0,0)
-        BlzFrameSetEnable(quest,false);self.frames.questHighlight=quest
         T.BindClicks(self,scope)
         self:registerClick(self.frames.menu,function() T.OpenMenu(self,'learn') end,'menu-open')
         self:registerClick(self.frames.back,function() self:goBack() end,'return')
@@ -155,17 +154,18 @@ function JTG.CreateHeroesTutorialActivity(session)
         self:registerClick(self.frames.pause,function() T.TogglePause(self) end)
         self:registerClick(self.frames.topics,function() self.topicsOpen=not self.topicsOpen;self.optionalOpen=false;self:refreshMenuVisibility() end,'menu-open')
         self:registerClick(self.frames.optional,function() self.optionalOpen=not self.optionalOpen;self.topicsOpen=false;self:refreshMenuVisibility() end,'menu-open')
-        local function panel(key,title,choices)
+        local function panel(key,choices)
             local frame=JTG.ScopeTrackFrame(scope,BlzCreateFrameByType('FRAME','JTGHeroes'..key..suffix,root,'',0))
-            BlzFrameSetSize(frame,.19,.075+#choices*.029);BlzFrameSetAbsPoint(frame,FRAMEPOINT_TOPRIGHT,.795,.50)
+            BlzFrameSetSize(frame,.185,JTG.TutorialMenuHeight(#choices-1));BlzFrameSetAbsPoint(frame,FRAMEPOINT_TOPRIGHT,.795,.50)
             local skin=JTG.ScopeTrackFrame(scope,BlzCreateFrame('EscMenuBackdrop',frame,0,2100+#choices))
             BlzFrameSetAllPoints(skin,frame);BlzFrameSetEnable(skin,false)
-            local text=JTG.ScopeTrackFrame(scope,BlzCreateFrameByType('TEXT','JTGHeroes'..key..'Title'..suffix,frame,'',0))
-            BlzFrameSetText(text,'|cffffcc00'..title..'|r');BlzFrameSetSize(text,.16,.03)
-            BlzFrameSetPoint(text,FRAMEPOINT_TOP,frame,FRAMEPOINT_TOP,0,-.007)
             for index,choice in ipairs(choices) do
-                local button=JTG.ScopeTrackFrame(scope,T.CreateButton('JTGHeroes'..key..index..suffix,frame,choice.label,.15))
-                BlzFrameSetPoint(button,FRAMEPOINT_TOP,frame,FRAMEPOINT_TOP,0,-.041-(index-1)*.029)
+                local close=index==#choices
+                local width=close and .10 or .115
+                local button=JTG.ScopeTrackFrame(scope,T.CreateButton('JTGHeroes'..key..index..suffix,frame,choice.label,width))
+                BlzFrameSetSize(button,width,.026)
+                if close then BlzFrameSetPoint(button,FRAMEPOINT_BOTTOM,frame,FRAMEPOINT_BOTTOM,0,.025)
+                else BlzFrameSetPoint(button,FRAMEPOINT_TOP,frame,FRAMEPOINT_TOP,0,-.041-(index-1)*.029) end
                 self:registerClick(button,choice.action)
             end
             self.frames[key..'Menu']=frame
@@ -173,8 +173,8 @@ function JTG.CreateHeroesTutorialActivity(session)
         local choices={}
         for _,topic in ipairs(TOPICS) do choices[#choices+1]={label=topic.label,action=function() self:restoreCheckpoint(topic.step) end} end
         choices[#choices+1]={label='Close',action=function() self.topicsOpen=false;self:refreshMenuVisibility() end}
-        panel('topics','Topics',choices)
-        panel('optional','Optional',{{label='Attack Dice',action=function() self:openOptional('dice') end},
+        panel('topics',choices)
+        panel('optional',{{label='Attack Dice',action=function() self:openOptional('dice') end},
             {label='XP Numbers',action=function() self:openOptional('xp') end},
             {label='Close',action=function() self.optionalOpen=false;self:refreshMenuVisibility() end}})
         for index,key in ipairs({'plus','minus'}) do
@@ -222,13 +222,15 @@ function JTG.CreateHeroesTutorialActivity(session)
         end
         DestroyGroup(group);RemoveRect(area)
         local oldXPHandicap=GetPlayerHandicapXP(PLAYER)
-        JTG.ScopeBorrow(current.scope,function() SetPlayerHandicapXP(PLAYER,oldXPHandicap) end)
-        SetPlayerHandicapXP(PLAYER,1)
-        for _,state in ipairs({PLAYER_STATE_RESOURCE_GOLD,PLAYER_STATE_RESOURCE_LUMBER,PLAYER_STATE_RESOURCE_FOOD_CAP,PLAYER_STATE_RESOURCE_FOOD_CAP_CEILING}) do
+        if oldXPHandicap~=1 then
+            JTG.ScopeBorrow(current.scope,function()
+                if GetPlayerHandicapXP(PLAYER)~=oldXPHandicap then SetPlayerHandicapXP(PLAYER,oldXPHandicap) end
+            end)
+            SetPlayerHandicapXP(PLAYER,1)
+        end
+        for _,state in ipairs({PLAYER_STATE_RESOURCE_GOLD,PLAYER_STATE_RESOURCE_LUMBER}) do
             local old=GetPlayerState(PLAYER,state);JTG.ScopeBorrow(current.scope,function() SetPlayerState(PLAYER,state,old) end)
         end
-        SetPlayerState(PLAYER,PLAYER_STATE_RESOURCE_FOOD_CAP_CEILING,200)
-        SetPlayerState(PLAYER,PLAYER_STATE_RESOURCE_FOOD_CAP,200)
         for _,other in ipairs({Player(1),Player(PLAYER_NEUTRAL_AGGRESSIVE)}) do
             for _,pair in ipairs({{PLAYER,other},{other,PLAYER}}) do
                 local old=GetPlayerAlliance(pair[1],pair[2],ALLIANCE_PASSIVE)
@@ -264,7 +266,7 @@ function JTG.CreateHeroesTutorialActivity(session)
         TriggerAddAction(dummyModes,JTG.GuardSession(current,function()
             local ability=GetSpellAbilityId()
             if ability==FourCC('JHdN') or ability==FourCC('JHdH') then
-                self:setDummyHostile(GetTriggerUnit(),ability==FourCC('JHdH'))
+                self:setDummyHostile(GetTriggerUnit(),ability==FourCC('JHdN'))
             elseif ability==FourCC('JHdP') or ability==FourCC('JHdM') then
                 self:adjustDummyArmor(GetTriggerUnit(),ability==FourCC('JHdP') and 1 or -1)
             else
@@ -278,6 +280,7 @@ function JTG.CreateHeroesTutorialActivity(session)
         TriggerAddAction(summoned,JTG.GuardSession(current,function()
             local scope=self.ownerScopes[GetSummoningUnit()];local unit=GetSummonedUnit()
             if scope then
+                SetUnitUseFood(unit,false)
                 if scope.disposed then RemoveUnit(unit) else JTG.ScopeTrackUnit(scope,unit);self.ownerScopes[unit]=scope end
             end
         end))
@@ -286,7 +289,6 @@ function JTG.CreateHeroesTutorialActivity(session)
         self:makeTimer(.05,true,function()
             if self.locallyPaused or JTG.UI.exercisePaused then return end
             self:tickWorld();JTG.UI.TickWelcomeArrow(self,.05)
-            if self.questHighlightRemaining>0 then self.questHighlightRemaining=math.max(0,self.questHighlightRemaining-.05) end
             self:refreshControls()
         end)
     end

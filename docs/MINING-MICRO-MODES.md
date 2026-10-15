@@ -29,8 +29,20 @@ New buildings and trained units are paired by construction site or producer/
 completion sequence. Economic commands wait when their native order is rejected;
 later economic commands wait behind them. The reference is never topped up.
 Repeated harvest clicks on the same resource do not produce reference orders.
+Copied training stays pending until a native training-start (or completion)
+event confirms it. An accepted-but-unconfirmed order retries only when its
+producer is idle and has no active training. Queued requests are kept distinct,
+so repeatedly training the same worker type does not collapse into one request.
+The mode selector's rectangular buttons expose their authored hover tooltips.
 Workers resume their previous gathering job after a reference build completes.
 The mirror is paused with the activity and all actors belong to its scope.
+Rally mirroring handles explicit Set Rally Point and building right-click orders.
+At player worker completion, native rally getters determine its gathering job,
+which is applied when the reference counterpart is available. Ground rallies
+are translated into reference-base coordinates. Selection modifiers do not
+control mirroring; orders are tracked per actor. Shift-queued worker orders
+are not yet faithfully preserved: the mirror does not capture the native
+queue flag and its pending list must not be described as equivalent.
 
 Build Order ends when the fifth gold worker actually enters the player's mine,
 not when the order is issued. Its end card shows Total Gold mined, Total Lumber

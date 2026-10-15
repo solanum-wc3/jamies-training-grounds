@@ -15,6 +15,8 @@ assert(step('heroes.039').lines.includes('Attack the Gnoll again, using your ent
 assert(script.quest.includes('- Level 4: {Yellow Font: 50%}') && script.quest.includes('- Level 5 and above: {Yellow Font: 0%}'));
 assert(!script.quest.includes('20% for every hero level'));
 assert(!script.quest.includes('is multiplied'));
+assert(script.quest.includes('150 XP\n\nXP from {Term: Summons} is halved.\n\nExperience'));
+assert(script.quest.includes('0%}\nThese percentages'));
 assert(script.steps.some(row=>row.lines.includes('Upon reaching tier 3, this bonus is raised to {Yellow Font: +30%}.')));
 assert(script.steps.some(row=>row.lines.includes('Destroying it requires three attacks.')));
 assert.equal(data.xpRange,1200);
@@ -97,11 +99,16 @@ for(const [index,control] of controls.entries()) {
     assert.equal(control.mods.Ncl6.pointer,6);assert.equal(control.mods.Ncl6.level,1);
     assert.equal(control.mods.amcs.value,0);assert.equal(control.mods.acdn.value,0);
     if(index<2) {
-        assert.equal(control.id,index===0?'JHdN':'JHdH');assert.equal(control.mods.abpx.value,index);
+        assert.equal(control.id,index===0?'JHdN':'JHdH');assert.equal(control.mods.abpx.value,0);
+        assert.equal(control.mods.atp1.value,'Change Mode');
+        assert.equal(control.mods.aub1.value,'Current: '+(index===0?'Neutral':'Hostile'));
         assert(control.mods.aart.value.includes(index===0?'BTNStop.blp':'BTNAttack.blp'));
     } else if(index<8) {
         const type=data.dummyArmorTypes[index-2];
         assert.equal(control.id,type.raw);assert.equal(control.mods.aart.value,type.icon);
+        assert.equal(control.mods.atp1.value,'Change Armor Type');
+        assert.equal(control.mods.aub1.value,'Current: '+type.name);
+        assert(fs.existsSync(path.join(root,'src/assets/menu',path.win32.basename(type.icon))));
         assert.equal(control.mods.abpx.value,0);assert.equal(control.mods.abpy.value,1);
     } else {
         assert.equal(control.mods.abpx.value,3);assert.equal(control.mods.abpy.value,index===8?1:2);

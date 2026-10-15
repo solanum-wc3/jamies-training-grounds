@@ -2,6 +2,14 @@
 
 This file records player-visible changes in tested project versions. Development reasoning belongs in commit messages and `docs/decisions/`.
 
+## Upcoming v0.2.0
+
+- Added the Heroes tutorial, covering attributes, abilities, experience and items.
+- Added Hotkey Trainer, using your current hotkeys and helping you practise missed commands.
+- Added Reflex Training with unit identification and buff/debuff recognition. Still WIP—feedback welcome!
+- Expanded Mining Micro with One Minute and Build Order modes, including an income comparison against a base without mining micro.
+- Improved tutorial navigation, exercise cleanup, menus and feedback throughout the map.
+
 ## v0.1.2 (2026-10-10)
 
 - Added Economy & Workers with gathering, construction and base-defense practice.

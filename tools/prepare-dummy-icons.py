@@ -1,8 +1,16 @@
-"""Draw the simple gold +/- command icons used by Target Dummies."""
+"""Package supplied armor icons and draw Target Dummies' gold +/- icons."""
 from pathlib import Path
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageOps
 
 output = Path(__file__).resolve().parent.parent / 'src/assets/menu'
+source = output.parents[2] / 'design/menu-art/dummy-armor'
+for name in ['Unarmed', 'Light', 'Medium', 'Heavy', 'Building', 'Hero']:
+    # Preserve the user's complete square artwork; only normalize texture size.
+    image = ImageOps.contain(Image.open(source / (name + '.png')).convert('RGBA'),
+                             (128, 128), Image.Resampling.LANCZOS)
+    texture = Image.new('RGBA', (128, 128), (0, 0, 0, 255))
+    texture.alpha_composite(image, ((128-image.width)//2, (128-image.height)//2))
+    texture.save(output / ('Armor' + name + '.dds'), pixel_format='DXT5')
 for name, plus in [('ArmorPlus', True), ('ArmorMinus', False)]:
     image = Image.new('RGBA', (128, 128), (22, 25, 29, 255))
     draw = ImageDraw.Draw(image)

@@ -36,18 +36,18 @@ function createHeroesDummyAbilities() {
     const i32=value=>{const b=Buffer.alloc(4);b.writeInt32LE(value);return b;};
     const real=value=>{const b=Buffer.alloc(4);b.writeFloatLE(value);return b;};
     const armor=require('../src/data/heroes-tutorial-data.json').dummyArmorTypes;
-    const objects=[['JHdN','Neutral Mode','ReplaceableTextures\\CommandButtons\\BTNStop.blp','berserk',0,0],
-        ['JHdH','Hostile Mode','ReplaceableTextures\\CommandButtons\\BTNAttack.blp','roar',1,0],
+    const objects=[['JHdN','Change Mode','ReplaceableTextures\\CommandButtons\\BTNStop.blp','berserk',0,0,'Current: Neutral'],
+        ['JHdH','Change Mode','ReplaceableTextures\\CommandButtons\\BTNAttack.blp','roar',0,0,'Current: Hostile'],
         ...armor.map((type,index)=>[type.raw,'Change Armor Type',type.icon,
-            ['frenzy','defend','undefend','immolation','unimmolation','howlofterror'][index],0,1]),
-        ['JHdP','Raise Armor','JTGMenu\\ArmorPlus.dds','fanofknives',3,1],
-        ['JHdM','Lower Armor','JTGMenu\\ArmorMinus.dds','thunderclap',3,2],
-    ].map(([id,name,icon,order,x,y])=>{
+            ['frenzy','defend','undefend','immolation','unimmolation','howlofterror'][index],0,1,'Current: '+type.name]),
+        ['JHdP','Raise Armor','JTGMenu\\ArmorPlus.dds','fanofknives',3,1,'Current: 0'],
+        ['JHdM','Lower Armor','JTGMenu\\ArmorMinus.dds','thunderclap',3,2,'Current: 0'],
+    ].map(([id,name,icon,order,x,y,description])=>{
         const mod=(field,type,value,level=0,pointer=0)=>Buffer.concat([
             Buffer.from(field),i32(type),i32(level),i32(pointer),
             type===3?Buffer.from(value+'\0'):type===0?i32(value):real(value),Buffer.from(id)]);
         const mods=[mod('anam',3,name),mod('aart',3,icon),
-            mod('atp1',3,name,1),mod('aub1',3,name,1),mod('aher',0,0),mod('alev',0,1),
+            mod('atp1',3,name,1),mod('aub1',3,description,1),mod('aher',0,0),mod('alev',0,1),
             mod('abpx',0,x),mod('abpy',0,y),mod('arac',3,'other'),mod('areq',3,''),mod('ahky',3,''),
             mod('amcs',0,0,1),mod('acdn',2,0,1),mod('acas',2,0,1),
             mod('acat',3,''),mod('atat',3,''),mod('aeat',3,''),

@@ -76,4 +76,37 @@ for _,factory in ipairs({JTG.CreateMissileDodgingActivity,JTG.CreateBatSplitting
     UI.SetExercisePaused(false); assert(not paused)
 end
 JTG.Controller.session=nil
+-- Rectangular briefing choices use the same native tooltip path as icon
+-- choices. Reusing a slot must keep its native attachment stable, and hide
+-- pages without descriptions through alpha rather than a null frame handle.
+function BlzFrameGetChildrenCount() return 0 end
+function BlzFrameSetTooltip(button,tooltip)
+    assert(tooltip~=nil,'Never pass a null tooltip frame to Warcraft')
+    assert(button.tooltip==nil,'Do not rebind an initialized native tooltip')
+    button.tooltip=tooltip
+end
+function BlzFrameSetAlpha(frame,alpha) frame.alpha=alpha end
+UI.activityBriefingButtons={{},{},{}}
+UI.activityBriefingChoiceArtwork={{},{},{}}
+UI.activityBriefingChoiceTooltips={{},{},{}}
+UI.activityBriefingChoiceTooltipUpdates={}
+for index=1,3 do
+    BlzFrameSetTooltip(UI.activityBriefingButtons[index],UI.activityBriefingChoiceTooltips[index])
+    UI.activityBriefingChoiceTooltipUpdates[index]=function(text)
+        UI.activityBriefingChoiceTooltips[index].text=text
+    end
+end
+UI.ShowActivityBriefing({choices={{label='One Minute',tooltip='Timed practice'},
+    {label='Unlimited',tooltip='Unlimited practice'},{label='Build Order',tooltip='Build practice'}}})
+for index,button in ipairs(UI.activityBriefingButtons) do
+    assert(button.tooltip==UI.activityBriefingChoiceTooltips[index])
+    assert(button.tooltip.alpha==255)
+    assert(button.tooltip.text:find('practice',1,true))
+end
+UI.ShowActivityBriefing({choices={{label='Human'},{label='Orc'}}})
+for _,button in ipairs(UI.activityBriefingButtons) do assert(button.tooltip.alpha==0) end
+UI.ShowActivityBriefing({choices={{label='One Minute',tooltip='Timed practice'},
+    {label='Unlimited',tooltip='Unlimited practice'},{label='Build Order',tooltip='Build practice'}}})
+for _,button in ipairs(UI.activityBriefingButtons) do assert(button.tooltip.alpha==255) end
+print('Passed: rectangular choice tooltips retain native attachments through repeated race/mode page transitions.')
 print('Passed: category headings, shared briefing/catalogue navigation, GO/status/result hiding and resume with an independent exercise pause.')

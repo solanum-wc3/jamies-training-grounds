@@ -24,6 +24,9 @@ function JTG.InstallHeroesScenes(activity,session)
     function activity:sceneUnit(scope,raw,x,y,owner,color,level,hiddenIcons)
         local unit=T.CreateSceneUnit(scope,Player(PLAYER_NEUTRAL_PASSIVE),FourCC(raw),x,y,270)
         assert(unit and GetUnitTypeId(unit)~=0,'Heroes scene missing unit '..raw)
+        -- Instructional actors retain their native stats but do not form an
+        -- economy army or trigger upkeep while spawning/changing ownership.
+        SetUnitUseFood(unit,false)
         self.ownerScopes[unit]=scope
         SetUnitColor(unit,color or PLAYER_COLOR_BLUE)
         SetUnitAcquireRange(unit,0);SetUnitCreepGuard(unit,false)
@@ -96,6 +99,8 @@ function JTG.InstallHeroesScenes(activity,session)
         for _,record in ipairs(self.dummies) do
             if record.unit==dummy then
                 record.hostile=hostile==true
+                UnitRemoveAbility(dummy,FourCC('JHdN'));UnitRemoveAbility(dummy,FourCC('JHdH'))
+                UnitAddAbility(dummy,FourCC(record.hostile and 'JHdH' or 'JHdN'))
                 SetUnitOwner(dummy,record.hostile and Player(6) or PLAYER,false)
                 IssueImmediateOrder(dummy,'stop')
                 for _,attacker in ipairs(record.autoAttackers or {}) do
@@ -135,6 +140,13 @@ function JTG.InstallHeroesScenes(activity,session)
         -- changing a global ability icon would repaint every other dummy too.
         for _,kind in ipairs(types) do UnitRemoveAbility(record.unit,FourCC(kind.raw)) end
         UnitAddAbility(record.unit,FourCC(types[record.armorType].raw))
+        for _,raw in ipairs({'JHdP','JHdM'}) do
+            local ability=BlzGetUnitAbility(record.unit,FourCC(raw))
+            if ability then
+                BlzSetAbilityStringLevelField(ability,ABILITY_SLF_TOOLTIP_NORMAL_EXTENDED,0,
+                    'Current: '..tostring(record.armor))
+            end
+        end
     end
     function activity:adjustDummyArmor(unit,delta)
         for _,record in ipairs(self.dummies) do
@@ -237,11 +249,13 @@ function JTG.InstallHeroesScenes(activity,session)
         local a=self.practiceArena;self.xpNumberChoice=choice or 'hero';self.levelActors={}
         if self.xpNumberChoice=='hero' then
             for level=1,10 do
-                local x=a.centerX+(level-5.5)*300
-                local hero=self:addActor('Hpal',x,a.centerY,level,PLAYER_COLOR_BLUE,Player(PLAYER_NEUTRAL_PASSIVE))
+                local row=math.floor((level-1)/5)
+                local x=a.centerX+((level-1)%5-2)*300
+                local y=a.centerY+350-row*700
+                local hero=self:addActor('Hpal',x,y,level,PLAYER_COLOR_BLUE,Player(PLAYER_NEUTRAL_PASSIVE))
                 if level==1 or level==10 then BlzSetUnitSkin(hero,FourCC(level==1 and 'Hart' or 'Harf')) end
                 PauseUnit(hero,true);SuspendHeroXP(hero,true)
-                self:worldText('Level '..level..'\n'..D.heroXP[level]..' XP',x-85,a.centerY-250)
+                self:worldText('Level '..level..'\n'..D.heroXP[level]..' XP',x-85,y-250)
             end
         else
             local units=assert(D.racialUnits[self.xpNumberChoice]);local groups={};local ordered={}
@@ -316,7 +330,7 @@ function JTG.InstallHeroesScenes(activity,session)
             for _,item in ipairs(stock or {}) do RemoveItemFromStock(shop,FourCC(item));AddItemToStock(shop,FourCC(item),1,1) end
         end
         for index,raw in ipairs({'Hpal','Hamg','Hmkg'}) do self:addActor(raw,a.centerX+(index-2)*180,a.centerY,1) end
-        self:addDummy(a.centerX-1100,a.centerY,true)
+        self:addDummy(a.centerX-1100,a.centerY)
         local column=0
         for _,group in ipairs(D.itemGroups) do
             local x=a.minX+250+column*480
@@ -343,7 +357,7 @@ function JTG.InstallHeroesScenes(activity,session)
             local ten=self:addActor('Hamg',a.centerX+300,a.centerY,10)
             self:teachAllSkills(ten,'Hamg')
             if kind=='archmages-target' then
-                self:addDummy(a.centerX,a.centerY-300,true,{one,ten})
+                self:addDummy(a.centerX,a.centerY-300,false,{one,ten})
             end
         elseif kind=='xp-initial' then self:xpCircle();self:spawnGnoll(false)
         elseif kind=='xp-empty' then self:xpCircle()

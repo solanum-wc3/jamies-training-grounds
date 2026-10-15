@@ -5,7 +5,7 @@ JTG = JTG or {}
 
 function JTG.InstallMiningBuildOrder(self,session,race)
     local playerLane,reference=self.lanes[2],self.lanes[1]
-    local mirror={pairs={},jobs={},roles={},produced={},actors={},commands={},rallies={}}
+    local mirror={pairs={},jobs={},roles={},produced={},actors={},commands={},rallies={},training={}}
     self.buildMirror=mirror
     local dx,dy=reference.mineX-playerLane.mineX,reference.mineY-playerLane.mineY
     local function tracked(unit)
@@ -73,7 +73,8 @@ function JTG.InstallMiningBuildOrder(self,session,race)
             local kind=resource(target,tree)
             if (order==OrderId('smart') or order==OrderId('harvest')) and GetUnitTypeId(actor)==race.worker and kind then
                 role(actor,kind)
-            elseif order==OrderId('setrally') then
+            elseif order==OrderId('setrally') or
+                    (order==OrderId('smart') and IsUnitType(actor,UNIT_TYPE_STRUCTURE)) then
                 mirror.rallies[actor]=kind
                 if kind then enqueue(actor,'rally',{resource=kind}) end
             elseif (order==OrderId('repair') or order==OrderId('smart')) and target and
@@ -84,7 +85,8 @@ function JTG.InstallMiningBuildOrder(self,session,race)
                     enqueue(actor,'assist',{target=target})
                 end
             end
-        elseif order==OrderId('setrally') and event==EVENT_PLAYER_UNIT_ISSUED_POINT_ORDER then
+        elseif event==EVENT_PLAYER_UNIT_ISSUED_POINT_ORDER and
+                (order==OrderId('setrally') or (order==OrderId('smart') and IsUnitType(actor,UNIT_TYPE_STRUCTURE))) then
             mirror.rallies[actor]=nil
             enqueue(actor,'rally-point',{x=GetOrderPointX(),y=GetOrderPointY()})
         elseif order==OrderId('cancel') or order==OrderId('cancelbuild') or
@@ -130,6 +132,24 @@ function JTG.InstallMiningBuildOrder(self,session,race)
             end
         end
     end)
+    register({EVENT_PLAYER_UNIT_TRAIN_START,EVENT_PLAYER_UNIT_TRAIN_CANCEL},function()
+        local producer=GetTriggerUnit()
+        if GetOwningPlayer(producer)~=reference.owner then return end
+        if GetTriggerEventId()==EVENT_PLAYER_UNIT_TRAIN_CANCEL then
+            mirror.training[producer]=nil
+            return
+        end
+        -- An issued-order return value alone does not prove that production
+        -- started. Match the oldest outstanding request when the engine starts
+        -- it, including requests which waited behind another queued unit.
+        for _,job in ipairs(mirror.jobs) do
+            if job.kind=='train' and job.issued and not job.confirmed and not job.done and
+                    mirror.pairs[job.actor]==producer and job.raw==GetTrainedUnitType() then
+                job.confirmed=true;job.done=true;mirror.training[producer]=job
+                return
+            end
+        end
+    end)
     register({EVENT_PLAYER_UNIT_TRAIN_FINISH},function()
         local producer,unit=GetTriggerUnit(),GetTrainedUnit()
         local isPlayer=GetOwningPlayer(unit)==Player(0)
@@ -141,9 +161,17 @@ function JTG.InstallMiningBuildOrder(self,session,race)
                     (isPlayer and producer==job.actor and not job.playerUnit or
                     not isPlayer and producer==mirror.pairs[job.actor] and not job.referenceUnit) then
                 if isPlayer then job.playerUnit=unit else job.referenceUnit=unit end
+                if not isPlayer then
+                    job.confirmed=true;job.done=true
+                    if mirror.training[producer]==job then mirror.training[producer]=nil end
+                end
                 if job.playerUnit and job.referenceUnit then pair(job.playerUnit,job.referenceUnit) end
-                if isPlayer and GetUnitTypeId(unit)==race.worker and mirror.rallies[producer] then
-                    role(unit,mirror.rallies[producer])
+                if isPlayer and GetUnitTypeId(unit)==race.worker then
+                    -- Read the native target after production, rather than
+                    -- depending solely on which rally-order event was emitted.
+                    -- This also observes a rally changed while training.
+                    local kind=resource(GetUnitRallyUnit(producer),GetUnitRallyDestructable(producer))
+                    if kind then role(unit,kind) end
                 end
                 break
             end
@@ -160,7 +188,8 @@ function JTG.InstallMiningBuildOrder(self,session,race)
                     busy[job.actor]=true
                     -- A walk-to-build order can end without starting a site
                     -- when funds disappeared en route. Retry only when idle.
-                    if not job.referenceBuilding and copy and GetUnitCurrentOrder(copy)==0 and not IsUnitHidden(copy) then
+                    if not job.referenceBuilding and copy and not mirror.training[copy] and
+                            GetUnitCurrentOrder(copy)==0 and not IsUnitHidden(copy) then
                         job.issued=false;blocked=true
                     end
                 elseif not busy[job.actor] and (not economic or not blocked) then
@@ -168,7 +197,13 @@ function JTG.InstallMiningBuildOrder(self,session,race)
                     if copy and GetUnitTypeId(copy)~=0 then
                         if job.kind=='build' then
                             accepted=IssueBuildOrderById(copy,job.raw,job.x+dx,job.y+dy)
-                        elseif job.kind=='train' or job.kind=='research' or job.kind=='upgrade' then
+                        elseif job.kind=='train' then
+                            -- TRAIN_START may fire synchronously inside this
+                            -- call, so expose the pending request beforehand.
+                            job.issued=true
+                            accepted=IssueImmediateOrderById(copy,job.raw)
+                            if not accepted and not job.confirmed then job.issued=false end
+                        elseif job.kind=='research' or job.kind=='upgrade' then
                             accepted=IssueImmediateOrderById(copy,job.raw)
                         elseif job.kind=='gold' or job.kind=='lumber' then
                             accepted=IssueTargetOrder(copy,'harvest',job.kind=='gold' and reference.mine or reference.tree)
@@ -182,7 +217,7 @@ function JTG.InstallMiningBuildOrder(self,session,race)
                         end
                     end
                     if accepted then
-                        if job.kind=='build' then job.issued=true;busy[job.actor]=true
+                        if job.kind=='build' or job.kind=='train' then job.issued=true;busy[job.actor]=true
                         else job.done=true end
                     elseif economic then blocked=true end
                     if not accepted then busy[job.actor]=true end

@@ -1306,6 +1306,18 @@ local function RefreshActivityBriefingChoices()
         local choice = actions[index]
         UI.activityBriefingVisibleActions[index] = choice
         BlzFrameSetVisible(button, not commandGrid and choice ~= nil)
+        local tooltip=(UI.activityBriefingChoiceTooltips or {})[index]
+        if tooltip then
+            local hasTooltip=not commandGrid and choice~=nil and choice.tooltip~=nil and choice.tooltip~=''
+            -- Keep the native attachment stable. Detaching with a null frame
+            -- and reattaching while changing a hovered button can crash WC3.
+            BlzFrameSetAlpha(tooltip,hasTooltip and 255 or 0)
+            BlzFrameSetVisible(tooltip,false)
+            if hasTooltip then
+                UI.activityBriefingChoiceTooltipUpdates[index]("|cffffcc00"..choice.label.."|r|n"..
+                    (choice.tooltipColor or "|cffffffff")..choice.tooltip.."|r")
+            end
+        end
         if not commandGrid and choice ~= nil then
             local x, y = BriefingChoicePoint(index, #actions, compact, compactColumns,
                 UI.activityBriefingCenterSingle)
@@ -1940,6 +1952,8 @@ local function CreateActivityBriefingPanel()
     end
     UI.activityBriefingChoiceArtwork = {}
     UI.activityBriefingTooltipText = {}
+    UI.activityBriefingChoiceTooltips = {}
+    UI.activityBriefingChoiceTooltipUpdates = {}
     for index = 1, 15 do
         local button = CreateButton("JTGActivityBriefingChoice" .. index, panel,
             "", BRIEFING_CHOICE_WIDTH, BRIEFING_CHOICE_HEIGHT)
@@ -1950,6 +1964,11 @@ local function CreateActivityBriefingPanel()
         BlzFrameSetVisible(artwork, false)
         UI.activityBriefingButtons[index] = button
         UI.activityBriefingChoiceArtwork[index] = artwork
+        local tooltip,tooltipText,updateTooltip=AttachTooltip(button,"","right")
+        UI.activityBriefingChoiceTooltips[index]=tooltip
+        UI.activityBriefingTooltipText[index]=tooltipText
+        UI.activityBriefingChoiceTooltipUpdates[index]=updateTooltip
+        BlzFrameSetAlpha(tooltip,0)
         RegisterClick(button, function()
             local choice = UI.activityBriefingVisibleActions and UI.activityBriefingVisibleActions[index]
             if choice ~= nil and choice.enabled~=false and choice.action ~= nil then choice.action() end
@@ -2204,6 +2223,8 @@ function UI.AbandonForLoad()
     UI.activityBriefingButtons = nil
     UI.activityBriefingChoiceArtwork = nil
     UI.activityBriefingTooltipText = nil
+    UI.activityBriefingChoiceTooltips = nil
+    UI.activityBriefingChoiceTooltipUpdates = nil
     UI.activityBriefingCommandButtons = nil
     UI.activityBriefingCommandBadges = nil
     UI.activityBriefingCommandArtwork = nil
@@ -2497,6 +2518,12 @@ function UI.Initialize(restoring)
         end
     end
     CreateInfoPanel("patch", "Patch Notes",
+        "|cffffcc00v0.2.0|r  |cffb0b0b0Upcoming|r\n" ..
+        "- Added the Heroes tutorial, covering attributes, abilities, experience and items.\n" ..
+        "- Added Hotkey Trainer, using your current hotkeys and helping you practise missed commands.\n" ..
+        "- Added Reflex Training with unit identification and buff/debuff recognition. Still WIP—feedback welcome!\n" ..
+        "- Expanded Mining Micro with One Minute and Build Order modes, including an income comparison against a base without mining micro.\n" ..
+        "- Improved tutorial navigation, exercise cleanup, menus and feedback throughout the map.\n\n" ..
         "|cffffcc00v0.1.2|r  |cffb0b0b010 October 2026|r\n" ..
         "- Added Economy & Workers with gathering, construction and base-defense practice.\n" ..
         "- Added Bat Splitting with three unit-count stages and daytime/nighttime modes.\n" ..

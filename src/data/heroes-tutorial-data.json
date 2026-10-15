@@ -1456,37 +1456,37 @@
       "raw": "JHa0",
       "name": "Unarmed",
       "defense": 7,
-      "icon": "UI\\Widgets\\Console\\Human\\infocard-armor-unarmored.blp"
+      "icon": "JTGMenu\\ArmorUnarmed.dds"
     },
     {
       "raw": "JHa1",
       "name": "Light Armor",
       "defense": 0,
-      "icon": "UI\\Widgets\\Console\\Human\\infocard-armor-small.blp"
+      "icon": "JTGMenu\\ArmorLight.dds"
     },
     {
       "raw": "JHa2",
       "name": "Medium Armor",
       "defense": 1,
-      "icon": "UI\\Widgets\\Console\\Human\\infocard-armor-medium.blp"
+      "icon": "JTGMenu\\ArmorMedium.dds"
     },
     {
       "raw": "JHa3",
       "name": "Heavy Armor",
       "defense": 2,
-      "icon": "UI\\Widgets\\Console\\Human\\infocard-armor-large.blp"
+      "icon": "JTGMenu\\ArmorHeavy.dds"
     },
     {
       "raw": "JHa4",
       "name": "Building",
       "defense": 3,
-      "icon": "UI\\Widgets\\Console\\Human\\infocard-armor-fortified.blp"
+      "icon": "JTGMenu\\ArmorBuilding.dds"
     },
     {
       "raw": "JHa5",
       "name": "Hero",
       "defense": 5,
-      "icon": "UI\\Widgets\\Console\\Human\\infocard-armor-hero.blp"
+      "icon": "JTGMenu\\ArmorHero.dds"
     }
   ]
 }

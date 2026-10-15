@@ -780,9 +780,9 @@ function JTG.CreateHotkeyTrainingActivity(session)
                     end
                     self.incorrect=self.incorrect+1; self.score=self.score-10
                     if not self:diagnosticsActive() and JTG.UI.PlayFeedbackSound then JTG.UI.PlayFeedbackSound("incorrect") end
-                    -- Re-selecting cancels Build and Hero Abilities. Leave
-                    -- those menus untouched, even after an incorrect entry.
-                    if self.prompt.kind~='build' and self.prompt.kind~='learn' then self:restoreSource() end
+                    -- A wrong submenu choice restarts the whole sequence:
+                    -- worker -> Build -> building, or hero -> Abilities -> skill.
+                    self:restoreSource()
                 end
             end
         end
