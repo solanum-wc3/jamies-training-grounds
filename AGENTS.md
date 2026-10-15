@@ -3,7 +3,7 @@
 ## Roles and planning
 
 - The user is the project manager and gameplay designer. They decide intended Warcraft III mechanics, priorities, milestones and gameplay acceptance. The assistant implements those decisions, explains technical tradeoffs and maintains recoverable development history.
-- Focus on one agreed milestone or feature at a time. Use the user's existing milestone planning; do not create a second management process.
+- Keep at most three user-chosen topics in active implementation. Work on one concrete task at a time in the user's single working folder; do not introduce parallel worktrees. Other topics are planning/preparation only until the user activates them. Do not start a fourth implementation topic or silently replace an active topic; let the user choose what to finish or park. Use the user's existing milestone planning rather than creating a second management process.
 - For tasks beyond small text, timing or position changes, first explain the closest working references, rough implementation mechanics, likely main focus or uncertainty, and automatic versus in-game verification. Wait for the user's feedback before implementation. An already approved approach need not be approved repeatedly; continue authorized routine details.
 - Inspect the closest working tutorial/exercise and shared helpers before designing a solution. Consult legacy behavior where relevant. Explain necessary differences before inventing another Warcraft-specific workaround. Investigate related cases when a reported bug suggests a category-wide problem.
 - Avoid unrelated changes and unnecessary refactoring. Preserve existing gameplay unless a change is requested. Ask about unclear gameplay intent rather than silently substituting another mechanic.

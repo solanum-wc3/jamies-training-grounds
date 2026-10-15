@@ -21,9 +21,13 @@ Published baseline and current source: **v0.2.0** (16 October 2026). See [releas
 
 ## Current development
 
+The [next-version roadmap](ARCHITECTURE-TODO.md#next-version-content-direction) records the user's deferred content plans. [Unit Comparison review](UNIT-COMPARISON-PORT-REVIEW.md) and [Demo Mode review](DEMO-MODE-PORT-REVIEW.md) assess the legacy modules; neither port is underway.
+
+[Observer/control-handoff plan](OBSERVER-HOTSEAT-PLAN.md) records the proposed future multiplayer proof and rollout. It is deferred, not implemented.
+
 [Consolidation status](CONSOLIDATION-2026-10-14.md) records the completed reliability work and the remaining native acceptance checks.
 
-[Reflex Training (WIP)](REFLEX-TRAINING.md) describes crowd layouts, race selection, identification stages and buff/debuff recognition. [Hotkey Trainer](HOTKEY-TRAINING.md) describes current-layout command recognition, practice stages, prompt preparation and the audited command catalogue. [Heroes](HEROES-TUTORIAL.md) describes the authored lesson and optional displays. These are newer than the published beta1 baseline and include native test guidance.
+[Reflex Training (WIP)](REFLEX-TRAINING.md) describes crowd layouts, race selection, identification stages and buff/debuff recognition. [Hotkey Trainer](HOTKEY-TRAINING.md) describes current-layout command recognition, practice stages, prompt preparation and the audited command catalogue. [Heroes](HEROES-TUTORIAL.md) describes the authored lesson and optional displays. All three are included in v0.2.0; their guides retain native testing details.
 
 ## Editable work and inventories
 
