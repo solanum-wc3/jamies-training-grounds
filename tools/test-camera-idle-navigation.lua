@@ -8,6 +8,7 @@ JTG={}
 function JTG.CreateScope() return {units={},callbacks={}} end
 function JTG.ScopeAdd(scope,callback) scope.callbacks[#scope.callbacks+1]=callback end
 function JTG.ScopeTrackUnit(scope,unit) scope.units[#scope.units+1]=unit;return unit end
+function JTG.CreateScopedUnit(scope,...) return JTG.ScopeTrackUnit(scope,CreateUnit(...)) end
 function JTG.DisposeScope(scope)
  if scope.disposed then return end
  scope.disposed=true

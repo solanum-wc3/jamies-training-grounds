@@ -16,6 +16,10 @@ The item-section dummy defaults to Neutral. Switching the comparison dummy to Ne
 
 ## Standard lifecycle
 
+Alpha57 retires inactive showcase actors rather than retaining hidden spreading buildings; returning recreates the showcase. Scene terrain leases restore original tiles, variation and blight after actor disposal. XP groups containing buildings use two rows with 576-unit cells and grid-aligned centers; summons and their captions have 200 additional vertical units of separation. Attack Dice uses roster metadata rather than hidden showcase actors.
+
+The entry/exit upkeep chime is unresolved. Development commands isolate entry/exit from button audio and record actual food/cap, XP handicap and actor positions. They also play separately labelled comparison cues. See [alpha57 testing](ALPHA57-TESTING.md); source/mocked checks do not establish a native audio cause.
+
 `src/activities/heroes-tutorial.lua` owns progression and presentation. `src/infrastructure/heroes-scenes.lua` owns scoped world actors. Both use the shared Tutorial runner, guarded delayed actions and checkpoint restoration. Normal narration within a scene preserves actors and player actions. Back/Topics explicitly restore canonical scene state. Opening a menu or rebuilding presentation after load does not respawn actors, replay the quest sound or restart progression.
 
 Scene scopes clean up units, summons, items (including picked-up items), text tags, images and timers. Foundation units are borrowed and parked during the tutorial. Camera, resources, XP handicap and hostile relationships are restored on exit. The optional XP quest is discovered once, when reaching Experience or opening XP Numbers, with the retained New Quest cue.

@@ -76,6 +76,7 @@ JTG.UI={HideActivityBriefing=function() end, CreateResultCard=function() return 
 function JTG.ScopeAdd(scope,fn) scope[#scope+1]=fn end
 function JTG.ScopeBorrow(scope,fn) JTG.ScopeAdd(scope,fn) end
 function JTG.ScopeTrackUnit(scope,unit) JTG.ScopeAdd(scope,function() RemoveUnit(unit) end); return unit end
+function JTG.CreateScopedUnit(scope,...) return JTG.ScopeTrackUnit(scope,CreateUnit(...)) end
 function JTG.ScopeTrackTrigger(scope,t) return t end
 function JTG.ScopeTrackTimer(scope,t) return t end
 function JTG.StartScopedTimer(session,scope,period,periodic,fn)

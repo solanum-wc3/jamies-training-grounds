@@ -101,6 +101,7 @@ function JTG.ResetWorldFog() end
 function JTG.ScopeRevealRect() end
 function JTG.ScopeBorrow(scope, fn) scope[#scope+1] = fn end
 function JTG.ScopeTrackUnit(scope, unit) tracked[#tracked+1] = unit; scope[#scope+1]=function() unit.removed=true end; return unit end
+function JTG.CreateScopedUnit(scope,...) return JTG.ScopeTrackUnit(scope,CreateUnit(...)) end
 function JTG.CreateScope() return {} end
 function JTG.DisposeScope(scope)
     if not scope or scope.disposed then return end

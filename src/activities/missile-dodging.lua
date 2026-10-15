@@ -692,8 +692,7 @@ function JTG.CreateMissileDodgingActivity(session)
     end
 
     function activity:spawn(owner, raw, x, y, facing)
-        local unit = JTG.ScopeTrackUnit(session.scope, CreateUnit(owner, FourCC(raw), x, y,
-            facing or (self.stage == 1 and 180 or 0)))
+        local unit = JTG.CreateScopedUnit(session.scope,owner,FourCC(raw),x,y,facing or (self.stage == 1 and 180 or 0))
         if owner == Player(0) then self.controlledUnits[#self.controlledUnits + 1] = unit end
         return unit
     end

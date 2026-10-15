@@ -9,6 +9,7 @@ PLAYER_STATE_RESOURCE_GOLD, PLAYER_STATE_RESOURCE_LUMBER = 'gold', 'lumber'
 local world, tags, resources, repairs = {}, {}, {}, {}
 local scope = {units={}, tags={}}
 function JTG.ScopeTrackUnit(s, unit) s.units[#s.units+1]=unit; return unit end
+function JTG.CreateScopedUnit(scope,...) return JTG.ScopeTrackUnit(scope,CreateUnit(...)) end
 function JTG.ScopeTrackTextTag(s, tag) s.tags[#s.tags+1]=tag; return tag end
 function CreateUnit(owner, raw, x, y)
     local unit = {owner=owner, raw=raw, x=x, y=y, life=1, maxLife=100}

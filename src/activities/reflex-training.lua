@@ -288,7 +288,7 @@ function JTG.CreateReflexTrainingActivity(session)
             JTG.ScopeBorrow(self.effectScope,function() SetPlayerTechResearched(owner,tech,previous) end)
             SetPlayerTechResearched(owner,tech,math.max(previous,level))
         end
-        local caster=JTG.ScopeTrackUnit(self.effectScope,CreateUnit(owner,FourCC(effect.caster),GetUnitX(target),GetUnitY(target),0))
+        local caster=JTG.CreateScopedUnit(self.effectScope,owner,FourCC(effect.caster),GetUnitX(target),GetUnitY(target),0)
         assert(caster,'Missing Reflex caster: '..effect.caster)
         BlzSetUnitMaxMana(caster,1000)
         SetUnitState(caster,UNIT_STATE_MANA,1000)
@@ -683,8 +683,7 @@ function JTG.CreateReflexTrainingActivity(session)
                 slot=raceSlots[entry.color][raceIndices[entry.color]]
                 assert(slot,"Reflex race exceeds its region capacity")
             end
-            local unit = JTG.ScopeTrackUnit(current.scope,
-                CreateUnit(self.combat and Player(entry.raceIndex) or Player(PLAYER_NEUTRAL_PASSIVE), FourCC(rawcode), slot.x, slot.y, GetRandomReal(0, 360)))
+            local unit = JTG.CreateScopedUnit(current.scope,self.combat and Player(entry.raceIndex) or Player(PLAYER_NEUTRAL_PASSIVE),FourCC(rawcode),slot.x,slot.y,GetRandomReal(0, 360))
             assert(unit ~= nil,"Reflex could not create native unit "..rawcode)
             SetUnitColor(unit, entry.color)
             SetUnitInvulnerable(unit, not self.combat)

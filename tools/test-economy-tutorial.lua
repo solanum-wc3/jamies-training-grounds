@@ -15,6 +15,7 @@ function JTG.UI.SetGameplayMenuPaused() end
 function JTG.UI.ShowActivityMenu() end
 function JTG.ClearBlightAfterActivity() return function() end end
 function JTG.TutorialMenuHeight(n) return .1+n*.03 end
+function JTG.LayoutChoicePopup() end -- Geometry is covered by test-popup-layout.
 local frames={}
 function BlzCreateFrameByType() local f={};frames[#frames+1]=f;return f end
 function BlzCreateFrame() return {} end

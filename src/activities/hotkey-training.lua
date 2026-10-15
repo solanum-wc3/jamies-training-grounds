@@ -108,8 +108,8 @@ function JTG.CreateHotkeyTrainingActivity(session)
         if callback then callback(self);return true end
         return false
     end
-    function self:createUnit(owner,raw,x,y,facing)
-        local unit=CreateUnit(owner,raw,x,y,facing)
+    function self:createUnit(owner,raw,x,y,facing,scope)
+        local unit=JTG.CreateScopedUnit(scope,owner,raw,x,y,facing)
         self:concealUnit(unit)
         return unit
     end
@@ -180,10 +180,9 @@ function JTG.CreateHotkeyTrainingActivity(session)
         if self.preparedGarrison then return end
         local scope=JTG.CreateScope('hotkey-prepared-burrow')
         JTG.ScopeAdd(session.scope,function() JTG.DisposeScope(scope) end)
-        local burrow=JTG.ScopeTrackUnit(scope,self:createUnit(Player(0),FourCC('otrb'),
-            session.scene.centerX+800,self.spawnY+1000,0))
+        local burrow=self:createUnit(Player(0),FourCC('otrb'),session.scene.centerX+800,self.spawnY+1000,0,scope)
         SetUnitPathing(burrow,false);SetUnitInvulnerable(burrow,true);SetUnitAcquireRange(burrow,0)
-        local peon=JTG.ScopeTrackUnit(scope,self:createUnit(Player(0),FourCC('opeo'),GetUnitX(burrow),GetUnitY(burrow),0))
+        local peon=self:createUnit(Player(0),FourCC('opeo'),GetUnitX(burrow),GetUnitY(burrow),0,scope)
         SetUnitPathing(peon,false);SetUnitAcquireRange(peon,0)
         -- Native creation can push a unit out of a building footprint.
         SetUnitX(peon,GetUnitX(burrow));SetUnitY(peon,GetUnitY(burrow))
@@ -222,8 +221,7 @@ function JTG.CreateHotkeyTrainingActivity(session)
         if self.preparedAncients[raw] then return end
         local scope=JTG.CreateScope('hotkey-prepared-ancient')
         JTG.ScopeAdd(session.scope,function() JTG.DisposeScope(scope) end)
-        local unit=JTG.ScopeTrackUnit(scope,self:createUnit(Player(0),FourCC(raw),
-            session.scene.centerX+800,self.spawnY+1000,0))
+        local unit=self:createUnit(Player(0),FourCC(raw),session.scene.centerX+800,self.spawnY+1000,0,scope)
         assert(unit and GetUnitTypeId(unit)~=0,'Missing Ancient: '..raw)
         SetUnitPathing(unit,false);SetUnitInvulnerable(unit,true);SetUnitAcquireRange(unit,0)
         local accepted=IssueImmediateOrder(unit,'unroot')==true
@@ -512,8 +510,7 @@ function JTG.CreateHotkeyTrainingActivity(session)
         self.promptPrerequisites={}
         for raw,amount in pairs(prompt.requiredUnits or {}) do
             for index=1,amount do
-                local unit=JTG.ScopeTrackUnit(context,self:createUnit(Player(0),FourCC(raw),
-                    session.scene.centerX+index*450,self.spawnY+600,0))
+                local unit=self:createUnit(Player(0),FourCC(raw),session.scene.centerX+index*450,self.spawnY+600,0,context)
                 assert(unit,'Missing prerequisite: '..raw)
                 SetUnitPathing(unit,false);SetUnitVertexColor(unit,255,255,255,255);SetUnitInvulnerable(unit,true)
                 self.promptPrerequisites[#self.promptPrerequisites+1]=raw
@@ -532,8 +529,7 @@ function JTG.CreateHotkeyTrainingActivity(session)
             self.source,accepted=self:takePreparedAncient(prompt.source,context)
             self.preparationChecks[#self.preparationChecks+1]={kind='background-uproot',accepted=accepted}
         else
-            self.source=JTG.ScopeTrackUnit(context,self:createUnit(self.sourceOwner,FourCC(prompt.spawnSource or prompt.source),
-                session.scene.centerX,self.spawnY,0))
+            self.source=self:createUnit(self.sourceOwner,FourCC(prompt.spawnSource or prompt.source),session.scene.centerX,self.spawnY,0,context)
         end
         assert(self.source and GetUnitTypeId(self.source)~=0,'Hotkey context missing: '..prompt.source)
         SetUnitPathing(self.source,false)
@@ -570,8 +566,7 @@ function JTG.CreateHotkeyTrainingActivity(session)
             self.preparationChecks[#self.preparationChecks+1]={kind='starting-form:'..prompt.prepareOrder,accepted=accepted}
         end
         if prompt.kind=='buy' or prompt.kind=='hire' or prompt.raw=='select' then
-            local buyer=JTG.ScopeTrackUnit(context,self:createUnit(Player(0),FourCC('Hpal'),
-                session.scene.centerX+100,self.spawnY,0))
+            local buyer=self:createUnit(Player(0),FourCC('Hpal'),session.scene.centerX+100,self.spawnY,0,context)
             SetUnitPathing(buyer,false); SetUnitInvulnerable(buyer,true)
             -- Native creation can push a nearby hero outside a shop footprint.
             -- Place after disabling pathing, using the shop's actual position.
@@ -594,8 +589,7 @@ function JTG.CreateHotkeyTrainingActivity(session)
             self.preparationChecks[#self.preparationChecks+1]={kind='autocast-off:'..prompt.autocastOff,accepted=accepted}
         end
         local function support(raw,x,y,owner)
-            local unit=JTG.ScopeTrackUnit(context,self:createUnit(owner or Player(0),FourCC(raw),
-                GetUnitX(self.source)+(x or 100),GetUnitY(self.source)+(y or 0),0))
+            local unit=self:createUnit(owner or Player(0),FourCC(raw),GetUnitX(self.source)+(x or 100),GetUnitY(self.source)+(y or 0),0,context)
             SetUnitPathing(unit,false);SetUnitAcquireRange(unit,0)
             return unit
         end

@@ -72,6 +72,25 @@ function JTG.TutorialMenuHeight(buttonCount)
     return 0.095 + math.max(0, buttonCount or 0) * 0.029
 end
 
+-- Topics, Optional and exercise Setups share one final layout operation.
+JTG.PopupLayout={width=.185,buttonWidth=.115,buttonHeight=.026,step=.029,
+    topInset=.041,closeWidth=.10,closeBottom=.025,x=.795,y=.500}
+function JTG.LayoutChoicePopup(panel,buttons,close)
+    local layout=JTG.PopupLayout
+    BlzFrameClearAllPoints(panel)
+    BlzFrameSetSize(panel,layout.width,JTG.TutorialMenuHeight(#buttons))
+    BlzFrameSetAbsPoint(panel,FRAMEPOINT_TOPRIGHT,layout.x,layout.y)
+    for index,button in ipairs(buttons) do
+        BlzFrameClearAllPoints(button)
+        BlzFrameSetSize(button,layout.buttonWidth,layout.buttonHeight)
+        BlzFrameSetPoint(button,FRAMEPOINT_TOP,panel,FRAMEPOINT_TOP,0,
+            -layout.topInset-(index-1)*layout.step)
+    end
+    BlzFrameClearAllPoints(close)
+    BlzFrameSetSize(close,layout.closeWidth,layout.buttonHeight)
+    BlzFrameSetPoint(close,FRAMEPOINT_BOTTOM,panel,FRAMEPOINT_BOTTOM,0,layout.closeBottom)
+end
+
 JTG.Registry = {byId = {}, ordered = {}}
 JTG.Scenes = {}
 JTG.BootstrapInitializers = {}
@@ -168,9 +187,17 @@ local unitScopes = {}
 function JTG.ScopeTrackUnit(scope, unit)
     if unit~=nil and not unitScopes[unit] then unitScopes[unit]=scope end
     return ScopeTrack(scope, unit, function(value)
+        if JTG.RememberTerrainOwner then JTG.RememberTerrainOwner(scope,GetOwningPlayer(value)) end
         if unitScopes[value]==scope then unitScopes[value]=nil end
         RemoveUnit(value)
     end, false)
+end
+
+-- Capture terrain before a structure can apply blight. Do not move capture
+-- into ScopeTrackUnit: its CreateUnit argument has already been evaluated.
+function JTG.CreateScopedUnit(scope,owner,raw,x,y,facing)
+    if JTG.PreserveUnitTerrain then JTG.PreserveUnitTerrain(scope,owner,raw,x,y) end
+    return JTG.ScopeTrackUnit(scope,CreateUnit(owner,raw,x,y,facing))
 end
 
 local function SnapshotWorldUnits()
@@ -353,6 +380,11 @@ end
 -- those buildings still exist. Register its removal in the post-disposal
 -- stage so the final clear happens after every activity-owned unit is gone.
 function JTG.ClearBlightAfterActivity(session, player, x, y, radius)
+    if JTG.ScopePreserveTerrain then
+        local clear=JTG.ScopePreserveTerrain(session.scope,player,x,y,radius)
+        JTG.AddActivityFinalizer(session,clear)
+        return clear
+    end
     local clear = function()
         SetBlight(player, x, y, radius, false)
     end

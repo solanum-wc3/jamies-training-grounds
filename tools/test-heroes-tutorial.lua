@@ -332,6 +332,15 @@ for _,u in ipairs(orcActors) do assert(u.removed,'Previous racial display leaked
 for _,u in ipairs(activity.actors) do assert(u.color==8 and u.paused and not u.level,'Neutral display is not grey, paused summons only') end
 for _,race in ipairs({'human','orc','nightelf','undead','neutral'}) do
  activity:selectXPDisplay(race)
+ local structureIds={};local structures={}
+ for _,entry in ipairs(JTG.HeroesData.racialUnits[race]) do if entry.building then structureIds[entry.raw]=true end end
+ for _,u in ipairs(activity.actors) do
+  if structureIds[u.raw] then
+   assert(u.x%64==0 and u.y%64==0,'Building display is not aligned to the placement grid')
+   for _,other in ipairs(structures) do assert((u.x-other.x)^2+(u.y-other.y)^2>=512^2,'Building display cells overlap') end
+   structures[#structures+1]=u
+  end
+ end
  for _,u in ipairs(activity.actors) do assert(u.raw~='even','Invulnerable Spirit remained in XP display') end
  for _,group in ipairs(activity.xpColumns) do
   if #group.summons>0 then
@@ -339,7 +348,7 @@ for _,race in ipairs({'human','orc','nightelf','undead','neutral'}) do
    for _,tag in ipairs(tags) do
     if not tag.removed and tag.text:find('Summon\nUnit Level:',1,true) and tag.x==group.x-80 then caption=tag end
    end
-   assert(caption and caption.y==activity.practiceArena.centerY-800,'Summon caption is not directly below regular captions')
+   assert(caption and caption.y==activity.practiceArena.centerY-1000,'Summon caption did not receive the extra 200-unit gap')
    for _,u in ipairs(activity.actors) do
     for _,row in ipairs(group.summons) do if u.raw==row.raw then assert(caption.y>u.y,'Summon caption is below its units') end end
    end

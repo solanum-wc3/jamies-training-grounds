@@ -78,6 +78,8 @@ After regenerating assets, run `pnpm run build:all` again.
 
 ## Runtime acceptance
 
+Heroes audio isolation is available in development builds: from no active activity, use `-heroes-audio-start`, then `-heroes-audio-stop`. The latter exports `JTG-Heroes-Audio.pld` with native XP/food and placement records. `-heroes-audio-sounds` compares labelled PauseGame, GlueScreenClick and UpkeepLevel cues three seconds apart. See [alpha57 testing](ALPHA57-TESTING.md). The export is diagnostic preload output; never execute it as a script.
+
 Automated checks cannot prove Warcraft-specific presentation and pathing. For a player-facing release, test at least:
 
 1. root and category navigation;

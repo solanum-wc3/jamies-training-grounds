@@ -541,8 +541,7 @@ function JTG.CreateHotkeySetupTutorialActivity(session)
 
         local topics = JTG.ScopeTrackFrame(scope, BlzCreateFrameByType("FRAME",
             "JTGHotkeyTopics" .. suffix, root, "", 0))
-        BlzFrameSetSize(topics, 0.185, JTG.TutorialMenuHeight(#TOPICS))
-        BlzFrameSetAbsPoint(topics, FRAMEPOINT_TOPRIGHT, 0.795, 0.500)
+
         local skin = JTG.ScopeTrackFrame(scope, BlzCreateFrame("EscMenuBackdrop",
             topics, 0, 980 + session.generation))
         BlzFrameSetPoint(skin, FRAMEPOINT_TOPLEFT, topics,
@@ -553,28 +552,17 @@ function JTG.CreateHotkeySetupTutorialActivity(session)
         self.frames.topicsMenu = topics
 
         local topicButtons = {}
-        local previous = nil
         for index, topic in ipairs(TOPICS) do
             local button = JTG.ScopeTrackFrame(scope, CreateTutorialButton(
                 "JTGHotkeyTopic" .. index .. suffix, topics,
                 topic.label, 0.125))
-            BlzFrameSetSize(button, 0.125, 0.026)
-            if previous == nil then
-                BlzFrameSetPoint(button, FRAMEPOINT_TOP, topics,
-                    FRAMEPOINT_TOP, 0, -0.041)
-            else
-                BlzFrameSetPoint(button, FRAMEPOINT_TOP, previous,
-                    FRAMEPOINT_BOTTOM, 0, -0.003)
-            end
+
             topicButtons[index] = button
-            previous = button
         end
         local close = JTG.ScopeTrackFrame(scope, CreateTutorialButton(
             "JTGHotkeyTopicsClose" .. suffix, topics, "Close", 0.10))
-        BlzFrameSetSize(close, 0.10, 0.026)
-        BlzFrameSetPoint(close, FRAMEPOINT_BOTTOM, topics,
-            FRAMEPOINT_BOTTOM, 0, 0.025)
 
+        JTG.LayoutChoicePopup(topics,topicButtons,close)
         JTG.Tutorial.BindClicks(self, scope)
         self:registerClick(self.frames.continue,
             function() self:continueTutorial() end)
@@ -648,9 +636,7 @@ function JTG.CreateHotkeySetupTutorialActivity(session)
         end)
 
         for _, spec in ipairs(UNIT_LAYOUT) do
-            local unit = JTG.ScopeTrackUnit(current.scope,
-                CreateUnit(HOTKEY_PLAYER, FourCC(spec.rawcode),
-                    spec.x, spec.y, spec.facing))
+            local unit = JTG.CreateScopedUnit(current.scope,HOTKEY_PLAYER,FourCC(spec.rawcode),spec.x,spec.y,spec.facing)
             table.insert(self.units, unit)
             if spec.hero then
                 self.paladin = unit
@@ -673,9 +659,7 @@ function JTG.CreateHotkeySetupTutorialActivity(session)
             {"unp2", 4896, 3392}, {"etoe", 4960, 3392},
         }
         for _, spec in ipairs(hidden) do
-            local unit = JTG.ScopeTrackUnit(current.scope,
-                CreateUnit(HOTKEY_PLAYER, FourCC(spec[1]),
-                    spec[2], spec[3], 0))
+            local unit = JTG.CreateScopedUnit(current.scope,HOTKEY_PLAYER,FourCC(spec[1]),spec[2],spec[3],0)
             ShowUnit(unit, false)
             SetUnitPathing(unit, false)
             SetUnitInvulnerable(unit, true)

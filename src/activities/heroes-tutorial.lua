@@ -4,6 +4,9 @@ local T=JTG.Tutorial
 local PLAYER=Player(0)
 local SCRIPT=JTG.HeroesScript
 local STEPS=SCRIPT.steps
+local function trace(activity,label)
+    if JTG.Dev and JTG.Dev.HeroesAudioTrace then JTG.Dev.HeroesAudioTrace(activity,label) end
+end
 local TOPICS={};local seen={}
 local LABELS={welcome='Welcome',basics='Basics',levels='Levels',['hero-showcase']='Hero Showcase',
     experience='Experience',['xp-range']='XP Range',['xp-amounts']='XP Amounts',items='Items'}
@@ -156,18 +159,17 @@ function JTG.CreateHeroesTutorialActivity(session)
         self:registerClick(self.frames.optional,function() self.optionalOpen=not self.optionalOpen;self.topicsOpen=false;self:refreshMenuVisibility() end,'menu-open')
         local function panel(key,choices)
             local frame=JTG.ScopeTrackFrame(scope,BlzCreateFrameByType('FRAME','JTGHeroes'..key..suffix,root,'',0))
-            BlzFrameSetSize(frame,.185,JTG.TutorialMenuHeight(#choices-1));BlzFrameSetAbsPoint(frame,FRAMEPOINT_TOPRIGHT,.795,.50)
             local skin=JTG.ScopeTrackFrame(scope,BlzCreateFrame('EscMenuBackdrop',frame,0,2100+#choices))
             BlzFrameSetAllPoints(skin,frame);BlzFrameSetEnable(skin,false)
+            local buttons,closeButton={}
             for index,choice in ipairs(choices) do
                 local close=index==#choices
                 local width=close and .10 or .115
                 local button=JTG.ScopeTrackFrame(scope,T.CreateButton('JTGHeroes'..key..index..suffix,frame,choice.label,width))
-                BlzFrameSetSize(button,width,.026)
-                if close then BlzFrameSetPoint(button,FRAMEPOINT_BOTTOM,frame,FRAMEPOINT_BOTTOM,0,.025)
-                else BlzFrameSetPoint(button,FRAMEPOINT_TOP,frame,FRAMEPOINT_TOP,0,-.041-(index-1)*.029) end
+                if close then closeButton=button else buttons[#buttons+1]=button end
                 self:registerClick(button,choice.action)
             end
+            JTG.LayoutChoicePopup(frame,buttons,closeButton)
             self.frames[key..'Menu']=frame
         end
         local choices={}
@@ -206,10 +208,16 @@ function JTG.CreateHeroesTutorialActivity(session)
     function activity:discardPresentationForLoad() self.frames={};self.actions={};self.buttonEnabled={};self.clickTrigger=nil end
     function activity:rebuildPresentation() self:createPresentation();self:restorePresentation() end
     function activity:setup(current)
+        trace(self,'setup-entry')
+        if JTG.Dev and JTG.Dev.HeroesAudioTrace then
+            JTG.ScopeBorrow(current.scope,function() trace(self,'after-borrowed-state-restored') end)
+            JTG.AddActivityFinalizer(current,function() trace(self,'after-disposal') end)
+        end
         JTG.BorrowCamera(current.scope,PLAYER);JTG.ResetWorldFog(PLAYER)
         local oldTime,oldScale=GetFloatGameState(GAME_STATE_TIME_OF_DAY),GetTimeOfDayScale()
         JTG.ScopeBorrow(current.scope,function() SetFloatGameState(GAME_STATE_TIME_OF_DAY,oldTime);SetTimeOfDayScale(oldScale) end)
         SetFloatGameState(GAME_STATE_TIME_OF_DAY,12);SetTimeOfDayScale(0)
+        trace(self,'after-daytime')
         for _,a in ipairs({self.rosterArena,self.practiceArena}) do JTG.ScopeRevealScene(current.scope,a,PLAYER) end
         local area=GetWorldBounds();local group=CreateGroup();GroupEnumUnitsInRect(group,area,nil)
         while true do
@@ -221,6 +229,7 @@ function JTG.CreateHeroesTutorialActivity(session)
             end
         end
         DestroyGroup(group);RemoveRect(area)
+        trace(self,'after-foundation-ownership-transfer')
         local oldXPHandicap=GetPlayerHandicapXP(PLAYER)
         if oldXPHandicap~=1 then
             JTG.ScopeBorrow(current.scope,function()
@@ -228,6 +237,7 @@ function JTG.CreateHeroesTutorialActivity(session)
             end)
             SetPlayerHandicapXP(PLAYER,1)
         end
+        trace(self,'after-xp-handicap')
         for _,state in ipairs({PLAYER_STATE_RESOURCE_GOLD,PLAYER_STATE_RESOURCE_LUMBER}) do
             local old=GetPlayerState(PLAYER,state);JTG.ScopeBorrow(current.scope,function() SetPlayerState(PLAYER,state,old) end)
         end
@@ -285,7 +295,9 @@ function JTG.CreateHeroesTutorialActivity(session)
             end
         end))
         self:makeRoster('overview');self.worldScene='overview';self.actors={};self.dummies={}
+        trace(self,'after-roster')
         self:createPresentation()
+        trace(self,'after-presentation')
         self:makeTimer(.05,true,function()
             if self.locallyPaused or JTG.UI.exercisePaused then return end
             self:tickWorld();JTG.UI.TickWelcomeArrow(self,.05)
@@ -298,6 +310,7 @@ function JTG.CreateHeroesTutorialActivity(session)
         else T.MoveCamera(PLAYER,self.rosterArena.centerX,self.rosterArena.centerY);self:showStep(1) end
     end
     function activity:cleanup()
+        trace(self,'cleanup-entry')
         self.presentationVisible=false;self.complete=true;ClearTextMessages()
         JTG.UI.SetQuestAvailable(false)
         if GetLocalPlayer()==PLAYER then ClearSelection() end

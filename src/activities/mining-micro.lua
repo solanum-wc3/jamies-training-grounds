@@ -447,17 +447,11 @@ function JTG.CreateMiningMicroActivity(session)
                 mineX = layout.mineX, mineY = layout.mineY,
                 miningWorkers = self.baseBuild and 4 or miningWorkers[index], workers = {},
             }
-            lane.mine = JTG.ScopeTrackUnit(session.scope,
-                CreateUnit(Player(PLAYER_NEUTRAL_PASSIVE), FourCC("ngol"),
-                    lane.mineX, lane.mineY, 270.0))
+            lane.mine = JTG.CreateScopedUnit(session.scope,Player(PLAYER_NEUTRAL_PASSIVE),FourCC("ngol"),lane.mineX,lane.mineY,270.0)
             SetResourceAmount(lane.mine, STARTING_MINE_GOLD)
-            lane.hall = JTG.ScopeTrackUnit(session.scope,
-                CreateUnit(lane.owner, race.hall,
-                    layout.hallX, layout.hallY, 270.0))
+            lane.hall = JTG.CreateScopedUnit(session.scope,lane.owner,race.hall,layout.hallX,layout.hallY,270.0)
             for _, workerPosition in ipairs(layout.workers) do
-                table.insert(lane.workers, JTG.ScopeTrackUnit(session.scope,
-                    CreateUnit(lane.owner, race.worker,
-                        workerPosition.x, workerPosition.y, 90.0)))
+                table.insert(lane.workers, JTG.CreateScopedUnit(session.scope,lane.owner,race.worker,workerPosition.x,workerPosition.y,90.0))
             end
             lane.trees={}
             for _,position in ipairs(layout.trees) do

@@ -50,6 +50,10 @@ Bat Splitting and Dodging use `src/infrastructure/training.lua` for countdowns a
 
 ## Required checks
 
+Topics, Optional and exercise Setups panels use `JTG.LayoutChoicePopup(panel, buttons, close)`. The shared `JTG.PopupLayout` owns placement, choice dimensions and a separate Close footer.
+
+Create native actors through `JTG.CreateScopedUnit` (or the Tutorial scene wrappers). This captures terrain before structures spread blight. Terrain leases follow the scene/prompt scope and restore original tiles, variation and blight after the last overlapping scope releases them. Retire obsolete blight-spreading actors rather than merely hiding them. Opening a menu does not reset terrain.
+
 Check first entry, Continue, Back, Topics, Menu/Resume, pause, exit and save/load. Include assertions that presentation operations do not create units or issue orders, that delayed actions cannot affect another step, and that neutral demonstrations grant control only for practice. Native movement, construction and combat still require an in-game pass.
 
 ## Reference-first implementation

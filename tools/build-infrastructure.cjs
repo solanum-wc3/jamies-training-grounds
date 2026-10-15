@@ -22,7 +22,7 @@ const luaParser = req('luaparse');
 require('./prepare-exercise-briefings.cjs').prepare();
 require('./prepare-heroes-tutorial.cjs').prepare();
 
-const version = 'v0.1.3-alpha56';
+const version = 'v0.1.3-alpha57';
 const modeArgument = process.argv.find(argument => argument.startsWith('--mode='));
 const buildMode = modeArgument ? modeArgument.slice('--mode='.length) : 'release';
 assert(['release', 'development'].includes(buildMode),
@@ -42,6 +42,7 @@ const reportPath = path.join(outputDirectory,
 const acceptedHash = 'a1ea7789e60b30e77d64f14337759842dff309d129929ef24defb1276cf1ba64';
 const sharedModulePaths = [
     'src/infrastructure/core.lua',
+    'src/infrastructure/terrain.lua',
     'src/infrastructure/training.lua',
     'src/generated/exercise-briefings.lua',
     'src/infrastructure/tutorial.lua',
@@ -78,6 +79,7 @@ const modulePaths = [
         'src/generated/dev-sounds.lua',
         'src/infrastructure/sound-preview.lua',
         'src/infrastructure/diagnostics.lua',
+        'src/infrastructure/heroes-diagnostics.lua',
         'src/infrastructure/hotkey-diagnostics.lua',
         'src/infrastructure/hotkey-audit.lua',
         fs.existsSync(path.join(root,'work/hotkey-comparison-bindings.lua'))

@@ -1310,31 +1310,27 @@ local function CreateSurroundsActivity(session, gargoyleMode)
     function activity:createSetupsUI()
         local gameUI = BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0)
         local _, list = self:currentSetup()
-        local panelHeight = JTG.TutorialMenuHeight(#list) + 0.015
+        local panelHeight = JTG.TutorialMenuHeight(#list)
         self.setupsPanel = JTG.ScopeTrackFrame(session.presentationScope,
-            JTG.UI.CreateNativePanel("JTGSurroundSetups", gameUI, 0.20,
+            JTG.UI.CreateNativePanel("JTGSurroundSetups", gameUI, JTG.PopupLayout.width,
                 panelHeight))
-        BlzFrameSetAbsPoint(self.setupsPanel, FRAMEPOINT_TOPRIGHT, 0.795, 0.485)
         self.setupButtons = {}
         for index, setup in ipairs(list) do
             local setupIndex = index
             local button = AddButton(session.presentationScope,
                 self.setupsPanel, "JTGSurroundSetup" .. tostring(index),
-                setup.name, 0.155, 0.026, function()
+                setup.name, JTG.PopupLayout.buttonWidth, JTG.PopupLayout.buttonHeight, function()
                     self.setupIndex = setupIndex
                     self.runnerIndex = 1
                     self.setupsOpen = false
                     JTG.ResetActivity()
                 end)
-            BlzFrameSetPoint(button, FRAMEPOINT_TOP, self.setupsPanel,
-                FRAMEPOINT_TOP, 0, -0.038 - (index - 1) * 0.029)
             self.setupButtons[index] = button
         end
         local close = AddButton(session.presentationScope, self.setupsPanel,
             "JTGSurroundSetupsClose", "Close", 0.10, 0.026,
             function() self:setSetupsOpen(false) end)
-        BlzFrameSetPoint(close, FRAMEPOINT_BOTTOM, self.setupsPanel,
-            FRAMEPOINT_BOTTOM, 0, 0.025)
+        JTG.LayoutChoicePopup(self.setupsPanel,self.setupButtons,close)
         BlzFrameSetVisible(self.setupsPanel, false)
     end
 

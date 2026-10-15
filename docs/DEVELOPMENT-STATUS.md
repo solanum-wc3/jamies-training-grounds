@@ -1,6 +1,16 @@
-# Development checkpoint: v0.1.3-alpha56
+# Development checkpoint: v0.1.3-alpha57
 
-Updated 15 October 2026. The public release remains v0.1.2-beta1; its download links and v0.1.2 patch notes are unchanged. Alpha56 is a testing build, not a completed milestone or a public release.
+Updated 15 October 2026. The public release remains v0.1.2-beta1; its download links and v0.1.2 patch notes are unchanged. Alpha57 is a testing build, not a completed milestone or a public release.
+
+## Alpha57: shared cleanup/layout and Heroes diagnostics
+
+Heroes' upkeep chime remains unresolved. Earlier changes inferred food/XP causes without isolating native audio; mock checks cannot establish the source of a sound. A development-only diagnostic now starts/stops Heroes without button audio, logs actual XP/food and unit coordinates, and offers separately labelled button/upkeep sound samples. See [focused testing](ALPHA57-TESTING.md).
+
+Racial XP displays use larger, grid-aligned building cells and 200 more units of separation before summon captions. Topics/Optional/Setups use one popup layout helper. Terrain snapshots belong to actor scopes, preserve original tiles/variation/blight, and restore after spreading buildings are removed; overlapping scene scopes share ownership. Obsolete Heroes showcase actors are disposed instead of hidden so their buildings cannot keep spreading blight. Attack Dice reads roster metadata independently of those actors.
+
+Source checks, generated-data checks, all 45 Lua regression fixtures, release maintenance packaging and development packaging pass. Native sound diagnosis, building placement, grass/blight rendering, popup appearance and save/load checks remain outstanding. Alpha56 source was checkpointed at `f19736e`; alpha57 changes are on `codex/alpha49-checkpoint`.
+
+Development output: `outputs/Jamies-Training-Grounds-v0.1.3-alpha57-dev.w3x`, 4,337,872 bytes, SHA256 `a3b7f5c55f27546cc53265635b01b0b39f022c5274914b8531a4bfc4d8d80edc`.
 
 ## Source and distributed build
 

@@ -24,6 +24,7 @@ function JTG.InstallHeroesScenes(activity,session)
     function activity:sceneUnit(scope,raw,x,y,owner,color,level,hiddenIcons)
         local unit=T.CreateSceneUnit(scope,Player(PLAYER_NEUTRAL_PASSIVE),FourCC(raw),x,y,270)
         assert(unit and GetUnitTypeId(unit)~=0,'Heroes scene missing unit '..raw)
+        if JTG.Dev and JTG.Dev.HeroesAudioTrace then JTG.Dev.HeroesAudioTrace(self,'created-before-food-disable:'..raw) end
         -- Instructional actors retain their native stats but do not form an
         -- economy army or trigger upkeep while spawning/changing ownership.
         SetUnitUseFood(unit,false)
@@ -36,6 +37,7 @@ function JTG.InstallHeroesScenes(activity,session)
             BlzSetUnitBooleanField(unit,UNIT_BF_HERO_HIDE_HERO_INTERFACE_ICON,hiddenIcons==true)
         end
         SetUnitOwner(unit,owner or PLAYER,false)
+        if JTG.Dev and JTG.Dev.HeroesAudioUnit then JTG.Dev.HeroesAudioUnit(self,raw,unit,x,y) end
         -- Demo Mode's passive-unit setup uses zero acquisition and Stop.
         -- Hold Position can still attack an enemy already in weapon range.
         IssueImmediateOrder(unit,'stop')
@@ -81,13 +83,10 @@ function JTG.InstallHeroesScenes(activity,session)
         self.rosterMode=mode
     end
     function activity:hideRoster()
-        for _,group in ipairs(self.groups or {}) do
-            ShowUnit(group.altar,false)
-            for _,hero in ipairs(group.heroes) do
-                SetUnitOwner(hero,Player(PLAYER_NEUTRAL_PASSIVE),false)
-                SuspendHeroXP(hero,true);PauseUnit(hero,true);ShowUnit(hero,false)
-            end
-        end
+        -- Hidden Undead altars still spread blight. Retire the previous
+        -- display, including its terrain lease; returning recreates the roster.
+        T.ClearScene(self,'heroes-roster')
+        self.groups={};self.heroes={};self.buildings={}
     end
     function activity:addActor(raw,x,y,level,color,owner,hiddenIcons)
         local scope=T.SceneScope(self,'heroes-active')
@@ -220,11 +219,11 @@ function JTG.InstallHeroesScenes(activity,session)
     end
     function activity:showDice()
         self.levelActors={};local groups={};local order={'2D4','2D6','2D12','2D11','3D10'}
-        for _,group in ipairs(self.groups) do
-            for _,entry in ipairs(JTG.GetTutorialAltarHeroes(group.altarRaw)) do
+        for _,spec in ipairs(ALTARS) do
+            for _,entry in ipairs(JTG.GetTutorialAltarHeroes(spec.raw)) do
                 local stat=assert(D.heroStats[entry.raw]);local key=stat.dice..'D'..stat.sides
                 assert(key=='2D4' or key=='2D6' or key=='2D12' or key=='2D11' or key=='3D10','Unexpected hero dice '..key)
-                groups[key]=groups[key] or {};groups[key][#groups[key]+1]={raw=entry.raw,color=group.color}
+                groups[key]=groups[key] or {};groups[key][#groups[key]+1]={raw=entry.raw,color=COLORS[spec.id]}
             end
         end
         local width=0
@@ -273,23 +272,31 @@ function JTG.InstallHeroesScenes(activity,session)
             table.sort(ordered,function(left,right) return left.level<right.level or (left.level==right.level and left.food<right.food) end)
             local width=0
             for _,group in ipairs(ordered) do
-                group.width=(math.ceil(math.max(1,#group.regular,#group.summons)/5)-1)*230
-                width=width+group.width+360
+                local buildings=false
+                for _,entry in ipairs(group.regular) do buildings=buildings or entry.building end
+                group.rows=buildings and 2 or 5
+                group.step=buildings and 576 or 240
+                group.columnStep=buildings and 576 or 230
+                group.gap=buildings and 576 or 360
+                group.width=(math.ceil(math.max(1,#group.regular,#group.summons)/group.rows)-1)*group.columnStep
+                width=width+group.width+group.gap
             end
-            width=width-360
+            width=width-ordered[#ordered].gap
             local x=math.max(a.minX+750,a.centerX-width/2)
             self.xpColumns=ordered
             -- Structures first, then mobile units, so pathing never pushes an
             -- earlier display unit away when a building is created.
-            for _,group in ipairs(ordered) do group.x=x;x=x+group.width+360 end
+            for _,group in ipairs(ordered) do group.x=x;x=x+group.width+group.gap end
             for _,structures in ipairs({true,false}) do
                 for _,group in ipairs(ordered) do
                     for _,list in ipairs({group.regular,group.summons}) do
                         for index,row in ipairs(list) do
                             if row.building==structures then
                                 local summoned=list==group.summons
-                                local y=summoned and a.centerY-1000-((index-1)%5)*240 or a.centerY-180+((index-1)%5)*240
-                                local unit=self:addActor(row.raw,group.x+math.floor((index-1)/5)*230,y,nil,COLORS[self.xpNumberChoice],Player(PLAYER_NEUTRAL_PASSIVE))
+                                local y=summoned and a.centerY-1200-((index-1)%group.rows)*group.step or a.centerY-180+((index-1)%group.rows)*group.step
+                                local ux=group.x+math.floor((index-1)/group.rows)*group.columnStep
+                                if row.building then ux=math.floor(ux/64+.5)*64;y=math.floor(y/64+.5)*64 end
+                                local unit=self:addActor(row.raw,ux,y,nil,COLORS[self.xpNumberChoice],Player(PLAYER_NEUTRAL_PASSIVE))
                                 UnitRemoveAbility(unit,FourCC('Apiv'));PauseUnit(unit,true)
                             end
                         end
@@ -302,7 +309,7 @@ function JTG.InstallHeroesScenes(activity,session)
                 local summon=group.summons[1]
                 if summon then
                     self:worldText('Summon\nUnit Level: '..summon.level..'\nFood Cost: '..summon.food..'\n'..summon.xp..' XP',group.x-80,
-                        a.centerY-800)
+                        a.centerY-1000)
                 end
             end
         end

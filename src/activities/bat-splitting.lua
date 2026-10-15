@@ -154,9 +154,7 @@ function JTG.CreateBatSplittingActivity(session)
         self.gryphonSet={}
         for index=1,self.count do
             local columns=math.ceil(self.count/2)
-            local unit=JTG.ScopeTrackUnit(current.scope,CreateUnit(p0,FourCC("hgry"),
-                self.startX+((index-1)%columns-(columns-1)/2)*30,
-                self.startY+(math.floor((index-1)/columns)-0.5)*30,270))
+            local unit=JTG.CreateScopedUnit(current.scope,p0,FourCC("hgry"),self.startX+((index-1)%columns-(columns-1)/2)*30,self.startY+(math.floor((index-1)/columns)-0.5)*30,270)
             PauseUnit(unit,true)
             self.gryphons[index],self.gryphonSet[unit]=unit,true
             SetUnitOwner(unit,Player(PLAYER_NEUTRAL_PASSIVE),false)
@@ -170,9 +168,7 @@ function JTG.CreateBatSplittingActivity(session)
                 -- Installed UnitBalance.slk: hgry sight=1600, nsight=900.
                 -- Both modes measure approaches from daytime vision.
                 local distance=1600+400
-                local bat=JTG.ScopeTrackUnit(current.scope,CreateUnit(p1,FourCC("otbr"),
-                    GetUnitX(target)+math.cos(angle)*distance,GetUnitY(target)+math.sin(angle)*distance,
-                    (angle*180/math.pi+180)%360))
+                local bat=JTG.CreateScopedUnit(current.scope,p1,FourCC("otbr"),GetUnitX(target)+math.cos(angle)*distance,GetUnitY(target)+math.sin(angle)*distance,(angle*180/math.pi+180)%360)
                 UnitAddAbility(bat,FourCC("Auco")); SetUnitAcquireRange(bat,0); PauseUnit(bat,true)
                 self.bats[index],self.targets[bat],self.releaseAt[bat]=bat,target,groupIndex
             end

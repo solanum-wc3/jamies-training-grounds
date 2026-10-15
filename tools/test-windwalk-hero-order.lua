@@ -1,6 +1,7 @@
 local f=assert(io.open('src/activities/windwalk-pop.lua'));local source=f:read('*a');f:close()
 local creations={}
 JTG={ScopeTrackUnit=function(_,u) return u end}
+function JTG.CreateScopedUnit(scope,...) return JTG.ScopeTrackUnit(scope,CreateUnit(...)) end
 function Player(i) return i end
 function GetLocalPlayer() return 0 end
 function ClearSelection() end

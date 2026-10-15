@@ -31,6 +31,7 @@ function SetPlayerTechResearched(_,_,value) tech=value end
 function JTG.ScopeAdd(scope,fn) scope[#scope+1]=fn end
 JTG.ScopeBorrow=JTG.ScopeAdd
 function JTG.ScopeTrackUnit(scope,u) JTG.ScopeAdd(scope,function() RemoveUnit(u) end);return u end
+function JTG.CreateScopedUnit(scope,...) return JTG.ScopeTrackUnit(scope,CreateUnit(...)) end
 function JTG.ScopeTrackFogModifier(_,f) return f end
 function JTG.ScopeTrackTrigger(_,t) return t end
 function JTG.GuardSession(_,fn) return fn end

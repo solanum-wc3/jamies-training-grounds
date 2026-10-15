@@ -14,6 +14,10 @@ const paths=Function('sharedModulePaths','isDevelopment','fs','path','root',`ret
 assert(!paths.some(file=>file.startsWith('work/')));
 assert(paths.includes('src/generated/hotkey-comparison-defaults.lua'));
 assert(paths.includes('src/generated/hotkey-audit-defaults.lua'));
+assert(paths.includes('src/infrastructure/heroes-diagnostics.lua'));
+const releasePaths=Function('sharedModulePaths','isDevelopment','fs','path','root',`return ${modules};`)
+    (sharedPaths,false,noLocalFiles,path,root);
+assert(!releasePaths.includes('src/infrastructure/heroes-diagnostics.lua'));
 const blocks=paths.map(file=>{
     assert(fs.existsSync(path.join(root,file)),`Missing clean-checkout module: ${file}`);
     return `do\n${fs.readFileSync(path.join(root,file),'utf8')}\nend`;

@@ -210,6 +210,7 @@ function JTG.DisposeScope(scope)
 end
 JTG.ScopeBorrow=JTG.ScopeAdd
 function JTG.ScopeTrackUnit(scope,unit) JTG.ScopeAdd(scope,function() unit.removed=true end);return unit end
+function JTG.CreateScopedUnit(scope,...) return JTG.ScopeTrackUnit(scope,CreateUnit(...)) end
 function JTG.ScopeTrackTrigger(scope,trigger) JTG.ScopeAdd(scope,function() trigger.disabled=true end);return trigger end
 function JTG.ScopeTrackFrame(_,frame) return frame end
 function JTG.ScopeTrackFogModifier(_,fog) return fog end

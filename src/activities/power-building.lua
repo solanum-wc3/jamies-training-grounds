@@ -234,11 +234,7 @@ function JTG.CreatePowerBuildingActivity(session)
             centerY = GetUnitY(lane.building)
             radius = 32.0
         end
-        local worker = JTG.ScopeTrackUnit(session.scope,
-            CreateUnit(lane.owner, FourCC("hpea"),
-                centerX + radius * math.cos(angle),
-                centerY + radius * math.sin(angle),
-                math.deg(angle) + 180.0))
+        local worker = JTG.CreateScopedUnit(session.scope,lane.owner,FourCC("hpea"),centerX + radius * math.cos(angle),centerY + radius * math.sin(angle),math.deg(angle) + 180.0)
         SetUnitInvulnerable(worker, true)
         lane.workers[workerIndex] = worker
         table.insert(self.workers, worker)
@@ -361,10 +357,7 @@ function JTG.CreatePowerBuildingActivity(session)
             self.lanes[index] = lane
             self:createLaneTag(lane, index)
             for prerequisiteIndex, prerequisiteId in ipairs(self.prerequisites) do
-                local prerequisite = JTG.ScopeTrackUnit(session.scope,
-                    CreateUnit(owner, prerequisiteId,
-                        session.scene.minX - 650.0 - prerequisiteIndex * 32.0,
-                        session.scene.minY - 650.0 - index * 24.0, 270.0))
+                local prerequisite = JTG.CreateScopedUnit(session.scope,owner,prerequisiteId,session.scene.minX - 650.0 - prerequisiteIndex * 32.0,session.scene.minY - 650.0 - index * 24.0,270.0)
                 ShowUnit(prerequisite, false)
             end
             -- Only the primary builder exists until construction has started;

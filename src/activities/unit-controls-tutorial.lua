@@ -854,8 +854,7 @@ function JTG.CreateUnitControlsTutorialActivity(session)
     end
 
     function activity:createEnemy(rawcode, x, y, facing)
-        local unit = JTG.ScopeTrackUnit(JTG.Tutorial.SceneScope(self,'enemies'),
-            CreateUnit(HOSTILE_PLAYER, FourCC(rawcode), x, y, facing or 270.0))
+        local unit = JTG.CreateScopedUnit(JTG.Tutorial.SceneScope(self,'enemies'),HOSTILE_PLAYER,FourCC(rawcode),x,y,facing or 270.0)
         table.insert(self.enemies, unit)
         return unit
     end
@@ -1003,9 +1002,7 @@ function JTG.CreateUnitControlsTutorialActivity(session)
         self:fillPriestMana()
         local dummies = {}
         for index, target in ipairs(self.units) do
-            local dummy = JTG.ScopeTrackUnit(JTG.Tutorial.SceneScope(self,'slow-casters'),
-                CreateUnit(HOSTILE_PLAYER, FourCC("hsor"),
-                    GetUnitX(target), GetUnitY(target) + 350.0, 270.0))
+            local dummy = JTG.CreateScopedUnit(JTG.Tutorial.SceneScope(self,'slow-casters'),HOSTILE_PLAYER,FourCC("hsor"),GetUnitX(target),GetUnitY(target) + 350.0,270.0)
             table.insert(dummies, dummy)
             SetUnitVertexColor(dummy, 255, 255, 255, 0)
             SetUnitInvulnerable(dummy, true)
@@ -1027,10 +1024,7 @@ function JTG.CreateUnitControlsTutorialActivity(session)
         local exitY = upperArena.maxY - 96.0
         local abilityId = FourCC("AOsf")
         for index = 1, 2 do
-            local caster = JTG.ScopeTrackUnit(JTG.Tutorial.SceneScope(self,'wolves'),
-                CreateUnit(HOSTILE_PLAYER, FourCC("Ofar"),
-                    centerX - 150.0 + (index - 1) * 300.0,
-                    spawnY, 90.0))
+            local caster = JTG.CreateScopedUnit(JTG.Tutorial.SceneScope(self,'wolves'),HOSTILE_PLAYER,FourCC("Ofar"),centerX - 150.0 + (index - 1) * 300.0,spawnY,90.0)
             table.insert(self.wolfSummoners, caster)
             self.wolfCasterVisits=self.wolfCasterVisits or {}
             self.wolfCasterVisits[caster]=self.tutorialEntry or 0
@@ -1102,9 +1096,7 @@ function JTG.CreateUnitControlsTutorialActivity(session)
 
     function activity:startSiegeCircle()
         self:clearMovementProps()
-        local engine = JTG.ScopeTrackUnit(session.scope,
-            CreateUnit(Player(PLAYER_NEUTRAL_PASSIVE), FourCC("hmtt"),
-                session.scene.centerX + 800.0, session.scene.centerY, 180.0))
+        local engine = JTG.CreateScopedUnit(session.scope,Player(PLAYER_NEUTRAL_PASSIVE),FourCC("hmtt"),session.scene.centerX + 800.0,session.scene.centerY,180.0)
         self.siegeEngine = engine
         table.insert(self.movementUnits, engine)
         SetUnitInvulnerable(engine, true)
@@ -1150,10 +1142,7 @@ function JTG.CreateUnitControlsTutorialActivity(session)
             SetUnitOwner(self.siegeEngine, UNIT_PLAYER, true)
         end
         if self.formationPeasant and GetUnitTypeId(self.formationPeasant)~=0 then return end
-        local peasant = JTG.ScopeTrackUnit(session.scope,
-            CreateUnit(UNIT_PLAYER, FourCC("hpea"),
-                session.scene.centerX + 125.0,
-                session.scene.centerY - 50.0, 90.0))
+        local peasant = JTG.CreateScopedUnit(session.scope,UNIT_PLAYER,FourCC("hpea"),session.scene.centerX + 125.0,session.scene.centerY - 50.0,90.0)
         table.insert(self.movementUnits, peasant)
         self.formationPeasant = peasant
     end
@@ -1195,8 +1184,7 @@ function JTG.CreateUnitControlsTutorialActivity(session)
             }
         end
         for _, spec in ipairs(buildingSpecs) do
-            local unit = JTG.ScopeTrackUnit(session.scope,
-                CreateUnit(owner, FourCC(spec[1]), cx + spec[2], cy + spec[3], 270.0))
+            local unit = JTG.CreateScopedUnit(session.scope,owner,FourCC(spec[1]),cx + spec[2],cy + spec[3],270.0)
             table.insert(self.obstacleUnits, unit)
             SetUnitInvulnerable(unit, true)
         end
@@ -1214,10 +1202,7 @@ function JTG.CreateUnitControlsTutorialActivity(session)
         for index = 1, 20 do
             local angle = (index - 1) * 2.0 * bj_PI / 20.0
             local radius = 250.0 + (index % 4) * 125.0
-            local unit = JTG.ScopeTrackUnit(session.scope,
-                CreateUnit(owner, FourCC("hmtt"),
-                    cx + Cos(angle) * radius, cy + Sin(angle) * radius,
-                    angle * bj_RADTODEG))
+            local unit = JTG.CreateScopedUnit(session.scope,owner,FourCC("hmtt"),cx + Cos(angle) * radius,cy + Sin(angle) * radius,angle * bj_RADTODEG)
             table.insert(self.obstacleUnits, unit)
             SetUnitInvulnerable(unit, true)
             RemoveGuardPosition(unit)
@@ -1463,9 +1448,6 @@ function JTG.CreateUnitControlsTutorialActivity(session)
         local root = BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0)
         local panel = JTG.ScopeTrackFrame(session.presentationScope,
             BlzCreateFrameByType("FRAME", name .. suffix, root, "", 0))
-        BlzFrameSetSize(panel, 0.185,
-            JTG.TutorialMenuHeight(buttonCount))
-        BlzFrameSetAbsPoint(panel, FRAMEPOINT_TOPRIGHT, 0.795, 0.500)
         local skin = JTG.ScopeTrackFrame(session.presentationScope,
             BlzCreateFrame("EscMenuBackdrop", panel, 0,
                 800 + session.generation + string.len(name)))
@@ -1511,56 +1493,34 @@ function JTG.CreateUnitControlsTutorialActivity(session)
         local topics = self:createMenuPanel("JTGUnitControlsTopics", suffix,
             #TOPICS)
         self.frames.topicsMenu = topics
-        local previous = nil
         local topicButtons = {}
         for index, topic in ipairs(TOPICS) do
             local button = JTG.ScopeTrackFrame(scope, CreateTutorialButton(
                 "JTGUnitControlsTopic" .. index .. suffix,
                 topics, topic.label, 0.115))
-            BlzFrameSetSize(button, 0.115, 0.026)
-            if previous == nil then
-                BlzFrameSetPoint(button, FRAMEPOINT_TOP, topics,
-                    FRAMEPOINT_TOP, 0, -0.041)
-            else
-                BlzFrameSetPoint(button, FRAMEPOINT_TOP, previous,
-                    FRAMEPOINT_BOTTOM, 0, -0.003)
-            end
+
             topicButtons[index] = button
-            previous = button
         end
         local topicsClose = JTG.ScopeTrackFrame(scope, CreateTutorialButton(
             "JTGUnitControlsTopicsClose" .. suffix, topics, "Close", 0.10))
-        BlzFrameSetSize(topicsClose, 0.10, 0.026)
-        BlzFrameSetPoint(topicsClose, FRAMEPOINT_BOTTOM, topics,
-            FRAMEPOINT_BOTTOM, 0, 0.025)
 
+        JTG.LayoutChoicePopup(topics,topicButtons,topicsClose)
         local optional = self:createMenuPanel(
             "JTGUnitControlsOptional", suffix, #OPTIONAL_SECTIONS)
         self.frames.optionalMenu = optional
         local optionalButtons = {}
-        previous = nil
         for index, section in ipairs(OPTIONAL_SECTIONS) do
             local button = JTG.ScopeTrackFrame(scope, CreateTutorialButton(
                 "JTGUnitControlsOptional" .. index .. suffix,
                 optional, section.label, 0.115))
-            BlzFrameSetSize(button, 0.115, 0.026)
-            if previous == nil then
-                BlzFrameSetPoint(button, FRAMEPOINT_TOP, optional,
-                    FRAMEPOINT_TOP, 0, -0.041)
-            else
-                BlzFrameSetPoint(button, FRAMEPOINT_TOP, previous,
-                    FRAMEPOINT_BOTTOM, 0, -0.003)
-            end
+
             optionalButtons[index] = button
-            previous = button
         end
         local optionalClose = JTG.ScopeTrackFrame(scope, CreateTutorialButton(
             "JTGUnitControlsOptionalClose" .. suffix,
             optional, "Close", 0.10))
-        BlzFrameSetSize(optionalClose, 0.10, 0.026)
-        BlzFrameSetPoint(optionalClose, FRAMEPOINT_BOTTOM, optional,
-            FRAMEPOINT_BOTTOM, 0, 0.025)
 
+        JTG.LayoutChoicePopup(optional,optionalButtons,optionalClose)
         JTG.Tutorial.BindClicks(self, scope)
         self:registerClick(self.frames.continue,
             function() self:continueTutorial() end)

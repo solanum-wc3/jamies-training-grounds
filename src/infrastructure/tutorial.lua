@@ -373,7 +373,7 @@ end
 -- Mobile units retain the engine's walkable spawn position. Exact authored
 -- coordinates are a separate policy for structures and deliberate staging.
 function T.CreateMobileUnit(scope,owner,raw,x,y,facing)
-    local unit=JTG.ScopeTrackUnit(scope,CreateUnit(owner,raw,x,y,facing or 270))
+    local unit=JTG.CreateScopedUnit(scope,owner,raw,x,y,facing or 270)
     SetUnitPathing(unit,true)
     return unit
 end
@@ -398,7 +398,7 @@ end
 -- Scene creation initializes melee-only native behavior and keeps the engine's
 -- visual and gameplay positions together. Place buildings before mobile units.
 function T.CreateSceneUnit(scope,owner,raw,x,y,facing)
-    local unit=JTG.ScopeTrackUnit(scope,CreateUnit(owner,raw,x,y,facing or 270))
+    local unit=JTG.CreateScopedUnit(scope,owner,raw,x,y,facing or 270)
     if math.abs(GetUnitX(unit)-x)>0.01 or math.abs(GetUnitY(unit)-y)>0.01 then
         SetUnitPathing(unit,false)
         SetUnitPosition(unit,x,y)

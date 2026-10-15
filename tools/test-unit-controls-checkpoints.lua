@@ -16,6 +16,7 @@ function SetUnitOwner(u,owner) u.owner=owner end
 function IssuePointOrder(u,order) u.order=order;return true end
 function IssueImmediateOrder(u,order) u.order=order;return true end
 function JTG.ScopeTrackUnit(_,u) return u end
+function JTG.CreateScopedUnit(scope,...) return JTG.ScopeTrackUnit(scope,CreateUnit(...)) end
 function JTG.StartScopedTimer() return {} end
 function BlzGetUnitMaxMana() return 100 end
 JTG.Scenes={['arena.north']={minX=-1000,maxY=2000}}

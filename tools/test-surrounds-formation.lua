@@ -10,6 +10,7 @@ function GetLocalPlayer() return 0 end
 function IsUnitType() return false end
 function BlzCreateUnitWithSkin(owner,raw,x,y) return {raw=raw,x=x,y=y} end
 function JTG.ScopeTrackUnit(_,unit) return unit end
+function JTG.CreateScopedUnit(scope,...) return JTG.ScopeTrackUnit(scope,CreateUnit(...)) end
 function JTG.StartScopedTimer() return {} end
 dofile('src/activities/surrounds.lua')
 local session={scope={},restartData={race='undead',setupIndex=2,runnerIndex=2}}

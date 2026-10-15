@@ -158,8 +158,7 @@ function JTG.CreateEconomyTutorialActivity(session)
 
         local topics = JTG.ScopeTrackFrame(scope, BlzCreateFrameByType("FRAME",
             "JTGEconomyTopics" .. suffix, root, "", 0))
-        BlzFrameSetSize(topics, 0.185, JTG.TutorialMenuHeight(#TOPICS))
-        BlzFrameSetAbsPoint(topics, FRAMEPOINT_TOPRIGHT, 0.795, 0.500)
+
         local skin = JTG.ScopeTrackFrame(scope, BlzCreateFrame("EscMenuBackdrop",
             topics, 0, 980 + session.generation))
         BlzFrameSetPoint(skin, FRAMEPOINT_TOPLEFT, topics,
@@ -170,28 +169,17 @@ function JTG.CreateEconomyTutorialActivity(session)
         self.frames.topicsMenu = topics
 
         local topicButtons = {}
-        local previous = nil
         for index, topic in ipairs(TOPICS) do
             local button = JTG.ScopeTrackFrame(scope, CreateTutorialButton(
                 "JTGEconomyTopic" .. index .. suffix, topics,
                 topic.label, 0.125))
-            BlzFrameSetSize(button, 0.125, 0.026)
-            if previous == nil then
-                BlzFrameSetPoint(button, FRAMEPOINT_TOP, topics,
-                    FRAMEPOINT_TOP, 0, -0.041)
-            else
-                BlzFrameSetPoint(button, FRAMEPOINT_TOP, previous,
-                    FRAMEPOINT_BOTTOM, 0, -0.003)
-            end
+
             topicButtons[index] = button
-            previous = button
         end
         local close = JTG.ScopeTrackFrame(scope, CreateTutorialButton(
             "JTGEconomyTopicsClose" .. suffix, topics, "Close", 0.10))
-        BlzFrameSetSize(close, 0.10, 0.026)
-        BlzFrameSetPoint(close, FRAMEPOINT_BOTTOM, topics,
-            FRAMEPOINT_BOTTOM, 0, 0.025)
 
+        JTG.LayoutChoicePopup(topics,topicButtons,close)
         JTG.Tutorial.BindClicks(self, scope)
         self:registerClick(self.frames.continue,
             function() self:continueTutorial() end)
@@ -415,7 +403,7 @@ function JTG.CreateEconomyTutorialActivity(session)
         SetPlayerAlliance(Player(5),ECONOMY_PLAYER,ALLIANCE_PASSIVE,false)
         SetPlayerAlliance(ECONOMY_PLAYER,Player(5),ALLIANCE_PASSIVE,false)
         for i=1,count do
-            local unit=JTG.ScopeTrackUnit(session.scope,CreateUnit(Player(5),FourCC(raw),f.x+(i-1)*96,f.y+500,270))
+            local unit=JTG.CreateScopedUnit(session.scope,Player(5),FourCC(raw),f.x+(i-1)*96,f.y+500,270)
             self.attackers[#self.attackers+1]=unit
             SetUnitAcquireRange(unit,0);SetUnitCreepGuard(unit,false);RemoveGuardPosition(unit)
             self.attackerTargets=self.attackerTargets or {}
@@ -645,7 +633,7 @@ function JTG.CreateEconomyTutorialActivity(session)
         elseif n=='nightelf-lumber' then self:focus(self:findUnit('ewsp',3,'lumber'))
         elseif n=='nightelf-build' then self:focus(self:findUnit('ewsp',3,'lumber'))
         elseif n=='nightelf-defense' then
-            local farseer=JTG.ScopeTrackUnit(session.scope,CreateUnit(Player(1),FourCC('Ofar'),-3400,-2400,225))
+            local farseer=JTG.CreateScopedUnit(session.scope,Player(1),FourCC('Ofar'),-3400,-2400,225)
             self.attackers[#self.attackers+1]=farseer;SelectHeroSkill(farseer,FourCC('AOsf'))
             self:scriptCall(function() IssueImmediateOrder(farseer,'spiritwolf') end)
             self:later(1,function() self:scriptCall(function() IssuePointOrder(farseer,'move',0,0) end) end)

@@ -46,6 +46,10 @@ Use `JTG.ScopeTrack*` helpers for units, timers, triggers, frames, images, marke
 
 ## 5. Use shared presentation
 
+Create new native units with `JTG.CreateScopedUnit`; use `ScopeTrackUnit` when adopting an already-created native product. Before explicit terrain changes or allowing native construction outside a protected building region, call `JTG.ScopePreserveTerrain`. Its scope must live as long as its spreading buildings.
+
+Topics, Optional and Setups panels use `JTG.LayoutChoicePopup` for shared placement, choice sizing and the separate Close footer.
+
 Use `JTG.UI.ShowActivityBriefing` for briefing and selector pages. Preserve the shared title, body, artwork, divider and footer anchors unless the content needs an explicit override.
 
 Advertise toolbar capabilities rather than creating another permanent toolbar. Use the shared result card for ordinary completion, success and failure states. Supply activity-specific text and progression while reusing common Redo, Next and Menu behavior. Reserve Replay for recorded playback. Hide is an intentional exception for Windwalk Pop and successful Surrounds, not a default action.

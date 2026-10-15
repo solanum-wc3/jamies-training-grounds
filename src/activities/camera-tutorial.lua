@@ -888,8 +888,7 @@ function JTG.CreateCameraTutorialActivity(session)
 
         local function spawnAttacker(x, y, facing, target)
             if target == nil then return end
-            local ghoul = JTG.ScopeTrackUnit(JTG.Tutorial.SceneScope(self,'notification-attack'),
-                CreateUnit(Player(1), FourCC("ugho"), x, y, facing))
+            local ghoul = JTG.CreateScopedUnit(JTG.Tutorial.SceneScope(self,'notification-attack'),Player(1),FourCC("ugho"),x,y,facing)
             table.insert(spawnedGhouls, ghoul)
             table.insert(self.demoGhouls, ghoul)
             IssueTargetOrder(ghoul, "attack", target)
@@ -954,7 +953,7 @@ function JTG.CreateCameraTutorialActivity(session)
             JTG.ScopeAdd(session.scope,function() JTG.DisposeScope(scope) end)
             self.idleWorkers={}
             for _,point in ipairs({{3456,-5440},{-2432,-6848},{-4800,-4224}}) do
-                local worker=JTG.ScopeTrackUnit(scope,CreateUnit(CAMERA_PLAYER,FourCC('opeo'),point[1],point[2],270))
+                local worker=JTG.CreateScopedUnit(scope,CAMERA_PLAYER,FourCC('opeo'),point[1],point[2],270)
                 self.idleWorkers[#self.idleWorkers+1]=worker
             end
         end
@@ -1376,8 +1375,7 @@ function JTG.CreateCameraTutorialActivity(session)
 
         local objectives = JTG.ScopeTrackFrame(scope, BlzCreateFrameByType("FRAME",
             "JTGCameraTutorialObjectives" .. suffix, root, "", 0))
-        BlzFrameSetSize(objectives, 0.185, JTG.TutorialMenuHeight(5))
-        BlzFrameSetAbsPoint(objectives, FRAMEPOINT_TOPRIGHT, 0.795, 0.500)
+
         local skin = JTG.ScopeTrackFrame(scope, BlzCreateFrame("EscMenuBackdrop",
             objectives, 0, 600 + session.generation))
         BlzFrameSetPoint(skin, FRAMEPOINT_TOPLEFT, objectives,
@@ -1388,47 +1386,35 @@ function JTG.CreateCameraTutorialActivity(session)
         local welcome = JTG.ScopeTrackFrame(scope, CreateTutorialButton(
             "JTGCameraTutorialWelcomeCheckpoint" .. suffix,
             objectives, "Welcome", 0.115))
-        BlzFrameSetSize(welcome, 0.115, 0.026)
-        BlzFrameSetPoint(welcome, FRAMEPOINT_TOP, objectives,
-            FRAMEPOINT_TOP, 0, -0.041)
+
         local movement = JTG.ScopeTrackFrame(scope, CreateTutorialButton(
             "JTGCameraTutorialMovementCheckpoint" .. suffix,
             objectives, "Free Camera", 0.115))
-        BlzFrameSetSize(movement, 0.115, 0.026)
-        BlzFrameSetPoint(movement, FRAMEPOINT_TOP, welcome,
-            FRAMEPOINT_BOTTOM, 0, -0.003)
+
         local zooming = JTG.ScopeTrackFrame(scope, CreateTutorialButton(
             "JTGCameraTutorialZoomingCheckpoint" .. suffix,
             objectives, "Zooming", 0.115))
-        BlzFrameSetSize(zooming, 0.115, 0.026)
-        BlzFrameSetPoint(zooming, FRAMEPOINT_TOP, movement,
-            FRAMEPOINT_BOTTOM, 0, -0.003)
+
         local baseControl = JTG.ScopeTrackFrame(scope, CreateTutorialButton(
             "JTGCameraTutorialBaseControlCheckpoint" .. suffix,
             objectives, "Base Camera", 0.115))
-        BlzFrameSetSize(baseControl, 0.115, 0.026)
-        BlzFrameSetPoint(baseControl, FRAMEPOINT_TOP, zooming,
-            FRAMEPOINT_BOTTOM, 0, -0.003)
+
         local armyControl = JTG.ScopeTrackFrame(scope, CreateTutorialButton(
             "JTGCameraTutorialArmyControlCheckpoint" .. suffix,
             objectives, "Army Camera", 0.115))
-        BlzFrameSetSize(armyControl, 0.115, 0.026)
-        BlzFrameSetPoint(armyControl, FRAMEPOINT_TOP, baseControl,
-            FRAMEPOINT_BOTTOM, 0, -0.003)
+
         local close = JTG.ScopeTrackFrame(scope, CreateTutorialButton(
             "JTGCameraTutorialObjectivesClose" .. suffix,
             objectives, "Close", 0.10))
-        BlzFrameSetSize(close, 0.10, 0.026)
-        BlzFrameSetPoint(close, FRAMEPOINT_BOTTOM, objectives,
-            FRAMEPOINT_BOTTOM, 0, 0.025)
+
         self.frames.objectives = objectives
+        JTG.LayoutChoicePopup(objectives,{welcome,movement,zooming,baseControl,armyControl},close)
 
         -- Optional tutorial branches use the same panel geometry and button
         -- arrangement as Topics, but never participate in the main sequence.
         local optionalMenu = JTG.ScopeTrackFrame(scope, BlzCreateFrameByType("FRAME",
             "JTGCameraTutorialOptionalMenu" .. suffix, root, "", 0))
-        BlzFrameSetSize(optionalMenu, 0.185, JTG.TutorialMenuHeight(2))
-        BlzFrameSetAbsPoint(optionalMenu, FRAMEPOINT_TOPRIGHT, 0.795, 0.500)
+
         local optionalSkin = JTG.ScopeTrackFrame(scope, BlzCreateFrame(
             "EscMenuBackdrop", optionalMenu, 0, 700 + session.generation))
         BlzFrameSetPoint(optionalSkin, FRAMEPOINT_TOPLEFT, optionalMenu,
@@ -1439,22 +1425,17 @@ function JTG.CreateCameraTutorialActivity(session)
         local rotation = JTG.ScopeTrackFrame(scope, CreateTutorialButton(
             "JTGCameraTutorialOptionalRotation" .. suffix,
             optionalMenu, OPTIONAL_SECTIONS.rotation.title, 0.115))
-        BlzFrameSetSize(rotation, 0.115, 0.026)
-        BlzFrameSetPoint(rotation, FRAMEPOINT_TOP, optionalMenu,
-            FRAMEPOINT_TOP, 0, -0.041)
+
         local lockOn = JTG.ScopeTrackFrame(scope, CreateTutorialButton(
             "JTGCameraTutorialOptionalLockOn" .. suffix,
             optionalMenu, OPTIONAL_SECTIONS.lockOn.title, 0.115))
-        BlzFrameSetSize(lockOn, 0.115, 0.026)
-        BlzFrameSetPoint(lockOn, FRAMEPOINT_TOP, rotation,
-            FRAMEPOINT_BOTTOM, 0, -0.003)
+
         local optionalClose = JTG.ScopeTrackFrame(scope, CreateTutorialButton(
             "JTGCameraTutorialOptionalClose" .. suffix,
             optionalMenu, "Close", 0.10))
-        BlzFrameSetSize(optionalClose, 0.10, 0.026)
-        BlzFrameSetPoint(optionalClose, FRAMEPOINT_BOTTOM, optionalMenu,
-            FRAMEPOINT_BOTTOM, 0, 0.025)
+
         self.frames.optionalMenu = optionalMenu
+        JTG.LayoutChoicePopup(optionalMenu,{rotation,lockOn},optionalClose)
 
         JTG.Tutorial.BindClicks(self, scope)
         self:registerClick(self.frames.continue,

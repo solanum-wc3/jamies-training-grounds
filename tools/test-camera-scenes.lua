@@ -2,6 +2,7 @@ local f=assert(io.open('src/activities/camera-tutorial.lua'));local source=f:rea
 JTG={Tutorial={}}
 function FourCC(s) return s end
 function JTG.ScopeTrackUnit(scope,u) if scope.units then scope.units[#scope.units+1]=u end;return u end
+function JTG.CreateScopedUnit(scope,...) return JTG.ScopeTrackUnit(scope,CreateUnit(...)) end
 function JTG.CreateScope() return {units={},disposed=false} end
 function JTG.DisposeScope(scope) scope.disposed=true;for _,u in ipairs(scope.units) do u.removed=true end end
 function CreateUnit(_,raw,x,y) return {raw=raw,x=x+32,y=y-32,life=100} end
