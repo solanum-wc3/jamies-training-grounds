@@ -165,7 +165,10 @@ function SetPlayerState(_,state,value)
  resources[state]=value
 end
 function GetPlayerAlliance() return true end
-function SetPlayerAlliance() end
+local allianceWrites={}
+function SetPlayerAlliance(owner,other,kind,value)
+ allianceWrites[#allianceWrites+1]={kind=kind,value=value}
+end
 local time,scale=0,1
 GAME_STATE_TIME_OF_DAY="time"
 function GetFloatGameState() return time end
@@ -397,4 +400,14 @@ alternate.activity=alternateActivity;JTG.Controller.session=alternate
 alternateActivity:setup(alternate);assert(xpHandicap==1 and xpHandicapWrites==1)
 alternateActivity:cleanup();JTG.DisposeScope(alternate.presentationScope);JTG.DisposeScope(alternate.scope)
 assert(xpHandicap==.8 and xpHandicapWrites==2)
+JTG.Dev={HeroesAudioSkipSharedControl=true};allianceWrites={}
+local isolation={active=true,scope=JTG.CreateScope('heroes-control-isolation'),
+ presentationScope=JTG.CreateScope('heroes-control-isolation-ui'),generation=3}
+local isolatedActivity=JTG.CreateHeroesTutorialActivity(isolation)
+isolation.activity=isolatedActivity;JTG.Controller.session=isolation
+isolatedActivity:setup(isolation)
+isolatedActivity:cleanup();JTG.DisposeScope(isolation.presentationScope);JTG.DisposeScope(isolation.scope)
+for _,write in ipairs(allianceWrites) do
+ assert(write.kind~=ALLIANCE_SHARED_CONTROL,'Shared-control A/B test still changed native shared control')
+end
 print('Passed: 47 authored Hero stops, two optional topics, native rosters/skills, 1200-radius XP scenes, level controls, shops/items, fixed camera tours, ownership isolation, checkpoint replay and complete cleanup.')

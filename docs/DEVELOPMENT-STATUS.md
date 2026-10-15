@@ -1,6 +1,12 @@
-# Development checkpoint: v0.1.3-alpha57
+# Development checkpoint: v0.1.3-alpha58
 
-Updated 15 October 2026. The public release remains v0.1.2-beta1; its download links and v0.1.2 patch notes are unchanged. Alpha57 is a testing build, not a completed milestone or a public release.
+Updated 15 October 2026. The public release remains v0.1.2-beta1; its download links and v0.1.2 patch notes are unchanged. Alpha58 is a testing build, not a completed milestone or a public release.
+
+## Alpha58: focused native follow-up
+
+Alpha57 feedback confirms the UpkeepLevel sound on no-button Heroes entry and exit, and inconsistent blight cleanup specifically when leaving Undead XP Numbers. Its native trace keeps player food at zero and XP handicap at 1; previous food/XP changes did not resolve the sound. A development-only shared-control probe and a Heroes entry omitting just that setting isolate the next candidate without changing normal dummy behavior. See [alpha58 testing](ALPHA58-TESTING.md).
+
+Terrain restoration now retains released baselines through next-tick and half-second checks, records native blight differences, and guards replacement scenes by generation. Mock regressions cover late writes and reacquisition of dirty ground; native verification remains outstanding. Alpha57 is checkpointed at `8db4fac` on `codex/alpha49-checkpoint`.
 
 ## Alpha57: shared cleanup/layout and Heroes diagnostics
 

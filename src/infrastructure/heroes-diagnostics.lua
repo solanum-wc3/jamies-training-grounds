@@ -3,12 +3,13 @@
 JTG=JTG or {};JTG.Dev=JTG.Dev or {}
 local PLAYER=Player(0)
 local audit={active=false,rows={}}
-local soundTimer,sound
+local soundTimer,sound,controlTimer,controlRestore
 local function say(text) DisplayTimedTextToPlayer(PLAYER,0,0,12,text) end
 local function row(label)
     if not audit.active then return end
     local values={label,'xp='..tostring(GetPlayerHandicapXP(PLAYER)),
-        'time='..tostring(GetFloatGameState(GAME_STATE_TIME_OF_DAY))}
+        'time='..tostring(GetFloatGameState(GAME_STATE_TIME_OF_DAY)),
+        'dummy-shared-control='..tostring(GetPlayerAlliance(Player(6),PLAYER,ALLIANCE_SHARED_CONTROL))}
     for _,id in ipairs({0,6,PLAYER_NEUTRAL_PASSIVE}) do
         local owner=Player(id)
         values[#values+1]='p'..id..'food='..GetPlayerState(owner,PLAYER_STATE_RESOURCE_FOOD_USED)
@@ -47,23 +48,55 @@ local function compareSounds()
     end
     play();soundTimer=CreateTimer();TimerStart(soundTimer,3,true,play)
 end
+local function stopControlProbe()
+    if controlTimer then PauseTimer(controlTimer);DestroyTimer(controlTimer);controlTimer=nil end
+    if controlRestore then local restore=controlRestore;controlRestore=nil;restore() end
+end
+local function probeControl()
+    if JTG.Controller.session then say('Exit the current activity first.');return end
+    stopSounds();stopControlProbe()
+    local owner=Player(6);local old=GetPlayerAlliance(owner,PLAYER,ALLIANCE_SHARED_CONTROL)
+    controlRestore=function()
+        say('Restoring dummy shared control. Listen for the chime.')
+        SetPlayerAlliance(owner,PLAYER,ALLIANCE_SHARED_CONTROL,old)
+    end
+    say('Changing only dummy shared control. It will be restored in three seconds.')
+    SetPlayerAlliance(owner,PLAYER,ALLIANCE_SHARED_CONTROL,not old)
+    controlTimer=CreateTimer();TimerStart(controlTimer,3,false,stopControlProbe)
+end
+local function exportTerrain()
+    local history=JTG.TerrainCleanupHistory or {}
+    PreloadGenClear();PreloadGenStart()
+    for _,text in ipairs(history) do Preload('// '..text) end
+    PreloadGenEnd('JTG-Heroes-Terrain.pld')
+    say('Saved JTG-Heroes-Terrain.pld ('..#history..' terrain checks).')
+end
 JTG.RegisterBootstrapInitializer(function()
     local trigger=CreateTrigger()
-    for _,command in ipairs({'-heroes-audio-start','-heroes-audio-stop','-heroes-audio-sounds','-heroes-audio-status'}) do
+    for _,command in ipairs({'-heroes-audio-start','-heroes-audio-stop','-heroes-audio-sounds','-heroes-audio-status',
+            '-heroes-audio-control','-heroes-audio-no-control','-heroes-terrain'}) do
         TriggerRegisterPlayerChatEvent(trigger,PLAYER,command,true)
     end
     TriggerAddAction(trigger,function()
         local command=GetEventPlayerChatString()
-        if command=='-heroes-audio-sounds' then compareSounds()
-        elseif command=='-heroes-audio-start' then
+        if command=='-heroes-terrain' then exportTerrain()
+        elseif command=='-heroes-audio-control' then probeControl()
+        elseif command=='-heroes-audio-sounds' then stopControlProbe();compareSounds()
+        elseif command=='-heroes-audio-start' or command=='-heroes-audio-no-control' then
             if JTG.Controller.session then say('Exit the current activity first.');return end
-            stopSounds();audit={active=true,rows={}}
+            stopSounds();stopControlProbe();audit={active=true,rows={}}
             row('before-no-button-start')
-            say('Starting Heroes without button audio. Listen for the upkeep chime.')
-            JTG.StartActivity('learn.heroes','learn')
+            local skip=command=='-heroes-audio-no-control'
+            say(skip and 'Starting Heroes without button audio or the shared-control change. Test the opening only.'
+                or 'Starting Heroes without button audio. Listen for the upkeep chime.')
+            local previous=JTG.Dev.HeroesAudioSkipSharedControl
+            JTG.Dev.HeroesAudioSkipSharedControl=skip
+            local ok,message=pcall(JTG.StartActivity,'learn.heroes','learn')
+            JTG.Dev.HeroesAudioSkipSharedControl=previous
+            if not ok then say('Heroes diagnostic start failed: '..tostring(message)) end
             row('after-no-button-start')
         elseif command=='-heroes-audio-stop' then
-            stopSounds()
+            stopSounds();stopControlProbe()
             local session=JTG.Controller.session
             if session and session.id=='learn.heroes' then
                 row('before-no-button-stop');JTG.StopActivity('heroes-audio-isolation')

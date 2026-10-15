@@ -54,6 +54,8 @@ Topics, Optional and exercise Setups panels use `JTG.LayoutChoicePopup(panel, bu
 
 Create native actors through `JTG.CreateScopedUnit` (or the Tutorial scene wrappers). This captures terrain before structures spread blight. Terrain leases follow the scene/prompt scope and restore original tiles, variation and blight after the last overlapping scope releases them. Retire obsolete blight-spreading actors rather than merely hiding them. Opening a menu does not reset terrain.
 
+Released terrain receives bounded next-tick and half-second post-removal checks for late native writes. Its baseline remains available during that interval; cell generations prevent old callbacks from affecting replacement scenes. These timers intentionally outlive a disposed scene, own no scene actors and destroy themselves after the final check.
+
 Check first entry, Continue, Back, Topics, Menu/Resume, pause, exit and save/load. Include assertions that presentation operations do not create units or issue orders, that delayed actions cannot affect another step, and that neutral demonstrations grant control only for practice. Native movement, construction and combat still require an in-game pass.
 
 ## Reference-first implementation
