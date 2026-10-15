@@ -4,7 +4,7 @@
 JTG = JTG or {}
 
 local WINDWALK_POP_INTRO =
-    "Orcs have a unique way to free a unit from being surrounded.\nDuring Blademaster's {Term: Windwalk}, he has no unit collision.\nThis allows him \"pop out\" a surrounded unit, after getting collision again.\n\nIn these trainings, you can practice freeing units from surrounds like this,\nor you can learn the counterplay against a Windwalk Pop.\n\nCheck the {Button: Quest Log} for precise instructions!"
+    "Orcs have a unique way to free a unit from being surrounded.\nDuring Blademaster's {Term: Windwalk}, he has no unit collision.\nThis allows him to \"pop out\" a surrounded unit, after getting collision again.\n\nIn these trainings, you can practice freeing units from surrounds like this,\nor you can learn the counterplay against a Windwalk Pop.\n\nCheck the {Button: Quest Log} for precise instructions!"
 
 local WINDWALK_POP_QUEST_TEXT =
     "When using {Button: Wind Walk}, the Blademaster immediately loses unit " ..
@@ -619,6 +619,7 @@ function JTG.CreateWindwalkPopActivity(session)
             primary = self.courseStage < 4 and "Next Stage" or "Restart Course"
         end
         JTG.UI.ShowResultCard(self.resultCard, {
+            visible = self.presentationVisible,
             title = self.resultTitleText or "",
             tone = self.resultKind,
             details = self.resultDetailsText or "",

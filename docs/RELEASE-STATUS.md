@@ -2,7 +2,7 @@
 
 Released 10 October 2026. The release map is `outputs/Jamies-Training-Grounds-v0.1.2-beta1.w3x`; it contains no development modules. Patch notes remain headed `v0.1.2` in [CHANGELOG](../CHANGELOG.md).
 
-Current development is tracked separately in [alpha49 status](DEVELOPMENT-STATUS.md). The figures below describe the published beta1, not the current checkout.
+Current development is tracked separately in [alpha50 status](DEVELOPMENT-STATUS.md). The figures below describe the published beta1, not the current checkout.
 
 ## Validation
 

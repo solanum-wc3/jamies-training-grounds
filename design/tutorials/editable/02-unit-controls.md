@@ -215,7 +215,7 @@ After creating it, {Input: pressing the number} selects the units inside the gro
 
 ### Narration
 
-You can add new units to a {Term: Control Group} by by selecting them, {Input: holding Shift, and pressing its number }.
+You can add new units to a {Term: Control Group} by selecting them, {Input: holding Shift, and pressing its number}.
 For example {Input: Shift+1}.
 [Progression: Wait for Continue]
 

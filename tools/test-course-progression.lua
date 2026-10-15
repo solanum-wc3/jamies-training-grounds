@@ -71,3 +71,40 @@ for _, stage in ipairs({-2, 1, 10, 99}) do
     assert(run:captureResetState().timedStage == run.timedStage)
 end
 print('Passed: Body Blocking roster progression/replay boundaries and Windwalk course/timed carry state.')
+
+-- Keep the real delayed-result flow, including returning before/after expiry.
+local delayed, delayCount = nil, 0
+function CreateTimer() return {} end
+function JTG.ScopeTrackTimer(_, timer) return timer end
+function JTG.GuardSession(_, callback) return callback end
+function TimerStart(timer, delay, repeating, callback)
+    assert(delay==1 and not repeating, 'Windwalk result delay changed')
+    delayCount=delayCount+1;timer.callback=callback;delayed=timer
+end
+function JTG.ShowNavigationGrid() end
+function JTG.UI.HideResultCard(card) card.visible=false end
+function JTG.UI.ShowResultCard(card, spec)
+    cards[#cards+1]=spec;card.visible=spec.visible~=false
+end
+local run=JTG.CreateWindwalkPopActivity({scope={}})
+run.resultCard={visible=false}
+run:finish('success','Test result','Test details')
+assert(run.resultPending and not run.resultCard.visible and delayCount==1)
+run:hidePresentationForMenu();run:restorePresentation()
+assert(run.resultPending and not run.resultCard.visible,
+    'Returning before the delay expired showed the result early')
+run:hidePresentationForMenu();delayed.callback()
+assert(not run.resultPending and not run.resultCard.visible,
+    'Delayed result became visible over a menu')
+run:restorePresentation()
+assert(run.resultCard.visible and cards[#cards].title=='Test result')
+run:hidePresentationForMenu();run:restorePresentation()
+run:finish('failure','Incorrect replacement','')
+assert(run.resultCard.visible and run.resultTitleText=='Test result' and delayCount==1,
+    'Presentation restoration replayed completion or restarted its delay')
+local normal=JTG.CreateWindwalkPopActivity({scope={}})
+normal.resultCard={visible=false}
+normal:finish('success','Normal result','')
+assert(not normal.resultCard.visible)
+delayed.callback();assert(normal.resultCard.visible, 'Visible delayed result never appeared')
+print('Passed: Windwalk keeps its result delay, stays hidden behind menus and restores the saved result on return.')

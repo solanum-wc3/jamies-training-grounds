@@ -120,7 +120,7 @@ local STEPS = {
         id = "controls.011",
         groupStart = 11, wait = true,
         lines = {
-            "You can add new units to a {Term: Control Group} by by selecting them, {Input: holding Shift, and pressing its number }.",
+            "You can add new units to a {Term: Control Group} by selecting them, {Input: holding Shift, and pressing its number}.",
             "For example {Input: Shift+1}.",
         },
     },

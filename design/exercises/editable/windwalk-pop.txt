@@ -14,7 +14,7 @@ Main briefing
 
 Orcs have a unique way to free a unit from being surrounded.
 During Blademaster's {Term: Windwalk}, he has no unit collision.
-This allows him "pop out" a surrounded unit, after getting collision again.
+This allows him to "pop out" a surrounded unit, after getting collision again.
 
 In these trainings, you can practice freeing units from surrounds like this,
 or you can learn the counterplay against a Windwalk Pop.

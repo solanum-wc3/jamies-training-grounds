@@ -31,6 +31,51 @@ local visible=assert(load('return '..primary,'paused footer primary','t',{
 assert(not visible,'Paused briefing shows Start alongside Resume/Exit')
 print('Passed: shared exercise-menu Exit disposes activity and preserves its current selector and selections; paused footer suppresses competing Start.')
 
+-- Both Surround variants must stop first, then recreate on the next update.
+-- A new activity entered before that update must cancel the pending restart.
+local resetTimer, starts, stopped = nil, 0, 0
+function GetLocalPlayer() return 0 end
+function GetCameraField() return 1650 end
+function CreateTimer() return {} end
+function TimerStart(timer, delay, repeating, callback)
+    assert(delay==0 and not repeating)
+    timer.callback=callback;resetTimer=timer
+end
+function DestroyTimer(timer) timer.destroyed=true end
+local originalStop, originalStart = JTG.StopActivity, JTG.StartActivity
+JTG.StopActivity=function()
+    stopped=stopped+1
+    JTG.Controller.session=nil
+    JTG.Controller.generation=(JTG.Controller.generation or 0)+1
+end
+JTG.StartActivity=function(id, category, data, distance)
+    starts=starts+1
+    assert(category=='skills' and data.setupIndex==2 and distance==1650)
+    JTG.Controller.session={id=id}
+    return true
+end
+for _,id in ipairs({'skills.surround','skills.gargoyle'}) do
+    local function prepare()
+        JTG.Controller.lastCategory='skills'
+        JTG.Controller.session={id=id,restartData={},activity={
+            captureResetState=function() return {setupIndex=2} end}}
+    end
+    prepare()
+    local before=starts
+    assert(JTG.ResetActivity() and JTG.Controller.session==nil and starts==before)
+    resetTimer.callback()
+    assert(resetTimer.destroyed and starts==before+1 and JTG.Controller.session.id==id)
+    prepare();assert(JTG.ResetActivity())
+    JTG.Controller.session={id='another.activity'}
+    resetTimer.callback()
+    assert(starts==before+1 and JTG.Controller.session.id=='another.activity')
+end
+assert(stopped==4)
+JTG.StopActivity, JTG.StartActivity=originalStop, originalStart
+JTG.Controller.session=nil
+JTG.Controller.lastCategory='tools'
+print('Passed: Surrounds/Gargoyle Redo share deferred recreation and cancel stale restarts.')
+
 -- Exercise the real post-cleanup menu restoration gateway, not a fake redirect.
 function JTG.UI.HideAllPanels() end
 local entered

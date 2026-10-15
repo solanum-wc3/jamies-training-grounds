@@ -557,7 +557,7 @@ function JTG.FormatSurroundQuestText(text)
     formatted = formatted:gsub("{Gold Font:%s*(.-)}", "|cffffcc00%1|r")
     formatted = formatted:gsub("{Yellow Font:%s*(.-)}", "|cffffcc00%1|r")
     formatted = formatted:gsub("{Term:%s*(.-)}", "|cffff9933%1|r")
-    return formatted:gsub("{Input:%s*(.-)}", "|cff80ff80%1|r")
+    return formatted:gsub("{Input:%s*(.-)}", "|cffffcc00%1|r")
 end
 
 local function AddButton(scope, parent, name, label, width, height, action)

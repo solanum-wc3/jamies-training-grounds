@@ -663,7 +663,8 @@ function JTG.ResetActivity()
     -- Rebuilding directly in the click callback can otherwise make the next
     -- setup inherit stale placement or collision state.
     if id == "skills.gold_mine" or id == "skills.windwalk" or
-            id == "skills.surround" or id == "skills.bat_splitter" or
+            id == "skills.surround" or id == "skills.gargoyle" or
+            id == "skills.bat_splitter" or
             id == "skills.missile_dodging" then
         return JTG.StartActivityAfterCleanup(id, category, restartData,
             cameraDistance, "reset")

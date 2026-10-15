@@ -19,9 +19,13 @@ The pre-review hash inventory covered 217 source/design files. The only changed 
 
 This is a confirmed visibility-contract gap, **not a reproduced normal-menu engine failure**: ordinary custom menus pause the game, which normally suspends that timer. Save/load/native-menu transitions deserve a focused check. Proposed fix: pass the activity's visibility to the result renderer; use the same contract in Body Blocking's renderer, which also omits it. Do not change pause or native-menu input handling to compensate. No runtime fix applied during this audit.
 
+Approved follow-up: Windwalk's result renderer now respects presentation visibility while retaining its one-second delay. If the delay expires while hidden, returning renders the stored result; returning before expiry does not bypass the delay. The course fixture covers both paths, repeated hide/return and ordinary delayed display. This change does not modify Body Blocking or native menu handling.
+
 ### Reset consistency: investigate before changing
 
 `src/infrastructure/core.lua`, `ResetActivity`: Surrounds uses deferred recreation to let Warcraft retire old collision footprints; Gargoyle Surrounds does not enter that branch although it shares the Surrounds implementation. Flying initial actors may explain the distinction. Check repeated Redo after Stone Form before deciding to extend the deferred-reset list. This is a source inconsistency to investigate, not an established collision bug.
+
+Follow-up, 15 October: at the user's direction, Gargoyle Surrounds now uses the same deferred Redo path as regular Surrounds. The existing shared cleanup remains unchanged. A controller regression checks both variants stop before recreation and reject a stale restart if another activity intervenes. Native repeated-Redo testing after Stone Form remains outstanding.
 
 ### Coverage improved; native acceptance remains separate
 
@@ -37,6 +41,12 @@ No changes applied:
 | Windwalk briefing (`windwalk-pop.lua:7`) | “This allows him \"pop out\" a surrounded unit” | “This allows him to \"pop out\" a surrounded unit”. |
 
 There is also a formatting-policy difference: the tutorial formatter makes Input gold, while the Surrounds Quest formatter makes Input green. Both are deliberate code paths; standardizing them would be a separate approved presentation change.
+
+Clarification after the user's review: this concerns only the `{Input: ...}` tag, not Quest text or all input/button labels generally. `{Button: ...}` is gold in both formatters. For example, the Gargoyle briefing marks “Setup button” as Input, whereas Stone Form and Quest Log are Button tags. The code difference is verified, but calling it a visual defect or a required standardization was too broad. No color/formatting change is proposed without an observed problem or a design decision.
+
+Subsequent user decision: Input cues should generally be gold. The Surrounds formatter now uses the same gold as the tutorial, Windwalk and Mining formatters. This also applies to the Dodging/Bat briefings that reuse it. A fixture checks both the formatter and the actual Gargoyle briefing; explicit status/result colors are unaffected.
+
+Follow-up, 15 October: the user approved the wording corrections above. Both were applied to runtime text and their editable work files, including removal of the trailing Input-tag space. The original audit findings are retained here as history. The Input color difference and behavioral findings remain unchanged.
 
 ## Validation
 

@@ -29,6 +29,11 @@ assert(not menu.body:find('{Yellow Font:',1,true),'Raw formatting cue remains vi
 assert(menu.body:find('\n\n',1,true),'Briefing paragraph breaks were lost')
 assert(JTG.FormatSurroundQuestText('{Yellow Font: yellow} {Gold Font: gold} {Term: term}')==
     '|cffffcc00yellow|r |cffffcc00gold|r |cffff9933term|r')
+assert(JTG.FormatSurroundQuestText('{Input: Q} {Button: Move}')==
+    '|cffffcc00Q|r |cffffcc00Move|r', 'Input and button cues must both be gold')
+JTG.OpenGargoyleSurroundMenu('skills',false)
+assert(menu.body:find('|cffffcc00Setup button|r',1,true),
+    'Actual Gargoyle briefing did not use gold for its Input cue')
 print('Passed: real catalogue has no overlapping skill buttons, correct placeholders/tooltip and formatted Surrounds briefing.')
 
 local art=JTG.Registry.byId['learn.heroes']
