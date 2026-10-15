@@ -3,8 +3,9 @@ function FourCC(raw) return raw end
 function Player(id) return id end
 RACE_HUMAN,RACE_ORC='human','orc'
 PLAYER_STATE_RESOURCE_GOLD,PLAYER_STATE_RESOURCE_LUMBER='gold','lumber'
+PLAYER_STATE_GOLD_GATHERED,PLAYER_STATE_LUMBER_GATHERED='gatheredGold','gatheredLumber'
 local resources={[0]={gold=0,lumber=0},[1]={gold=0,lumber=0},[2]={gold=0,lumber=0}}
-function GetPlayerState(owner,resource) return resources[owner][resource] end
+function GetPlayerState(owner,resource) return resources[owner][resource] or 0 end
 function PauseUnit(unit,value) unit.paused=value end
 function BlzFrameSetVisible() end
 function JTG.UI.HideToolbar() end
@@ -25,10 +26,12 @@ assert(menu.pageId=='duration' and not launched,'Race choice skipped duration')
 assert(menu.choices[1].label=='One Minute' and menu.choices[2].label=='Unlimited')
 menu.choices[1].action();assert(launched.race=='orc' and launched.duration==60)
 menu.choices[2].action();assert(launched.duration==nil)
+menu.choices[3].action();assert(launched.baseBuild and launched.duration==nil)
+menu.choices[1].action();assert(not launched.baseBuild and launched.duration==60)
 local timed=JTG.CreateMiningMicroActivity({restartData={race='human',duration=60}})
 timed.lanes={{owner=1,workers={{}},hall={}},{owner=0,workers={{}},hall={}},{owner=2,workers={{}},hall={}}}
 timed.running=true
-resources[0]={gold=900,lumber=120};resources[1].gold=1000;resources[2].gold=800
+resources[0]={gold=0,lumber=0,gatheredGold=900,gatheredLumber=120};resources[1].gold=1000;resources[2].gold=800
 timed.elapsed=59.9;timed:updateCounters()
 assert(timed.finished and timed.expectedLoss==200 and timed.recoveredGold==100)
 assert(JTG.result.details:find('50.0%%') and JTG.result.details:find('120'))

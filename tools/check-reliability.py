@@ -36,6 +36,7 @@ GROUPS = [
     ['training-countdown'],
     ['training-presentation'],
     ['mining-timed'],
+    ['mining-base-build'],
     ['setup-label'],
     ['quest-help'],
     ['reflex-training'],

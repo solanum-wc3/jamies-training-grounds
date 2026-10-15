@@ -103,6 +103,7 @@ local MINE_ANCHORS = {
 }
 local HALL_OFFSET = {x = 512.0, y = -576.0}
 local TREE_OFFSET = {x = 704.0, y = 128.0}
+local TREE_OFFSETS = {TREE_OFFSET,{x=832.0,y=128.0},{x=704.0,y=256.0}}
 -- Five evenly spaced workers sit on the mine-to-hall line used by a normal
 -- melee opening. Their order is stable; worker 1 becomes the lumber worker in
 -- the two four-worker comparison lanes.
@@ -124,17 +125,18 @@ end
 local function ResolveLaneLayout(anchor, orientation)
     local hallOffsetX, hallOffsetY = RotateOffset(
         HALL_OFFSET.x, HALL_OFFSET.y, orientation)
-    local treeOffsetX, treeOffsetY = RotateOffset(
-        TREE_OFFSET.x, TREE_OFFSET.y, orientation)
     local layout = {
         mineX = anchor.x,
         mineY = anchor.y,
         hallX = anchor.x + hallOffsetX,
         hallY = anchor.y + hallOffsetY,
-        treeX = anchor.x + treeOffsetX,
-        treeY = anchor.y + treeOffsetY,
         workers = {},
+        trees = {},
     }
+    for _,offset in ipairs(TREE_OFFSETS) do
+        local x,y=RotateOffset(offset.x,offset.y,orientation)
+        layout.trees[#layout.trees+1]={x=anchor.x+x,y=anchor.y+y}
+    end
     for index, offset in ipairs(WORKER_OFFSETS) do
         local workerOffsetX, workerOffsetY = RotateOffset(
             offset.x, offset.y, orientation)
@@ -178,6 +180,7 @@ function JTG.OpenMiningMicroMenu(originCategory, pauseGame, restorePage, restore
         local restartData = {
             race = selection.race,
             duration = selection.duration,
+            baseBuild = selection.baseBuild,
             orientation = GetRandomInt(0, 3),
             skipQuestHighlight = returningFromActiveRun,
         }
@@ -210,11 +213,12 @@ function JTG.OpenMiningMicroMenu(originCategory, pauseGame, restorePage, restore
             restoreData = selection,
         }
         if page=='duration' then
-            spec.body='Choose how long you want to practice.'
+            spec.body='Choose a practice mode.'
             spec.pageId='duration'
             spec.choices={
-                {label='One Minute',action=function() selection.duration=60;launch() end},
-                {label='Unlimited',action=function() selection.duration=nil;launch() end}}
+                {label='One Minute',action=function() selection.baseBuild=false;selection.duration=60;launch() end},
+                {label='Unlimited',action=function() selection.baseBuild=false;selection.duration=nil;launch() end},
+                {label='Base Build',action=function() selection.baseBuild=true;selection.duration=nil;launch() end}}
             spec.backAction=function() showBriefing('root') end
         end
         if pauseGame then
@@ -238,13 +242,14 @@ function JTG.CreateMiningMicroActivity(session)
         orientation = math.floor(tonumber(selection.orientation) or 0) % 4,
         lanes = {},
         playerGoldMined = 0,
-        duration = selection.duration==60 and 60 or nil,
+        baseBuild = selection.baseBuild==true,
+        duration = selection.baseBuild~=true and selection.duration==60 and 60 or nil,
         elapsed = 0,
         playerLumberMined = 0,
-        previousPlayerLumber = 0,
         presentationVisible = true,
         finished = false,
-        previousPlayerGold = 0,
+        gatheringStart = {},
+        goldWorkers = {},
         locallyPaused = false,
         highlightQuestOnStart = selection.skipQuestHighlight ~= true,
     }
@@ -276,78 +281,87 @@ function JTG.CreateMiningMicroActivity(session)
         local gold
         if index == 2 then gold = self.playerGoldMined
         else gold = GetPlayerState(lane.owner, PLAYER_STATE_RESOURCE_GOLD) end
-        local lumber = GetPlayerState(lane.owner, PLAYER_STATE_RESOURCE_LUMBER)
-        local heading = index == 2 and "   |cffffffffYou|r|n|n" or ""
+        local lumber = index==2 and self.playerLumberMined or GetPlayerState(lane.owner, PLAYER_STATE_RESOURCE_LUMBER)
         local comparison = ""
+        local differencePercent = 0.0
         if index >= 2 then
             local referenceGold = GetPlayerState(
                 self.lanes[1].owner, PLAYER_STATE_RESOURCE_GOLD)
-            local differencePercent = 0.0
             if referenceGold > 0 then
                 differencePercent = (gold - referenceGold) * 100.0 /
                     referenceGold
             end
             comparison = string.format(" (%+.1f%%)", differencePercent)
         end
+        if index==2 and self.minePercentTag then
+            SetTextTagText(self.minePercentTag,string.format('|cffffcc00%+.1f%%|r',differencePercent),.030)
+            SetTextTagVisibility(self.minePercentTag,self.presentationVisible)
+        end
         BlzFrameSetText(lane.counterFrame,
-            heading .. "|cff40c8ff" .. tostring(lane.miningWorkers) .. " Workers Mining|r|n|n" ..
+            "|cff40c8ff" .. tostring(lane.miningWorkers) .. " Workers Mining|r|n|n" ..
             "|cffffcc00Gold Mined: " .. tostring(gold) .. comparison .. "|r|n|n" ..
             "|cff80ff80Lumber Harvested: " .. tostring(lumber) .. "|r")
     end
 
     function activity:updateCounters()
         if self.locallyPaused or self.finished then return end
-        local currentGold = GetPlayerState(Player(0), PLAYER_STATE_RESOURCE_GOLD)
-        if currentGold > self.previousPlayerGold then
-            self.playerGoldMined = self.playerGoldMined +
-                (currentGold - self.previousPlayerGold)
-        end
-        self.previousPlayerGold = currentGold
-        local lumber=GetPlayerState(Player(0),PLAYER_STATE_RESOURCE_LUMBER)
-        self.playerLumberMined=self.playerLumberMined+math.max(0,lumber-self.previousPlayerLumber)
-        self.previousPlayerLumber=lumber
+        -- Native cumulative gathering totals exclude the starting bank and do
+        -- not lose deposits when the player spends or receives a build refund.
+        self.playerGoldMined=math.max(0,GetPlayerState(Player(0),PLAYER_STATE_GOLD_GATHERED)-(self.gatheringStart.gold or 0))
+        self.playerLumberMined=math.max(0,GetPlayerState(Player(0),PLAYER_STATE_LUMBER_GATHERED)-(self.gatheringStart.lumber or 0))
         for index = 1, 3 do self:updateLaneCounter(index) end
-        if self.running and self.duration then
-            self.elapsed=math.min(self.duration,self.elapsed+0.10)
+        if self.running then
+            self.elapsed=self.elapsed+0.10
+            if self.duration then self.elapsed=math.min(self.duration,self.elapsed) end
             self:refreshTimer()
-            if self.elapsed>=self.duration-0.00001 then self:finishTimedRun() end
+            if self.duration and self.elapsed>=self.duration-0.00001 then self:finishTimedRun()
+            elseif self.baseBuild then self:checkFifthGoldWorker() end
         end
     end
 
     function activity:refreshTimer()
         if self.timeFrame then
-            BlzFrameSetText(self.timeFrame,string.format('|cffffcc00Time: %.1fs|r',math.max(0,60-self.elapsed)))
+            BlzFrameSetText(self.timeFrame,string.format('|cffffcc00Time: %.1fs|r',self.baseBuild and self.elapsed or math.max(0,60-self.elapsed)))
             BlzFrameSetVisible(self.timeFrame,self.presentationVisible and not self.finished)
         end
     end
     function activity:createTimedPresentation()
-        if not self.duration then return end
+        if not self.duration and not self.baseBuild then return end
         self.timeFrame=JTG.ScopeTrackFrame(session.presentationScope,
             BlzCreateFrameByType('TEXT','JTGMiningTime',BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI,0),'',0))
         BlzFrameSetSize(self.timeFrame,0.30,0.03)
         BlzFrameSetAbsPoint(self.timeFrame,FRAMEPOINT_TOPLEFT,0.012,0.55)
         BlzFrameSetScale(self.timeFrame,1.48);BlzFrameSetEnable(self.timeFrame,false)
-        self.resultCard=JTG.UI.CreateResultCard(session,{name='JTGMiningResult',width=0.44,detailsHeight=0.12})
+        self.resultCard=JTG.UI.CreateResultCard(session,{name='JTGMiningResult',width=0.44,detailsHeight=self.baseBuild and 0.18 or 0.12})
         self:refreshTimer()
     end
     function activity:showTimedResult()
         local expected=self.expectedLoss
         local percent=expected>0 and string.format('%.1f%%',self.recoveredGold*100/expected) or 'N/A (no reference loss)'
         JTG.UI.HideToolbar()
-        JTG.UI.ShowResultCard(self.resultCard,{title='ONE MINUTE COMPLETE',tone='success',
-            details='Expected gold loss mitigated: '..percent..'\nLumber harvested: '..self.playerLumberMined..
-                '\nGold recovered: '..self.recoveredGold..' / '..expected,visible=self.presentationVisible,
+        local details='Expected gold loss mitigated: '..percent..'\nLumber harvested: '..self.playerLumberMined..
+            '\nGold recovered: '..self.recoveredGold..' / '..expected
+        if self.baseBuild then
+            local factor=self.elapsed>0 and 10/self.elapsed or 0
+            details=details..string.format('\nElapsed: %.1fs\nGold mined: %d\nExpected gold loss per 10 seconds: %.1f\nGold loss per 10 seconds: %.1f\nGold recovered per 10 seconds: %.1f',
+                self.elapsed,self.playerGoldMined,self.expectedLoss*factor,self.actualLoss*factor,self.recoveredGold*factor)
+        end
+        JTG.UI.ShowResultCard(self.resultCard,{title=self.baseBuild and 'BASE BUILD COMPLETE' or 'ONE MINUTE COMPLETE',tone='success',
+            details=details,visible=self.presentationVisible,
             actions={retry={},menu={}}})
     end
     function activity:finishTimedRun()
+        if self.finished then return end
         self.finished=true
         local full=GetPlayerState(self.lanes[1].owner,PLAYER_STATE_RESOURCE_GOLD)
         local baseline=GetPlayerState(self.lanes[3].owner,PLAYER_STATE_RESOURCE_GOLD)
         self.expectedLoss=full-baseline;self.recoveredGold=self.playerGoldMined-baseline
+        self.actualLoss=full-self.playerGoldMined
         for _,lane in ipairs(self.lanes) do
             for _,worker in ipairs(lane.workers) do PauseUnit(worker,true) end
             PauseUnit(lane.hall,true)
         end
+        for unit in pairs(self.baseActors or {}) do if GetUnitTypeId(unit)~=0 then PauseUnit(unit,true) end end
         self:refreshTimer();self:showTimedResult()
     end
 
@@ -357,6 +371,8 @@ function JTG.CreateMiningMicroActivity(session)
                 BlzFrameSetVisible(lane.counterFrame, visible == true)
             end
         end
+        if self.playerHeading then BlzFrameSetVisible(self.playerHeading,visible==true) end
+        if self.minePercentTag then SetTextTagVisibility(self.minePercentTag,visible==true) end
     end
 
     function activity:createLaneCounter(lane, index)
@@ -366,12 +382,23 @@ function JTG.CreateMiningMicroActivity(session)
                 gameUI, "", 0))
         BlzFrameSetSize(lane.counterFrame, 0.220, index == 2 and 0.120 or 0.105)
         BlzFrameSetAbsPoint(lane.counterFrame, FRAMEPOINT_TOPLEFT,
-            0.012, 0.505 - (index - 1) * 0.125)
+            0.012, index==2 and .355 or 0.505 - (index - 1) * 0.125)
         BlzFrameSetTextAlignment(lane.counterFrame,
             TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_LEFT)
         BlzFrameSetScale(lane.counterFrame, 1.48)
         BlzFrameSetEnable(lane.counterFrame, false)
         BlzFrameSetVisible(lane.counterFrame, true)
+        if index==2 then
+            self.playerHeading=JTG.ScopeTrackFrame(session.presentationScope,
+                BlzCreateFrameByType('TEXT','JTGMiningYou',gameUI,'',0))
+            BlzFrameSetSize(self.playerHeading,.22,.035)
+            BlzFrameSetAbsPoint(self.playerHeading,FRAMEPOINT_TOPLEFT,.012,.395)
+            BlzFrameSetScale(self.playerHeading,1.80)
+            BlzFrameSetText(self.playerHeading,'|cffcc66ffYOU|r');BlzFrameSetEnable(self.playerHeading,false)
+            self.minePercentTag=JTG.ScopeTrackTextTag(session.presentationScope,CreateTextTag())
+            SetTextTagPermanent(self.minePercentTag,true)
+            SetTextTagPos(self.minePercentTag,lane.mineX-85,lane.mineY+210,80)
+        end
         self:updateLaneCounter(index)
     end
 
@@ -411,16 +438,82 @@ function JTG.CreateMiningMicroActivity(session)
                     CreateUnit(lane.owner, race.worker,
                         workerPosition.x, workerPosition.y, 90.0)))
             end
-            lane.tree = JTG.ScopeTrackDestructable(session.scope,
-                CreateDestructable(FourCC("JTtr"),
-                    layout.treeX, layout.treeY,
-                    270.0, 1.0, 0))
-            SetTrainingTreeLife(lane.tree)
+            lane.trees={}
+            for _,position in ipairs(layout.trees) do
+                local tree=JTG.ScopeTrackDestructable(session.scope,
+                    CreateDestructable(FourCC('JTtr'),position.x,position.y,270.0,1.0,0))
+                SetTrainingTreeLife(tree);lane.trees[#lane.trees+1]=tree
+            end
+            lane.tree=lane.trees[1]
             self.lanes[index] = lane
         end
         for index, lane in ipairs(self.lanes) do self:createLaneCounter(lane, index) end
         ClearSelection()
         self:issueOpeningOrders()
+    end
+
+    function activity:trackBaseActor(unit)
+        if unit==nil or GetOwningPlayer(unit)~=Player(0) then return end
+        if self.baseActors[unit] then return end
+        self.baseActors[unit]=true
+        JTG.ScopeTrackUnit(session.scope,unit)
+        if GetUnitTypeId(unit)==race.worker then self.goldWorkers[unit]={gold=false,entered=false} end
+    end
+
+    function activity:setupBaseBuild()
+        self.baseActors={}
+        local lane=self.lanes[2]
+        self:trackBaseActor(lane.hall)
+        for index,worker in ipairs(lane.workers) do
+            self:trackBaseActor(worker)
+            self.goldWorkers[worker].gold=index>1
+        end
+        local created=JTG.ScopeTrackTrigger(session.scope,CreateTrigger())
+        TriggerRegisterPlayerUnitEvent(created,Player(0),EVENT_PLAYER_UNIT_TRAIN_FINISH,nil)
+        TriggerRegisterPlayerUnitEvent(created,Player(0),EVENT_PLAYER_UNIT_CONSTRUCT_START,nil)
+        TriggerAddAction(created,JTG.GuardSession(session,function()
+            self:trackBaseActor(GetTriggerEventId()==EVENT_PLAYER_UNIT_TRAIN_FINISH and GetTrainedUnit() or GetConstructingStructure())
+        end))
+        local orders=JTG.ScopeTrackTrigger(session.scope,CreateTrigger())
+        for _,event in ipairs({EVENT_PLAYER_UNIT_ISSUED_ORDER,EVENT_PLAYER_UNIT_ISSUED_POINT_ORDER,EVENT_PLAYER_UNIT_ISSUED_TARGET_ORDER}) do
+            TriggerRegisterPlayerUnitEvent(orders,Player(0),event,nil)
+        end
+        TriggerAddAction(orders,JTG.GuardSession(session,function()
+            if self.finished then return end
+            local worker=GetTriggerUnit()
+            if GetUnitTypeId(worker)~=race.worker then return end
+            self:trackBaseActor(worker)
+            local state=self.goldWorkers[worker]
+            local order=GetIssuedOrderId()
+            local target=GetTriggerEventId()==EVENT_PLAYER_UNIT_ISSUED_TARGET_ORDER and GetOrderTargetUnit() or nil
+            if target==lane.mine and (order==OrderId('harvest') or order==OrderId('smart')) then
+                state.gold=true
+            elseif order==OrderId('returnresources') or order==OrderId('returngold') or
+                    order==OrderId('resumeharvesting') or
+                    (target==nil and order==OrderId('harvest')) or
+                    (target==lane.hall and order==OrderId('smart')) then
+                -- A normal drop-off is still part of the current mining task.
+            else
+                state.gold=false;state.entered=false
+            end
+        end))
+    end
+
+    function activity:checkFifthGoldWorker()
+        local lane=self.lanes[2]
+        local count,newEntry=0,false
+        for worker,state in pairs(self.goldWorkers) do
+            if state.gold and GetUnitTypeId(worker)==race.worker and GetOwningPlayer(worker)==Player(0) and GetWidgetLife(worker)>.405 then
+                -- Like Economy's in-mine protection, use the native hidden
+                -- worker state. An accepted order alone must not finish play.
+                if not state.entered and IsUnitHidden(worker) and
+                        (GetUnitX(worker)-lane.mineX)^2+(GetUnitY(worker)-lane.mineY)^2<400^2 then
+                    state.entered=true;newEntry=true
+                end
+                if state.entered then count=count+1 end
+            end
+        end
+        if newEntry and count>=5 then self:finishTimedRun() end
     end
 
     function activity:setup(current)
@@ -460,9 +553,9 @@ function JTG.CreateMiningMicroActivity(session)
         SetPlayerController(Player(2), MAP_CONTROL_COMPUTER)
         for ownerIndex = 0, 2 do
             local owner = Player(ownerIndex)
-            SetPlayerState(owner, PLAYER_STATE_RESOURCE_GOLD, 0)
-            SetPlayerState(owner, PLAYER_STATE_RESOURCE_LUMBER, 0)
-            SetPlayerTechMaxAllowed(owner, race.worker, 5)
+            SetPlayerState(owner, PLAYER_STATE_RESOURCE_GOLD, ownerIndex==0 and self.baseBuild and 500 or 0)
+            SetPlayerState(owner, PLAYER_STATE_RESOURCE_LUMBER, ownerIndex==0 and self.baseBuild and 150 or 0)
+            SetPlayerTechMaxAllowed(owner, race.worker, ownerIndex==0 and self.baseBuild and -1 or 5)
             for otherIndex = 0, 2 do
                 SetPlayerAlliance(owner, Player(otherIndex), ALLIANCE_PASSIVE, true)
             end
@@ -471,8 +564,9 @@ function JTG.CreateMiningMicroActivity(session)
         JTG.ResetWorldFog(p0)
         JTG.ScopeRevealScene(current.scope, current.scene, p0)
 
-        self.previousPlayerGold = 0
+        self.gatheringStart={gold=GetPlayerState(p0,PLAYER_STATE_GOLD_GATHERED),lumber=GetPlayerState(p0,PLAYER_STATE_LUMBER_GATHERED)}
         self:createScenario()
+        if self.baseBuild then self:setupBaseBuild() end
         self:createTrainingQuests()
         self:createTimedPresentation()
         self.updateTimer = JTG.StartScopedTimer(current, current.scope,
@@ -494,6 +588,7 @@ function JTG.CreateMiningMicroActivity(session)
         return {
             race = self.race,
             duration = self.duration,
+            baseBuild = self.baseBuild,
             orientation = self.orientation,
             skipQuestHighlight = true,
         }
@@ -503,6 +598,7 @@ function JTG.CreateMiningMicroActivity(session)
         return {
             race = self.race,
             duration = self.duration,
+            baseBuild = self.baseBuild,
             orientation = (self.orientation + 1) % 4,
             skipQuestHighlight = true,
         }
@@ -524,6 +620,7 @@ function JTG.CreateMiningMicroActivity(session)
     end
 
     function activity:rebuildPresentation()
+        if self.minePercentTag then DestroyTextTag(self.minePercentTag);self.minePercentTag=nil end
         self:createTimedPresentation()
         for index, lane in ipairs(self.lanes) do
             lane.counterFrame = nil
@@ -532,6 +629,8 @@ function JTG.CreateMiningMicroActivity(session)
     end
 
     function activity:discardPresentationForLoad()
+        if self.playerHeading then BlzDestroyFrame(self.playerHeading);self.playerHeading=nil end
+        if self.minePercentTag then DestroyTextTag(self.minePercentTag);self.minePercentTag=nil end
         self.timeFrame=nil;self.resultCard=nil
         for _, lane in ipairs(self.lanes) do
             if lane.counterFrame ~= nil then BlzDestroyFrame(lane.counterFrame) end

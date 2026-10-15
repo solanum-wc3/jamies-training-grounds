@@ -29,6 +29,8 @@ The subsequent [15 October source review](RELIABILITY-REVIEW-2026-10-15.md) exte
 
 The user is testing alpha49. Highest-priority outstanding checks:
 
+Source changes after that distributed build now include the approved Heroes revision (paced Dice tour, selectable dummy modes, XP/item text and display corrections) and Mining Micro's Base Build mode plus shared labels/trees. See [Heroes](HEROES-TUTORIAL.md) and [Mining modes](MINING-MICRO-MODES.md). The suite now has 42 fixtures; both packaging modes validate under `work/heroes-mining-validation/`. No new numbered alpha has been installed. Prioritize native dummy command-grid/hover behavior, summon caption placement, Base Build's fifth-worker mine entry, and spending-independent gathered totals when the next alpha is requested.
+
 1. Heroes: both comparison Archmages have levels 1/10; +/− work, preserve position/inventory and clear skills when lowering. Armor is visible and Night Elf heroes remain visible in daytime.
 2. Target Dummies: damage numbers reflect actual hits, and only the comparison Archmages automatically attack. Check the item dummy's new position.
 3. Narration/briefings: formatting tags, paragraph breaks, removed stops, task directions and Back/Topics transitions display correctly.
