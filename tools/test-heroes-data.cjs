@@ -118,4 +118,26 @@ for(const [index,control] of controls.entries()) {
 assert.equal(new Set(controls.map(control=>control.mods.Ncl6.value)).size,controls.length);
 assert.deepEqual(data.dummyArmorTypes.map(type=>type.defense),[7,0,1,2,3,5]);
 assert.equal(decode(result)[1][0].id[0],'j','Dummy must not use a hero-class uppercase unit ID');
+const {presentationBuildings,patchPresentationBuildings,configureDummyControl}=require('./heroes-presentation.cjs');
+const mapping=presentationBuildings(data),nativeIds=new Set(read('src/data/native-unit-ids.json'));
+const buildings=new Set(Object.values(data.racialUnits).flat().filter(row=>row.building).map(row=>row.raw));
+assert.equal(Object.keys(mapping).length,buildings.size);
+assert.equal(new Set(Object.values(mapping)).size,buildings.size);
+for(const [parent,id] of Object.entries(mapping)) {
+    assert(buildings.has(parent)&&!nativeIds.has(id));assert.match(id,/^jX[0-9A-Z]{2}$/);
+}
+const copied=patchPresentationBuildings(result,{hfoo:'jX00',htow:'jX01'}),copiedTables=decode(copied);
+assert.deepEqual(copiedTables[0],decode(result)[0],'Stock object overrides changed');
+assert.deepEqual(copiedTables[1][0],decode(result)[1][0],'Dummy object changed');
+assert.equal(copiedTables[1][1].mods.uhpm.value,420,'Existing source override was lost in the copy');
+assert.equal(copiedTables[1][1].parent,'hfoo');
+assert.equal(copiedTables[1][2].parent,'htow');
+for(const copy of copiedTables[1].slice(1))assert.equal(copy.mods.uubs.value,'_');
+assert.throws(()=>patchPresentationBuildings(result,{hfoo:'jHdm'}),/collision/);
+const configured=configureDummyControl('function main()\nend\nfunction config()\nInitAllyPriorities()\nend');
+const configAst=require('luaparse').parse(configured,{luaVersion:'5.3'});
+assert.equal(configAst.body[0].body.length,0,'Control setup leaked into runtime main');
+const configCalls=configAst.body[1].body;
+assert.equal(configCalls.length,2);assert.equal(configCalls[1].expression.base.name,'SetPlayerAlliance');
+assert(configured.includes('SetPlayerAlliance(Player(6), Player(0), ALLIANCE_SHARED_CONTROL, true)'));
 console.log('Passed: Heroes authored decisions, native data groups, unique TM drops and preserved unit overrides.');

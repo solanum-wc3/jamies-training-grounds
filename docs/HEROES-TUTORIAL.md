@@ -16,6 +16,8 @@ The item-section dummy defaults to Neutral. Switching the comparison dummy to Ne
 
 ## Standard lifecycle
 
+Alpha59 configures player 6's shared control for player 0 before play. The faction is reserved for hostile Target Dummies; Heroes changes/restores hostility but leaves control permission untouched. Alpha58 native isolation confirmed that runtime permission changes emit the upkeep cue. Food/XP were not the source. Optional XP Numbers uses generated building copies without ground texture, preserving stock gameplay objects and original display values. Native config persistence, grass rendering and dummy controls await alpha59 acceptance.
+
 Alpha57 retires inactive showcase actors rather than retaining hidden spreading buildings; returning recreates the showcase. Scene terrain leases restore original tiles, variation and blight after actor disposal. XP groups containing buildings use two rows with 576-unit cells and grid-aligned centers; summons and their captions have 200 additional vertical units of separation. Attack Dice uses roster metadata rather than hidden showcase actors.
 
 The entry/exit upkeep chime is unresolved. Development commands isolate entry/exit from button audio and record actual food/cap, XP handicap and actor positions. They also play separately labelled comparison cues. See [alpha57 testing](ALPHA57-TESTING.md); source/mocked checks do not establish a native audio cause.

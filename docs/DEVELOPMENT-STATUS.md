@@ -1,6 +1,12 @@
-# Development checkpoint: v0.1.3-alpha58
+# Development checkpoint: v0.1.3-alpha59
 
-Updated 15 October 2026. The public release remains v0.1.2-beta1; its download links and v0.1.2 patch notes are unchanged. Alpha58 is a testing build, not a completed milestone or a public release.
+Updated 15 October 2026. The public release remains v0.1.2-beta1; its download links and v0.1.2 patch notes are unchanged. Alpha59 is a testing build, not a completed milestone or a public release.
+
+## Alpha59: confirmed sound source and presentation ground
+
+The user confirms both direct shared-control changes chime, while no-control Heroes entry/exit is silent. Earlier food/XP theories did not identify this native permission notification. Configure player 6 -> player 0 shared control before play; remove runtime Heroes permission writes while preserving scoped hostility and usable hostile dummy commands. Optional XP Numbers now uses presentation-only building copies with no ground texture; stock objects and other activities are unchanged. Alpha58 cleared blight in the tested transition; the remaining dirt was under Human buildings. See [alpha59 testing](ALPHA59-TESTING.md). Native config persistence, initial-load/entry/exit sound, grass and dummy controls still require testing.
+
+Source/data checks, all 45 Lua regression fixtures and release/development packaging pass. Development map: `outputs/Jamies-Training-Grounds-v0.1.3-alpha59-dev.w3x`, SHA256 `97ebe43e4deed90a755ba46f0412ecb19a6cd3231f9742210e85f936771bba85`. Source remains on `codex/alpha49-checkpoint`; prior alpha58 checkpoint is `df4b857`.
 
 ## Alpha58: focused native follow-up
 

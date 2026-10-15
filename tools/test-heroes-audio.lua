@@ -3,7 +3,7 @@ PLAYER_NEUTRAL_PASSIVE=15
 PLAYER_STATE_RESOURCE_FOOD_USED,PLAYER_STATE_RESOURCE_FOOD_CAP='food','cap'
 GAME_STATE_TIME_OF_DAY='time'
 ALLIANCE_SHARED_CONTROL='control'
-local control=false
+local control=true -- map configuration now establishes the dummy permission
 function GetPlayerAlliance() return control end
 function SetPlayerAlliance(owner,viewer,kind,value)
  assert(owner==6 and viewer==0 and kind==ALLIANCE_SHARED_CONTROL);control=value
@@ -30,7 +30,6 @@ function Preload(text) rows[#rows+1]=text end
 local exported
 function PreloadGenEnd(path) exported=path end
 function JTG.StartActivity(id)
- JTG.startedWithoutControl=JTG.Dev.HeroesAudioSkipSharedControl
  JTG.Controller.session={id=id}
  JTG.Dev.HeroesAudioTrace({},'mock-native-start')
 end
@@ -59,15 +58,14 @@ timer.fn();assert(played[2]=='GlueScreenClick')
 timer.fn();assert(played[3]=='UpkeepLevel')
 timer.fn();assert(timer.destroyed)
 local cueCount=#played
-run('-heroes-audio-control');assert(control and #played==cueCount)
-timer.fn();assert(not control and timer.destroyed and #played==cueCount)
-run('-heroes-audio-no-control');assert(JTG.startedWithoutControl==true)
-assert(JTG.Dev.HeroesAudioSkipSharedControl==nil,'Diagnostic flag leaked into ordinary gameplay')
+run('-heroes-audio-control');assert(not control and #played==cueCount)
+timer.fn();assert(control and timer.destroyed and #played==cueCount)
+run('-heroes-audio-start');assert(control)
 run('-heroes-audio-stop')
 local ordinaryStart=JTG.StartActivity
 JTG.StartActivity=function() error('simulated setup error') end
-run('-heroes-audio-no-control')
-assert(JTG.Dev.HeroesAudioSkipSharedControl==nil,'Failed diagnostic start leaked its flag')
+run('-heroes-audio-start')
+assert(control,'Failed diagnostic start changed the configured permission')
 JTG.StartActivity=ordinaryStart
 JTG.TerrainCleanupHistory={'settled-before,cells=10,changed=2'}
 run('-heroes-terrain');assert(exported=='JTG-Heroes-Terrain.pld' and rows[1]:find('changed=2',1,true))

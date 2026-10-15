@@ -74,7 +74,7 @@ end
 JTG.RegisterBootstrapInitializer(function()
     local trigger=CreateTrigger()
     for _,command in ipairs({'-heroes-audio-start','-heroes-audio-stop','-heroes-audio-sounds','-heroes-audio-status',
-            '-heroes-audio-control','-heroes-audio-no-control','-heroes-terrain'}) do
+            '-heroes-audio-control','-heroes-terrain'}) do
         TriggerRegisterPlayerChatEvent(trigger,PLAYER,command,true)
     end
     TriggerAddAction(trigger,function()
@@ -82,17 +82,12 @@ JTG.RegisterBootstrapInitializer(function()
         if command=='-heroes-terrain' then exportTerrain()
         elseif command=='-heroes-audio-control' then probeControl()
         elseif command=='-heroes-audio-sounds' then stopControlProbe();compareSounds()
-        elseif command=='-heroes-audio-start' or command=='-heroes-audio-no-control' then
+        elseif command=='-heroes-audio-start' then
             if JTG.Controller.session then say('Exit the current activity first.');return end
             stopSounds();stopControlProbe();audit={active=true,rows={}}
             row('before-no-button-start')
-            local skip=command=='-heroes-audio-no-control'
-            say(skip and 'Starting Heroes without button audio or the shared-control change. Test the opening only.'
-                or 'Starting Heroes without button audio. Listen for the upkeep chime.')
-            local previous=JTG.Dev.HeroesAudioSkipSharedControl
-            JTG.Dev.HeroesAudioSkipSharedControl=skip
+            say('Starting Heroes without button audio. Shared control is now configured before play.')
             local ok,message=pcall(JTG.StartActivity,'learn.heroes','learn')
-            JTG.Dev.HeroesAudioSkipSharedControl=previous
             if not ok then say('Heroes diagnostic start failed: '..tostring(message)) end
             row('after-no-button-start')
         elseif command=='-heroes-audio-stop' then

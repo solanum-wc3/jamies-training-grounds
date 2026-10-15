@@ -324,7 +324,8 @@ for _,group in ipairs(activity.xpColumns) do
  assert(group.x>=activity.practiceArena.minX+750)
 end
 local shown={};for _,u in ipairs(activity.actors) do shown[u.raw]=true end
-assert(shown.owtw and shown.otrb,'Defensive buildings missing from XP display')
+assert(shown[JTG.HeroesData.presentationBuildings.owtw] and shown[JTG.HeroesData.presentationBuildings.otrb],
+ 'Presentation-only defensive buildings missing from XP display')
 for _,u in ipairs(optionalActors) do assert(u.removed) end
 for _,u in ipairs(activity.actors) do assert(not u.level,'Racial XP display contains a hero') end
 assert(#activity.frames.xpChoices==6,'Neutral XP selector is missing')
@@ -336,7 +337,9 @@ for _,u in ipairs(activity.actors) do assert(u.color==8 and u.paused and not u.l
 for _,race in ipairs({'human','orc','nightelf','undead','neutral'}) do
  activity:selectXPDisplay(race)
  local structureIds={};local structures={}
- for _,entry in ipairs(JTG.HeroesData.racialUnits[race]) do if entry.building then structureIds[entry.raw]=true end end
+ for _,entry in ipairs(JTG.HeroesData.racialUnits[race]) do
+  if entry.building then structureIds[JTG.HeroesData.presentationBuildings[entry.raw]]=true end
+ end
  for _,u in ipairs(activity.actors) do
   if structureIds[u.raw] then
    assert(u.x%64==0 and u.y%64==0,'Building display is not aligned to the placement grid')
@@ -400,7 +403,7 @@ alternate.activity=alternateActivity;JTG.Controller.session=alternate
 alternateActivity:setup(alternate);assert(xpHandicap==1 and xpHandicapWrites==1)
 alternateActivity:cleanup();JTG.DisposeScope(alternate.presentationScope);JTG.DisposeScope(alternate.scope)
 assert(xpHandicap==.8 and xpHandicapWrites==2)
-JTG.Dev={HeroesAudioSkipSharedControl=true};allianceWrites={}
+allianceWrites={}
 local isolation={active=true,scope=JTG.CreateScope('heroes-control-isolation'),
  presentationScope=JTG.CreateScope('heroes-control-isolation-ui'),generation=3}
 local isolatedActivity=JTG.CreateHeroesTutorialActivity(isolation)
@@ -408,6 +411,6 @@ isolation.activity=isolatedActivity;JTG.Controller.session=isolation
 isolatedActivity:setup(isolation)
 isolatedActivity:cleanup();JTG.DisposeScope(isolation.presentationScope);JTG.DisposeScope(isolation.scope)
 for _,write in ipairs(allianceWrites) do
- assert(write.kind~=ALLIANCE_SHARED_CONTROL,'Shared-control A/B test still changed native shared control')
+ assert(write.kind~=ALLIANCE_SHARED_CONTROL,'Tutorial changed the preconfigured shared-control permission')
 end
 print('Passed: 47 authored Hero stops, two optional topics, native rosters/skills, 1200-radius XP scenes, level controls, shops/items, fixed camera tours, ownership isolation, checkpoint replay and complete cleanup.')

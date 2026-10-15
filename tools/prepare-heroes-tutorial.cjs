@@ -11,6 +11,7 @@ function lua(value) {
 function render() {
     const script=JSON.parse(fs.readFileSync(path.join(root,'design/tutorials/heroes-script.json'),'utf8'));
     const data=JSON.parse(fs.readFileSync(path.join(root,'src/data/heroes-tutorial-data.json'),'utf8'));
+    data.presentationBuildings=require('./heroes-presentation.cjs').presentationBuildings(data);
     const scenes=new Set(['overview','archmages','archmages-target','showcase','xp-initial','xp-range-1',
         'xp-range-2','xp-range-3','xp-empty','xp-modifier-4','xp-modifier-5','xp-modifier-paladin',
         'xp-modifier-outside','empty','items','dice','xp-numbers']);

@@ -22,7 +22,7 @@ const luaParser = req('luaparse');
 require('./prepare-exercise-briefings.cjs').prepare();
 require('./prepare-heroes-tutorial.cjs').prepare();
 
-const version = 'v0.1.3-alpha58';
+const version = 'v0.1.3-alpha59';
 const modeArgument = process.argv.find(argument => argument.startsWith('--mode='));
 const buildMode = modeArgument ? modeArgument.slice('--mode='.length) : 'release';
 assert(['release', 'development'].includes(buildMode),
@@ -218,6 +218,8 @@ const oldStart = compiled.indexOf('-- Temporary inspection harness for the terra
 const oldEnd = compiled.indexOf('function InitCustomTriggers()', oldStart);
 assert(oldStart >= 0 && oldEnd > oldStart, 'Foundation test harness boundary changed');
 let nextLua = compiled.slice(0, oldStart) + bundle + '\n' + compiled.slice(oldEnd);
+const {configureDummyControl,presentationBuildings,patchPresentationBuildings}=require('./heroes-presentation.cjs');
+nextLua=configureDummyControl(nextLua);
 nextLua = nextLua
     .replaceAll('gg_trg_Foundation_Test', 'gg_trg_Infrastructure')
     .replaceAll('InitTrig_Foundation_Test', 'InitTrig_Infrastructure');
@@ -501,6 +503,7 @@ const {patchStockDelay:patchHeroStockDelay}=require('./patch-stock-delay.cjs');
 changes.set('war3map.w3t',patchHeroStockDelay(changes.get('war3map.w3t')||source.get('war3map.w3t'),
     Object.values(heroesNativeData.shops).flat().concat(heroesNativeData.itemGroups.flatMap(group=>group.items)),'isst'));
 changes.set('war3map.w3u',patchHeroesDummy(changes.get('war3map.w3u')||source.get('war3map.w3u'),heroesNativeData.dummyModel));
+changes.set('war3map.w3u',patchPresentationBuildings(changes.get('war3map.w3u'),presentationBuildings(heroesNativeData)));
 assert(!source.has('war3map.w3a')&&!changes.has('war3map.w3a'),
     'Merge existing ability overrides before adding Heroes dummy commands');
 changes.set('war3map.w3a',createHeroesDummyAbilities());

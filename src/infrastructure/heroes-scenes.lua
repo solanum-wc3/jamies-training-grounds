@@ -296,7 +296,8 @@ function JTG.InstallHeroesScenes(activity,session)
                                 local y=summoned and a.centerY-1200-((index-1)%group.rows)*group.step or a.centerY-180+((index-1)%group.rows)*group.step
                                 local ux=group.x+math.floor((index-1)/group.rows)*group.columnStep
                                 if row.building then ux=math.floor(ux/64+.5)*64;y=math.floor(y/64+.5)*64 end
-                                local unit=self:addActor(row.raw,ux,y,nil,COLORS[self.xpNumberChoice],Player(PLAYER_NEUTRAL_PASSIVE))
+                                local displayRaw=row.building and assert(D.presentationBuildings[row.raw]) or row.raw
+                                local unit=self:addActor(displayRaw,ux,y,nil,COLORS[self.xpNumberChoice],Player(PLAYER_NEUTRAL_PASSIVE))
                                 UnitRemoveAbility(unit,FourCC('Apiv'));PauseUnit(unit,true)
                             end
                         end

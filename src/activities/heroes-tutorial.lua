@@ -248,19 +248,15 @@ function JTG.CreateHeroesTutorialActivity(session)
                 SetPlayerAlliance(pair[1],pair[2],ALLIANCE_PASSIVE,false)
             end
         end
-        -- Only dummies use this hostile faction. Shared control keeps their
-        -- two mode commands available without granting control over XP enemies.
+        -- Only dummies use this hostile faction. Its shared-control permission
+        -- is configured before play, not toggled here: runtime changes emit
+        -- Warcraft's upkeep cue. Keep hostility scoped to this tutorial.
         local dummyOwner=Player(6)
         for _,pair in ipairs({{PLAYER,dummyOwner,ALLIANCE_PASSIVE,false},
-                {dummyOwner,PLAYER,ALLIANCE_PASSIVE,false},
-                {dummyOwner,PLAYER,ALLIANCE_SHARED_CONTROL,true}}) do
-            -- Development A/B test only: initial showcase needs no hostile
-            -- dummy commands, allowing this one native setting to be isolated.
-            if pair[3]~=ALLIANCE_SHARED_CONTROL or not (JTG.Dev and JTG.Dev.HeroesAudioSkipSharedControl) then
-                local old=GetPlayerAlliance(pair[1],pair[2],pair[3])
-                JTG.ScopeBorrow(current.scope,function() SetPlayerAlliance(pair[1],pair[2],pair[3],old) end)
-                SetPlayerAlliance(pair[1],pair[2],pair[3],pair[4])
-            end
+                {dummyOwner,PLAYER,ALLIANCE_PASSIVE,false}}) do
+            local old=GetPlayerAlliance(pair[1],pair[2],pair[3])
+            JTG.ScopeBorrow(current.scope,function() SetPlayerAlliance(pair[1],pair[2],pair[3],old) end)
+            SetPlayerAlliance(pair[1],pair[2],pair[3],pair[4])
         end
         self.xpQuest=JTG.ScopeTrackQuest(current.scope,CreateQuest())
         QuestSetTitle(self.xpQuest,'XP Numbers');QuestSetDescription(self.xpQuest,T.FormatNarration(SCRIPT.quest))
