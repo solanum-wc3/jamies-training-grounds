@@ -360,6 +360,7 @@ Your notes:
 The amount of XP a hero gains can be modified.
 For example, as soon as your main building reaches tier 2, your first hero gains a {Yellow Font: +15% bonus} until you start training a second hero.
 This is called the {Term: Solo Hero Bonus}.
+Upon reaching tier 3, this bonus is raised to {Yellow Font: +30%}.
 
 Scene: `xp-empty`.
 Progression: Continue.
@@ -412,11 +413,11 @@ Your notes:
 
 ## heroes.039 — xp-amounts
 
-Attack the Gnoll again using only your Paladin! Keep the Mountain King within the circle.
+Attack the Gnoll again, using your entire army! Keep both heroes within the circle.
 Pay attention to the experience amounts!
 
 Scene: `xp-modifier-paladin`.
-Trigger: Reset the Gnoll and army. The Paladin is level 2, 35 XP from level 3. The Mountain King is level 5 and starts inside the 1200-radius circle. Only the Paladin should attack.
+Trigger: Reset the Gnoll and army. The Paladin is level 2, 35 XP from level 3. The Mountain King is level 5 and starts outside the 1200-radius circle with the other Human units.
 Progression: Continue.
 
 Your notes:
@@ -505,6 +506,7 @@ Your notes:
 ## heroes.047 — items
 
 You can also destroy an item on the ground with an {Input: Attack Command}.
+Destroying it requires three attacks.
 
 Scene: `items`.
 Progression: Continue.
@@ -564,7 +566,7 @@ Most heroes fall into one of three categories, rolling either two four-sided, tw
 The only exceptions are the Night Elf Warden with two eleven-sided dice, and the Goblin Alchemist with three ten-sided dice.
 
 Scene: `dice`.
-Trigger: Move the camera to the leftmost text. After it has arrived, move it to the right-most text. After it has arrived, move it to the middle of the arena.
+Trigger: Move to 2D4, wait one second after arrival, move to 2D6, wait one second, move to 2D12, wait one second, then move to the midpoint between 2D11 and 3D10. All camera moves take the standard 1.5 seconds.
 Action: dice-tour
 Progression: Continue.
 
@@ -622,7 +624,7 @@ XP from {Term: Regular Player Units} depends on their level, which is often equa
 - level 5 -> 115 XP
 - level 6 -> 150 XP
 XP from {Term: Summons} is halved.
-XP from {Term: Creeps} is multiplied by 80%, 70%, 60% and 50% at hero levels 1, 2, 3 and 4, and by 0% at level 5 and above.
+XP from {Term: Creeps} is reduced by 20% for every hero level, meaning that starting at level 5, heroes do not get any experience from creeps. (However, the XP share is still divided to them if they are in the 1200 range, or if no hero is.)
 
 XP from {Term: Enemy Heroes} also depends on their level:
 - level 1 -> 100 XP

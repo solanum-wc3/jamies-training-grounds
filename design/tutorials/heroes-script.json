@@ -427,7 +427,8 @@
       "lines": [
         "The amount of XP a hero gains can be modified.",
         "For example, as soon as your main building reaches tier 2, your first hero gains a {Yellow Font: +15% bonus} until you start training a second hero.",
-        "This is called the {Term: Solo Hero Bonus}."
+        "This is called the {Term: Solo Hero Bonus}.",
+        "Upon reaching tier 3, this bonus is raised to {Yellow Font: +30%}."
       ],
       "authorTriggers": [],
       "scene": "xp-empty",
@@ -491,11 +492,11 @@
       "checkpoint": "xp-amounts",
       "wait": true,
       "lines": [
-        "Attack the Gnoll again using only your Paladin! Keep the Mountain King within the circle.",
+        "Attack the Gnoll again, using your entire army! Keep both heroes within the circle.",
         "Pay attention to the experience amounts!"
       ],
       "authorTriggers": [
-        "Reset the Gnoll and army. The Paladin is level 2, 35 XP from level 3. The Mountain King is level 5 and starts inside the 1200-radius circle. Only the Paladin should attack."
+        "Reset the Gnoll and army. The Paladin is level 2, 35 XP from level 3. The Mountain King is level 5 and starts outside the 1200-radius circle with the other Human units."
       ],
       "scene": "xp-modifier-paladin",
       "sectionEnd": false
@@ -603,7 +604,8 @@
       "checkpoint": "items",
       "wait": true,
       "lines": [
-        "You can also destroy an item on the ground with an {Input: Attack Command}."
+        "You can also destroy an item on the ground with an {Input: Attack Command}.",
+        "Destroying it requires three attacks."
       ],
       "authorTriggers": [],
       "scene": "items",
@@ -675,7 +677,7 @@
           "The only exceptions are the Night Elf Warden with two eleven-sided dice, and the Goblin Alchemist with three ten-sided dice."
         ],
         "authorTriggers": [
-          "Move the camera to the leftmost text. After it has arrived, move it to the right-most text. After it has arrived, move it to the middle of the arena."
+          "Move to 2D4, wait one second after arrival, move to 2D6, wait one second, move to 2D12, wait one second, then move to the midpoint between 2D11 and 3D10. All camera moves take the standard 1.5 seconds."
         ],
         "scene": "dice",
         "action": "dice-tour"
@@ -727,5 +729,5 @@
       }
     ]
   },
-  "quest": "Heroes require 100 times the new level in experience.\nSo getting from level 1 to level 2 requires 200 XP, while getting from level 5 to level 6 requires 600 XP.\n\nXP from {Term: Regular Player Units} depends on their level, which is often equal to their food cost:\n- level 1 -> 25 XP\n- level 2 -> 40 XP\n- level 3 -> 60 XP\n- level 4 -> 85 XP\n- level 5 -> 115 XP\n- level 6 -> 150 XP\nXP from {Term: Summons} is halved.\nXP from {Term: Creeps} is multiplied by 80%, 70%, 60% and 50% at hero levels 1, 2, 3 and 4, and by 0% at level 5 and above.\n\nXP from {Term: Enemy Heroes} also depends on their level:\n- level 1 -> 100 XP\n- level 2 -> 120 XP\n- level 3 -> 160 XP\n- level 4 -> 220 XP\n- level 5 -> 300 XP\nAny level above 5 adds another 100 XP."
+  "quest": "Heroes require 100 times the new level in experience.\nSo getting from level 1 to level 2 requires 200 XP, while getting from level 5 to level 6 requires 600 XP.\n\nXP from {Term: Regular Player Units} depends on their level, which is often equal to their food cost:\n- level 1 -> 25 XP\n- level 2 -> 40 XP\n- level 3 -> 60 XP\n- level 4 -> 85 XP\n- level 5 -> 115 XP\n- level 6 -> 150 XP\nXP from {Term: Summons} is halved.\nXP from {Term: Creeps} is reduced by 20% for every hero level, meaning that starting at level 5, heroes do not get any experience from creeps. (However, the XP share is still divided to them if they are in the 1200 range, or if no hero is.)\n\nXP from {Term: Enemy Heroes} also depends on their level:\n- level 1 -> 100 XP\n- level 2 -> 120 XP\n- level 3 -> 160 XP\n- level 4 -> 220 XP\n- level 5 -> 300 XP\nAny level above 5 adds another 100 XP."
 }

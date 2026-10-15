@@ -23,8 +23,32 @@ function patchHeroesDummy(buffer,model) {
     skipObjects();assert.equal(offset,buffer.length);
     const i32=value=>{const b=Buffer.alloc(4);b.writeInt32LE(value);return b;};
     const text=(key,value)=>Buffer.concat([Buffer.from(key),i32(3),Buffer.from(value+'\0'),Buffer.from('JHdm')]);
-    const object=Buffer.concat([Buffer.from('hfooJHdm'),i32(1),i32(0),i32(2),
-        text('unam','Target Dummies'),text('umdl',model)]);
+    const number=(key,value)=>Buffer.concat([Buffer.from(key),i32(0),i32(value),Buffer.from('JHdm')]);
+    const mods=[text('unam','Target Dummie'),text('utip','Target Dummie'),text('utub','Target Dummie'),
+        text('umdl',model),text('uabi','JHdN,JHdH'),text('umvt','none'),
+        number('uaen',0),number('umvs',0),number('ufoo',0)];
+    const object=Buffer.concat([Buffer.from('hfooJHdm'),i32(1),i32(0),i32(mods.length),...mods]);
     return Buffer.concat([buffer.subarray(0,countOffset),i32(count+1),buffer.subarray(countOffset+4),object]);
 }
-module.exports={patchHeroesDummy};
+// The foundation has no ability overrides. Keep this table explicit and local:
+// two non-targeted Channel commands, with distinct native orders and no costs.
+function createHeroesDummyAbilities() {
+    const i32=value=>{const b=Buffer.alloc(4);b.writeInt32LE(value);return b;};
+    const real=value=>{const b=Buffer.alloc(4);b.writeFloatLE(value);return b;};
+    const objects=[['JHdN','Neutral Mode','BTNStop.blp','berserk',0],
+        ['JHdH','Hostile Mode','BTNAttack.blp','roar',1]].map(([id,name,icon,order,x])=>{
+        const mod=(field,type,value,level=0,pointer=0)=>Buffer.concat([
+            Buffer.from(field),i32(type),i32(level),i32(pointer),
+            type===3?Buffer.from(value+'\0'):type===0?i32(value):real(value),Buffer.from(id)]);
+        const mods=[mod('anam',3,name),mod('aart',3,'ReplaceableTextures\\CommandButtons\\'+icon),
+            mod('atp1',3,name,1),mod('aub1',3,name,1),mod('aher',0,0),mod('alev',0,1),
+            mod('abpx',0,x),mod('abpy',0,0),mod('arac',3,'other'),mod('areq',3,''),mod('ahky',3,''),
+            mod('amcs',0,0,1),mod('acdn',2,0,1),mod('acas',2,0,1),
+            mod('acat',3,''),mod('atat',3,''),mod('aeat',3,''),
+            mod('Ncl1',2,0,1,1),mod('Ncl2',0,0,1,2),mod('Ncl3',0,1,1,3),
+            mod('Ncl4',2,0,1,4),mod('Ncl5',0,0,1,5),mod('Ncl6',3,order,1,6)];
+        return Buffer.concat([Buffer.from('ANcl'+id),i32(1),i32(0),i32(mods.length),...mods]);
+    });
+    return Buffer.concat([i32(3),i32(0),i32(objects.length),...objects]);
+}
+module.exports={patchHeroesDummy,createHeroesDummyAbilities};

@@ -68,11 +68,11 @@ function JTG.CreateHeroesTutorialActivity(session)
         elseif action=='tavern-camera' then
             local unit=self.buildings.neutral;T.MoveCamera(PLAYER,GetUnitX(unit),GetUnitY(unit))
         elseif action=='dice-tour' then
-            local targets={self.diceTexts[1],self.diceTexts[#self.diceTexts],
-                {x=self.practiceArena.centerX,y=self.practiceArena.centerY}}
+            local targets={self.diceTexts[1],self.diceTexts[2],self.diceTexts[3],
+                {x=(self.diceTexts[4].x+self.diceTexts[5].x)/2,y=self.diceTexts[4].y}}
             T.MoveCamera(PLAYER,targets[1].x,targets[1].y)
-            for index=2,3 do
-                T.ScheduleStep(session,self,(index-1)*T.cameraMoveDuration,function()
+            for index=2,#targets do
+                T.ScheduleStep(session,self,(index-1)*(T.cameraMoveDuration+1),function()
                     T.MoveCamera(PLAYER,targets[index].x,targets[index].y)
                 end)
             end
@@ -236,6 +236,16 @@ function JTG.CreateHeroesTutorialActivity(session)
                 SetPlayerAlliance(pair[1],pair[2],ALLIANCE_PASSIVE,false)
             end
         end
+        -- Only dummies use this hostile faction. Shared control keeps their
+        -- two mode commands available without granting control over XP enemies.
+        local dummyOwner=Player(6)
+        for _,pair in ipairs({{PLAYER,dummyOwner,ALLIANCE_PASSIVE,false},
+                {dummyOwner,PLAYER,ALLIANCE_PASSIVE,false},
+                {dummyOwner,PLAYER,ALLIANCE_SHARED_CONTROL,true}}) do
+            local old=GetPlayerAlliance(pair[1],pair[2],pair[3])
+            JTG.ScopeBorrow(current.scope,function() SetPlayerAlliance(pair[1],pair[2],pair[3],old) end)
+            SetPlayerAlliance(pair[1],pair[2],pair[3],pair[4])
+        end
         self.xpQuest=JTG.ScopeTrackQuest(current.scope,CreateQuest())
         QuestSetTitle(self.xpQuest,'XP Numbers');QuestSetDescription(self.xpQuest,T.FormatNarration(SCRIPT.quest))
         QuestSetIconPath(self.xpQuest,BlzGetAbilityIcon(FourCC('Ainf')))
@@ -244,8 +254,19 @@ function JTG.CreateHeroesTutorialActivity(session)
         TriggerRegisterPlayerUnitEvent(selected,PLAYER,EVENT_PLAYER_UNIT_SELECTED,nil)
         TriggerAddAction(selected,JTG.GuardSession(current,function() self.selectedHero=GetTriggerUnit();self:refreshControls() end))
         local damaged=JTG.ScopeTrackTrigger(current.scope,CreateTrigger())
-        TriggerRegisterPlayerUnitEvent(damaged,Player(1),EVENT_PLAYER_UNIT_DAMAGED,nil)
+        TriggerRegisterPlayerUnitEvent(damaged,PLAYER,EVENT_PLAYER_UNIT_DAMAGED,nil)
+        TriggerRegisterPlayerUnitEvent(damaged,dummyOwner,EVENT_PLAYER_UNIT_DAMAGED,nil)
         TriggerAddAction(damaged,JTG.GuardSession(current,function() self:showDummyDamage(GetTriggerUnit(),GetEventDamage()) end))
+        local dummyModes=JTG.ScopeTrackTrigger(current.scope,CreateTrigger())
+        for _,owner in ipairs({PLAYER,dummyOwner}) do
+            TriggerRegisterPlayerUnitEvent(dummyModes,owner,EVENT_PLAYER_UNIT_SPELL_EFFECT,nil)
+        end
+        TriggerAddAction(dummyModes,JTG.GuardSession(current,function()
+            local ability=GetSpellAbilityId()
+            if ability==FourCC('JHdN') or ability==FourCC('JHdH') then
+                self:setDummyHostile(GetTriggerUnit(),ability==FourCC('JHdH'))
+            end
+        end))
         local summoned=JTG.ScopeTrackTrigger(current.scope,CreateTrigger())
         TriggerRegisterPlayerUnitEvent(summoned,PLAYER,EVENT_PLAYER_UNIT_SUMMON,nil)
         TriggerAddAction(summoned,JTG.GuardSession(current,function()

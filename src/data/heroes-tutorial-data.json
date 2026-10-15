@@ -687,14 +687,6 @@
         "building": true
       },
       {
-        "raw": "even",
-        "level": 2,
-        "food": 0,
-        "xp": 20.0,
-        "summon": true,
-        "building": false
-      },
-      {
         "raw": "earc",
         "level": 2,
         "food": 2,
@@ -1181,7 +1173,7 @@
       {
         "raw": "nba2",
         "level": 8,
-        "food": 6,
+        "food": 0,
         "xp": 117.5,
         "summon": true,
         "building": false
@@ -1449,6 +1441,14 @@
       "nwe3": [
         "ANsw"
       ]
+    }
+  },
+  "displayOverrides": {
+    "excludedInvulnerableSummons": [
+      "even"
+    ],
+    "summonedFood": {
+      "nba2": 0
     }
   }
 }

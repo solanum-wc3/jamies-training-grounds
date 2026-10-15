@@ -8,7 +8,7 @@ Confirmed by the user:
 - Ground items appear once per distinct item, grouped by the smallest Twisted Meadows camp/drop group that can drop them.
 - The XP circle marks the actual range: 1200-unit radius, 2400-unit diameter.
 - Updated after alpha48: spawn the first Gnoll-task army together with its directions; no empty setup stop.
-- Updated after alpha48: remove the first Mountain King level-5 trial. Retain the level-4 trial, Paladin-only trial with the level-5 King nearby, and final trial with the King outside XP range.
+- Updated after alpha48: remove the first Mountain King level-5 trial. Subsequent revision: in the retained second trial, the level-5 King starts outside with the army; ask the player to attack with the entire army and bring both heroes inside the circle. The final trial leaves the King outside XP range.
 
 `heroes-script.json` is the authoritative narration and scene plan; the build generates Lua from it. The corrected readable draft remains `heroes-script-draft.txt`; the original attachment is preserved.
 

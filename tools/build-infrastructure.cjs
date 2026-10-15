@@ -489,11 +489,14 @@ if (isDevelopment) {
 }
 
 const heroesNativeData=JSON.parse(fs.readFileSync(path.join(root,'src/data/heroes-tutorial-data.json'),'utf8'));
-const {patchHeroesDummy}=require('./patch-heroes-dummy.cjs');
+const {patchHeroesDummy,createHeroesDummyAbilities}=require('./patch-heroes-dummy.cjs');
 const {patchStockDelay:patchHeroStockDelay}=require('./patch-stock-delay.cjs');
 changes.set('war3map.w3t',patchHeroStockDelay(changes.get('war3map.w3t')||source.get('war3map.w3t'),
     Object.values(heroesNativeData.shops).flat().concat(heroesNativeData.itemGroups.flatMap(group=>group.items)),'isst'));
 changes.set('war3map.w3u',patchHeroesDummy(changes.get('war3map.w3u')||source.get('war3map.w3u'),heroesNativeData.dummyModel));
+assert(!source.has('war3map.w3a')&&!changes.has('war3map.w3a'),
+    'Merge existing ability overrides before adding Heroes dummy commands');
+changes.set('war3map.w3a',createHeroesDummyAbilities());
 
 fs.mkdirSync(path.dirname(outputPath), {recursive: true});
 fs.copyFileSync(sourcePath, outputPath);

@@ -1,7 +1,10 @@
 -- Real scopes and authored Hero scenes; native mocks observe lifetimes/orders.
 JTG={UI={epoch=1,exercisePaused=false}};PLAYER_NEUTRAL_PASSIVE=15;PLAYER_NEUTRAL_AGGRESSIVE=12
 PLAYER_COLOR_BLUE,PLAYER_COLOR_RED,PLAYER_COLOR_CYAN,PLAYER_COLOR_PURPLE,PLAYER_COLOR_LIGHT_GRAY=1,0,2,3,8
-local units,items,timers,images,tags,sounds,pans={}, {}, {}, {}, {}, {}, {}
+local units,items,timers,images,tags,sounds,pans,triggers={}, {}, {}, {}, {}, {}, {}, {}
+local eventUnit,eventAbility
+function GetTriggerUnit() return eventUnit end
+function GetSpellAbilityId() return eventAbility end
 local selected
 function Player(id) return id end
 function FourCC(raw) return raw end
@@ -61,6 +64,8 @@ local buildings={halt=true,oalt=true,uaod=true,eate=true,ntav=true,hcas=true,ofr
  hvlt=true,ovln=true,eden=true,utom=true,ngme=true,nmrk=true}
 function IsUnitType(u,kind) return kind==UNIT_TYPE_STRUCTURE and buildings[u.raw]==true end
 function BlzSetUnitSkin(u,skin) u.skin=skin end
+function BlzSetUnitStringField(u,field,value) u[field]=value end
+UNIT_SF_NAME='name'
 function IssueImmediateOrder(u,order) u.order=order;return true end
 function IssueTargetOrder(u,order,target) u.order=order;u.target=target;return true end
 function CreateItem(raw,x,y) local i={raw=raw,x=x,y=y};items[#items+1]=i;return i end
@@ -77,16 +82,16 @@ function ShowImage(i,visible) i.visible=visible end
 function DestroyImage(i) i.removed=true end
 function CreateTextTag() local t={};tags[#tags+1]=t;return t end
 function SetTextTagText(t,text) t.text=text end
-function SetTextTagPos() end
+function SetTextTagPos(tag,x,y) tag.x=x;tag.y=y end
 function SetTextTagColor() end
 function SetTextTagPermanent() end
 function SetTextTagVisibility(t,v) t.visible=v end
 function DestroyTextTag(t) t.removed=true end
-function CreateTrigger() return {} end
+function CreateTrigger() local t={events={}};triggers[#triggers+1]=t;return t end
 function DestroyTrigger(t) t.disposed=true end
 function DisableTrigger() end
 function TriggerAddAction(t,fn) t.fn=fn end
-function TriggerRegisterPlayerUnitEvent() end
+function TriggerRegisterPlayerUnitEvent(t,owner,event) t.events[#t.events+1]={owner=owner,event=event} end
 function BlzTriggerRegisterFrameEvent() end
 function CreateTimer() local t={};timers[#timers+1]=t;return t end
 function TimerStart(t,delay,repeating,fn) t.delay=delay;t.fn=fn;t.repeating=repeating end
@@ -164,6 +169,8 @@ PLAYER_STATE_RESOURCE_GOLD,PLAYER_STATE_RESOURCE_LUMBER='gold','lumber'
 PLAYER_STATE_RESOURCE_FOOD_CAP,PLAYER_STATE_RESOURCE_FOOD_CAP_CEILING='foodcap','foodmax'
 UNIT_STATE_MANA,UNIT_STATE_MAX_MANA='mana','maxmana'
 ALLIANCE_PASSIVE,EVENT_PLAYER_UNIT_SELECTED,EVENT_PLAYER_UNIT_SUMMON='passive','selected','summon'
+ALLIANCE_SHARED_CONTROL='sharedControl'
+EVENT_PLAYER_UNIT_SPELL_EFFECT,EVENT_PLAYER_UNIT_DAMAGED='spellEffect','damaged'
 ORIGIN_FRAME_GAME_UI,FRAMEEVENT_CONTROL_CLICK='ui','click'
 dofile('src/infrastructure/core.lua')
 function JTG.ScopeRevealScene() end
@@ -179,6 +186,7 @@ dofile('src/activities/heroes-tutorial.lua')
 local session={active=true,scope=JTG.CreateScope('heroes-test'),presentationScope=JTG.CreateScope('heroes-presentation'),generation=1}
 local activity=JTG.CreateHeroesTutorialActivity(session);session.activity=activity
 JTG.Controller.session=session
+JTG.Controller.generation=session.generation
 local function step(id) for i,row in ipairs(JTG.HeroesScript.steps) do if row.id==string.format('heroes.%03d',id) then return i end end;error('Missing test stop '..id) end
 activity:setup(session);activity:start()
 assert(time==12 and scale==0 and not JTG.UI.questAvailable)
@@ -203,6 +211,19 @@ assert(activity.actors[1].level==1 and activity.actors[2].level==10 and activity
 assert(not activity.frames.plus.visible and pans[#pans].y==6016)
 activity.actors[1].x=9000;activity:tickWorld();assert(activity.actors[1].x<=7744)
 activity:showStep(step(8));assert(#activity.dummies==1 and #activity.actors==3)
+local dummy=activity.dummies[1].unit
+assert(dummy.owner==6 and dummy.name=='Target Dummie' and not dummy.paused)
+assert(activity:setDummyHostile(dummy,false) and dummy.owner==0)
+assert(activity.actors[1].order=='stop' and activity.actors[2].order=='stop')
+assert(activity:setDummyHostile(dummy,true) and dummy.owner==6)
+assert(activity.actors[1].order=='attack' and activity.actors[1].target==dummy)
+assert(not activity:setDummyHostile(activity.actors[1],true), 'Non-dummy changed faction')
+for _,t in ipairs(triggers) do
+ if t.events[1] and t.events[1].event=='spellEffect' then
+  eventUnit,eventAbility=dummy,'JHdN';t.fn();assert(dummy.owner==0)
+  eventAbility='JHdH';t.fn();assert(dummy.owner==6)
+ end
+end
 assert(activity.actors[1].target==activity.dummies[1].unit and not activity.actors[1].invulnerable)
 activity:showDummyDamage(activity.dummies[1].unit,12.5)
 local popup=activity.damagePopups[1];assert(popup.tag.visible and popup.tag.text=='12.5')
@@ -211,6 +232,7 @@ local attackers=activity.actors
 activity:restoreCheckpoint(step(24))
 for _,u in ipairs(attackers) do assert(u.removed) end
 assert(activity.worldScene=='showcase' and #activity.levelActors==25 and #activity.dummies==5)
+for _,record in ipairs(activity.dummies) do assert(not record.hostile and record.unit.owner==0) end
 local record=activity.levelActors[1];activity.selectedHero=record.unit;activity:refreshControls()
 assert(not record.unit.invulnerable and record.unit.level==1 and record.unit.hiddenHeroIcon and activity.frames.plus.visible and not activity.frames.minus.enabled)
 activity:changeHeroLevel(1);assert(record.unit.level==2)
@@ -227,8 +249,8 @@ for _,u in ipairs(activity.actors) do if u.level then assert(u.level==1 and u.xp
 local army=activity.actors;assert(activity.narrationBlocks[1]:find('Afterwards',1,true))
 activity:showStep(step(29));for _,u in ipairs(army) do assert(u.removed) end
 activity:restoreCheckpoint(step(37));assert(activity.mountainKing.level==4 and activity.paladin.level==2 and activity.paladin.xp==465)
-activity:showStep(step(39));assert(activity.mountainKing.level==5 and math.abs(activity.mountainKing.x-4864)<1200)
-assert(activity.narrationBlocks[1]:find('only your Paladin',1,true))
+activity:showStep(step(39));assert(activity.mountainKing.level==5 and math.abs(activity.mountainKing.x-4864)>1200)
+assert(activity.narrationBlocks[1]:find('using your entire army',1,true))
 activity:showStep(step(40));assert(math.abs(activity.mountainKing.x-4864)>1200 and activity.paladin.xp==465)
 activity:openOptional('xp');assert(activity.worldScene=='xp-numbers' and #activity.actors==10 and #sounds==1)
 assert(activity.actors[1].raw=='Hpal' and activity.actors[1].skin=='Hart' and activity.actors[10].skin=='Harf')
@@ -248,9 +270,35 @@ activity.actions[GetHandleId(activity.frames.xpChoices[6])].action()
 assert(activity.xpNumberChoice=='neutral' and #activity.actors==25)
 for _,u in ipairs(orcActors) do assert(u.removed,'Previous racial display leaked into Neutral') end
 for _,u in ipairs(activity.actors) do assert(u.color==8 and u.paused and not u.level,'Neutral display is not grey, paused summons only') end
+for _,race in ipairs({'human','orc','nightelf','undead','neutral'}) do
+ activity:selectXPDisplay(race)
+ for _,u in ipairs(activity.actors) do assert(u.raw~='even','Invulnerable Spirit remained in XP display') end
+ for _,group in ipairs(activity.xpColumns) do
+  if #group.summons>0 then
+   local caption
+   for _,tag in ipairs(tags) do
+    if not tag.removed and tag.text:find('Summon\nUnit Level:',1,true) and tag.x==group.x-80 then caption=tag end
+   end
+   assert(caption and caption.y==activity.practiceArena.centerY-800,'Summon caption is not directly below regular captions')
+   for _,u in ipairs(activity.actors) do
+    for _,row in ipairs(group.summons) do if u.raw==row.raw then assert(caption.y>u.y,'Summon caption is below its units') end end
+   end
+  end
+ end
+end
 activity:continueTutorial();activity:continueTutorial();assert(activity.step==step(40) and not activity.optionalSection)
 activity:openOptional('dice');assert(#activity.levelActors==25 and #activity.diceTexts==5)
+local before=#timers
 activity:continueTutorial();local diceTour=timers[#timers]
+assert(pans[#pans].x==activity.diceTexts[1].x)
+for index=1,3 do
+ local timer=timers[before+index]
+ assert(timer.delay==index*2.5,'Dice tour omitted the one-second stationary pause')
+ timer.fn()
+ local expected=index<3 and activity.diceTexts[index+1].x or
+  (activity.diceTexts[4].x+activity.diceTexts[5].x)/2
+ assert(pans[#pans].x==expected and pans[#pans].y==activity.diceTexts[1].y)
+end
 activity:restoreCheckpoint(step(43));diceTour.fn()
 assert(activity.worldScene=='items' and #items==50 and resources.gold==10000 and resources.lumber==10000)
 local itemIds={}

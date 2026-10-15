@@ -92,10 +92,29 @@ function JTG.InstallHeroesScenes(activity,session)
         self.actors[#self.actors+1]=unit
         return unit
     end
-    function activity:addDummy(x,y)
-        local dummy=self:addActor('JHdm',x,y,nil,nil,Player(1))
-        PauseUnit(dummy,true);BlzSetUnitMaxHP(dummy,1000000);SetWidgetLife(dummy,1000000)
-        self.dummies[#self.dummies+1]={unit=dummy,x=x,y=y}
+    function activity:setDummyHostile(dummy,hostile)
+        for _,record in ipairs(self.dummies) do
+            if record.unit==dummy then
+                record.hostile=hostile==true
+                SetUnitOwner(dummy,record.hostile and Player(6) or PLAYER,false)
+                IssueImmediateOrder(dummy,'stop')
+                for _,attacker in ipairs(record.autoAttackers or {}) do
+                    if GetUnitTypeId(attacker)~=0 and GetWidgetLife(attacker)>.405 then
+                        if record.hostile then IssueTargetOrder(attacker,'attack',dummy)
+                        else IssueImmediateOrder(attacker,'stop') end
+                    end
+                end
+                return true
+            end
+        end
+        return false
+    end
+    function activity:addDummy(x,y,hostile,autoAttackers)
+        local dummy=self:addActor('JHdm',x,y,nil,PLAYER_COLOR_LIGHT_GRAY,hostile and Player(6) or PLAYER)
+        BlzSetUnitStringField(dummy,UNIT_SF_NAME,'Target Dummie')
+        BlzSetUnitMaxHP(dummy,1000000);SetWidgetLife(dummy,1000000)
+        self.dummies[#self.dummies+1]={unit=dummy,x=x,y=y,hostile=hostile==true,autoAttackers=autoAttackers}
+        self:setDummyHostile(dummy,hostile)
         return dummy
     end
     function activity:showDummyDamage(unit,damage)
@@ -152,8 +171,7 @@ function JTG.InstallHeroesScenes(activity,session)
         else
             local paladin=self:addActor('Hpal',a.centerX-1550,a.centerY-150,2)
             SetHeroXP(paladin,D.xpNeeded[3]-35,false)
-            local inside=kind=='xp-modifier-paladin'
-            local king=self:addActor('Hmkg',a.centerX-(inside and 500 or 1550),a.centerY+150,
+            local king=self:addActor('Hmkg',a.centerX-1550,a.centerY+150,
                 kind=='xp-modifier-4' and 4 or 5)
             self.paladin,self.mountainKing=paladin,king
         end
@@ -239,8 +257,8 @@ function JTG.InstallHeroesScenes(activity,session)
                 if regular then self:worldText('Unit Level: '..regular.level..'\nFood Cost: '..regular.food..'\n'..regular.xp..' XP',group.x-80,a.centerY-620) end
                 local summon=group.summons[1]
                 if summon then
-                    self:worldText('Summons - Level '..summon.level..'\nFood Cost: '..summon.food..'\n'..summon.xp..' XP',group.x-80,
-                        a.centerY-1300-(math.min(5,#group.summons)-1)*240)
+                    self:worldText('Summon\nUnit Level: '..summon.level..'\nFood Cost: '..summon.food..'\n'..summon.xp..' XP',group.x-80,
+                        a.centerY-800)
                 end
             end
         end
@@ -268,11 +286,10 @@ function JTG.InstallHeroesScenes(activity,session)
             for _,item in ipairs(stock or {}) do RemoveItemFromStock(shop,FourCC(item));AddItemToStock(shop,FourCC(item),1,1) end
         end
         for index,raw in ipairs({'Hpal','Hamg','Hmkg'}) do self:addActor(raw,a.centerX+(index-2)*180,a.centerY,1) end
-        self:addDummy(a.centerX-1100,a.centerY)
+        self:addDummy(a.centerX-1100,a.centerY,true)
         local column=0
         for _,group in ipairs(D.itemGroups) do
             local x=a.minX+250+column*480
-            self:worldText('Camp level '..group.campLevel..'\n'..group.class..' '..group.level,x-80,a.centerY-700)
             for index,raw in ipairs(group.items) do
                 local item=CreateItem(FourCC(raw),x+((index-1)%3)*100,a.centerY-850-math.floor((index-1)/3)*110)
                 assert(item,'Missing TM item '..raw)
@@ -296,8 +313,7 @@ function JTG.InstallHeroesScenes(activity,session)
             local ten=self:addActor('Hamg',a.centerX+300,a.centerY,10)
             self:teachAllSkills(ten,'Hamg')
             if kind=='archmages-target' then
-                local target=self:addDummy(a.centerX,a.centerY-300)
-                IssueTargetOrder(one,'attack',target);IssueTargetOrder(ten,'attack',target)
+                self:addDummy(a.centerX,a.centerY-300,true,{one,ten})
             end
         elseif kind=='xp-initial' then self:xpCircle();self:spawnGnoll(false)
         elseif kind=='xp-empty' then self:xpCircle()
@@ -356,8 +372,11 @@ function JTG.InstallHeroesScenes(activity,session)
             if GetUnitTypeId(record.unit)~=0 then
                 if GetWidgetLife(record.unit)<=.405 then
                     RemoveUnit(record.unit)
-                    record.unit=self:sceneUnit(T.SceneScope(self,'heroes-active'),'JHdm',record.x,record.y,Player(1))
-                    PauseUnit(record.unit,true);BlzSetUnitMaxHP(record.unit,1000000)
+                    record.unit=self:sceneUnit(T.SceneScope(self,'heroes-active'),'JHdm',record.x,record.y,
+                        record.hostile and Player(6) or PLAYER,PLAYER_COLOR_LIGHT_GRAY)
+                    BlzSetUnitStringField(record.unit,UNIT_SF_NAME,'Target Dummie')
+                    BlzSetUnitMaxHP(record.unit,1000000)
+                    self:setDummyHostile(record.unit,record.hostile)
                 end
                 SetWidgetLife(record.unit,1000000)
             end
