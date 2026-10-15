@@ -11,14 +11,14 @@ Five separate generated lists supply the five setups:
 | Setup | File | Prompts before live conflict filtering |
 | --- | --- | --- |
 | Human | src/data/hotkey-pools/human.json | 130 |
-| Orc | src/data/hotkey-pools/orc.json | 121 |
+| Orc | src/data/hotkey-pools/orc.json | 122 |
 | Night Elf | src/data/hotkey-pools/nightelf.json | 147 |
-| Undead | src/data/hotkey-pools/undead.json | 123 |
-| Neutral | src/data/hotkey-pools/neutral.json | 114 |
+| Undead | src/data/hotkey-pools/undead.json | 125 |
+| Neutral | src/data/hotkey-pools/neutral.json | 115 |
 
 Each list includes racial commands and shared Move, Hold Position, Attack, Stop and Patrol prompts. Take Root and Uproot appear only in Night Elf. Shared commands omit the source icon. Neutral contains Tavern heroes, shops, Goblin Laboratory and units hired from the specified Mercenary Camps, not unrelated placed creeps.
 
-src/data/hotkey-catalog.json retains all 621 native contexts for diagnostics. Gather, Select User, Unload, Sacrifice, Absorb Mana and Inferno are temporarily excluded from random practice because their activation/context failures remain unresolved. Research levels 2 and 3 remain in the lists. Cancel is excluded entirely.
+src/data/hotkey-catalog.json retains all 625 native contexts for diagnostics. Gather, Select User, Unload, Sacrifice, Absorb Mana and Inferno are temporarily excluded from random practice because their activation/context failures remain unresolved. Research levels 2 and 3 remain in the lists. Cancel is excluded entirely.
 
 ## Stages and command history
 
@@ -59,6 +59,16 @@ Autocast-off orders are sent before creating injured support units. Corrections 
 Night Elf selection prepares eight Ancient types in the background. Readiness uses UNIT_BF_IS_A_BUILDING and the Root ability's native duration plus 0.1 seconds. It does not require the last order to change from Uproot. Ancient Protector uses Aro2; the others use Aro1. Take Root/Eat Tree reuse a ready unit and immediately prepare its replacement. Random play skips preparations still running. Finishing/leaving removes used and background units.
 
 Before choosing an ability prompt, the trainer checks whether another active ability on that unit shares its live button position. Conflicting prompts are skipped without affecting score; -hotkey-debug records their IDs. This covers command-cell collisions. Warcraft has no direct getter for effective custom hotkeys, so duplicate keys in different cells cannot be detected by this runtime check. Forced diagnostics can still test skipped commands.
+
+## Transformation commands
+
+Transformation entries explicitly record the native starting and destination forms. The source portrait represents the starting form; the command icon, name, order and description come from the appropriate forward or return command face. Spirit Walker's two native unit records share a portrait, so its Ethereal command artwork identifies the spirit starting form. The same distinction applies to Robo-Goblin's robot portrait.
+
+Spirit Walker, both Druids, Gargoyle, Crypt Fiend and Tinker have separate forward/return entries. Return prompts spawn the native base unit and issue the forward transformation during preparation, before registering answer events. They cannot arm until the native unit type matches the requested starting form and the native duration plus 0.1 seconds has elapsed. The setup cooldown is cleared before selection/arming. Preparing and transformed actors remain owned by the prompt's cleanup scope. Tinker's casting context uses the Robo-Goblin ability supplied by rank-three Engineering Upgrade.
+
+Destroyer Form, Metamorphosis and Chemical Rage remain forward-only; a native Unorder field alone is not evidence that reversal is playable. Mount/Dismount retains its native merge/split command icons. Ancient Uproot/Take Root/Eat Tree retains its separately audited preparation. Form entries preserve the existing command-name deduplication across units.
+
+These source changes follow alpha50 and are not installed in that distributed build. Automated fixtures verify direction, icons/tooltips, preparation gating, command registration and cleanup; native transformation state and actual custom-key recognition still require a focused in-game check in the next build.
 
 ## Scoring and lifecycle
 

@@ -4,6 +4,7 @@ Run extract-hotkey-data.ps1 first. Audit every referenced texture against CASC
 before using --verified to publish the runtime catalogue.
 """
 import argparse
+import copy
 import csv
 import json
 import re
@@ -254,6 +255,54 @@ for race, sources in SOURCES.items():
                 uprooted=raw=='Aeat',night=raw=='Ashm',
                 requiredUnits=required_units,requiredResearch=required_research)
 
+# Native morphs have two command faces. Alternate unit records frequently
+# repeat the forward ability, so reading their AbilList alone reverses neither
+# the order nor the tooltip. Keep an explicit melee policy: Aave has Unorder
+# metadata too, but Destroyers cannot turn back into Statues.
+MORPHS = {
+    'Acpf': True, 'Abrf': True, 'Arav': True, 'Astn': True,
+    'Abur': True, 'ANrg': True,
+    'Aave': False, 'AEme': False, 'ANcr': False,
+}
+for raw, reversible in MORPHS.items():
+    templates = [entry for entry in catalog if entry['kind']=='ability' and entry['raw']==raw]
+    assert templates, ('Missing melee transformation', raw)
+    template = templates[0]
+    native = abilities[raw]
+    base = native['DataA1']
+    # Casting heroes have all ranks learned. Chemical Rage's third rank has
+    # its own destination unit, even though the portrait is unchanged.
+    alternate = native.get('UnitID3') if template['heroSkills'].get(raw,1)==3 else native['UnitID1']
+    assert base in units and alternate in units, (raw,base,alternate)
+    fields = {**ability_skin.get(raw,{}), **af.get(raw,{}), **ast.get(raw,{})}
+    active = 'ANg3' if raw=='ANrg' else raw
+    duration = float(abilities[active]['Dur1'])
+    catalog[:] = [entry for entry in catalog if not (entry['kind']=='ability' and entry['raw']==raw)]
+    for reverse in range(2 if reversible else 1):
+        entry = copy.deepcopy(template)
+        start, target = (alternate,base) if reverse else (base,alternate)
+        entry.update(source=start, id=f'{template["race"]}.{start}.ability.{raw}',
+            spawnSource=base, startForm=start, targetForm=target,
+            transformation=True, activeAbility=active,
+            order=fields['unorder' if reverse else 'order'])
+        # The normal Walker portrait is shared by both raw unit records.
+        # Its actual Ethereal command artwork distinguishes the two forms.
+        source_icon = unit_skin[start].get('art:sd',unit_skin[start].get('art',''))
+        if raw=='Acpf': source_icon=fields['art' if reverse else 'unart']
+        if raw=='ANrg' and reverse: source_icon=fields['art']
+        entry['sourceIcon']=first(source_icon)
+        entry['sourceName']=name(us.get(start,{}),start)
+        entry['sourceDescription']=description(us.get(start,{}).get('ubertip',''))
+        if reverse:
+            entry['name']=name({'tip':fields['untip']},raw)
+            entry['icon']=first(fields['unart'])
+            entry['description']=description(fields.get('unubertip',''))
+            pos=fields.get('unbuttonpos',fields.get('buttonpos','')).split(',')
+            entry['nativeSlot']=int(pos[0])+4*int(pos[1])
+            entry['prepareOrder']=fields['order']
+            entry['prepareDuration']=duration
+        catalog.append(entry)
+
 # Universal prompts omit the source icon, but retain a hidden native context.
 for raw, label, order, icon, source, ability in [
  ('move','Move','move','BTNMove','hfoo',None),
@@ -283,7 +332,7 @@ if args.verified:
     (ROOT/'src/data/native-unit-ids.json').write_text(json.dumps(sorted(units),indent=2)+'\n',encoding='utf-8')
     def lua(value):
         if isinstance(value,bool): return 'true' if value else 'false'
-        if isinstance(value,int): return str(value)
+        if isinstance(value,(int,float)): return str(value)
         if isinstance(value,dict): return '{'+', '.join('['+lua(key)+'] = '+lua(item) for key,item in value.items())+'}'
         return json.dumps(value,ensure_ascii=False)
     rows=['-- Generated from src/data/hotkey-catalog.json; native texture audit passed.', 'JTG = JTG or {}', 'JTG.HotkeyCatalog = {']

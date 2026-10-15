@@ -529,6 +529,85 @@ for _,entry in ipairs(catalog) do
     if limits[entry.raw] then assert(limits[entry.raw]==0,'Technology limit leaked: '..entry.id) end
     assert((limits.HERO or 0)==0,'Hero group limit leaked')
 end
+-- Form prompts must describe the command actually available in their native
+-- starting form. Returning from a form also needs a completed setup cast;
+-- an accepted order alone does not prove that the native morph has finished.
+local morphCases={
+    {'Acpf','ospm','ospw','corporealform','Corporeal Form','BTNEtherealFormOn.blp','BTNSpiritwalker.blp'},
+    {'Acpf','ospw','ospm','uncorporealform','Ethereal Form','BTNSpiritwalker.blp','BTNEtherealFormOn.blp'},
+    {'Abrf','edoc','edcm','bearform','Bear Form','BTNDruidOfTheClaw.blp','BTNBearForm.blp'},
+    {'Abrf','edcm','edoc','unbearform','Night Elf Form','BTNBearForm.blp','BTNDruidOfTheClaw.blp'},
+    {'Arav','edot','edtm','ravenform','Storm Crow Form','BTNDruidOfTheTalon.blp','BTNRavenForm.blp'},
+    {'Arav','edtm','edot','unravenform','Night Elf Form','BTNRavenForm.blp','BTNDruidOfTheTalon.blp'},
+    {'Astn','ugar','ugrm','stoneform','Stone Form','BTNGargoyle.blp','BTNStoneForm.blp'},
+    {'Astn','ugrm','ugar','unstoneform','Gargoyle Form','BTNStoneForm.blp','BTNGargoyle.blp'},
+    {'Abur','ucry','ucrm','burrow','Burrow','BTNCryptFiend.blp','BTNCryptFiendBurrow.blp'},
+    {'Abur','ucrm','ucry','unburrow','Unburrow','BTNCryptFiend.blp','BTNCryptFiendUnBurrow.blp'},
+    {'ANrg','Ntin','Nrob','robogoblin','Robo-Goblin','BTNHeroTinker.blp','BTNROBOGOBLIN.blp'},
+    {'ANrg','Nrob','Ntin','unrobogoblin','Revert to Tinker Form','BTNROBOGOBLIN.blp','BTNHeroTinker.blp'},
+}
+local directions={}
+for _,case in ipairs(morphCases) do
+    local raw,start,target,order,label,sourceIcon,commandIcon=table.unpack(case)
+    local entry
+    for _,row in ipairs(catalog) do
+        if row.kind=='ability' and row.raw==raw and row.source==start then assert(not entry);entry=row end
+    end
+    assert(entry and entry.transformation and entry.startForm==start and entry.targetForm==target,raw..' has no valid form pair')
+    assert(entry.order==order and entry.name==label,'Wrong direction: '..entry.id)
+    assert(entry.sourceIcon:sub(-#sourceIcon):lower()==sourceIcon:lower(),'Wrong source portrait: '..entry.id)
+    assert(entry.icon:sub(-#commandIcon):lower()==commandIcon:lower(),'Wrong destination icon: '..entry.id)
+    if raw=='ANrg' then assert(entry.activeAbility=='ANg3','Tinker prompt ignores learned Engineering Upgrade') end
+    directions[raw]=directions[raw] or {}
+    local identity=JTG.HotkeyCommandKey(entry)
+    assert(not directions[raw][identity],'Forward and return commands collapsed in curriculum')
+    directions[raw][identity]=true
+    local trialSession={active=true,scope={},presentationScope={},restartData={race=entry.race},
+        descriptor={capabilities={menu=true}},scene={centerX=4864,centerY=3456}}
+    local trial=JTG.CreateHotkeyTrainingActivity(trialSession)
+    trial:setup();trial:start(nil,entry)
+    assert(trial.source.raw==entry.spawnSource,'Alternate raw unit was spawned without its native morph state')
+    if entry.prepareOrder then
+        assert(trial.source.setupOrder==entry.prepareOrder)
+        assert(not trial:sourcePreparationReady() and not trial:inputActive(),'Setup cast accepted as ready')
+        trial.elapsed=trial.morphPreparation.readyAt
+        assert(not trial:sourcePreparationReady(),'Elapsed animation time accepted without native form change')
+        trial.source.raw=start
+    else
+        assert(not trial.morphPreparation,'Forward prompt unnecessarily transforms its source')
+        trial.elapsed=1
+    end
+    trial:updatePromptReadiness()
+    assert(trial:inputActive() and trial.promptShown,'Completed native form does not unlock its prompt')
+    local tooltip
+    trial.commandTooltipUpdate=function(value) tooltip=value end
+    trial:refreshPrompt()
+    assert(tooltip:find(entry.description,1,true),'Return tooltip replaced by forward tooltip')
+    local callback
+    for index=#registered,1,-1 do
+        local row=registered[index]
+        if row.ability==entry.activeAbility and row.order==order then callback=row.trigger.action;break end
+    end
+    assert(callback,'Directional native command is not registered')
+    trial:onKey(81);callback();trial:resolveInput(true)
+    assert(trial.correct==1,'Native form command confirmation was lost')
+    local actor=trial.source
+    trial:cleanup();JTG.DisposeScope(trialSession.scope)
+    assert(actor.removed,'Transformed source leaked')
+end
+for _,raw in ipairs({'Aave','AEme','ANcr'}) do
+    local count=0
+    for _,entry in ipairs(catalog) do
+        if entry.kind=='ability' and entry.raw==raw then
+            count=count+1
+            assert(entry.transformation and not entry.prepareOrder and entry.source==entry.spawnSource,
+                'One-way transformation acquired a return prompt')
+        end
+    end
+    assert(count==1,'One-way transformation has duplicate prompts')
+end
+print('Passed: directional morph icons/tooltips, native preparation gating, command recognition and cleanup.')
+
 -- Reproduce a delayed game confirmation with NO command-frame callback.
 for _,id in ipairs({'orc.otbk.ability.Absk','orc.obea.train.otbr','orc.ofor.research.Rosp'}) do
     local entry
@@ -755,7 +834,7 @@ for _,entry in ipairs(JTG.HotkeyCatalog) do
     if entry.kind=='hire' then neutralSources[entry.raw]=true end
 end
 for _,entry in ipairs(JTG.HotkeyCatalog) do
-    assert(entry.race~='neutral' or neutralSources[entry.source],
+    assert(entry.race~='neutral' or neutralSources[entry.spawnSource or entry.source],
         'Neutral trainer contains an unpurchasable creep source: '..entry.id)
 end
 assert(JTG.Registry.byId['tools.hotkeys'].factory==JTG.CreateHotkeyTrainingActivity)

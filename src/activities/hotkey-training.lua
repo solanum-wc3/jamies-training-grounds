@@ -142,6 +142,7 @@ function JTG.CreateHotkeyTrainingActivity(session)
         if self.waitingPrompt or not self.prompt then return end
         if self.selectionAt then
             if self.elapsed<self.selectionAt then return end
+            if self.morphPreparation and not self:sourcePreparationReady() then return end
             self.selectionAt=nil
             self:restoreSource()
             self.armedAt=self.elapsed+SELECTION_ARM
@@ -162,6 +163,15 @@ function JTG.CreateHotkeyTrainingActivity(session)
         end
     end
     function self:sourcePreparationReady()
+        if self.morphPreparation then
+            if not self.morphPreparation.accepted or self.elapsed<self.morphPreparation.readyAt or
+                    GetUnitTypeId(self.source)~=FourCC(self.prompt.startForm) then return false end
+            -- The setup cast shares its cooldown with the return button.
+            UnitResetCooldown(self.source)
+            SetUnitState(self.source,UNIT_STATE_MANA,GetUnitState(self.source,UNIT_STATE_MAX_MANA))
+            self:concealUnit(self.source)
+            self.morphPreparation=nil
+        end
         if self.garrisonPeon and not IsUnitInTransport(self.garrisonPeon,self.source) then return false end
         if not self.requiresUprooted then return true end
         return self:preparedAncientReady(self.activePreparedAncient)
@@ -281,7 +291,7 @@ function JTG.CreateHotkeyTrainingActivity(session)
         BlzFrameSetPoint(self.commandButton,FRAMEPOINT_CENTER,self.panel,FRAMEPOINT_CENTER,
             prompt.universal and 0 or (submenu and 0.079 or 0.042),-0.014)
         local description=prompt.description or ''
-        if prompt.kind=='ability' then
+        if prompt.kind=='ability' and not prompt.transformation then
             description=BlzGetAbilityExtendedTooltip(FourCC(prompt.ability),math.max(0,GetUnitAbilityLevel(self.source,FourCC(prompt.ability))-1))
         end
         if prompt.kind=='learn' then description=BlzGetAbilityResearchExtendedTooltip(FourCC(prompt.ability),0) end
@@ -416,6 +426,7 @@ function JTG.CreateHotkeyTrainingActivity(session)
         self.promptShown=false
         self.armedAt=math.huge
         self.activePreparedAncient=nil
+        self.morphPreparation=nil
         if self.context then JTG.DisposeScope(self.context) end
         self.context=JTG.CreateScope('hotkey-prompt')
         local context=self.context
@@ -521,7 +532,7 @@ function JTG.CreateHotkeyTrainingActivity(session)
             self.source,accepted=self:takePreparedAncient(prompt.source,context)
             self.preparationChecks[#self.preparationChecks+1]={kind='background-uproot',accepted=accepted}
         else
-            self.source=JTG.ScopeTrackUnit(context,self:createUnit(self.sourceOwner,FourCC(prompt.source),
+            self.source=JTG.ScopeTrackUnit(context,self:createUnit(self.sourceOwner,FourCC(prompt.spawnSource or prompt.source),
                 session.scene.centerX,self.spawnY,0))
         end
         assert(self.source and GetUnitTypeId(self.source)~=0,'Hotkey context missing: '..prompt.source)
@@ -553,6 +564,11 @@ function JTG.CreateHotkeyTrainingActivity(session)
             UnitResetCooldown(self.source)
         end
         SetUnitState(self.source,UNIT_STATE_MANA,GetUnitState(self.source,UNIT_STATE_MAX_MANA))
+        if prompt.prepareOrder then
+            local accepted=IssueImmediateOrder(self.source,prompt.prepareOrder)==true
+            self.morphPreparation={accepted=accepted,readyAt=self.elapsed+prompt.prepareDuration+0.10}
+            self.preparationChecks[#self.preparationChecks+1]={kind='starting-form:'..prompt.prepareOrder,accepted=accepted}
+        end
         if prompt.kind=='buy' or prompt.kind=='hire' or prompt.raw=='select' then
             local buyer=JTG.ScopeTrackUnit(context,self:createUnit(Player(0),FourCC('Hpal'),
                 session.scene.centerX+100,self.spawnY,0))

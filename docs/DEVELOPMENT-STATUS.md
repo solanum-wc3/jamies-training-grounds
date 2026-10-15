@@ -10,6 +10,10 @@ The distributed development map is `Jamies-Training-Grounds-v0.1.3-alpha50-dev.w
 
 Development packages can include local diagnostic binding/history files from ignored `work/`. A fresh checkout uses committed empty defaults instead; automated Hotkey audits require explicitly prepared local bindings. Ordinary Hotkey gameplay always uses Warcraft's current native bindings. A different local audit fixture can therefore change a development map's hash without changing production gameplay.
 
+## Source changes after alpha50
+
+Hotkey transformation prompts now distinguish starting form, destination icon and forward/return commands for Spirit Walker, Druids, Gargoyle, Crypt Fiend and Tinker. One-way morphs remain forward-only. Return prompts prepare a real native transformation and wait for completion before accepting answers. See [Hotkey Trainer](HOTKEY-TRAINING.md#transformation-commands). No new alpha has been requested for this change; the installed alpha50 remains unchanged. Native form/button checks remain outstanding.
+
 ## Included work
 
 - Five tutorials and ten accessible exercises/demonstrations, including Heroes, Reflex Training (WIP) and Hotkey Trainer. See [activity catalogue](ACTIVITIES.md).
