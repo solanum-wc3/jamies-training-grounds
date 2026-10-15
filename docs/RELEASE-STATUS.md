@@ -36,7 +36,7 @@ Both release attachments contain the identical public map, without development t
 - [Latest non-alpha map](https://github.com/solanum-wc3/jamies-training-grounds/releases/latest/download/Jamies-Training-Grounds.w3x)
 - [Release page](https://github.com/solanum-wc3/jamies-training-grounds/releases/tag/v0.2.0)
 
-Publication requires verification that both public downloads match the SHA256 above. Previous versioned assets remain available; the generic latest route advances with this release. Generated maps and reports remain ignored by Git. The immutable foundation is not modified.
+Published and verified 16 October 2026: both public downloads match the SHA256 above, GitHub's latest release is `v0.2.0`, and the release tag points to `5a78bc5b026286f0ac54e89f165fd44e362a92cb`. The source branch was fast-forwarded into `main` and pushed. Previous versioned assets remain available; the generic latest route advances with this release. Generated maps and reports remain ignored by Git. The immutable foundation is not modified.
 
 The previous beta1 validation record is preserved in [the archive](archive/v0.1.2/RELEASE-STATUS.md).
 
