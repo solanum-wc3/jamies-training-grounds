@@ -1,6 +1,6 @@
 # Documentation guide
 
-Published baseline: **v0.1.2-beta1** (10 October 2026). Current source/testing build: **v0.1.3-alpha49**. See [development status](DEVELOPMENT-STATUS.md) for acceptance and next tests. Archived reports describe earlier builds and are not current specifications.
+Published baseline and current source: **v0.2.0** (16 October 2026). See [release status](RELEASE-STATUS.md) for validation and [development status](DEVELOPMENT-STATUS.md) for the accepted checkpoint. Archived reports describe earlier builds and are not current specifications.
 
 ## Current guidance
 

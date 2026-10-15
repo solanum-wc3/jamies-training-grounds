@@ -1,6 +1,6 @@
-# Development checkpoint: v0.1.3-alpha60
+# Accepted checkpoint: v0.2.0
 
-Updated 16 October 2026. The public release remains v0.1.2-beta1; its download links and v0.1.2 patch notes are unchanged. Alpha60 is a testing build, not a completed milestone or a public release.
+Updated 16 October 2026. The user accepted alpha60's final blight correction and authorized packaging v0.2.0 and merging the feature branch into main. Release packaging changes the version and dates the previously approved patch note; gameplay matches the accepted alpha60 source. See [release status](RELEASE-STATUS.md) for checks, distribution and limitations. The alpha notes below are historical investigation records; their outstanding-test statements describe those earlier builds.
 
 ## Alpha60: replacement buildings no longer block old blight cleanup
 

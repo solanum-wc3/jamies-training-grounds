@@ -1,16 +1,16 @@
 # Jamie's Training Grounds
 
-[Download v0.1.2-beta1](https://github.com/solanum-wc3/jamies-training-grounds/releases/download/v0.1.2-beta1/Jamies-Training-Grounds-v0.1.2-beta1.w3x) · [Release notes](https://github.com/solanum-wc3/jamies-training-grounds/releases/latest)
+[Download v0.2.0](https://github.com/solanum-wc3/jamies-training-grounds/releases/download/v0.2.0/Jamies-Training-Grounds-v0.2.0.w3x) · [Release notes](https://github.com/solanum-wc3/jamies-training-grounds/releases/tag/v0.2.0)
 
 Jamie’s Training Grounds is a Warcraft III teaching and practice map. Guided tutorials introduce the essentials, while focused exercises let players repeat and explore mechanical skills.
 
 ## Current release
 
-**v0.1.2-beta1**, released 10 October 2026, contains four tutorials and eight playable exercises:
+**v0.2.0**, released 16 October 2026, contains five tutorials and ten playable exercises/demonstrations:
 
-- Camera, Unit Controls, Hotkey Setup, and Economy & Workers;
+- Camera, Unit Controls, Hotkey Setup, Economy & Workers, and Heroes;
 - Body Blocking, Surrounds, Gargoyle Surrounds, Windwalk Pop, Mining Micro, Bat Splitting, and Dodging;
-- Power Building, a building-speed demonstration under Tools & Extras.
+- Power Building, Hotkey Trainer, and Reflex Training (WIP) under Tools & Extras.
 
 Other menu cards in that release are placeholders. Modes, stages and individual setups are not counted as separate exercises. See the [activity catalogue](docs/ACTIVITIES.md) for details.
 
@@ -18,9 +18,9 @@ The release includes shared menus, toolbars, result cards, scoped cleanup and sa
 
 ## Current development
 
-The source is at **v0.1.3-alpha49**, with five tutorials and ten exercises/demonstrations. Since beta1 it adds the authored Heroes tutorial, Reflex Training (WIP), Hotkey Trainer, timed Mining Micro, and tutorial/training reliability improvements. Alpha49 is available for in-game testing; it is not an accepted public release. See [development status and test focus](docs/DEVELOPMENT-STATUS.md).
+Source and public map are at **v0.2.0**. This release adds Heroes, Hotkey Trainer, Reflex Training (WIP), Mining Micro's One Minute and Build Order modes, and tutorial/training reliability improvements. See [release validation and limitations](docs/RELEASE-STATUS.md) and [development status](docs/DEVELOPMENT-STATUS.md).
 
-Development workflow is defined in [AGENTS.md](AGENTS.md) and [CONTRIBUTING.md](CONTRIBUTING.md). The public beta download links above remain unchanged throughout the alpha cycle.
+Development workflow is defined in [AGENTS.md](AGENTS.md) and [CONTRIBUTING.md](CONTRIBUTING.md). The [generic latest-map download](https://github.com/solanum-wc3/jamies-training-grounds/releases/latest/download/Jamies-Training-Grounds.w3x) always points to the newest non-alpha release.
 
 ## Repository guide
 

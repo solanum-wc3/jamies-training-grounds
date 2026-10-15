@@ -2518,7 +2518,7 @@ function UI.Initialize(restoring)
         end
     end
     CreateInfoPanel("patch", "Patch Notes",
-        "|cffffcc00v0.2.0|r  |cffb0b0b0Upcoming|r\n" ..
+        "|cffffcc00v0.2.0|r  |cffb0b0b016 October 2026|r\n" ..
         "- Added the Heroes tutorial, covering attributes, abilities, experience and items.\n" ..
         "- Added Hotkey Trainer, using your current hotkeys and helping you practise missed commands.\n" ..
         "- Added Reflex Training with unit identification and buff/debuff recognition. Still WIP—feedback welcome!\n" ..

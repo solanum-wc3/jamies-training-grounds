@@ -1,6 +1,6 @@
 # Implemented activity catalogue
 
-This page describes current development, v0.1.3-alpha49. The published v0.1.2-beta1 contains four tutorials and eight exercises; development adds Heroes, Reflex Training and Hotkey Trainer. Planned catalogue cards without factories are intentionally omitted. Availability is not a claim of completed in-game acceptance.
+This page describes v0.2.0: five tutorials and ten playable exercises/demonstrations, including Heroes, Hotkey Trainer and Reflex Training (WIP). Planned catalogue cards without factories are intentionally omitted. Release acceptance and known limitations are recorded in [release status](RELEASE-STATUS.md).
 
 | Activity | Category | Scene | Main variants | Source |
 | --- | --- | --- | --- | --- |
@@ -9,7 +9,7 @@ This page describes current development, v0.1.3-alpha49. The published v0.1.2-be
 | Hotkey Setup | Learn to Play | South arena | QWERTY/QWERTZ comparison and setup guidance; file export disabled | `src/activities/hotkey-setup-tutorial.lua` |
 | Economy & Workers | Learn to Play | Four racial bases | Worker mechanics, resource gathering, defense practice, food and upkeep | `src/activities/economy-tutorial.lua` |
 | Heroes | Learn to Play | South showcase / north demonstrations | 47 narration stops; hero levels, XP trials, items; optional Attack Dice and six-way XP display | `src/activities/heroes-tutorial.lua` |
-| Mining Micro | Skill Training | North arena | Human/Orc; Unlimited or One Minute; rotated identical mine layouts | `src/activities/mining-micro.lua` |
+| Mining Micro | Skill Training | North arena | Human/Orc; Unlimited, One Minute or Build Order; rotated mine layouts and reference-income comparison | `src/activities/mining-micro.lua` |
 | Body Blocking | Skill Training | South arena | Racial training sequences or custom runner/blocker; Normal/Hard | `src/activities/body-blocking.lua` |
 | Surrounds | Skill Training | South arena | Racial training setups or custom army of up to 12 units | `src/activities/surrounds.lua` |
 | Gargoyle Surrounds | Skill Training | South arena | Gargoyles form ground surrounds by entering Stone Form; Undead and neutral-hero setups | `src/activities/surrounds.lua` |

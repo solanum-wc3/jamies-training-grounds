@@ -2,7 +2,7 @@
 
 This file records player-visible changes in tested project versions. Development reasoning belongs in commit messages and `docs/decisions/`.
 
-## Upcoming v0.2.0
+## v0.2.0 (2026-10-16)
 
 - Added the Heroes tutorial, covering attributes, abilities, experience and items.
 - Added Hotkey Trainer, using your current hotkeys and helping you practise missed commands.

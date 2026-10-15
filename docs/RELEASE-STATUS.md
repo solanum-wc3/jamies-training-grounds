@@ -1,39 +1,48 @@
-# Release status: v0.1.2-beta1
+# Release status: v0.2.0
 
-Released 10 October 2026. The release map is `outputs/Jamies-Training-Grounds-v0.1.2-beta1.w3x`; it contains no development modules. Patch notes remain headed `v0.1.2` in [CHANGELOG](../CHANGELOG.md).
+Released 16 October 2026 after the user accepted alpha60 and authorized release and merge into main. The approved in-map patch note and CHANGELOG carry the same date. Gameplay matches the accepted alpha60 source; release packaging changes the version/date and excludes development tools.
 
-Current development is tracked separately in [alpha50 status](DEVELOPMENT-STATUS.md). The figures below describe the published beta1, not the current checkout.
+## Release artifact
 
-## Validation
+- Map: `outputs/Jamies-Training-Grounds-v0.2.0.w3x`
+- Size: 4,207,717 bytes
+- SHA256: `c1b9fea3590313e707bd401d2b3d7c577a2ea469011175eb540b8fe2cffb3aca`
+- Accepted source checkpoint before version/date changes: `73fcbcd` (alpha60)
+- Source milestone/tag: `v0.2.0` on `main`
 
-- 21 Lua regression files passed before packaging.
-- Release and development Lua assemblies passed syntax checks (23 and 31 modules).
-- All nine release checks passed: module syntax, compiled syntax, archive roundtrip, unchanged member identity, foundation hash, development boundary, shared lifecycle, result cards and menu layouts.
-- The user confirmed the alpha36 gathering fix in Warcraft and reported the earlier regression acceptance checks passing before beta1 packaging. Beta1 changes the version label from that tested release candidate.
+## Validation and acceptance
 
-Synthetic checks establish command routing and lifecycle contracts. They do not prove native pathfinding, frame stacking or every possible Dodging matchup.
+- All 45 Lua regression fixtures passed, including late native blight writes, overlapping source/non-source scenes and replacement guards.
+- Release/development Lua source assemblies passed syntax checks (32 and 49 modules).
+- Maintained briefing, Heroes data and clean-checkout build-input checks passed.
+- Release packaging passed all nine archive, foundation, syntax, lifecycle, result/menu and development-boundary checks.
+- Native acceptance: the user confirmed alpha59's sound/control and presentation-building changes, then confirmed alpha60's blight correction works. The user authorized this release after those checks. Earlier native tests and limitations are retained in [development history](DEVELOPMENT-STATUS.md).
 
-## Current boundaries
+Mock checks establish orchestration, not exhaustive Warcraft rendering, pathing or save/load coverage. The release does not claim every possible interaction was manually retested.
 
-- Four tutorials and eight exercises are playable; future tutorial/training cards remain placeholders.
-- Hotkey Setup’s player-facing file export button and export narration are disabled. Native Preload output wraps and can alter arbitrary text. Development `.pld` exports are diagnostic records parsed as text, not clean user documents.
-- Save/load reconstructs presentation without replaying world actions. Long-term player statistics are deferred.
-- Native upper-bar buttons have no custom opening frame-event hooks. The paused custom-picker/native-menu interaction remains engine-sensitive; see [native menu handoff](NATIVE-LOG-HANDOFF.md). Overall user acceptance is recorded above, not a guarantee about every mouse/hotkey route.
-- Timing measurements and exceptions are retained in the [0.1.2 archive](archive/v0.1.2/README.md). Projectile outcomes use native events and bounded inference; Warcraft exposes no general projectile enumeration.
+## Content and boundaries
 
-## Distribution and later changes
+- Five tutorials and ten playable exercises/demonstrations; other cards remain placeholders. See [activity catalogue](ACTIVITIES.md).
+- Reflex Training remains explicitly WIP.
+- Mining Build Order mirrors economic commands and worker job changes; faithful replay of arbitrary Shift-queued worker sequences remains a known limitation.
+- Player-facing text-file exports remain disabled; development preload exports are diagnostic text, never executable scripts.
+- Save/load restores presentation without replaying world actions. Long-term player statistics and observers/hotseat are not part of this release.
 
-Generated maps and reports are ignored by Git. Preserve the distributed beta1 artifact; documentation cleanup does not replace it. Build a new version for subsequent player-visible or packaging changes. Current source may include maintenance changes made after beta1.
+## Downloads
 
-For future releases, test only changed behavior and relevant interruption paths after automated checks pass. Repeat broad acceptance when shared lifecycle, navigation or persistence changes justify it.
+Both release attachments contain the identical public map, without development tools:
 
-Maintenance verification on 10 October 2026: obsolete Camera quest textures and their preparation/package entries were removed. All remaining packaged assets have runtime references. Isolated release/development builds passed all nine checks, all 21 regression files passed, and artwork preparation passed its DXT5 decode check. The distributed beta1 map hash was unchanged.
+- [Versioned v0.2.0 map](https://github.com/solanum-wc3/jamies-training-grounds/releases/download/v0.2.0/Jamies-Training-Grounds-v0.2.0.w3x)
+- [Latest non-alpha map](https://github.com/solanum-wc3/jamies-training-grounds/releases/latest/download/Jamies-Training-Grounds.w3x)
+- [Release page](https://github.com/solanum-wc3/jamies-training-grounds/releases/tag/v0.2.0)
+
+Publication requires verification that both public downloads match the SHA256 above. Previous versioned assets remain available; the generic latest route advances with this release. Generated maps and reports remain ignored by Git. The immutable foundation is not modified.
+
+The previous beta1 validation record is preserved in [the archive](archive/v0.1.2/RELEASE-STATUS.md).
 
 ## Public download convention
 
-The repository is public and `v0.1.2-beta1` is published as a GitHub Release. Its attached `Jamies-Training-Grounds.w3x` is the preserved release artifact, verified against the public download.
-
-The fixed link is [Download the latest non-alpha map](https://github.com/solanum-wc3/jamies-training-grounds/releases/latest/download/Jamies-Training-Grounds.w3x). Each future non-alpha release must attach the public map under that exact filename and become GitHub's latest release. Beta versions qualify for this link and are published as ordinary GitHub Releases while retaining their beta version names. Alpha versions must be marked as pre-releases, which GitHub excludes from `/releases/latest`. Upload the map before publishing a release so the fixed link has its asset available.
+Each non-alpha release attaches both the fixed filename `Jamies-Training-Grounds.w3x` and its versioned filename, becomes GitHub's latest release, and updates the README's precise versioned link. Alpha builds never replace this route. Release-mode packaging alone does not publish anything.
 
 ## Completing an alpha cycle
 

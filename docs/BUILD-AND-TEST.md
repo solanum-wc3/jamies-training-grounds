@@ -118,7 +118,7 @@ The fixtures use an installed `lupa`, or the existing local copy under ignored `
 
 Economy diagnostics in development builds: `-economy-orders` writes `JTG-Economy-Orders.pld`, and `-export-layout` writes `JTG-Economy-Layout.pld` to Warcraft III’s `CustomMapData`. Dodging diagnostics are listed in [DODGE-TEST-BENCH.md](DODGE-TEST-BENCH.md). These exports intentionally contain native wrappers; never execute them as scripts.
 
-See [release status](RELEASE-STATUS.md) for recorded beta1 acceptance. A maintenance check does not require distributing another alpha.
+See [release status](RELEASE-STATUS.md) for recorded release acceptance. A maintenance check does not require distributing another alpha.
 
 ## Maintenance packaging
 
@@ -133,7 +133,7 @@ This runs the same archive validations without replacing the files in `outputs/`
 
 ## Checkpoint and audit reproducibility
 
-`pnpm run test:reliability` includes generated-text, Heroes-data, clean-build-input checks and 42 Lua fixture files. `lupa` must be installed in the Python environment; the runner also accepts an existing local runtime under ignored `work/lua-test-runtime`.
+`pnpm run test:reliability` includes generated-text, Heroes-data, clean-build-input checks and 45 Lua fixture files. `lupa` must be installed in the Python environment; the runner also accepts an existing local runtime under ignored `work/lua-test-runtime`.
 
 Fresh development builds do not require player-specific audit files. For automated Hotkey comparisons, first run `python tools/prepare-hotkey-comparison.py <CustomKeys.txt>` with the layout the tester will use. This creates `work/hotkey-comparison-bindings.lua`. Without it, normal training and manual diagnostics remain available, but no automated keyboard sequence is assumed. Audit exclusions/history are optional and may be prepared separately. See [Hotkey comparison](HOTKEY-COMPARISON.md) and [full audit](HOTKEY-FULL-AUDIT.md).
 

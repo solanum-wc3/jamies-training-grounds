@@ -22,7 +22,7 @@ const luaParser = req('luaparse');
 require('./prepare-exercise-briefings.cjs').prepare();
 require('./prepare-heroes-tutorial.cjs').prepare();
 
-const version = 'v0.1.3-alpha60';
+const version = 'v0.2.0';
 const modeArgument = process.argv.find(argument => argument.startsWith('--mode='));
 const buildMode = modeArgument ? modeArgument.slice('--mode='.length) : 'release';
 assert(['release', 'development'].includes(buildMode),
