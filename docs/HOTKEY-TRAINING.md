@@ -68,7 +68,7 @@ Spirit Walker, both Druids, Gargoyle, Crypt Fiend and Tinker have separate forwa
 
 Destroyer Form, Metamorphosis and Chemical Rage remain forward-only; a native Unorder field alone is not evidence that reversal is playable. Mount/Dismount retains its native merge/split command icons. Ancient Uproot/Take Root/Eat Tree retains its separately audited preparation. Form entries preserve the existing command-name deduplication across units.
 
-These source changes follow alpha50 and are not installed in that distributed build. Automated fixtures verify direction, icons/tooltips, preparation gating, command registration and cleanup; native transformation state and actual custom-key recognition still require a focused in-game check in the next build.
+These changes are included in alpha51. Automated fixtures verify direction, icons/tooltips, preparation gating, command registration and cleanup; native transformation state and actual custom-key recognition still require a focused in-game check in the next build.
 
 ## Scoring and lifecycle
 

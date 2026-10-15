@@ -9,7 +9,7 @@ local RACES = {
 }
 
 local MINING_MICRO_INTRO =
-    "When mining with less than 5 workers, the game slows down the movement speed of Human and Orc gold workers, to normalize gold income.\n\nBy manually giving mining orders, you can temporarily bypass that slowdown.\n\nWith four workers - especially on short, diagonal mine positions - this can recover much of the income you'd normally need five workers for, freeing up a worker to build, or to harvest lumber, which can give you an edge in the early game.\n\nHere, you can train this micro skill.\nCheck the {Button: Quest Log} for explanations on how to do it!"
+    "When mining with less than 5 workers, the game slows down the movement speed of Human and Orc gold workers, to normalize gold income.\n\nBy manually giving mining orders, you can temporarily bypass that slowdown.\n\nWith four workers - especially on short, diagonal mine positions - this can recover much of the income you'd normally need five workers for, freeing up a worker to build, or to harvest lumber, which can give you an edge in the early game.\n\nHere, you can train this micro skill, while your income is compared to mines that do not micro their workers.\n\nCheck the {Button: Quest Log} for explanations on how to do it!"
 
 local QUEST_ICONS = {
     slowdown = "ReplaceableTextures\\CommandButtons\\BTNMove.blp",
@@ -216,9 +216,9 @@ function JTG.OpenMiningMicroMenu(originCategory, pauseGame, restorePage, restore
             spec.body='Choose a practice mode.'
             spec.pageId='duration'
             spec.choices={
-                {label='One Minute',action=function() selection.baseBuild=false;selection.duration=60;launch() end},
-                {label='Unlimited',action=function() selection.baseBuild=false;selection.duration=nil;launch() end},
-                {label='Base Build',action=function() selection.baseBuild=true;selection.duration=nil;launch() end}}
+                {label='One Minute',tooltip='Try mitigating as much of the lost mining potential as possible in one minute.',action=function() selection.baseBuild=false;selection.duration=60;launch() end},
+                {label='Unlimited',tooltip='Train mining micro for as long as you want.',action=function() selection.baseBuild=false;selection.duration=nil;launch() end},
+                {label='Build Order',tooltip='Start with regular starting resources and try to use mining micro while following your regular build order. The exercise ends once you send a fifth worker into the gold mine.',action=function() selection.baseBuild=true;selection.duration=nil;launch() end}}
             spec.backAction=function() showBriefing('root') end
         end
         if pauseGame then
@@ -280,12 +280,13 @@ function JTG.CreateMiningMicroActivity(session)
         if lane == nil or lane.counterFrame == nil then return end
         local gold
         if index == 2 then gold = self.playerGoldMined
-        else gold = GetPlayerState(lane.owner, PLAYER_STATE_RESOURCE_GOLD) end
-        local lumber = index==2 and self.playerLumberMined or GetPlayerState(lane.owner, PLAYER_STATE_RESOURCE_LUMBER)
+        else gold = self.baseBuild and self.referenceGoldMined or GetPlayerState(lane.owner, PLAYER_STATE_RESOURCE_GOLD) end
+        local lumber = index==2 and self.playerLumberMined or
+            (self.baseBuild and self.referenceLumberMined or GetPlayerState(lane.owner, PLAYER_STATE_RESOURCE_LUMBER))
         local comparison = ""
         local differencePercent = 0.0
         if index >= 2 then
-            local referenceGold = GetPlayerState(
+            local referenceGold = self.baseBuild and self.referenceGoldMined or GetPlayerState(
                 self.lanes[1].owner, PLAYER_STATE_RESOURCE_GOLD)
             if referenceGold > 0 then
                 differencePercent = (gold - referenceGold) * 100.0 /
@@ -309,6 +310,11 @@ function JTG.CreateMiningMicroActivity(session)
         -- not lose deposits when the player spends or receives a build refund.
         self.playerGoldMined=math.max(0,GetPlayerState(Player(0),PLAYER_STATE_GOLD_GATHERED)-(self.gatheringStart.gold or 0))
         self.playerLumberMined=math.max(0,GetPlayerState(Player(0),PLAYER_STATE_LUMBER_GATHERED)-(self.gatheringStart.lumber or 0))
+        if self.baseBuild then
+            self.referenceGoldMined=math.max(0,GetPlayerState(self.lanes[1].owner,PLAYER_STATE_GOLD_GATHERED)-self.referenceStart.gold)
+            self.referenceLumberMined=math.max(0,GetPlayerState(self.lanes[1].owner,PLAYER_STATE_LUMBER_GATHERED)-self.referenceStart.lumber)
+            self:updateBuildMirror()
+        end
         for index = 1, 3 do self:updateLaneCounter(index) end
         if self.running then
             self.elapsed=self.elapsed+0.10
@@ -333,35 +339,49 @@ function JTG.CreateMiningMicroActivity(session)
         BlzFrameSetAbsPoint(self.timeFrame,FRAMEPOINT_TOPLEFT,0.012,0.55)
         BlzFrameSetScale(self.timeFrame,1.48);BlzFrameSetEnable(self.timeFrame,false)
         self.resultCard=JTG.UI.CreateResultCard(session,{name='JTGMiningResult',width=0.44,detailsHeight=self.baseBuild and 0.18 or 0.12})
+        if self.baseBuild then
+            self.extraGoldFrame=JTG.ScopeTrackFrame(session.presentationScope,
+                BlzCreateFrameByType('TEXT','JTGMiningExtraGold',self.resultCard.panel,'',0))
+            BlzFrameSetSize(self.extraGoldFrame,.35,.04)
+            BlzFrameSetPoint(self.extraGoldFrame,FRAMEPOINT_TOP,self.resultCard.details,FRAMEPOINT_TOP,0,-.09)
+            BlzFrameSetTextAlignment(self.extraGoldFrame,TEXT_JUSTIFY_TOP,TEXT_JUSTIFY_CENTER)
+            BlzFrameSetScale(self.extraGoldFrame,1.5);BlzFrameSetEnable(self.extraGoldFrame,false)
+        end
         self:refreshTimer()
     end
     function activity:showTimedResult()
-        local expected=self.expectedLoss
-        local percent=expected>0 and string.format('%.1f%%',self.recoveredGold*100/expected) or 'N/A (no reference loss)'
         JTG.UI.HideToolbar()
-        local details='Expected gold loss mitigated: '..percent..'\nLumber harvested: '..self.playerLumberMined..
-            '\nGold recovered: '..self.recoveredGold..' / '..expected
+        local details
         if self.baseBuild then
-            local factor=self.elapsed>0 and 10/self.elapsed or 0
-            details=details..string.format('\nElapsed: %.1fs\nGold mined: %d\nExpected gold loss per 10 seconds: %.1f\nGold loss per 10 seconds: %.1f\nGold recovered per 10 seconds: %.1f',
-                self.elapsed,self.playerGoldMined,self.expectedLoss*factor,self.actualLoss*factor,self.recoveredGold*factor)
+            details=string.format('Total Gold mined: %d\nTotal Lumber mined: %d\nTime Elapsed: %.1fs',
+                self.playerGoldMined,self.playerLumberMined,self.elapsed)
+            BlzFrameSetText(self.extraGoldFrame,string.format('|cffffcc00Extra Gold mined: %d|r',self.recoveredGold))
+        else
+            local expected=self.expectedLoss
+            local percent=expected>0 and string.format('%.1f%%',self.recoveredGold*100/expected) or 'N/A (no reference loss)'
+            details='Expected gold loss mitigated: '..percent..'\nLumber harvested: '..self.playerLumberMined..
+                '\nGold recovered: '..self.recoveredGold..' / '..expected
         end
-        JTG.UI.ShowResultCard(self.resultCard,{title=self.baseBuild and 'BASE BUILD COMPLETE' or 'ONE MINUTE COMPLETE',tone='success',
+        JTG.UI.ShowResultCard(self.resultCard,{title=self.baseBuild and 'BUILD ORDER COMPLETE' or 'ONE MINUTE COMPLETE',tone='success',
             details=details,visible=self.presentationVisible,
             actions={retry={},menu={}}})
     end
     function activity:finishTimedRun()
         if self.finished then return end
         self.finished=true
-        local full=GetPlayerState(self.lanes[1].owner,PLAYER_STATE_RESOURCE_GOLD)
-        local baseline=GetPlayerState(self.lanes[3].owner,PLAYER_STATE_RESOURCE_GOLD)
-        self.expectedLoss=full-baseline;self.recoveredGold=self.playerGoldMined-baseline
-        self.actualLoss=full-self.playerGoldMined
+        if self.baseBuild then self.recoveredGold=self.playerGoldMined-self.referenceGoldMined
+        else
+            local full=GetPlayerState(self.lanes[1].owner,PLAYER_STATE_RESOURCE_GOLD)
+            local baseline=GetPlayerState(self.lanes[3].owner,PLAYER_STATE_RESOURCE_GOLD)
+            self.expectedLoss=full-baseline;self.recoveredGold=self.playerGoldMined-baseline
+            self.actualLoss=full-self.playerGoldMined
+        end
         for _,lane in ipairs(self.lanes) do
             for _,worker in ipairs(lane.workers) do PauseUnit(worker,true) end
             PauseUnit(lane.hall,true)
         end
         for unit in pairs(self.baseActors or {}) do if GetUnitTypeId(unit)~=0 then PauseUnit(unit,true) end end
+        for unit in pairs(self.buildMirror and self.buildMirror.actors or {}) do if GetUnitTypeId(unit)~=0 then PauseUnit(unit,true) end end
         self:refreshTimer();self:showTimedResult()
     end
 
@@ -382,7 +402,7 @@ function JTG.CreateMiningMicroActivity(session)
                 gameUI, "", 0))
         BlzFrameSetSize(lane.counterFrame, 0.220, index == 2 and 0.120 or 0.105)
         BlzFrameSetAbsPoint(lane.counterFrame, FRAMEPOINT_TOPLEFT,
-            0.012, index==2 and .355 or 0.505 - (index - 1) * 0.125)
+            index==2 and 0.024 or 0.012, index==2 and .355 or 0.505 - (index - 1) * 0.125)
         BlzFrameSetTextAlignment(lane.counterFrame,
             TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_LEFT)
         BlzFrameSetScale(lane.counterFrame, 1.48)
@@ -392,9 +412,10 @@ function JTG.CreateMiningMicroActivity(session)
             self.playerHeading=JTG.ScopeTrackFrame(session.presentationScope,
                 BlzCreateFrameByType('TEXT','JTGMiningYou',gameUI,'',0))
             BlzFrameSetSize(self.playerHeading,.22,.035)
-            BlzFrameSetAbsPoint(self.playerHeading,FRAMEPOINT_TOPLEFT,.012,.395)
-            BlzFrameSetScale(self.playerHeading,1.80)
-            BlzFrameSetText(self.playerHeading,'|cffcc66ffYOU|r');BlzFrameSetEnable(self.playerHeading,false)
+            BlzFrameSetAbsPoint(self.playerHeading,FRAMEPOINT_TOPLEFT,.024,.395)
+            BlzFrameSetTextAlignment(self.playerHeading,TEXT_JUSTIFY_TOP,TEXT_JUSTIFY_LEFT)
+            BlzFrameSetScale(self.playerHeading,1.48)
+            BlzFrameSetText(self.playerHeading,'|cffff0000YOU|r');BlzFrameSetEnable(self.playerHeading,false)
             self.minePercentTag=JTG.ScopeTrackTextTag(session.presentationScope,CreateTextTag())
             SetTextTagPermanent(self.minePercentTag,true)
             SetTextTagPos(self.minePercentTag,lane.mineX-85,lane.mineY+210,80)
@@ -410,7 +431,7 @@ function JTG.CreateMiningMicroActivity(session)
                 IssueTargetOrder(worker, "harvest", lane.mine)
             end
         end
-        for index = 2, 3 do
+        for index = self.baseBuild and 1 or 2, self.baseBuild and 2 or 3 do
             local lane = self.lanes[index]
             IssueTargetOrder(lane.workers[1], "harvest", lane.tree)
         end
@@ -419,12 +440,12 @@ function JTG.CreateMiningMicroActivity(session)
     function activity:createScenario()
         local owners = {Player(1), Player(0), Player(2)}
         local miningWorkers = {5, 4, 4}
-        for index = 1, 3 do
-            local layout = ResolveLaneLayout(MINE_ANCHORS[index], self.orientation)
+        for index = 1, self.baseBuild and 2 or 3 do
+            local layout = ResolveLaneLayout(MINE_ANCHORS[self.baseBuild and index==1 and 3 or index], self.orientation)
             local lane = {
-                owner = owners[index],
+                owner = self.baseBuild and index==1 and Player(2) or owners[index],
                 mineX = layout.mineX, mineY = layout.mineY,
-                miningWorkers = miningWorkers[index], workers = {},
+                miningWorkers = self.baseBuild and 4 or miningWorkers[index], workers = {},
             }
             lane.mine = JTG.ScopeTrackUnit(session.scope,
                 CreateUnit(Player(PLAYER_NEUTRAL_PASSIVE), FourCC("ngol"),
@@ -528,6 +549,7 @@ function JTG.CreateMiningMicroActivity(session)
                 lumber = GetPlayerState(owner, PLAYER_STATE_RESOURCE_LUMBER),
                 controller = GetPlayerController(owner),
                 workerLimit = GetPlayerTechMaxAllowed(owner, race.worker),
+                heroTokens = self.baseBuild and GetPlayerState(owner,PLAYER_STATE_RESOURCE_HERO_TOKENS) or nil,
                 alliances = {},
             }
             for otherIndex = 0, 2 do
@@ -543,6 +565,7 @@ function JTG.CreateMiningMicroActivity(session)
                 SetPlayerState(owner, PLAYER_STATE_RESOURCE_LUMBER, state.lumber)
                 SetPlayerController(owner, state.controller)
                 SetPlayerTechMaxAllowed(owner, race.worker, state.workerLimit)
+                if self.baseBuild then SetPlayerState(owner,PLAYER_STATE_RESOURCE_HERO_TOKENS,state.heroTokens) end
                 for otherIndex = 0, 2 do
                     SetPlayerAlliance(owner, Player(otherIndex), ALLIANCE_PASSIVE,
                         state.alliances[otherIndex])
@@ -553,9 +576,19 @@ function JTG.CreateMiningMicroActivity(session)
         SetPlayerController(Player(2), MAP_CONTROL_COMPUTER)
         for ownerIndex = 0, 2 do
             local owner = Player(ownerIndex)
-            SetPlayerState(owner, PLAYER_STATE_RESOURCE_GOLD, ownerIndex==0 and self.baseBuild and 500 or 0)
-            SetPlayerState(owner, PLAYER_STATE_RESOURCE_LUMBER, ownerIndex==0 and self.baseBuild and 150 or 0)
-            SetPlayerTechMaxAllowed(owner, race.worker, ownerIndex==0 and self.baseBuild and -1 or 5)
+            SetPlayerState(owner, PLAYER_STATE_RESOURCE_GOLD, self.baseBuild and 500 or 0)
+            SetPlayerState(owner, PLAYER_STATE_RESOURCE_LUMBER, self.baseBuild and 150 or 0)
+            SetPlayerTechMaxAllowed(owner, race.worker, self.baseBuild and -1 or 5)
+            if self.baseBuild and (ownerIndex==0 or ownerIndex==2) then
+                -- Standard melee hero setup, scoped to these two fresh bases.
+                -- Do not use the Hotkey Trainer's Castle context workaround.
+                SetPlayerState(owner,PLAYER_STATE_RESOURCE_HERO_TOKENS,1)
+                for _,raw in ipairs(self.race=='human' and {'HERO','Hpal','Hamg','Hmkg','Hblm'} or {'HERO','Obla','Ofar','Otch','Oshd'}) do
+                    local id=FourCC(raw);local old=GetPlayerTechMaxAllowed(owner,id)
+                    JTG.ScopeBorrow(current.scope,function() SetPlayerTechMaxAllowed(owner,id,old) end)
+                    SetPlayerTechMaxAllowed(owner,id,raw=='HERO' and 3 or 1)
+                end
+            end
             for otherIndex = 0, 2 do
                 SetPlayerAlliance(owner, Player(otherIndex), ALLIANCE_PASSIVE, true)
             end
@@ -565,8 +598,10 @@ function JTG.CreateMiningMicroActivity(session)
         JTG.ScopeRevealScene(current.scope, current.scene, p0)
 
         self.gatheringStart={gold=GetPlayerState(p0,PLAYER_STATE_GOLD_GATHERED),lumber=GetPlayerState(p0,PLAYER_STATE_LUMBER_GATHERED)}
+        self.referenceStart={gold=GetPlayerState(Player(2),PLAYER_STATE_GOLD_GATHERED),lumber=GetPlayerState(Player(2),PLAYER_STATE_LUMBER_GATHERED)}
+        self.referenceGoldMined,self.referenceLumberMined=0,0
         self:createScenario()
-        if self.baseBuild then self:setupBaseBuild() end
+        if self.baseBuild then self:setupBaseBuild();JTG.InstallMiningBuildOrder(self,current,race) end
         self:createTrainingQuests()
         self:createTimedPresentation()
         self.updateTimer = JTG.StartScopedTimer(current, current.scope,
@@ -631,7 +666,7 @@ function JTG.CreateMiningMicroActivity(session)
     function activity:discardPresentationForLoad()
         if self.playerHeading then BlzDestroyFrame(self.playerHeading);self.playerHeading=nil end
         if self.minePercentTag then DestroyTextTag(self.minePercentTag);self.minePercentTag=nil end
-        self.timeFrame=nil;self.resultCard=nil
+        self.timeFrame=nil;self.resultCard=nil;self.extraGoldFrame=nil
         for _, lane in ipairs(self.lanes) do
             if lane.counterFrame ~= nil then BlzDestroyFrame(lane.counterFrame) end
             lane.counterFrame = nil

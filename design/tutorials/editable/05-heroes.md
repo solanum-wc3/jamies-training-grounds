@@ -371,7 +371,7 @@ Your notes:
 
 Another modifier applies to the neutral {Term: Creeps} spread around the map.
 Experience gained from creeps is always lower than for an enemy unit.
-XP from creeps is {Yellow Font: reduced by 20% per hero level}. This means starting at level 5, heroes gain no experience from creeps at all.
+Heroes gain less experience from {Term: Creeps} as they level up. Starting at {Yellow Font: level 5}, they gain {Yellow Font: no experience from creeps at all}.
 
 Scene: `xp-empty`.
 Progression: Continue.
@@ -624,7 +624,14 @@ XP from {Term: Regular Player Units} depends on their level, which is often equa
 - level 5 -> 115 XP
 - level 6 -> 150 XP
 XP from {Term: Summons} is halved.
-XP from {Term: Creeps} is reduced by 20% for every hero level, meaning that starting at level 5, heroes do not get any experience from creeps. (However, the XP share is still divided to them if they are in the 1200 range, or if no hero is.)
+Experience gained from {Term: Creeps} depends on your hero's level:
+- Level 1: {Yellow Font: 80%}
+- Level 2: {Yellow Font: 70%}
+- Level 3: {Yellow Font: 60%}
+- Level 4: {Yellow Font: 50%}
+- Level 5 and above: {Yellow Font: 0%}
+
+These percentages apply to the hero's share of the experience. Heroes at level 5 or above still take a share when experience is divided, but gain no experience from it.
 
 XP from {Term: Enemy Heroes} also depends on their level:
 - level 1 -> 100 XP

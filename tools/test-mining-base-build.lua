@@ -8,21 +8,26 @@ function OrderId(order) return order end
 RACE_HUMAN,RACE_ORC='human','orc';PLAYER_NEUTRAL_PASSIVE=15
 PLAYER_STATE_RESOURCE_GOLD,PLAYER_STATE_RESOURCE_LUMBER='gold','lumber'
 PLAYER_STATE_GOLD_GATHERED,PLAYER_STATE_LUMBER_GATHERED='gatheredGold','gatheredLumber'
+PLAYER_STATE_RESOURCE_HERO_TOKENS='heroTokens'
 EVENT_PLAYER_UNIT_TRAIN_FINISH,EVENT_PLAYER_UNIT_CONSTRUCT_START='train','construct'
+EVENT_PLAYER_UNIT_CONSTRUCT_FINISH,EVENT_PLAYER_UNIT_CONSTRUCT_CANCEL='built','cancelled'
 EVENT_PLAYER_UNIT_ISSUED_ORDER,EVENT_PLAYER_UNIT_ISSUED_POINT_ORDER,EVENT_PLAYER_UNIT_ISSUED_TARGET_ORDER='order','point','target'
 ALLIANCE_PASSIVE,MAP_CONTROL_COMPUTER='passive','computer'
 ORIGIN_FRAME_GAME_UI,FRAMEPOINT_TOPLEFT,TEXT_JUSTIFY_TOP,TEXT_JUSTIFY_LEFT='ui','topleft','top','left'
 local resources,limits,controllers,alliances={},{},{},{}
 for owner=0,2 do
- resources[owner]={gold=73,lumber=81,gatheredGold=10000,gatheredLumber=20000}
+ resources[owner]={gold=73,lumber=81,gatheredGold=10000,gatheredLumber=20000,heroTokens=7}
  limits[owner]=11;controllers[owner]='user';alliances[owner]={}
 end
 function GetPlayerState(owner,key) return resources[owner][key] or 0 end
 function SetPlayerState(owner,key,value) resources[owner][key]=value end
 function GetPlayerController(owner) return controllers[owner] end
 function SetPlayerController(owner,value) controllers[owner]=value end
-function GetPlayerTechMaxAllowed(owner) return limits[owner] end
-function SetPlayerTechMaxAllowed(owner,_,value) limits[owner]=value end
+local heroLimits={}
+function GetPlayerTechMaxAllowed(owner,raw) return (raw=='hpea' or raw=='opeo') and limits[owner] or (heroLimits[owner..raw] or 9) end
+function SetPlayerTechMaxAllowed(owner,raw,value)
+ if raw=='hpea' or raw=='opeo' then limits[owner]=value else heroLimits[owner..raw]=value end
+end
 function GetPlayerAlliance(owner,other) return alliances[owner][other] or false end
 function SetPlayerAlliance(owner,other,_,value) alliances[owner][other]=value end
 local units,trees,tags,triggers={},{},{},{}
@@ -36,6 +41,12 @@ function GetWidgetLife(u) return u.life end
 function IsUnitHidden(u) return u.hidden==true end
 function PauseUnit(u,value) u.paused=value end
 function IssueTargetOrder(u,order,target) u.order=order;u.target=target;return true end
+function IssueImmediateOrder(u,order) u.order=order;return true end
+local denied
+function IssueImmediateOrderById(u,order) if denied==order then return false end;u.order=order;return true end
+function IssueBuildOrderById(u,raw,x,y) if denied==raw then return false end;u.order=raw;u.buildX=x;u.buildY=y;return true end
+function IssuePointOrder(u,order,x,y) u.order=order;u.pointX=x;u.pointY=y;return true end
+function GetUnitCurrentOrder(u) return u.order or 0 end
 function SetResourceAmount(u,value) u.gold=value end
 function CreateDestructable(raw,x,y) local t={raw=raw,x=x,y=y};trees[#trees+1]=t;return t end
 function SetDestructableLife(t,value) t.life=value end
@@ -53,6 +64,7 @@ function BlzFrameSetVisible(f,value) f.visible=value end
 function BlzFrameSetScale(f,value) f.scale=value end
 function BlzFrameSetSize() end
 function BlzFrameSetAbsPoint() end
+function BlzFrameSetPoint() end
 function BlzFrameSetTextAlignment() end
 function BlzFrameSetEnable() end
 function BlzDestroyFrame(f) f.removed=true end
@@ -77,9 +89,15 @@ local event,worker,target,order,created
 function GetTriggerEventId() return event end
 function GetTriggerUnit() return worker end
 function GetOrderTargetUnit() return target end
+local targetTree,pointX,pointY
+function GetOrderTargetDestructable() return targetTree end
+function GetOrderPointX() return pointX end
+function GetOrderPointY() return pointY end
 function GetIssuedOrderId() return order end
 function GetTrainedUnit() return created end
 function GetConstructingStructure() return created end
+function GetConstructedStructure() return created end
+function GetCancelledStructure() return created end
 function ClearSelection() end
 function SetCameraPosition() end
 function JTG.UI.ShowToolbar() end
@@ -92,6 +110,14 @@ dofile('src/infrastructure/core.lua')
 function JTG.BorrowCamera() end
 function JTG.ResetWorldFog() end
 function JTG.ScopeRevealScene() end
+JTG.HotkeyCatalog={}
+for _,spec in ipairs({{'human','hpea','htow','hhou'},{'orc','opeo','ogre','otrb'}}) do
+ for _,command in ipairs({{spec[2],spec[4],'build'},{spec[3],spec[2],'train'},
+     {spec[3],'TEST','research'},{spec[3],'TIER','upgrade'},{spec[2],'hbar','build'},{'hbar','hfoo','train'}}) do
+  JTG.HotkeyCatalog[#JTG.HotkeyCatalog+1]={race=spec[1],source=command[1],raw=command[2],kind=command[3]}
+ end
+end
+dofile('src/activities/mining-build-order.lua')
 dofile('src/activities/mining-micro.lua')
 local function fire(kind)
  event=kind
@@ -107,9 +133,11 @@ for _,race in ipairs({'human','orc'}) do
    local run=JTG.CreateMiningMicroActivity(session);run:setup(session);run:start(session)
    local lane=run.lanes[2]
    assert(resources[0].gold==(base and 500 or 0) and resources[0].lumber==(base and 150 or 0))
-   assert(limits[0]==(base and -1 or 5) and limits[1]==5 and limits[2]==5)
-   assert(run.playerHeading.text=='|cffcc66ffYOU|r' and run.playerHeading.scale==1.8)
-   assert(#trees==9)
+   assert(limits[0]==(base and -1 or 5) and limits[1]==(base and -1 or 5) and limits[2]==(base and -1 or 5))
+   if base then assert(heroLimits['0HERO']==3 and resources[0].heroTokens==1 and resources[2].heroTokens==1) end
+   assert(run.playerHeading.text=='|cffff0000YOU|r' and run.playerHeading.scale==run.lanes[2].counterFrame.scale)
+   assert(#trees==(base and 6 or 9))
+   assert(#run.lanes==(base and 2 or 3))
    for _,l in ipairs(run.lanes) do
     local first=(l.tree.x-l.hall.x)^2+(l.tree.y-l.hall.y)^2
     for _,tree in ipairs(l.trees) do
@@ -118,11 +146,12 @@ for _,race in ipairs({'human','orc'}) do
     end
    end
    resources[1].gold=100;resources[2].gold=80
+   resources[2].gatheredGold=resources[2].gatheredGold+80
    resources[0].gatheredGold=resources[0].gatheredGold+90
    resources[0].gatheredLumber=resources[0].gatheredLumber+20
    resources[0].gold=5;resources[0].lumber=1 -- Building purchases in the same update.
    run:updateCounters();assert(run.playerGoldMined==90 and run.playerLumberMined==20)
-   assert(run.minePercentTag.text=='|cffffcc00-10.0%|r')
+   assert(run.minePercentTag.text==(base and '|cffffcc00+12.5%|r' or '|cffffcc00-10.0%|r'))
    resources[0].gold=205 -- Refund does not count as mining.
    run:updateCounters();assert(run.playerGoldMined==90)
    if base then
@@ -141,10 +170,10 @@ for _,race in ipairs({'human','orc'}) do
     run.elapsed=20;created.hidden=true
     run:setPaused(true);run:updateCounters();assert(not run.finished and run.elapsed==20)
     run:setPaused(false);run:checkFifthGoldWorker()
-    assert(run.finished and run.expectedLoss==20 and run.actualLoss==10 and run.recoveredGold==10)
-    assert(run.resultCard.spec.details:find('Gold loss per 10 seconds: 5.0',1,true))
-    assert(run.resultCard.spec.details:find('Gold recovered per 10 seconds: 5.0',1,true))
-    assert(run.resultCard.spec.details:find('50.0%',1,true) and created.paused and newBuilding.paused)
+    assert(run.finished and run.recoveredGold==10)
+    assert(run.resultCard.spec.details=='Total Gold mined: 90\nTotal Lumber mined: 20\nTime Elapsed: 20.0s')
+    assert(run.extraGoldFrame.text=='|cffffcc00Extra Gold mined: 10|r' and run.extraGoldFrame.scale==1.5)
+    assert(created.paused and newBuilding.paused)
     assert(run:captureResetState().baseBuild and run:captureRotatedState().baseBuild)
    else
     assert(not run.finished and run:captureResetState().baseBuild==false)
@@ -158,7 +187,59 @@ for _,race in ipairs({'human','orc'}) do
    for _,u in ipairs(units) do assert(u.removed,'Base construction/training actor leaked') end
    for _,tree in ipairs(trees) do assert(tree.removed) end
    assert(resources[0].gold==73 and resources[0].lumber==81 and limits[0]==11)
+   assert(resources[0].heroTokens==7 and (heroLimits['0HERO'] or 9)==9)
   end
  end
 end
+-- Economic decisions are mirrored independently of native gathering cycles.
+units,trees,tags,triggers={},{},{},{}
+local session={active=true,generation=1,scope=JTG.CreateScope('mirror'),presentationScope=JTG.CreateScope('mirror-ui'),
+ descriptor={capabilities={}},scene={},restartData={race='human',baseBuild=true}}
+JTG.Controller.session=session
+local run=JTG.CreateMiningMicroActivity(session);run:setup(session);run:start(session)
+local lane,reference=run.lanes[2],run.lanes[1]
+local mirror=run.buildMirror
+worker=lane.workers[2];target=lane.mine;order='smart'
+for i=1,10 do fire('target') end
+assert(#mirror.jobs==0,'Repeated gold micro leaked into reference orders')
+worker=lane.workers[1];fire('target');run:updateBuildMirror()
+assert(#mirror.jobs==1 and mirror.pairs[worker].target==reference.mine)
+target=nil;targetTree=lane.tree;order='harvest';fire('target');run:updateBuildMirror()
+local before=#mirror.jobs
+for i=1,10 do fire('target') end
+assert(#mirror.jobs==before,'Lumber re-clicks were mirrored')
+targetTree=nil;order='hbar';pointX,pointY=lane.hall.x+450,lane.hall.y+450;fire('point')
+local job=mirror.jobs[#mirror.jobs];denied='hbar';run:updateBuildMirror()
+assert(not job.issued,'Unaffordable construction was completed or funded')
+denied=nil;run:updateBuildMirror();assert(job.issued)
+local builder=mirror.pairs[worker]
+assert(builder.buildX==pointX+reference.mineX-lane.mineX and builder.buildY==pointY+reference.mineY-lane.mineY)
+created=CreateUnit(0,'hbar',pointX,pointY);fire('construct');local playerBuilding=created
+created=CreateUnit(reference.owner,'hbar',builder.buildX,builder.buildY);fire('construct');local referenceBuilding=created
+assert(mirror.pairs[playerBuilding]==referenceBuilding,'New building has no matching counterpart')
+fire('built');run:updateBuildMirror()
+assert(job.done and builder.target==reference.tree,'Builder did not resume ordinary gathering')
+worker=playerBuilding;order='hfoo';fire('order');run:updateBuildMirror()
+assert(referenceBuilding.order=='hfoo','Training from a newly built producer was not mirrored')
+worker=lane.hall;order='hpea';fire('order');run:updateBuildMirror()
+created=CreateUnit(0,'hpea',lane.hall.x,lane.hall.y);fire('train');local playerWorker=created
+worker=playerWorker;order='harvest';target=lane.mine;fire('target');run:updateBuildMirror()
+assert(not mirror.pairs[playerWorker],'Delayed training was replaced with an instantly spawned worker')
+worker=reference.hall;created=CreateUnit(reference.owner,'hpea',reference.hall.x,reference.hall.y);fire('train')
+run:updateBuildMirror();assert(mirror.pairs[playerWorker]==created and created.target==reference.mine)
+worker=lane.hall;order='TEST';denied='TEST';fire('order')
+order='TIER';fire('order');run:updateBuildMirror()
+assert(reference.hall.order=='hpea','Later economic action bypassed the unaffordable queue head')
+denied=nil;run:updateBuildMirror();assert(reference.hall.order=='TIER','Research/upgrade did not retry')
+run:setPaused(true);worker=lane.workers[2];target=nil;targetTree=lane.tree;order='harvest';fire('target')
+local copy=mirror.pairs[worker];local old=copy.target
+run:updateBuildMirror();assert(copy.target==old,'Paused mirror advanced')
+run:setPaused(false);run:updateBuildMirror();assert(copy.target==reference.tree)
+worker=lane.workers[1];order='hhou';pointX,pointY=lane.hall.x+750,lane.hall.y+450
+fire('point');run:updateBuildMirror();local cancelled=mirror.jobs[#mirror.jobs]
+created=CreateUnit(0,'hhou',pointX,pointY);fire('construct');fire('cancelled')
+assert(cancelled.done and mirror.pairs[worker].order=='stop','Cancelled construction continued on the reference side')
+run:cleanup();JTG.DisposeScope(session.presentationScope);JTG.DisposeScope(session.scope)
+assert(playerWorker.removed and referenceBuilding.removed,'Mirrored actors leaked')
+print('Passed: two-base decisions, no gather micro, unaffordable retries, translated construction, generated actor pairing, research/upgrades and pause/cleanup.')
 print('Passed: Mining modes, spending-independent income, rotated three-tree layouts, mine overlay and fifth-worker entry completion.')

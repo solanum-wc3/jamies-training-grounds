@@ -18,7 +18,8 @@ By manually giving mining orders, you can temporarily bypass that slowdown.
 
 With four workers - especially on short, diagonal mine positions - this can recover much of the income you'd normally need five workers for, freeing up a worker to build, or to harvest lumber, which can give you an edge in the early game.
 
-Here, you can train this micro skill.
+Here, you can train this micro skill, while your income is compared to mines that do not micro their workers.
+
 Check the {Button: Quest Log} for explanations on how to do it!
 
 Your notes:

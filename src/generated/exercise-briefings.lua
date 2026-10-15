@@ -5,7 +5,7 @@ JTG.ExerciseBriefings = {
         race = "Choose which race's hotkeys you want to practice.",
     },
     ["skills.reflex"] = {
-        root = "This exercise is a work in progress.\n\nChoose a training mode.\n\nIdentify Units: find the requested units in any order. Each stage adds one unit to the list, from one request up to ten.\n\nReflex Test: recognize the prompted buff or debuff and click its affected unit as quickly as possible through ten trials.",
+        root = "This exercise is a work in progress.\nThe general idea here is to train the player's reflexes and ability to read units on the screen. It is very unpolished at this point, and I am unsure what to do with it. Feel free to give input on Discord or Hive!\n\nChoose a training mode.\n\nIdentify Units: find the requested units in any order. Each stage adds one unit to the list, from one request up to ten.\n\nReflex Test: recognize the prompted buff or debuff and click its affected unit as quickly as possible through ten trials.",
         races = "Select which races' units you want to see.\n\n",
     },
 }

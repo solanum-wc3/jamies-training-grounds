@@ -1450,5 +1450,43 @@
     "summonedFood": {
       "nba2": 0
     }
-  }
+  },
+  "dummyArmorTypes": [
+    {
+      "raw": "JHa0",
+      "name": "Unarmed",
+      "defense": 7,
+      "icon": "UI\\Widgets\\Console\\Human\\infocard-armor-unarmored.blp"
+    },
+    {
+      "raw": "JHa1",
+      "name": "Light Armor",
+      "defense": 0,
+      "icon": "UI\\Widgets\\Console\\Human\\infocard-armor-small.blp"
+    },
+    {
+      "raw": "JHa2",
+      "name": "Medium Armor",
+      "defense": 1,
+      "icon": "UI\\Widgets\\Console\\Human\\infocard-armor-medium.blp"
+    },
+    {
+      "raw": "JHa3",
+      "name": "Heavy Armor",
+      "defense": 2,
+      "icon": "UI\\Widgets\\Console\\Human\\infocard-armor-large.blp"
+    },
+    {
+      "raw": "JHa4",
+      "name": "Building",
+      "defense": 3,
+      "icon": "UI\\Widgets\\Console\\Human\\infocard-armor-fortified.blp"
+    },
+    {
+      "raw": "JHa5",
+      "name": "Hero",
+      "defense": 5,
+      "icon": "UI\\Widgets\\Console\\Human\\infocard-armor-hero.blp"
+    }
+  ]
 }

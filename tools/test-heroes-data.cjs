@@ -12,7 +12,8 @@ assert(!step('heroes.027')&&!step('heroes.010')&&!step('heroes.038'));
 assert(step('heroes.028').lines.some(line=>line.includes('Afterwards')));
 assert.equal(step('heroes.028').scene,'xp-range-1');
 assert(step('heroes.039').lines.includes('Attack the Gnoll again, using your entire army! Keep both heroes within the circle.'));
-assert(script.quest.includes('XP from {Term: Creeps} is reduced by 20% for every hero level'));
+assert(script.quest.includes('- Level 4: {Yellow Font: 50%}') && script.quest.includes('- Level 5 and above: {Yellow Font: 0%}'));
+assert(!script.quest.includes('20% for every hero level'));
 assert(!script.quest.includes('is multiplied'));
 assert(script.steps.some(row=>row.lines.includes('Upon reaching tier 3, this bonus is raised to {Yellow Font: +30%}.')));
 assert(script.steps.some(row=>row.lines.includes('Destroying it requires three attacks.')));
@@ -52,10 +53,10 @@ const {patchHeroesDummy,createHeroesDummyAbilities}=require('./patch-heroes-dumm
 const result=patchHeroesDummy(existing,data.dummyModel);
 assert.deepEqual(result.subarray(0,existing.length-4),existing.subarray(0,existing.length-4));
 assert.equal(result.readInt32LE(existing.length-4),1);
-assert.equal(result.subarray(existing.length,existing.length+8).toString(),'hfooJHdm');
+assert.equal(result.subarray(existing.length,existing.length+8).toString(),'hfoojHdm');
 assert(result.includes(Buffer.from('Target Dummie\0')));
 assert(result.includes(Buffer.from(data.dummyModel+'\0')));
-assert.equal(result.subarray(-4).toString(),'JHdm');
+assert.equal(result.subarray(-4).toString(),'jHdm');
 // Decode the emitted native tables, including level/data-pointer fields.
 function decode(buffer,ability=false) {
     let offset=0;
@@ -84,18 +85,30 @@ function decode(buffer,ability=false) {
 }
 const dummy=decode(result)[1][0].mods;
 assert.equal(dummy.unam.value,'Target Dummie');assert.equal(dummy.utip.value,'Target Dummie');
-assert.equal(dummy.uabi.value,'JHdN,JHdH');assert.equal(dummy.uaen.value,0);
+assert.equal(dummy.uabi.value,'JHdN,JHdH,JHa3,JHdP,JHdM');assert.equal(dummy.uaen.value,0);
+assert.equal(dummy.udef.value,0);assert.equal(dummy.udty.value,'large');
 assert.equal(dummy.umvt.value,'none');assert.equal(dummy.ufoo.value,0);
 const controls=decode(createHeroesDummyAbilities(),true)[1];
-assert.equal(controls.length,2);
+assert.equal(controls.length,10);
 for(const [index,control] of controls.entries()) {
-    assert.equal(control.parent,'ANcl');assert.equal(control.id,index===0?'JHdN':'JHdH');
+    assert.equal(control.parent,'ANcl');
     assert.equal(control.mods.Ncl2.value,0);assert.equal(control.mods.Ncl3.value,1);
     assert.equal(control.mods.Ncl1.value,0);assert.equal(control.mods.Ncl5.value,0);
     assert.equal(control.mods.Ncl6.pointer,6);assert.equal(control.mods.Ncl6.level,1);
     assert.equal(control.mods.amcs.value,0);assert.equal(control.mods.acdn.value,0);
-    assert.equal(control.mods.abpx.value,index);
-    assert(control.mods.aart.value.includes(index===0?'BTNStop.blp':'BTNAttack.blp'));
+    if(index<2) {
+        assert.equal(control.id,index===0?'JHdN':'JHdH');assert.equal(control.mods.abpx.value,index);
+        assert(control.mods.aart.value.includes(index===0?'BTNStop.blp':'BTNAttack.blp'));
+    } else if(index<8) {
+        const type=data.dummyArmorTypes[index-2];
+        assert.equal(control.id,type.raw);assert.equal(control.mods.aart.value,type.icon);
+        assert.equal(control.mods.abpx.value,0);assert.equal(control.mods.abpy.value,1);
+    } else {
+        assert.equal(control.mods.abpx.value,3);assert.equal(control.mods.abpy.value,index===8?1:2);
+        assert(control.mods.aart.value.endsWith(index===8?'ArmorPlus.dds':'ArmorMinus.dds'));
+    }
 }
-assert.notEqual(controls[0].mods.Ncl6.value,controls[1].mods.Ncl6.value);
+assert.equal(new Set(controls.map(control=>control.mods.Ncl6.value)).size,controls.length);
+assert.deepEqual(data.dummyArmorTypes.map(type=>type.defense),[7,0,1,2,3,5]);
+assert.equal(decode(result)[1][0].id[0],'j','Dummy must not use a hero-class uppercase unit ID');
 console.log('Passed: Heroes authored decisions, native data groups, unique TM drops and preserved unit overrides.');

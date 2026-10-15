@@ -110,12 +110,42 @@ function JTG.InstallHeroesScenes(activity,session)
         return false
     end
     function activity:addDummy(x,y,hostile,autoAttackers)
-        local dummy=self:addActor('JHdm',x,y,nil,PLAYER_COLOR_LIGHT_GRAY,hostile and Player(6) or PLAYER)
+        local dummy=self:addActor('jHdm',x,y,nil,PLAYER_COLOR_LIGHT_GRAY,hostile and Player(6) or PLAYER)
         BlzSetUnitStringField(dummy,UNIT_SF_NAME,'Target Dummie')
         BlzSetUnitMaxHP(dummy,1000000);SetWidgetLife(dummy,1000000)
-        self.dummies[#self.dummies+1]={unit=dummy,x=x,y=y,hostile=hostile==true,autoAttackers=autoAttackers}
+        local record={unit=dummy,x=x,y=y,hostile=hostile==true,autoAttackers=autoAttackers,armor=0,armorType=4}
+        self.dummies[#self.dummies+1]=record
+        self:applyDummyArmor(record)
         self:setDummyHostile(dummy,hostile)
         return dummy
+    end
+    function activity:applyDummyArmor(record)
+        local types=D.dummyArmorTypes
+        BlzSetUnitIntegerField(record.unit,UNIT_IF_DEFENSE_TYPE,types[record.armorType].defense)
+        BlzSetUnitArmor(record.unit,record.armor)
+        -- Hero armor supplies its native spell-damage multiplier. Resistant
+        -- Skin supplies hero-duration debuffs without making this a hero unit.
+        if types[record.armorType].defense==5 then
+            UnitAddAbility(record.unit,FourCC('ACsk'))
+            -- Its native passive icon otherwise occupies Raise Armor's cell.
+            -- Hide this passive only; do not disable its effect or the grid.
+            BlzUnitHideAbility(record.unit,FourCC('ACsk'),true)
+        else UnitRemoveAbility(record.unit,FourCC('ACsk')) end
+        -- Separate native buttons keep the current icon local to this dummy;
+        -- changing a global ability icon would repaint every other dummy too.
+        for _,kind in ipairs(types) do UnitRemoveAbility(record.unit,FourCC(kind.raw)) end
+        UnitAddAbility(record.unit,FourCC(types[record.armorType].raw))
+    end
+    function activity:adjustDummyArmor(unit,delta)
+        for _,record in ipairs(self.dummies) do
+            if record.unit==unit then
+                if delta then record.armor=record.armor+delta
+                else record.armorType=record.armorType%#D.dummyArmorTypes+1 end
+                self:applyDummyArmor(record)
+                return true
+            end
+        end
+        return false
     end
     function activity:showDummyDamage(unit,damage)
         if damage<=0 then return end
@@ -372,10 +402,11 @@ function JTG.InstallHeroesScenes(activity,session)
             if GetUnitTypeId(record.unit)~=0 then
                 if GetWidgetLife(record.unit)<=.405 then
                     RemoveUnit(record.unit)
-                    record.unit=self:sceneUnit(T.SceneScope(self,'heroes-active'),'JHdm',record.x,record.y,
+                    record.unit=self:sceneUnit(T.SceneScope(self,'heroes-active'),'jHdm',record.x,record.y,
                         record.hostile and Player(6) or PLAYER,PLAYER_COLOR_LIGHT_GRAY)
                     BlzSetUnitStringField(record.unit,UNIT_SF_NAME,'Target Dummie')
                     BlzSetUnitMaxHP(record.unit,1000000)
+                    self:applyDummyArmor(record)
                     self:setDummyHostile(record.unit,record.hostile)
                 end
                 SetWidgetLife(record.unit,1000000)

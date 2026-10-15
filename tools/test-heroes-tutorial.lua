@@ -11,13 +11,13 @@ function FourCC(raw) return raw end
 function GetLocalPlayer() return 0 end
 function GetHandleId(h) return h end
 function CreateUnit(owner,raw,x,y,facing)
- if raw:match('^[A-Z]') and raw~='JHdm' then
+ if raw:match('^[A-Z]') then
   for _,old in ipairs(units) do
    assert(old.removed or old.hidden or old.raw~=raw or old.x~=x or old.y~=y,'Replacement created before removing its collision occupant')
   end
  end
  local u={owner=owner,raw=raw,x=x,y=y,facing=facing,life=1000,hp=1000,abilities={},inventory={}}
- if raw:match('^[A-Z]') and raw~='JHdm' then u.level=1;u.points=1 end
+ if raw:match('^[A-Z]') then u.level=1;u.points=1 end
  units[#units+1]=u;return u
 end
 function GetUnitTypeId(u) return u and not u.removed and u.raw or 0 end
@@ -55,6 +55,10 @@ function SetPlayerHandicapXP() end
 function SelectHeroSkill(u,raw) if u.points>0 then u.abilities[raw]=(u.abilities[raw] or 0)+1;u.points=u.points-1 end end
 function GetUnitAbilityLevel(u,raw) return u.abilities[raw] or 0 end
 function UnitAddAbility(u,raw) u.abilities[raw]=1 end
+UNIT_IF_DEFENSE_TYPE='defenseType'
+function BlzSetUnitIntegerField(u,field,value) assert(field==UNIT_IF_DEFENSE_TYPE);u.defenseType=value;return true end
+function BlzSetUnitArmor(u,value) u.armor=value end
+function BlzUnitHideAbility(u,raw,hidden) assert(raw=='ACsk' and hidden);u.hiddenResistance=true end
 function UnitMakeAbilityPermanent() end
 function UnitRemoveAbility(u,raw) u.abilities[raw]=nil end
 function BlzSetUnitBooleanField(u,field,v) u[field]=v end
@@ -213,6 +217,15 @@ activity.actors[1].x=9000;activity:tickWorld();assert(activity.actors[1].x<=7744
 activity:showStep(step(8));assert(#activity.dummies==1 and #activity.actors==3)
 local dummy=activity.dummies[1].unit
 assert(dummy.owner==6 and dummy.name=='Target Dummie' and not dummy.paused)
+assert(not dummy.level and dummy.raw=='jHdm' and dummy.defenseType==2 and dummy.armor==0,
+ 'Dummy is classified as a hero or has the wrong initial defense')
+assert(activity:adjustDummyArmor(dummy,1) and dummy.armor==1)
+assert(activity:adjustDummyArmor(dummy,-1) and activity:adjustDummyArmor(dummy,-1) and dummy.armor==-1)
+for _,defense in ipairs({3,5,7,0,1,2}) do
+ assert(activity:adjustDummyArmor(dummy) and dummy.defenseType==defense and dummy.armor==-1)
+ assert((dummy.abilities.ACsk~=nil)==(defense==5),'Hero-duration resistance leaked across armor types')
+ if defense==5 then assert(dummy.hiddenResistance,'Passive resistance obscures Raise Armor') end
+end
 assert(activity:setDummyHostile(dummy,false) and dummy.owner==0)
 assert(activity.actors[1].order=='stop' and activity.actors[2].order=='stop')
 assert(activity:setDummyHostile(dummy,true) and dummy.owner==6)
@@ -222,6 +235,9 @@ for _,t in ipairs(triggers) do
  if t.events[1] and t.events[1].event=='spellEffect' then
   eventUnit,eventAbility=dummy,'JHdN';t.fn();assert(dummy.owner==0)
   eventAbility='JHdH';t.fn();assert(dummy.owner==6)
+  eventAbility='JHdP';t.fn();assert(dummy.armor==0)
+  eventAbility='JHdM';t.fn();assert(dummy.armor==-1)
+  eventAbility='JHa3';t.fn();assert(dummy.defenseType==3)
  end
 end
 assert(activity.actors[1].target==activity.dummies[1].unit and not activity.actors[1].invulnerable)

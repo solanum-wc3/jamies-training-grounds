@@ -22,7 +22,7 @@ const luaParser = req('luaparse');
 require('./prepare-exercise-briefings.cjs').prepare();
 require('./prepare-heroes-tutorial.cjs').prepare();
 
-const version = 'v0.1.3-alpha50';
+const version = 'v0.1.3-alpha51';
 const modeArgument = process.argv.find(argument => argument.startsWith('--mode='));
 const buildMode = modeArgument ? modeArgument.slice('--mode='.length) : 'release';
 assert(['release', 'development'].includes(buildMode),
@@ -59,6 +59,7 @@ const sharedModulePaths = [
     'src/generated/heroes-tutorial.lua',
     'src/infrastructure/heroes-scenes.lua',
     'src/activities/heroes-tutorial.lua',
+    'src/activities/mining-build-order.lua',
     'src/activities/mining-micro.lua',
     'src/activities/surrounds.lua',
     'src/activities/windwalk-pop.lua',
@@ -99,6 +100,8 @@ const assetPaths = [
     ['JTGOverlay\\HeroesXPRing.dds', 'src/assets/overlay/HeroesXPRing.dds'],
     ['JTGMenu\\EconomyAndWorkers.dds', 'src/assets/menu/EconomyAndWorkers.dds'],
     ['JTGMenu\\HeroesTutorial.dds', 'src/assets/menu/HeroesTutorial.dds'],
+    ['JTGMenu\\ArmorPlus.dds', 'src/assets/menu/ArmorPlus.dds'],
+    ['JTGMenu\\ArmorMinus.dds', 'src/assets/menu/ArmorMinus.dds'],
     ['JTGMenu\\GargoyleSurrounds.dds', 'src/assets/menu/GargoyleSurrounds.dds'],
     ['JTGMenu\\GargoyleSurroundsBriefing.dds', 'src/assets/menu/GargoyleSurroundsBriefing.dds'],
     ['JTGMenu\\CombatMicro.dds', 'src/assets/menu/CombatMicro.dds'],

@@ -27,9 +27,9 @@ Scene scopes clean up units, summons, items (including picked-up items), text ta
 - `design/tutorials/heroes-script-decisions.md`: confirmed clarification answers.
 - `src/data/heroes-tutorial-data.json`: native constants, hero stats, racial XP lists, shop stock, TM drops and provenance hashes.
 - `tools/prepare-heroes-tutorial.cjs`: validates and generates `src/generated/heroes-tutorial.lua`; `--check` rejects drift.
-- `tools/patch-heroes-dummy.cjs`: adds the named target object while retaining existing unit overrides, plus two explicit Channel-based mode commands in a new ability table. Packaging refuses to overwrite a pre-existing ability table without an explicit merge.
+- `tools/patch-heroes-dummy.cjs`: adds the named target object while retaining existing unit overrides, plus explicit Channel-based mode and armor commands in a new ability table. Packaging refuses to overwrite a pre-existing ability table without an explicit merge.
 
-The native snapshot is from installed Warcraft III 3.0.0.24268 and the repository's Twisted Meadows v1.9 reference. The narration uses the author's requested explanation of creep XP reduction; the data snapshot retains the extracted native factors. Spell reduction and fractional attribute data are unchanged.
+The native snapshot is from installed Warcraft III 3.0.0.24268 and the repository's Twisted Meadows v1.9 reference. The approved narration gives the level-five cutoff; the Quest lists the native creep factors (80/70/60/50/0 percent). Spell reduction and fractional attribute data are unchanged.
 
 ## Verification and in-game acceptance
 
@@ -46,3 +46,9 @@ Test in Warcraft:
 7. Open native/custom menus and save/load during a task. Restore the same progress without duplicated units or sounds. Exit and open another tutorial to check shared camera, resources and ownership restoration.
 
 The catalogue uses the authored Heroes tutorial artwork from `design/menu-art/heroes-tutorial-source.png`, fitted without cropping into a transparent DDS. The card draws it at 0.1152 by 0.0576 UI units (20% larger), anchored to the button’s top-right edge. Native color constants explicitly set Night Elf teal and Undead purple after hero initialization, with Human blue, Orc red and Tavern grey unchanged.
+
+## Target Dummy controls (alpha51)
+
+The named Target Dummie uses lowercase unit ID `jHdm`, based on a Footman, rather than the former uppercase hero-style ID. The name is set in native object data and at runtime. Dummies start with Heavy type and zero armor. Change Armor Type occupies the middle-left command cell, cycling Unarmed (native defense index 7), Light, Medium, Heavy, Building and Hero. Its icon shows the current type. Raise Armor and Lower Armor occupy the middle-right and bottom-right cells with gold plus/minus icons, changing armor by one, including negative values. Armor changes are per dummy and survive its regeneration/recreation; neutral/hostile mode remains independent. Native hover names, hero counting and actual damage mitigation still require Warcraft testing.
+
+Hero armor uses the native 30% spell-damage reduction. Only that type also gains requirement-free native Resistant Skin (`ACsk`) for hero-duration negative effects and native ability immunities; changing to another type removes it. Its passive icon is hidden so it cannot occupy Raise Armor's command cell. The dummy remains a normal unit, and no extra spell-damage reduction is stacked.

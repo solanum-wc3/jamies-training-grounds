@@ -265,6 +265,12 @@ function JTG.CreateHeroesTutorialActivity(session)
             local ability=GetSpellAbilityId()
             if ability==FourCC('JHdN') or ability==FourCC('JHdH') then
                 self:setDummyHostile(GetTriggerUnit(),ability==FourCC('JHdH'))
+            elseif ability==FourCC('JHdP') or ability==FourCC('JHdM') then
+                self:adjustDummyArmor(GetTriggerUnit(),ability==FourCC('JHdP') and 1 or -1)
+            else
+                for _,kind in ipairs(JTG.HeroesData.dummyArmorTypes) do
+                    if ability==FourCC(kind.raw) then self:adjustDummyArmor(GetTriggerUnit());break end
+                end
             end
         end))
         local summoned=JTG.ScopeTrackTrigger(current.scope,CreateTrigger())

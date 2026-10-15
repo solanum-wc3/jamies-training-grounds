@@ -13,6 +13,7 @@ Selection page 1
 ============================================================
 
 This exercise is a work in progress.
+The general idea here is to train the player's reflexes and ability to read units on the screen. It is very unpolished at this point, and I am unsure what to do with it. Feel free to give input on Discord or Hive!
 
 Choose a training mode.
 

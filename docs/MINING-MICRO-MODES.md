@@ -1,6 +1,6 @@
 # Mining Micro modes
 
-After choosing Human or Orc, choose One Minute, Unlimited or Base Build. Unlimited retains
+After choosing Human or Orc, choose One Minute, Unlimited or Build Order. Unlimited retains
 the existing three-lane practice. One Minute starts a 60-second countdown with
 the gathering orders; pausing stops its progression.
 
@@ -18,27 +18,42 @@ workers at the end. Redo retains the selected mode; rotation retains it too.
 If the reference gap is zero or negative, the percentage is shown as N/A.
 Results may be negative or above 100%; they are not silently clamped.
 
-Base Build has no time limit. It gives the player 500 Gold / 150 Lumber and
-removes the five-worker training limit, allowing base construction and extra
-workers. The two reference lanes retain their original setup. One Minute and
-Unlimited still start at zero resources with the original worker limit.
+Build Order has no time limit. Both bases start with 500 Gold / 150 Lumber and
+can train additional workers. Its five-worker reference is removed entirely;
+only the player and a four-worker reference remain. One Minute and Unlimited
+retain three lanes, zero starting resources and the original worker limit.
 
-Base Build ends when a fifth currently assigned gold worker actually enters the
-player's mine, not when the mining order is issued. Assigned workers retain
-their role during ordinary gold drop-offs; movement, construction and other
-tasks clear it. The entry check uses the native hidden-worker state near that
-mine. The end card freezes the run and shows elapsed time, gold/lumber gathered,
-expected loss, recovered gold and percentage mitigated. Gold loss and recovered
-gold per ten seconds are the measured totals multiplied by `10 / elapsed`;
-the percentage uses the same expected-loss denominator as One Minute.
+The reference mirrors building, training, research, upgrade and worker resource
+assignments using native orders. Placement is translated into its own base.
+New buildings and trained units are paired by construction site or producer/
+completion sequence. Economic commands wait when their native order is rejected;
+later economic commands wait behind them. The reference is never topped up.
+Repeated harvest clicks on the same resource do not produce reference orders.
+Workers resume their previous gathering job after a reference build completes.
+The mirror is paused with the activity and all actors belong to its scope.
 
-All modes show an enlarged purple **YOU** heading and the player's live gold
-percentage relative to the five-worker reference above the player's mine.
+Build Order ends when the fifth gold worker actually enters the player's mine,
+not when the order is issued. Its end card shows Total Gold mined, Total Lumber
+mined, Time Elapsed, and a larger golden Extra Gold mined line. Extra Gold is
+player gathered income minus reference gathered income, including negative
+results. Both totals use native cumulative gathering counters, so initial money,
+spending and refunds do not contaminate the comparison. The earlier per-ten-second
+loss breakdown is replaced in this mode; One Minute's calculation is unchanged.
+
+Both Build Order owners receive ordinary melee hero limits (three total,
+one per type) and one first-hero token. Changes are restored on exit. No Castle
+is spawned and native second-/third-hero tier requirements are retained.
+
+All modes show a bright red **YOU** heading at the same size as the counter
+text. The heading and its three counter lines are indented slightly to the
+right of the reference-lane text. The player's live gold percentage relative
+to the five-worker reference appears above the player's mine.
 Each lane now has three trees rotated with its hall/workers. The two additions
 are no closer to the hall than the original tree. Presentation rebuilding
 recreates the labels without restarting mining, construction or the clock.
 
-Native acceptance: test both races and all four rotations; confirm the labels
+Native acceptance: test both races and all four rotations; confirm mirroring,
+queued unaffordable actions, first-hero recruitment, cancellation and the labels
 fit, resource spending does not alter mining totals, the fifth-worker finish
 fires on entry, and trained units/unfinished structures disappear on exit.
 The automated fixture covers these orchestration paths with explicit mocks;
