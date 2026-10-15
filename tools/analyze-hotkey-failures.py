@@ -48,5 +48,5 @@ for group,items in groups.items():
     for entry,rows in sorted(items,key=lambda item:item[0]['id']):
         lines.append(f"| {entry['sourceName']} | {entry['name']} | `{entry['id']}` | {len(rows)} |")
     lines+=['']
-(root/'docs/HOTKEY-FAILURE-ANALYSIS-ALPHA28.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
+(root/'work/HOTKEY-FAILURE-ANALYSIS-ALPHA28.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
 print('Wrote failure analysis for 69 commands plus two inconsistent cases.')

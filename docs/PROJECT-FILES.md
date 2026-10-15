@@ -8,6 +8,7 @@ This inventory distinguishes maintained source, generated output, immutable refe
 - `src/infrastructure/` — shared runtime plus development-only diagnostics
 - `src/config/` — packaged Warcraft III interface configuration
 - `src/data/` — CustomKeys inputs, native Hotkey/tech inventories, practice pools, Heroes data and development sound inventory
+- `design/map-preview/` — maintained map-selection artwork; generated BLP/TGA files live under `src/assets/preview/`
 - `design/menu-art/` — editable menu artwork used by the texture generator
 - `design/overlays/` — editable unit-obstruction-square artwork
 - `design/tutorials/` — authored Economy/Heroes JSON, layout inputs and editable snapshots
@@ -55,4 +56,4 @@ Embedded CustomKeys data remains committed, although player-facing exports are d
 
 The maintained map-selection artwork is `design/map-preview/map-selection.png`. Run `tools/prepare-map-preview.py` to generate `src/assets/preview/war3mapMap.blp` (Reforged browser) and `war3mapPreview.tga` (preview fallback). The builder packages these explicitly. The original artwork remains immutable under `reference/legacy/`; `war3mapMap_ingame.blp` remains the foundation's terrain minimap and is restored separately in game. Artwork-only preparation does not replace a published release artifact.
 
-Unused Camera settings screenshot textures and their generator/build entries were removed after their Quest icons changed to native Reveal and Peon icons. The distributed beta1 map is unchanged; subsequent builds omit these unused assets.
+Unused Camera settings screenshot textures and their generator/build entries were removed after their Quest icons changed to native Reveal and Peon icons. The beta1 artifact remains historical; current v0.2.0 packaging omits these unused assets.

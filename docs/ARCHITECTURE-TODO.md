@@ -1,6 +1,6 @@
 # Architecture work list
 
-Published baseline: v0.1.2-beta1; current source is alpha49, pending acceptance. Historical implementation audits are in the [0.1.2 archive](archive/v0.1.2/README.md).
+Published baseline and accepted source: v0.2.0. New implementation waits for the user to activate a topic. Historical implementation audits are in the [0.1.2 archive](archive/v0.1.2/README.md).
 
 ## Implemented
 
@@ -12,7 +12,7 @@ Published baseline: v0.1.2-beta1; current source is alpha49, pending acceptance.
 - Economy semantic step IDs and checkpoint scenes; native worker gathering preserved independently of narration.
 - Regression fixtures for tutorial transitions, exercise menus, scoring, orders and cleanup.
 
-The consolidation described in the 14 October review is implemented: explicit tutorial scene lifetimes and restoration; stable-ID topic links; completion-attempt cues; shared response scoring; registered Hotkey/Reflex presentation; development-only Hotkey audit adapter; and authoritative generated briefing text for those two newer exercises. See [consolidation status and acceptance](CONSOLIDATION-2026-10-14.md).
+The consolidation described in the 14 October review is implemented: explicit tutorial scene lifetimes and restoration; stable-ID topic links; completion-attempt cues; shared response scoring; registered Hotkey/Reflex presentation; development-only Hotkey audit adapter; and authoritative generated briefing text for those two newer exercises. See [historical consolidation evidence](archive/v0.2.0/CONSOLIDATION-2026-10-14.md).
 
 ## Next priorities
 
@@ -24,7 +24,7 @@ The consolidation described in the 14 October review is implemented: explicit tu
 
 ## Next-version content direction
 
-User roadmap, 15 October 2026, for after the current alpha's implementation and acceptance work. These are planning notes, not active implementation or a promise of a particular version number/order:
+User roadmap, recorded 15 October 2026, for work after the accepted v0.2.0 release. These are planning notes, not active implementation or a promise of a particular version number/order:
 
 - Another Learn to Play tutorial, possibly Creeping; the user will determine its script.
 - Demo Mode, using the [legacy port assessment](DEMO-MODE-PORT-REVIEW.md) as a reference.
@@ -38,8 +38,4 @@ User roadmap, 15 October 2026, for after the current alpha's implementation and 
 - Long-term player statistics pending a versioned persistence design.
 - Combat, Creeping and The Base tutorials and other placeholder activities, subject to the user's scripts and priorities. Heroes is implemented and included in the accepted v0.2.0 release.
 
-## Earlier content directions (historical)
-
-User direction, 11 October 2026: Heroes requires the user's script before implementation. Reflex Training (expanded beyond the legacy map) and Unit Comparison are the preferred next training candidates; either or both may be chosen. Scope and mechanics are not decided yet. Combat Micro is postponed because it needs substantial research. The Economy spelling pass is complete in source; no new alpha or public release was requested for it.
-
-Those early directions are historical, not the current plan. Reflex now includes staged identification, multiple races and buff/debuff recognition; see [current behavior](REFLEX-TRAINING.md). Heroes now has an authored implementation. [Current acceptance work](DEVELOPMENT-STATUS.md) takes priority over starting another substantial feature. Unit Comparison remains a candidate, not started.
+Earlier content directions are preserved in [roadmap history](archive/v0.2.0/ROADMAP-HISTORY.md).

@@ -8,5 +8,6 @@ These files preserve completed plans, superseded checklists, early research and 
 
 - `v0.1.2/` — completed alpha acceptance notes, standardization reviews and native timing reports
 
-Current guidance begins at [`../README.md`](../README.md).
+- [v0.2.0](v0.2.0/README.md) — completed alpha handoffs, reliability/consolidation reviews and guide snapshots
 
+Current guidance begins at [`../README.md`](../README.md).

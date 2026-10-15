@@ -45,7 +45,7 @@ Hotkey Trainer's native catalog is prepared by `extract-hotkey-data.ps1`, `audit
 
 ## Maintained generators and checks
 
-Economy layout and narration are authored in `design/tutorials/economy-layout.json` and `economy-script.json`; their preparation tools regenerate the corresponding checked-in Lua. Dodging uses `prepare-dodge-catalog.py` and `audit-dodge-timing.py`. The timing inventory lists raw fields; archived native reports contain the runtime measurements. `extract-tutorial-texts.cjs` creates the review snapshot for all four tutorials, excluding disabled export instructions.
+Economy layout and narration are authored in `design/tutorials/economy-layout.json` and `economy-script.json`; their preparation tools regenerate the corresponding checked-in Lua. Dodging uses `prepare-dodge-catalog.py` and `audit-dodge-timing.py`. The timing inventory lists raw fields; archived native reports contain the runtime measurements. `extract-tutorial-texts.cjs` creates review snapshots for the four pre-Heroes tutorials, excluding disabled export instructions. Heroes uses its separate maintained JSON/generator; the snapshot exporter does not replace it.
 
 Run `pnpm run check:lua` and `pnpm run test:reliability` after lifecycle or progression changes. Python checks require `lupa`; artwork preparation requires Pillow. Player-facing file exports remain disabled; development diagnostic exports use Warcraft's preload wrappers.
 
@@ -68,3 +68,11 @@ Edit `design/exercises/editable/hotkey-trainer.txt` and `reflex-training.txt` di
 Heroes narration and scene metadata are maintained in `design/tutorials/heroes-script.json`; native display data is in `src/data/heroes-tutorial-data.json`. `prepare-heroes-tutorial.cjs` generates their runtime Lua and supports `--check`. `patch-heroes-dummy.cjs` adds the target object without replacing unrelated native overrides. `test-heroes-data.cjs` checks authored decisions, display inventory and binary preservation.
 
 Development audit bindings/exclusions under `work/` are optional local overrides. Clean checkouts use `src/generated/hotkey-comparison-defaults.lua` and `hotkey-audit-defaults.lua`. Do not distribute an automated audit expecting those empty defaults to know the tester's keyboard layout. `test-build-inputs.cjs` verifies the fresh-checkout module paths.
+
+## Map-selection artwork and Heroes presentation
+
+`prepare-map-preview.py` converts `design/map-preview/map-selection.png` into the committed browser BLP1 and fallback TGA under `src/assets/preview/`. It validates square artwork, nine mip levels and decoded image data. It does not touch the runtime terrain minimap. Normal builds consume committed preview assets without Python.
+
+`heroes-presentation.cjs` derives XP display building copies with no ground texture, preserving native/map overrides, and configures player 6's dummy-control permission before gameplay. The tutorial changes scoped hostility, not that permission. `test-heroes-data.cjs` covers object preservation, generated IDs and config placement.
+
+`analyze-hotkey-failures.py` writes regenerated alpha28 analysis under ignored `work/`, preserving the dated snapshot in the 0.2.0 documentation archive. It remains a historical analysis utility, not the current trainer's acceptance gate.

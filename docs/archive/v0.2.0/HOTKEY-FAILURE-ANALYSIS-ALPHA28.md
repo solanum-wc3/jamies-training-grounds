@@ -1,6 +1,6 @@
 # Hotkey audit failure analysis — alpha28
 
-Historical diagnostic record. Preserve the findings below; its alpha-specific setup is not the current exercise specification. See [Hotkey Trainer](HOTKEY-TRAINING.md) for current behavior and [development status](DEVELOPMENT-STATUS.md) before scheduling another audit.
+Historical diagnostic record. Preserve the findings below; its alpha-specific setup is not the current exercise specification. See [Hotkey Trainer](../../HOTKEY-TRAINING.md) for current behavior and [development status](../../DEVELOPMENT-STATUS.md) before scheduling another audit.
 
 All 652 command IDs completed at least one trial. 583 produced activation evidence; 57 never produced activation evidence and 12 lacked a supported automation binding.
 All 42 Stop controls produced both native and trainer confirmations. No command had a recorded native action that the trainer missed. This does not prove every targeted ability can complete its effect: activation-only confirms a button, not a target or placement.

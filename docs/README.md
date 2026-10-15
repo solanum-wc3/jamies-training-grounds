@@ -17,7 +17,7 @@ Published baseline and current source: **v0.2.0** (16 October 2026). See [releas
 - [Native menu handoff](NATIVE-LOG-HANDOFF.md) — implementation and engine-sensitive behavior
 - [Project files](PROJECT-FILES.md) — source/generated/reference boundaries
 - [Collision research](COLLISION-OBSTRUCTION-RESEARCH.md)
-- [Foundation acceptance](FOUNDATION-ACCEPTANCE.md) and [decisions](decisions/)
+- [Foundation acceptance](FOUNDATION-ACCEPTANCE.md) and [decisions](decisions)
 
 ## Current development
 
@@ -25,7 +25,7 @@ The [next-version roadmap](ARCHITECTURE-TODO.md#next-version-content-direction) 
 
 [Observer/control-handoff plan](OBSERVER-HOTSEAT-PLAN.md) records the proposed future multiplayer proof and rollout. It is deferred, not implemented.
 
-[Consolidation status](CONSOLIDATION-2026-10-14.md) records the completed reliability work and the remaining native acceptance checks.
+[Release status](RELEASE-STATUS.md) records the accepted checkpoint. [The 0.2.0 archive](archive/v0.2.0/README.md) preserves completed consolidation reviews and alpha test handoffs.
 
 [Reflex Training (WIP)](REFLEX-TRAINING.md) describes crowd layouts, race selection, identification stages and buff/debuff recognition. [Hotkey Trainer](HOTKEY-TRAINING.md) describes current-layout command recognition, practice stages, prompt preparation and the audited command catalogue. [Heroes](HEROES-TUTORIAL.md) describes the authored lesson and optional displays. All three are included in v0.2.0; their guides retain native testing details.
 
@@ -35,7 +35,7 @@ The [next-version roadmap](ARCHITECTURE-TODO.md#next-version-content-direction) 
 
 ## Historical evidence
 
-[archive](archive/README.md) retains completed implementation plans, candidate checklists and measurement results. The [0.1.2 archive](archive/v0.1.2/README.md) includes the standardization audits, alpha reports and native timing measurements. Keep their original findings and limitations intact; link current conclusions from current guidance.
+[archive](archive/README.md) retains completed implementation plans, candidate checklists and measurement results. The [0.1.2 archive](archive/v0.1.2/README.md) includes the standardization audits, alpha reports and native timing measurements. The [0.2.0 archive](archive/v0.2.0/README.md) contains the subsequent alpha51–60 handoffs, investigations and pre-cleanup guide snapshots. Keep dated findings and limitations intact; current conclusions belong in current guidance.
 
 [Melee prerequisites](MELEE-PREREQUISITES.md) inventories the four racial tech trees used to prepare individual Hotkey Trainer prompts.
 

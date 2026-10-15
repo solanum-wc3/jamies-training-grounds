@@ -18,7 +18,7 @@ Preview correction, 16 October 2026: the user explicitly requested overwriting b
 - Release/development Lua source assemblies passed syntax checks (32 and 49 modules).
 - Maintained briefing, Heroes data and clean-checkout build-input checks passed.
 - Release packaging passed all nine archive, foundation, syntax, lifecycle, result/menu and development-boundary checks.
-- Native acceptance: the user confirmed alpha59's sound/control and presentation-building changes, then confirmed alpha60's blight correction works. The user authorized this release after those checks. Earlier native tests and limitations are retained in [development history](DEVELOPMENT-STATUS.md).
+- Native acceptance: the user confirmed alpha59's sound/control and presentation-building changes, then confirmed alpha60's blight correction works. The user authorized this release after those checks. Earlier native tests and limitations are retained in [development history](archive/v0.2.0/DEVELOPMENT-HISTORY.md).
 
 Mock checks establish orchestration, not exhaustive Warcraft rendering, pathing or save/load coverage. The release does not claim every possible interaction was manually retested.
 
