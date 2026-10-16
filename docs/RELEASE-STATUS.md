@@ -8,7 +8,7 @@ Released 16 October 2026 on the user's explicit publication instruction. This is
 - Size: 4,431,795 bytes
 - SHA256: `a7feab8a9613c82df79fbd3851990bd9f11a1d3f5e895edd0345cce81f6118a3`
 - Gameplay/source checkpoint before publication documentation: `6e92091`
-- Source tag: `v0.2.1`, published from main; Demo's feature commits are not ancestors.
+- Source tag: `v0.2.1` at `188658b295606722cab3e130fd19bab87abf9bc7`, published from main; Demo's feature commits are not ancestors.
 
 ## Changes and validation
 
@@ -30,6 +30,8 @@ All three attachments contain identical release bytes, without development tools
 - [Warcraft3Gym generic map](https://github.com/solanum-wc3/jamies-training-grounds/releases/latest/download/Jamies-Training-Grounds.w3x)
 - [Hive generic map](https://github.com/solanum-wc3/jamies-training-grounds/releases/latest/download/Jamies-Training-Grounds-Hive.w3x)
 - [Release page](https://github.com/solanum-wc3/jamies-training-grounds/releases/tag/v0.2.1)
+
+Publication verified 16 October 2026: release ID `415015638` is GitHub's latest non-prerelease. Public downloads through all three routes match the release SHA256 above. Asset IDs are `647481658` (versioned), `647481779` (Warcraft3Gym) and `647481873` (Hive). Main and the release tag were pushed; the previous release/assets and the deferred Demo branch remain intact.
 
 ## Public download convention
 
