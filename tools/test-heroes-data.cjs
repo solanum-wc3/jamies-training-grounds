@@ -138,6 +138,8 @@ const configured=configureDummyControl('function main()\nend\nfunction config()\
 const configAst=require('luaparse').parse(configured,{luaVersion:'5.3'});
 assert.equal(configAst.body[0].body.length,0,'Control setup leaked into runtime main');
 const configCalls=configAst.body[1].body;
-assert.equal(configCalls.length,2);assert.equal(configCalls[1].expression.base.name,'SetPlayerAlliance');
+assert.equal(configCalls.length,3);assert.equal(configCalls[1].expression.base.name,'SetPlayerAlliance');
+assert.equal(configCalls[2].expression.base.name,'SetPlayerAlliance');
+assert(configured.includes('SetPlayerAlliance(Player(8), Player(0), ALLIANCE_SHARED_CONTROL, true)'));
 assert(configured.includes('SetPlayerAlliance(Player(6), Player(0), ALLIANCE_SHARED_CONTROL, true)'));
 console.log('Passed: Heroes authored decisions, native data groups, unique TM drops and preserved unit overrides.');

@@ -20,6 +20,8 @@ The module list in the builder is explicit so packaging order and the boundary b
 
 Player 6 is reserved for controllable hostile Target Dummies. Its one-way shared control for player 0 is configured before play; activities must not toggle it or place unrelated controllable units on that faction. Runtime permission changes emit a native notification sound. Hostility remains tutorial-scoped.
 
+Player 8 likewise grants control to player 0 before play for Heroes' presentation actors, avoiding the player's hero portrait list. Heroes borrows its controller and passive alliances, then restores them after removing its actors. XP-sharing practice retains player 0 ownership.
+
 Only one activity session may be active:
 
 1. `setup` creates or restores gameplay and presentation state.

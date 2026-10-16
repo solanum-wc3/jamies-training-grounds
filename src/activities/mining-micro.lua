@@ -306,6 +306,7 @@ function JTG.CreateMiningMicroActivity(session)
 
     function activity:updateCounters()
         if self.locallyPaused or self.finished then return end
+        if self.baseBuild and not self.running then return end
         -- Native cumulative gathering totals exclude the starting bank and do
         -- not lose deposits when the player spends or receives a build refund.
         self.playerGoldMined=math.max(0,GetPlayerState(Player(0),PLAYER_STATE_GOLD_GATHERED)-(self.gatheringStart.gold or 0))
@@ -333,6 +334,15 @@ function JTG.CreateMiningMicroActivity(session)
     end
     function activity:createTimedPresentation()
         if not self.duration and not self.baseBuild then return end
+        if self.baseBuild then
+            self.countdownFrame=JTG.ScopeTrackFrame(session.presentationScope,
+                BlzCreateFrameByType('TEXT','JTGMiningCountdown',BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI,0),'',0))
+            BlzFrameSetSize(self.countdownFrame,.20,.08)
+            BlzFrameSetAbsPoint(self.countdownFrame,FRAMEPOINT_CENTER,.40,.38)
+            BlzFrameSetTextAlignment(self.countdownFrame,TEXT_JUSTIFY_MIDDLE,TEXT_JUSTIFY_CENTER)
+            BlzFrameSetScale(self.countdownFrame,2.45);BlzFrameSetEnable(self.countdownFrame,false)
+            self:refreshCountdown()
+        end
         self.timeFrame=JTG.ScopeTrackFrame(session.presentationScope,
             BlzCreateFrameByType('TEXT','JTGMiningTime',BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI,0),'',0))
         BlzFrameSetSize(self.timeFrame,0.30,0.03)
@@ -386,6 +396,7 @@ function JTG.CreateMiningMicroActivity(session)
     end
 
     function activity:setOverlayVisible(visible)
+        if self.countdownFrame then BlzFrameSetVisible(self.countdownFrame,visible==true and self.countdownRemaining~=nil) end
         for _, lane in ipairs(self.lanes) do
             if lane.counterFrame ~= nil then
                 BlzFrameSetVisible(lane.counterFrame, visible == true)
@@ -424,6 +435,9 @@ function JTG.CreateMiningMicroActivity(session)
     end
 
     function activity:issueOpeningOrders()
+        -- Build Order begins idle on both sides. The player's first job
+        -- assignment, rather than a scripted opening, starts reference work.
+        if self.baseBuild then return end
         -- Match an ordinary opening first, then redirect only the rightmost
         -- worker in the middle and right comparisons to lumber.
         for _, lane in ipairs(self.lanes) do
@@ -431,7 +445,7 @@ function JTG.CreateMiningMicroActivity(session)
                 IssueTargetOrder(worker, "harvest", lane.mine)
             end
         end
-        for index = self.baseBuild and 1 or 2, self.baseBuild and 2 or 3 do
+        for index = 2, 3 do
             local lane = self.lanes[index]
             IssueTargetOrder(lane.workers[1], "harvest", lane.tree)
         end
@@ -479,9 +493,8 @@ function JTG.CreateMiningMicroActivity(session)
         self.baseActors={}
         local lane=self.lanes[2]
         self:trackBaseActor(lane.hall)
-        for index,worker in ipairs(lane.workers) do
+        for _,worker in ipairs(lane.workers) do
             self:trackBaseActor(worker)
-            self.goldWorkers[worker].gold=index>1
         end
         local created=JTG.ScopeTrackTrigger(session.scope,CreateTrigger())
         TriggerRegisterPlayerUnitEvent(created,Player(0),EVENT_PLAYER_UNIT_TRAIN_FINISH,nil)
@@ -603,7 +616,25 @@ function JTG.CreateMiningMicroActivity(session)
     end
 
     function activity:start(current)
-        self.running=true
+        if self.baseBuild then
+            for _,lane in ipairs(self.lanes) do
+                PauseUnit(lane.hall,true)
+                for _,worker in ipairs(lane.workers) do PauseUnit(worker,true) end
+            end
+            self.countdownControlLocked=true
+            if GetLocalPlayer()==Player(0) then EnableUserControl(false) end
+            JTG.ScopeBorrow(current.scope,function() self:releaseCountdownControl() end)
+            self.countdownTimer=JTG.Training.Countdown(self,current,3,function(remaining)
+                self.countdownRemaining=remaining;self:refreshCountdown()
+            end,function()
+                self.countdownRemaining=nil;self:refreshCountdown()
+                for _,lane in ipairs(self.lanes) do
+                    PauseUnit(lane.hall,false)
+                    for _,worker in ipairs(lane.workers) do PauseUnit(worker,false) end
+                end
+                self:releaseCountdownControl();self.running=true
+            end)
+        else self.running=true end
         if GetLocalPlayer() == Player(0) then
             SetCameraPosition(ARENA_CENTER_X, ARENA_CENTER_Y)
         end
@@ -611,6 +642,18 @@ function JTG.CreateMiningMicroActivity(session)
                 JTG.UI.HighlightQuestButton then
             JTG.UI.HighlightQuestButton(5.0)
         end
+    end
+
+    function activity:releaseCountdownControl()
+        if not self.countdownControlLocked then return end
+        self.countdownControlLocked=false
+        if GetLocalPlayer()==Player(0) then EnableUserControl(true) end
+    end
+
+    function activity:refreshCountdown()
+        if not self.countdownFrame then return end
+        BlzFrameSetText(self.countdownFrame,self.countdownRemaining and ('|cffffcc00'..self.countdownRemaining..'|r') or '')
+        BlzFrameSetVisible(self.countdownFrame,self.presentationVisible and self.countdownRemaining~=nil)
     end
 
     function activity:captureResetState()
@@ -660,7 +703,7 @@ function JTG.CreateMiningMicroActivity(session)
     function activity:discardPresentationForLoad()
         if self.playerHeading then BlzDestroyFrame(self.playerHeading);self.playerHeading=nil end
         if self.minePercentTag then DestroyTextTag(self.minePercentTag);self.minePercentTag=nil end
-        self.timeFrame=nil;self.resultCard=nil;self.extraGoldFrame=nil
+        self.timeFrame=nil;self.resultCard=nil;self.extraGoldFrame=nil;self.countdownFrame=nil
         for _, lane in ipairs(self.lanes) do
             if lane.counterFrame ~= nil then BlzDestroyFrame(lane.counterFrame) end
             lane.counterFrame = nil
@@ -668,6 +711,7 @@ function JTG.CreateMiningMicroActivity(session)
     end
 
     function activity:cleanup()
+        self:releaseCountdownControl()
         if JTG.UI then JTG.UI.HideActivityBriefing() end
         self.lanes = {}
     end

@@ -32,6 +32,8 @@ Economy Back/Topics restoration runs within the existing scene. Preserve living 
 
 During demonstrations, units stay owned by a script-controlled faction and share vision with the player. During practice, transfer the designated units to the player; restore their faction afterward. Tutorials whose purpose is teaching unit controls remain practice where player interaction is requested. Economy is an explicit user-approved exception: the active race is always player-owned and fully controllable (10 October 2026). Player ownership always grants control; do not add a second command-blocking state.
 
+Heroes' controllable showcase, Archmage, attack-dice and optional hero-XP displays use player 8's preconfigured shared control to avoid portrait clutter. XP practice retains player ownership. Create fresh heroes directly for the intended owner, applying only explicitly requested levels and skills. Heroes removes its scenes during semantic cleanup before presentation disposal and borrowed-state restoration, with the runner's scope disposer as a fallback.
+
 Never intercept all issued-order events to suppress player input. Those events also contain native harvesting and construction orders. Do not repeatedly issue Stop, hold or harvest to enforce a demonstration.
 
 Keep the player's selected native UI race and idle-worker artwork by default. A tutorial-specific override belongs to that tutorial's presentation scope, as Camera's Peon icon does; do not put it in the map-wide skin or change race preferences merely when ownership switches.

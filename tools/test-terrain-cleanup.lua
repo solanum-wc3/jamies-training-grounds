@@ -37,7 +37,7 @@ end
 function SetBlightPoint(_,x,y,value) at(x,y).blight=value end
 function IsUnitIdType(raw) return raw=='ugrv' or raw=='htow' end
 function GetUnitAbilityLevel(u,raw) return u.raw=='ugrv' and raw=='Abgs' and 1 or 0 end
-function GetOwningPlayer(u) return u.owner end
+function GetOwningPlayer(u) return not u.removed and u.owner or nil end
 function CreateUnit(owner,raw,x,y)
  local u={owner=owner,raw=raw,x=x,y=y};live[u]=true
  if raw=='ugrv' then at(x,y).blight=true;at(x,y).kind='damaged' end
@@ -50,6 +50,10 @@ end
 dofile('src/infrastructure/core.lua')
 dofile('src/infrastructure/terrain.lua')
 local one,two=JTG.CreateScope('one'),JTG.CreateScope('two')
+local alreadyRemoved=JTG.CreateScope('manually-removed')
+local retired=JTG.CreateScopedUnit(alreadyRemoved,0,'htow',-256,-256,0)
+RemoveUnit(retired)
+assert(JTG.DisposeScope(alreadyRemoved),'Already-removed actor made terrain ownership cleanup fail')
 local a=JTG.CreateScopedUnit(one,0,'ugrv',128,128,0)
 local b=JTG.CreateScopedUnit(two,15,'ugrv',256,128,0)
 a.owner=6 -- native ownership can change after the snapshot

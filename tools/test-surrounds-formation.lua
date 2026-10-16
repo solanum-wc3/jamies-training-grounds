@@ -30,3 +30,39 @@ gargoyle.renderResultPresentation=function() end
 gargoyle:finish(true)
 assert(gargoyle.resultDetailsText=='The Grunt and Demon Hunter were surrounded with this setup.')
 print('Passed: Crypt Lord/side-Ghoul formation swap, unchanged Gargoyle formation and explicit two-runner end-card copy.')
+
+-- Exercise the actual custom spawn path, including native-like skill points
+-- and rank requirements. An unconfigured hero retains its first free point.
+function BlzCreateUnitWithSkin(owner,raw,x,y)
+ return {owner=owner,raw=raw,x=x,y=y,level=1,points=1,skills={}}
+end
+function GetUnitTypeId(u)return u.raw end
+function IsUnitType(u,kind)return kind==UNIT_TYPE_HERO and u.raw:match('^[A-Z]')~=nil end
+function GetHeroLevel(u)return u.level end
+function SetHeroLevel(u,level)
+ assert(level>u.level,'Fresh level-1 hero received redundant level change')
+ u.points=u.points+level-u.level;u.level=level
+end
+function GetUnitAbilityLevel(u,raw)return u.skills[raw] or 0 end
+function SelectHeroSkill(u,raw)
+ local rank=(u.skills[raw] or 0)+1
+ local required=raw=='AHmt' and 6 or 2*rank-1
+ assert(u.level>=required and u.points>0,'Illegal selected hero skill')
+ u.skills[raw]=rank;u.points=u.points-1
+end
+local function custom(abilities)
+ local run=JTG.CreateSurroundsActivity({scope={},restartData={race='custom',customArmy={{'Hamg',1,abilities},{'hfoo',3}}}})
+ run.finishX,run.laneY=1000,500;run:spawnArmy();return run.army[1]
+end
+local empty=custom({});assert(empty.level==1 and empty.points==1 and next(empty.skills)==nil)
+local three=custom({'AHwe','AHwe','AHwe'});assert(three.level==5 and three.points==2 and three.skills.AHwe==3)
+local ultimate=custom({'AHmt'});assert(ultimate.level==6 and ultimate.points==5)
+local combined=custom({'AHwe','AHwe','AHwe','AHbz','AHbz','AHbz'})
+assert(combined.level==6 and combined.points==0)
+JTG.Controller={lastCategory='skills'}
+local stopped,briefing
+function JTG.StopActivity(reason)stopped=reason end
+function JTG.OpenSurroundsMenu(category,paused)briefing=category;assert(paused==false)end
+normal.resultAction='finish';normal.resultActions.next(normal)
+assert(stopped=='surround-finish' and briefing=='skills','Finish did not open the Surrounds briefing')
+print('Passed: custom hero legal ranks/minimum levels/free points and Finish-to-briefing navigation.')

@@ -24,6 +24,10 @@ Five tutorials and ten exercises/demonstrations are accessible in development. P
 
 ## Shared behavior
 
+Build Order alone starts with a three-second countdown, holding both bases and gameplay input before its timer begins. Workers start idle; the reference copies the player's first job assignments and later job changes without copying repeated mining clicks. One Minute and Unlimited retain their immediate gathering starts.
+
+Body Blocking displays player movement data below the runner's and a yellow `Stage n/total` below its countdown. Surrounds adds `Round n/2` for the Grunt/Demon Hunter rounds. These labels repeat on Redo and end with the countdown. Custom Surrounds heroes receive legal selected abilities and retain unused skill points; no selection means level 1 with one free point. Finish returns to its briefing. Empty briefing tooltip visuals stay hidden without detaching their native frames.
+
 Activities register a stable ID, category, scene, capabilities and factory in `src/infrastructure/catalog.lua`. Activities with configuration pages also register a menu function. The controller permits one active session and owns reset, replacement and exit transitions.
 
 Body Blocking, Surrounds, Gargoyle Surround and Windwalk Pop use shared result cards and support Replay. Relevant collision exercises expose the Squares control, which cycles obstruction boxes and snap points, then adds the finer navigation grid. Gargoyle Surround hides the obstruction box while a Gargoyle is flying and shows its current box after Stone Form turns it into a ground unit. Mining Micro exposes rotation; Surrounds and Gargoyle Surround expose setup selection; course activities expose Next and Back where applicable.

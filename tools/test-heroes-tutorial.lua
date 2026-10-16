@@ -30,6 +30,10 @@ function BlzGetUnitMaxHP(u) return u.hp end
 function BlzSetUnitMaxHP(u,v) u.hp=v end
 function GetOwningPlayer(u) return u.owner end
 function SetUnitOwner(u,v) u.owner=v end
+local controlOwner='computer'
+MAP_CONTROL_USER='user'
+function GetPlayerController(owner) assert(owner==8);return controlOwner end
+function SetPlayerController(owner,value) assert(owner==8);controlOwner=value end
 function SetUnitUseFood(u,value) u.useFood=value end
 function SetUnitColor(u,v) u.color=v end
 function SetUnitAcquireRange(u,v) u.acquire=v end
@@ -214,6 +218,7 @@ JTG.Controller.session=session
 JTG.Controller.generation=session.generation
 local function step(id) for i,row in ipairs(JTG.HeroesScript.steps) do if row.id==string.format('heroes.%03d',id) then return i end end;error('Missing test stop '..id) end
 activity:setup(session);activity:start()
+assert(controlOwner=='user','Controllable demonstration heroes must not run a computer AI')
 assert(time==12 and scale==0 and not JTG.UI.questAvailable)
 assert(xpHandicapWrites==0 and resources.foodcap==100 and resources.foodmax==100)
 assert(activity.frames.topicsMenu.width==.185 and activity.frames.topicsMenu.height==JTG.TutorialMenuHeight(8))
@@ -292,7 +297,8 @@ for _,u in ipairs(attackers) do assert(u.removed) end
 assert(activity.worldScene=='showcase' and #activity.levelActors==25 and #activity.dummies==5)
 for _,record in ipairs(activity.dummies) do assert(not record.hostile and record.unit.owner==0) end
 local record=activity.levelActors[1];activity.selectedHero=record.unit;activity:refreshControls()
-assert(not record.unit.invulnerable and record.unit.level==1 and record.unit.hiddenHeroIcon and activity.frames.plus.visible and not activity.frames.minus.enabled)
+assert(not record.unit.invulnerable and record.unit.level==1 and record.unit.owner==8 and record.unit.hiddenHeroIcon and activity.frames.plus.visible)
+assert(activity.frames.minus.enabled and not activity.buttonEnabled[GetHandleId(activity.frames.minus)],'Grey level button must block clicks without enabling its action')
 activity:changeHeroLevel(1);assert(record.unit.level==2)
 record.unit.abilities.AHbz=1;local old=record.unit
 local carried=CreateItem('ratf',0,0);old.inventory[0]=carried
@@ -314,7 +320,7 @@ activity:showStep(step(40));assert(math.abs(activity.mountainKing.x-4864)>1200 a
 activity:openOptional('xp');assert(activity.worldScene=='xp-numbers' and #activity.actors==10 and #sounds==1)
 assert(activity.actors[1].raw=='Hpal' and activity.actors[1].skin=='Hart' and activity.actors[10].skin=='Harf')
 for i,u in ipairs(activity.actors) do
- assert(u.level==i and u.owner==15)
+ assert(u.level==i and u.owner==8)
  assert(u.x==activity.practiceArena.centerX+((i-1)%5-2)*300)
  assert(u.y==activity.practiceArena.centerY+350-math.floor((i-1)/5)*700)
 end
@@ -392,6 +398,7 @@ for _,i in ipairs(images) do assert(i.removed,'XP circle leaked') end
 for _,tag in ipairs(tags) do assert(tag.removed,'Showcase label leaked') end
 for _,item in ipairs(items) do if item~=carried then assert(item.removed,'Ground item leaked') end end
 assert(time==0 and scale==1,'Daytime lock leaked after exit')
+assert(controlOwner=='computer','Demonstration controller was not restored')
 assert(xpHandicapWrites==0,'Unchanged XP rate was rewritten during setup/cleanup')
 -- Non-default XP rates still receive the correct demonstration rate and are
 -- restored on exit; normal entries must not call the native setter at all.
@@ -413,4 +420,21 @@ isolatedActivity:cleanup();JTG.DisposeScope(isolation.presentationScope);JTG.Dis
 for _,write in ipairs(allianceWrites) do
  assert(write.kind~=ALLIANCE_SHARED_CONTROL,'Tutorial changed the preconfigured shared-control permission')
 end
-print('Passed: 47 authored Hero stops, two optional topics, native rosters/skills, 1200-radius XP scenes, level controls, shops/items, fixed camera tours, ownership isolation, checkpoint replay and complete cleanup.')
+-- Exit directly from each many-hero scene, rather than navigating to the end
+-- first. Include a recreated level-down hero and a scene-owned native summon.
+for _,kind in ipairs({'showcase','dice'}) do
+ local s={active=true,scope=JTG.CreateScope('exit-'..kind),presentationScope=JTG.CreateScope('exit-ui-'..kind),generation=9}
+ local a=JTG.CreateHeroesTutorialActivity(s);s.activity=a;JTG.Controller.session=s
+ a:setup(s);a:ensureWorld(kind,true)
+ local record=a.levelActors[1];a.selectedHero=record.unit
+ a:changeHeroLevel(1);a:changeHeroLevel(-1)
+ local survivors={};for _,u in ipairs(a.levelActors) do survivors[#survivors+1]=u.unit;assert(u.unit.owner==8) end
+ local child=JTG.CreateScopedUnit(record.scope,8,'hwat',5000,3500,0)
+ a:cleanup()
+ for _,u in ipairs(survivors) do assert(u.removed,'Hero survived semantic cleanup from '..kind) end
+ assert(child.removed,'Summon survived semantic cleanup')
+ assert(next(a.tutorialScenes)==nil,'A presentation scene survived semantic cleanup')
+ JTG.DisposeScope(s.presentationScope);JTG.DisposeScope(s.scope)
+ assert(controlOwner=='computer')
+end
+print('Passed: Heroes narration/checkpoints, shared-control scenes, legal default levels, disabled action hit targets, direct many-hero exit and complete cleanup.')

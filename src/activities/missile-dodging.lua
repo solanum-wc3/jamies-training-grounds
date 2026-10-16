@@ -471,7 +471,8 @@ end
 
 local function PrepareAbilities(unit, abilities)
     if IsUnitType(unit, UNIT_TYPE_HERO) then
-        SetHeroLevel(unit, 1, false)
+        -- Fresh heroes already start at level 1; do not apply a redundant
+        -- native level change before this exercise's explicit ability setup.
         UnitModifySkillPoints(unit, -GetHeroSkillPoints(unit))
     end
     for _, rawcode in ipairs(abilities or {}) do

@@ -37,4 +37,4 @@ Do not overwrite a distributed milestone during maintenance validation. Use the 
 
 ## Release download links
 
-When completing an alpha cycle and publishing the next non-alpha version, update both the generic latest-map attachment and the precisely versioned attachment, then point the README's top download link to the versioned file. Follow [the release procedure](docs/RELEASE-STATUS.md#completing-an-alpha-cycle), including verification of both downloads. Alpha outputs do not advance these links.
+When completing an alpha cycle and publishing the next non-alpha version, update the Warcraft3Gym and Hive generic attachments plus the precisely versioned attachment, then point the README's top download link to the versioned file. All three downloads must contain identical bytes. Follow [the release procedure](docs/RELEASE-STATUS.md#completing-an-alpha-cycle), including verification of every download. Alpha outputs do not advance these links.

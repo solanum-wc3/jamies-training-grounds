@@ -32,10 +32,11 @@ Mock checks establish orchestration, not exhaustive Warcraft rendering, pathing 
 
 ## Downloads
 
-Both release attachments contain the identical public map, without development tools:
+All three release attachments contain the identical public map, without development tools:
 
 - [Versioned v0.2.0 map](https://github.com/solanum-wc3/jamies-training-grounds/releases/download/v0.2.0/Jamies-Training-Grounds-v0.2.0.w3x)
 - [Latest non-alpha map](https://github.com/solanum-wc3/jamies-training-grounds/releases/latest/download/Jamies-Training-Grounds.w3x)
+- [Hive-specific latest map](https://github.com/solanum-wc3/jamies-training-grounds/releases/latest/download/Jamies-Training-Grounds-Hive.w3x)
 - [Release page](https://github.com/solanum-wc3/jamies-training-grounds/releases/tag/v0.2.0)
 
 Published and verified 16 October 2026: both public downloads match the SHA256 above, GitHub's latest release is `v0.2.0`, and the release tag points to `5a78bc5b026286f0ac54e89f165fd44e362a92cb`. The source branch was fast-forwarded into `main` and pushed. Previous versioned assets remain available; the generic latest route advances with this release. Generated maps and reports remain ignored by Git. The immutable foundation is not modified.
@@ -44,15 +45,17 @@ The previous beta1 validation record is preserved in [the archive](archive/v0.1.
 
 ## Public download convention
 
-Each non-alpha release attaches both the fixed filename `Jamies-Training-Grounds.w3x` and its versioned filename, becomes GitHub's latest release, and updates the README's precise versioned link. Alpha builds never replace this route. Release-mode packaging alone does not publish anything.
+Each non-alpha release attaches `Jamies-Training-Grounds.w3x` for Warcraft3Gym, `Jamies-Training-Grounds-Hive.w3x` for Hive, and the versioned filename. All three contain identical map bytes. Separate asset counters distinguish downloads through the two generic routes; totals across releases require summing each filename's counters. The release becomes GitHub's latest and the README's precise versioned link advances. Alpha builds never replace these routes. Release-mode packaging alone does not publish anything.
+
+The user requested the separate Hive route on 16 October 2026. It was added to the existing v0.2.0 release as asset 647421103, checksum-identical to the public map; the original attachments were preserved. Future public releases must carry this filename too.
 
 ## Completing an alpha cycle
 
 Standing user instruction, confirmed 11 October 2026: when an alpha cycle finishes and a new non-alpha version is released, update both download routes as part of that release.
 
-1. Attach the validated public release map twice to the new GitHub Release: `Jamies-Training-Grounds.w3x` and `Jamies-Training-Grounds-<version>.w3x` (for example, `Jamies-Training-Grounds-v0.1.2-beta1.w3x`). Both attachments must contain identical bytes. Do not substitute a development build.
+1. Attach the validated public release map three times to the new GitHub Release: `Jamies-Training-Grounds.w3x`, `Jamies-Training-Grounds-Hive.w3x` and `Jamies-Training-Grounds-<version>.w3x`. All attachments must contain identical bytes. Do not substitute a development build.
 2. Publish that release as GitHub's latest non-alpha release. The fixed `/releases/latest/download/Jamies-Training-Grounds.w3x` URL then resolves to the new map without changing the URL.
 3. Update the download link at the top of the project README to `/releases/download/<version>/Jamies-Training-Grounds-<version>.w3x`, with the precise version in its visible label. Update the current-release description accordingly and push the documentation change.
-4. Verify both public downloads against the validated release artifact and provide both links to the user.
+4. Verify all three public downloads against the validated release artifact and provide the versioned and both generic links to the user.
 
 Ordinary alpha outputs do not replace either public download route. Keep previous versioned releases available. This procedure does not independently authorize starting a new release; apply it when the user asks to finish the alpha cycle and release the next version.

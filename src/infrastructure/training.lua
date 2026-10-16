@@ -126,29 +126,36 @@ function T.RecordBodyBlockingRedo(activity,session,restartData)
 end
 
 -- Visits survive Redo/Next/Back within an exercise, but not a new menu launch.
-function T.ShowSetupLabel(activity,session,label,index,total,key)
+function T.ShowSetupLabel(activity,session,label,index,total,key,options)
+    options=options or {}
     local visits=(session.restartData or {})._setupVisits or {}
     session.restartData=session.restartData or {};session.restartData._setupVisits=visits
     key=key or (label..':'..index)
-    if visits[key] then return end
+    if visits[key] and not options.repeatOnRedo then return end
     visits[key]=true
     if activity.setupLabelFrame then BlzFrameSetVisible(activity.setupLabelFrame,false) end
     local frame=JTG.ScopeTrackFrame(session.presentationScope,
         BlzCreateFrameByType('TEXT','JTGSetupVisit'..tostring(session.generation or ''),
             BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI,0),'',0))
     BlzFrameSetSize(frame,0.40/HELP_SCALE,0.045/HELP_SCALE)
-    BlzFrameSetAbsPoint(frame,FRAMEPOINT_TOP,0.40,0.47)
+    activity.setupLabelY=options.countdown and 0.30 or 0.47
+    BlzFrameSetAbsPoint(frame,FRAMEPOINT_TOP,0.40,activity.setupLabelY)
     BlzFrameSetTextAlignment(frame,TEXT_JUSTIFY_TOP,TEXT_JUSTIFY_CENTER)
     BlzFrameSetScale(frame,HELP_SCALE);BlzFrameSetEnable(frame,false)
     BlzFrameSetAlpha(frame,230)
-    BlzFrameSetText(frame,HELP_COLOR..label..' '..index..'/'..total..'|r')
+    local text=label..' '..index..'/'..total
+    if options.round then text=text..', Round '..options.round..'/'..options.rounds end
+    activity.setupLabelColor=options.color or HELP_COLOR
+    BlzFrameSetText(frame,activity.setupLabelColor..text..'|r')
     activity.setupLabelFrame=frame;activity.setupLabelActive=true
-    activity.setupLabelText=label..' '..index..'/'..total
-    JTG.StartScopedTimer(session,session.scope,HELP_TEXT_DURATION,false,function()
-        if activity.setupLabelText~=label..' '..index..'/'..total then return end
+    activity.setupLabelText=text
+    activity.setupLabelGeneration=(activity.setupLabelGeneration or 0)+1
+    local generation=activity.setupLabelGeneration
+    if not options.countdown then JTG.StartScopedTimer(session,session.scope,HELP_TEXT_DURATION,false,function()
+        if activity.setupLabelGeneration~=generation then return end
         activity.setupLabelActive=false
         if activity.setupLabelFrame then BlzFrameSetVisible(activity.setupLabelFrame,false) end
-    end)
+    end) end
     if not activity.setupLabelWrapped then
         activity.setupLabelWrapped=true
         local hide,show=activity.hidePresentationForMenu,activity.restorePresentation
@@ -171,15 +178,20 @@ function T.ShowSetupLabel(activity,session,label,index,total,key)
                 self.setupLabelFrame=JTG.ScopeTrackFrame(session.presentationScope,
                     BlzCreateFrameByType('TEXT','JTGSetupVisitReload',BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI,0),'',0))
                 BlzFrameSetSize(self.setupLabelFrame,0.40/HELP_SCALE,0.045/HELP_SCALE)
-                BlzFrameSetAbsPoint(self.setupLabelFrame,FRAMEPOINT_TOP,0.40,0.47)
+                BlzFrameSetAbsPoint(self.setupLabelFrame,FRAMEPOINT_TOP,0.40,self.setupLabelY or 0.47)
                 BlzFrameSetTextAlignment(self.setupLabelFrame,TEXT_JUSTIFY_TOP,TEXT_JUSTIFY_CENTER)
                 BlzFrameSetScale(self.setupLabelFrame,HELP_SCALE);BlzFrameSetEnable(self.setupLabelFrame,false)
                 BlzFrameSetAlpha(self.setupLabelFrame,230)
-                BlzFrameSetText(self.setupLabelFrame,HELP_COLOR..self.setupLabelText..'|r')
+                BlzFrameSetText(self.setupLabelFrame,(self.setupLabelColor or HELP_COLOR)..self.setupLabelText..'|r')
                 BlzFrameSetVisible(self.setupLabelFrame,self.presentationVisible~=false)
             end
         end
     end
+end
+
+function T.EndSetupLabel(activity)
+    activity.setupLabelActive=false
+    if activity.setupLabelFrame then BlzFrameSetVisible(activity.setupLabelFrame,false) end
 end
 
 function T.SetPresentation(activity, session, visible, onShow, onHide)
@@ -254,6 +266,7 @@ function T.Countdown(activity, session, seconds, onTick, onComplete)
     local timer
     timer = JTG.StartScopedTimer(session, session.scope, 1, true, function()
         if activity.finished then PauseTimer(timer); return end
+        if activity.locallyPaused then return end
         remaining = remaining - 1
         if remaining <= 0 then
             PauseTimer(timer)

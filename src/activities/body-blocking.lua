@@ -470,12 +470,24 @@ function JTG.CreateBodyBlockingActivity(session)
         self.speedFrame = JTG.ScopeTrackFrame(session.presentationScope,
             BlzCreateFrameByType("TEXT", "JTGBodyBlockRunnerSpeed", gameUI, "", 0))
         local scale = 1.45
-        BlzFrameSetSize(self.speedFrame, 0.38 / scale, 0.040 / scale)
+        BlzFrameSetSize(self.speedFrame, 0.38 / scale, 0.060 / scale)
         BlzFrameSetAbsPoint(self.speedFrame, FRAMEPOINT_TOP, 0.40, 0.505)
         BlzFrameSetTextAlignment(self.speedFrame, TEXT_JUSTIFY_MIDDLE, TEXT_JUSTIFY_CENTER)
         BlzFrameSetScale(self.speedFrame, scale)
         BlzFrameSetEnable(self.speedFrame, false)
         BlzFrameSetVisible(self.speedFrame, false)
+    end
+
+    function activity:refreshMovementStats()
+        local function line(name,speed,turn)
+            return "|cffffcc00"..name.."|r  Movement Speed "..
+                tostring(math.floor(speed+0.5)).."   Turn Rate "..string.format("%.2f",turn)
+        end
+        local text=line(self.runnerName,self.moveSpeed,self.turnRate)
+        if self.blocker and GetUnitTypeId(self.blocker)~=0 then
+            text=text.."\n"..line(self.blockerName,GetUnitMoveSpeed(self.blocker),GetUnitTurnSpeed(self.blocker))
+        end
+        BlzFrameSetText(self.speedFrame,text)
     end
 
     function activity:setOverlayVisible(visible)
@@ -615,16 +627,13 @@ function JTG.CreateBodyBlockingActivity(session)
         SetUnitPropWindow(self.referenceRunner, GetUnitPropWindow(self.runner))
         PauseUnit(self.referenceRunner, true)
         self:buildRoute()
-        BlzFrameSetText(self.speedFrame, "|cffffcc00" .. runnerName ..
-            "|r  Movement Speed " ..
-            tostring(math.floor(self.moveSpeed + 0.5)) ..
-            "   Turn Rate " .. string.format("%.2f", self.turnRate))
         BlzFrameSetVisible(self.speedFrame, true)
 
         self.blocker = JTG.ScopeTrackUnit(session.scope,
             BlzCreateUnitWithSkin(Player(0), self.blockerId,
                 self.startX + 650, self.laneY - 450, 90, self.blockerId))
         SetUnitInvulnerable(self.blocker, true)
+        self:refreshMovementStats()
         self:createSquareOverlays()
         -- Neutral ownership makes pre-countdown commands impossible without
         -- repeatedly correcting the unit's position or orders.
@@ -647,6 +656,7 @@ function JTG.CreateBodyBlockingActivity(session)
         PauseTimer(self.countdownTimer)
         self.countdownValue = 0
         self.countdownActive = false
+        if JTG.Training and JTG.Training.EndSetupLabel then JTG.Training.EndSetupLabel(self) end
         BlzFrameSetText(self.countdownFrame, "|cff80ff80GO!|r")
         SetUnitAnimation(self.starter, "attack")
         QueueUnitAnimation(self.starter, "stand")
@@ -1059,10 +1069,7 @@ function JTG.CreateBodyBlockingActivity(session)
         end
         if self.runnerName ~= nil and self.moveSpeed ~= nil and
                 self.turnRate ~= nil then
-            BlzFrameSetText(self.speedFrame, "|cffffcc00" .. self.runnerName ..
-                "|r  Movement Speed " ..
-                tostring(math.floor(self.moveSpeed + 0.5)) ..
-                "   Turn Rate " .. string.format("%.2f", self.turnRate))
+            self:refreshMovementStats()
         end
         if self.countdownActive then
             BlzFrameSetText(self.countdownFrame, "|cffffcc00" ..
@@ -1170,8 +1177,8 @@ function JTG.CreateBodyBlockingActivity(session)
 
     function activity:start(current)
         if JTG.Training and JTG.Training.ShowSetupLabel and self.mode=='training' then
-            JTG.Training.ShowSetupLabel(self,session,'Runner',self.runnerIndex,#TRAINING_ROSTERS[self.race],
-                self.race..':'..self.runnerIndex)
+            JTG.Training.ShowSetupLabel(self,session,'Stage',self.runnerIndex,#TRAINING_ROSTERS[self.race],
+                self.race..':'..self.runnerIndex,{repeatOnRedo=true,color='|cffffff00',countdown=true})
         end
         if GetLocalPlayer() == Player(0) then
             SetCameraPosition(current.scene.centerX, current.scene.centerY)

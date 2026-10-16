@@ -43,8 +43,10 @@ function JTG.CreateHeroesTutorialActivity(session)
         for _,record in ipairs(self.levelActors) do
             if record.unit==self.selectedHero and GetUnitTypeId(record.unit)~=0 then selected=record.unit;break end
         end
-        self:setButtonEnabled(self.frames.plus,selected~=nil and GetHeroLevel(selected)<10)
-        self:setButtonEnabled(self.frames.minus,selected~=nil and GetHeroLevel(selected)>1)
+        -- Keep native hit testing even when the action is disabled. BindClicks
+        -- consults buttonEnabled, so grey buttons consume rather than pass clicks.
+        self:setButtonEnabled(self.frames.plus,selected~=nil and GetHeroLevel(selected)<10,true)
+        self:setButtonEnabled(self.frames.minus,selected~=nil and GetHeroLevel(selected)>1,true)
         local xp=self.presentationVisible and not self.topicsOpen and not self.optionalOpen and self.worldScene=='xp-numbers'
         for _,button in ipairs(self.frames.xpChoices or {}) do BlzFrameSetVisible(button,xp) end
         JTG.UI.RefreshWelcomeArrow(self)
@@ -230,6 +232,9 @@ function JTG.CreateHeroesTutorialActivity(session)
         end
         DestroyGroup(group);RemoveRect(area)
         trace(self,'after-foundation-ownership-transfer')
+        local oldController=GetPlayerController(Player(8))
+        JTG.ScopeBorrow(current.scope,function() SetPlayerController(Player(8),oldController) end)
+        SetPlayerController(Player(8),MAP_CONTROL_USER)
         local oldXPHandicap=GetPlayerHandicapXP(PLAYER)
         if oldXPHandicap~=1 then
             JTG.ScopeBorrow(current.scope,function()
@@ -240,6 +245,14 @@ function JTG.CreateHeroesTutorialActivity(session)
         trace(self,'after-xp-handicap')
         for _,state in ipairs({PLAYER_STATE_RESOURCE_GOLD,PLAYER_STATE_RESOURCE_LUMBER}) do
             local old=GetPlayerState(PLAYER,state);JTG.ScopeBorrow(current.scope,function() SetPlayerState(PLAYER,state,old) end)
+        end
+        -- Player 8 already grants presentation control before play. Only
+        -- passive alliances change here; shared-control notifications stay off.
+        for _,pair in ipairs({{PLAYER,Player(8),true},{Player(8),PLAYER,true},
+                {Player(8),Player(6),false},{Player(6),Player(8),false}}) do
+            local old=GetPlayerAlliance(pair[1],pair[2],ALLIANCE_PASSIVE)
+            JTG.ScopeBorrow(current.scope,function() SetPlayerAlliance(pair[1],pair[2],ALLIANCE_PASSIVE,old) end)
+            SetPlayerAlliance(pair[1],pair[2],ALLIANCE_PASSIVE,pair[3])
         end
         for _,other in ipairs({Player(1),Player(PLAYER_NEUTRAL_AGGRESSIVE)}) do
             for _,pair in ipairs({{PLAYER,other},{other,PLAYER}}) do
@@ -287,6 +300,7 @@ function JTG.CreateHeroesTutorialActivity(session)
         end))
         local summoned=JTG.ScopeTrackTrigger(current.scope,CreateTrigger())
         TriggerRegisterPlayerUnitEvent(summoned,PLAYER,EVENT_PLAYER_UNIT_SUMMON,nil)
+        TriggerRegisterPlayerUnitEvent(summoned,Player(8),EVENT_PLAYER_UNIT_SUMMON,nil)
         TriggerAddAction(summoned,JTG.GuardSession(current,function()
             local scope=self.ownerScopes[GetSummoningUnit()];local unit=GetSummonedUnit()
             if scope then
@@ -314,6 +328,10 @@ function JTG.CreateHeroesTutorialActivity(session)
         self.presentationVisible=false;self.complete=true;ClearTextMessages()
         JTG.UI.SetQuestAvailable(false)
         if GetLocalPlayer()==PLAYER then ClearSelection() end
+        -- Retire scenes before UI disposal and borrowed foundation state is
+        -- restored. The runner's final scope disposer remains an idempotent fallback.
+        T.ClearScene(self,'heroes-active');T.ClearScene(self,'heroes-roster')
+        self.actors={};self.heroes={};self.levelActors={};self.ownerScopes={}
     end
     T.InstallRunner(activity,session,{id='learn.heroes',player=PLAYER,steps=STEPS,requireStableIds=true})
     return activity

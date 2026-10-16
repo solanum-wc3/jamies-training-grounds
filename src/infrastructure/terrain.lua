@@ -148,5 +148,7 @@ function JTG.TrackTerrainBlightSource(scope,unit,region)
     end)
 end
 function JTG.RememberTerrainOwner(scope,owner)
-    if scope.terrainState then scope.terrainState.owners[owner]=true end
+    -- Native removal/morphing can invalidate the unit before its tracked
+    -- disposer runs. GetOwningPlayer then returns nil, not a player handle.
+    if owner~=nil and scope.terrainState then scope.terrainState.owners[owner]=true end
 end

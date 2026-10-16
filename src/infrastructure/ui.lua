@@ -445,6 +445,12 @@ local function CreateTooltipSlice(name, parent, texture, width, height, point)
     return slice
 end
 
+local function TooltipHasContent(text)
+    if type(text)~='string' then return false end
+    local plain=text:gsub('|c%x%x%x%x%x%x%x%x',''):gsub('|r',''):gsub('|n','')
+    return plain:find('%S')~=nil
+end
+
 local function AttachTooltip(button, description, side, scope)
     description = WrapTooltipText(description)
     tooltipCount = tooltipCount + 1
@@ -457,34 +463,38 @@ local function AttachTooltip(button, description, side, scope)
     BlzFrameSetAbsPoint(tooltip, FRAMEPOINT_TOPRIGHT, 0.728, 0.135 + height)
     BlzFrameSetLevel(tooltip, 100)
 
+    -- Native hover can re-show the attached root. Hide its child visuals
+    -- for empty content without rebinding or detaching the native tooltip.
+    local content=BlzCreateFrameByType('FRAME','JTGTooltipContent'..tooltipCount,tooltip,'',0)
+    BlzFrameSetAllPoints(content,tooltip)
     local corner = 0.008
     local innerWidth = width - corner * 2
     local innerHeight = height - corner * 2
     local prefix = "JTGTooltipSlice" .. tooltipCount
-    CreateTooltipSlice(prefix .. "TL", tooltip, "JTGMenu\\TooltipTL.dds",
+    CreateTooltipSlice(prefix .. "TL", content, "JTGMenu\\TooltipTL.dds",
         corner, corner, FRAMEPOINT_TOPLEFT)
-    CreateTooltipSlice(prefix .. "Top", tooltip, "JTGMenu\\TooltipTop.dds",
+    CreateTooltipSlice(prefix .. "Top", content, "JTGMenu\\TooltipTop.dds",
         innerWidth, corner, FRAMEPOINT_TOP)
-    CreateTooltipSlice(prefix .. "TR", tooltip, "JTGMenu\\TooltipTR.dds",
+    CreateTooltipSlice(prefix .. "TR", content, "JTGMenu\\TooltipTR.dds",
         corner, corner, FRAMEPOINT_TOPRIGHT)
-    local left = CreateTooltipSlice(prefix .. "Left", tooltip, "JTGMenu\\TooltipLeft.dds",
+    local left = CreateTooltipSlice(prefix .. "Left", content, "JTGMenu\\TooltipLeft.dds",
         corner, innerHeight, FRAMEPOINT_LEFT)
-    local center = CreateTooltipSlice(prefix .. "Center", tooltip, "JTGMenu\\TooltipCenter.dds",
+    local center = CreateTooltipSlice(prefix .. "Center", content, "JTGMenu\\TooltipCenter.dds",
         innerWidth, innerHeight, FRAMEPOINT_CENTER)
-    local right = CreateTooltipSlice(prefix .. "Right", tooltip, "JTGMenu\\TooltipRight.dds",
+    local right = CreateTooltipSlice(prefix .. "Right", content, "JTGMenu\\TooltipRight.dds",
         corner, innerHeight, FRAMEPOINT_RIGHT)
-    CreateTooltipSlice(prefix .. "BL", tooltip, "JTGMenu\\TooltipBL.dds",
+    CreateTooltipSlice(prefix .. "BL", content, "JTGMenu\\TooltipBL.dds",
         corner, corner, FRAMEPOINT_BOTTOMLEFT)
-    CreateTooltipSlice(prefix .. "Bottom", tooltip, "JTGMenu\\TooltipBottom.dds",
+    CreateTooltipSlice(prefix .. "Bottom", content, "JTGMenu\\TooltipBottom.dds",
         innerWidth, corner, FRAMEPOINT_BOTTOM)
-    CreateTooltipSlice(prefix .. "BR", tooltip, "JTGMenu\\TooltipBR.dds",
+    CreateTooltipSlice(prefix .. "BR", content, "JTGMenu\\TooltipBR.dds",
         corner, corner, FRAMEPOINT_BOTTOMRIGHT)
 
     -- BlzFrameSetScale scales the text frame's geometry as well as its glyphs.
     -- Compensate the declared size so the rendered text reaches the same inner
     -- right edge as a stock Warcraft tooltip.
     local tooltipTextScale = 0.95
-    local label = CreateText("JTGTooltipText" .. tooltipCount, tooltip,
+    local label = CreateText("JTGTooltipText" .. tooltipCount, content,
         description, 0.223 / tooltipTextScale,
         (height - 0.012) / tooltipTextScale, tooltipTextScale)
     BlzFrameSetTextAlignment(label, TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_LEFT)
@@ -495,6 +505,7 @@ local function AttachTooltip(button, description, side, scope)
     else table.insert(UI.tooltips, tooltip) end
     local function updateText(text)
         text = WrapTooltipText(text)
+        BlzFrameSetVisible(content,TooltipHasContent(text))
         -- Let the engine measure wrapped text at this fixed width; the height
         -- estimate is retained when layout has not resolved yet (hidden frames).
         BlzFrameSetSize(label,0.223 / tooltipTextScale,0)
@@ -1308,7 +1319,7 @@ local function RefreshActivityBriefingChoices()
         BlzFrameSetVisible(button, not commandGrid and choice ~= nil)
         local tooltip=(UI.activityBriefingChoiceTooltips or {})[index]
         if tooltip then
-            local hasTooltip=not commandGrid and choice~=nil and choice.tooltip~=nil and choice.tooltip~=''
+            local hasTooltip=not commandGrid and choice~=nil and TooltipHasContent(choice.tooltip)
             -- Keep the native attachment stable. Detaching with a null frame
             -- and reattaching while changing a hovered button can crash WC3.
             BlzFrameSetAlpha(tooltip,hasTooltip and 255 or 0)
@@ -1316,6 +1327,8 @@ local function RefreshActivityBriefingChoices()
             if hasTooltip then
                 UI.activityBriefingChoiceTooltipUpdates[index]("|cffffcc00"..choice.label.."|r|n"..
                     (choice.tooltipColor or "|cffffffff")..choice.tooltip.."|r")
+            else
+                UI.activityBriefingChoiceTooltipUpdates[index]("")
             end
         end
         if not commandGrid and choice ~= nil then
@@ -2518,6 +2531,12 @@ function UI.Initialize(restoring)
         end
     end
     CreateInfoPanel("patch", "Patch Notes",
+        "|cffffcc00v0.3.1|r  |cffb0b0b016 October 2026|r\n" ..
+        "- Improved Heroes tutorial cleanup, hero presentation and level controls.\n" ..
+        "- Custom Surrounds heroes follow ability level requirements and retain unused points.\n" ..
+        "- Added stage and round countdown labels, plus player movement data in Body Blocking.\n" ..
+        "- Build Order starts with a three-second countdown and idle workers.\n" ..
+        "- Fixed empty briefing tooltips and improved exercise navigation and cleanup.\n\n" ..
         "|cffffcc00v0.2.0|r  |cffb0b0b016 October 2026|r\n" ..
         "- Added the Heroes tutorial, covering attributes, abilities, experience and items.\n" ..
         "- Added Hotkey Trainer, using your current hotkeys and helping you practise missed commands.\n" ..

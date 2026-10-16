@@ -108,3 +108,14 @@ normal:finish('success','Normal result','')
 assert(not normal.resultCard.visible)
 delayed.callback();assert(normal.resultCard.visible, 'Visible delayed result never appeared')
 print('Passed: Windwalk keeps its result delay, stays hidden behind menus and restores the saved result on return.')
+
+function GetUnitTypeId(u)return u.raw end
+function GetUnitMoveSpeed(u)return u.speed end
+function GetUnitTurnSpeed(u)return u.turn end
+function BlzFrameSetText(f,text)f.text=text end
+local movement=JTG.CreateBodyBlockingActivity({restartData={}})
+movement.runnerName,movement.moveSpeed,movement.turnRate='Grunt',270,.5
+movement.blockerName,movement.blocker='Footman',{raw='hfoo',speed=270,turn=.6}
+movement.speedFrame={};movement:refreshMovementStats()
+assert(movement.speedFrame.text=='|cffffcc00Grunt|r  Movement Speed 270   Turn Rate 0.50\n|cffffcc00Footman|r  Movement Speed 270   Turn Rate 0.60')
+print('Passed: runner and player pawn movement data use matching stacked formatting.')

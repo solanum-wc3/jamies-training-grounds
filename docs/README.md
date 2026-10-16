@@ -4,6 +4,8 @@ Published baseline and current source: **v0.2.0** (16 October 2026). See [releas
 
 ## Current guidance
 
+- [0.3.1 fixes-only testing](0.3.1-TESTING.md) — candidate without Demo; native acceptance outstanding
+
 - [Development workflow](../AGENTS.md) and [contribution rules](../CONTRIBUTING.md)
 - [Development status](DEVELOPMENT-STATUS.md) — current checkpoint, build and outstanding tests
 - [Release status](RELEASE-STATUS.md) — validation, limitations and distribution

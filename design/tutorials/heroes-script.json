@@ -317,7 +317,7 @@
       "wait": true,
       "lines": [
         "Check out the different heroes!",
-        "You can use the {Button: +} and {Button: -} buttons to raise and lower the heroes' levels, to see what changes about them when you do."
+        "You can select heroes and use the {Button: +} and {Button: -} buttons to raise and lower the heroes' levels, to see what changes about them when you do."
       ],
       "authorTriggers": [
         "Change back to Arena1. Despawn the two heroes in Arena2.",

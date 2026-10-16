@@ -60,10 +60,10 @@ function T.ResetScene(activity,index)
     return activity:restoreCheckpoint(state.step)
 end
 
-function T.SetButtonEnabled(activity,button,enabled)
+function T.SetButtonEnabled(activity,button,enabled,blockClicks)
     if button==nil then return end
     activity.buttonEnabled[GetHandleId(button)]=enabled==true
-    BlzFrameSetEnable(button,enabled==true)
+    BlzFrameSetEnable(button,enabled==true or blockClicks==true)
     BlzFrameSetAlpha(button,enabled and 255 or 145)
     BlzFrameSetTextColor(button,enabled and BlzConvertColor(255,255,204,0) or BlzConvertColor(255,145,145,145))
 end
@@ -304,7 +304,14 @@ function T.BindClicks(activity,scope)
         if scope.disposed then return end
         local clicked=BlzGetTriggerFrame()
         local entry=activity.actions[GetHandleId(clicked)]
-        if not entry or activity.buttonEnabled[GetHandleId(clicked)]==false then return end
+        if not entry then return end
+        if activity.buttonEnabled[GetHandleId(clicked)]==false then
+            -- Disabled-looking hit targets still receive native focus. Consume
+            -- the click silently and hand keyboard control back to gameplay.
+            if JTG.UI and JTG.UI.ReleaseFrameFocus then JTG.UI.ReleaseFrameFocus(clicked) end
+            if JTG.UI and JTG.UI.ReleaseKeyboardFocusAfterClick then JTG.UI.ReleaseKeyboardFocusAfterClick() end
+            return
+        end
         local toolbarKind=(activity.toolbarSoundKinds or {})[GetHandleId(clicked)]
         if JTG.UI then
             local sound=entry.sound

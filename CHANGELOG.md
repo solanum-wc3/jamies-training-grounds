@@ -2,6 +2,14 @@
 
 This file records player-visible changes in tested project versions. Development reasoning belongs in commit messages and `docs/decisions/`.
 
+## v0.3.1 candidate (2026-10-16)
+
+- Improved Heroes tutorial cleanup, presentation-hero ownership and level controls.
+- Custom Surrounds heroes follow ability level requirements and keep unused skill points; Finish returns to its briefing.
+- Added yellow stage/round labels beneath countdowns and player movement data in Body Blocking.
+- Build Order starts with a three-second countdown and idle workers on both bases.
+- Removed empty briefing tooltip boxes and hardened cleanup for already-removed units.
+
 ## v0.2.0 (2026-10-16)
 
 - Added the Heroes tutorial, covering attributes, abilities, experience and items.

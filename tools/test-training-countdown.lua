@@ -9,6 +9,8 @@ local ticks,starts={},0
 local a={finished=false}
 local timer=JTG.Training.Countdown(a,{scope={}},3,function(n) ticks[#ticks+1]=n end,
     function() starts=starts+1 end)
+a.locallyPaused=true;timer.fn();assert(#ticks==1 and starts==0)
+a.locallyPaused=false
 timer.fn();timer.fn();timer.fn()
 assert(table.concat(ticks,',')=='3,2,1' and starts==1 and timer.paused)
 local cancelled=JTG.Training.Countdown(a,{scope={}},3,function() end,

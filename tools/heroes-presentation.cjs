@@ -52,6 +52,8 @@ function configureDummyControl(script) {
     assert.equal(config.split(marker).length,2,'Map configuration boundary changed');
     return script.slice(0,start)+config.replace(marker,marker+
         '\n-- Player 6 is reserved for controllable hostile Target Dummies.\n'+
-        'SetPlayerAlliance(Player(6), Player(0), ALLIANCE_SHARED_CONTROL, true)');
+        'SetPlayerAlliance(Player(6), Player(0), ALLIANCE_SHARED_CONTROL, true)'+
+        '\n-- Player 8 hosts controllable Heroes presentation actors without player portraits.\n'+
+        'SetPlayerAlliance(Player(8), Player(0), ALLIANCE_SHARED_CONTROL, true)');
 }
 module.exports={presentationBuildings,patchPresentationBuildings,configureDummyControl};

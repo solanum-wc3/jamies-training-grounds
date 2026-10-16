@@ -2,6 +2,7 @@
 JTG=JTG or {}
 local T,D=JTG.Tutorial,JTG.HeroesData
 local PLAYER=Player(0)
+local CONTROL=Player(8)
 local RACES={'human','orc','nightelf','undead'}
 local COLORS={human=PLAYER_COLOR_BLUE,orc=PLAYER_COLOR_RED,nightelf=PLAYER_COLOR_CYAN,
     undead=PLAYER_COLOR_PURPLE,neutral=PLAYER_COLOR_LIGHT_GRAY}
@@ -22,7 +23,9 @@ function JTG.InstallHeroesScenes(activity,session)
     activity.rosterArena=arena('arena.south');activity.practiceArena=arena('arena.north')
     activity.ownerScopes={};activity.levelActors={}
     function activity:sceneUnit(scope,raw,x,y,owner,color,level,hiddenIcons)
-        local unit=T.CreateSceneUnit(scope,Player(PLAYER_NEUTRAL_PASSIVE),FourCC(raw),x,y,270)
+        -- Create for the intended owner directly. Neutral heroes can
+        -- receive engine initialization before a later ownership transfer.
+        local unit=T.CreateSceneUnit(scope,owner or PLAYER,FourCC(raw),x,y,270)
         assert(unit and GetUnitTypeId(unit)~=0,'Heroes scene missing unit '..raw)
         if JTG.Dev and JTG.Dev.HeroesAudioTrace then JTG.Dev.HeroesAudioTrace(self,'created-before-food-disable:'..raw) end
         -- Instructional actors retain their native stats but do not form an
@@ -36,9 +39,8 @@ function JTG.InstallHeroesScenes(activity,session)
             SetUnitState(unit,UNIT_STATE_MANA,GetUnitState(unit,UNIT_STATE_MAX_MANA))
             BlzSetUnitBooleanField(unit,UNIT_BF_HERO_HIDE_HERO_INTERFACE_ICON,hiddenIcons==true)
         end
-        SetUnitOwner(unit,owner or PLAYER,false)
         if JTG.Dev and JTG.Dev.HeroesAudioUnit then JTG.Dev.HeroesAudioUnit(self,raw,unit,x,y) end
-        -- Demo Mode's passive-unit setup uses zero acquisition and Stop.
+        -- Passive scene actors use zero acquisition and Stop.
         -- Hold Position can still attack an enemy already in weapon range.
         IssueImmediateOrder(unit,'stop')
         return unit
@@ -73,7 +75,7 @@ function JTG.InstallHeroesScenes(activity,session)
                 local column=row==0 and index-1 or index-firstRow-1
                 local x,y=group.x+(column-(count-1)/2)*150,group.y-200-row*350
                 if entry.raw=='Nplh' then x=x-200 end
-                local owner=mode=='showcase' and PLAYER or Player(PLAYER_NEUTRAL_PASSIVE)
+                local owner=mode=='showcase' and CONTROL or Player(PLAYER_NEUTRAL_PASSIVE)
                 local hero=self:sceneUnit(scope,entry.raw,x,y,owner,group.color,mode=='showcase' and 1 or 10,mode=='showcase')
                 SuspendHeroXP(hero,true)
                 group.heroes[#group.heroes+1]=hero;self.heroes[entry.raw]=hero
@@ -236,7 +238,7 @@ function JTG.InstallHeroesScenes(activity,session)
             self:worldText(key,x,self.practiceArena.centerY-650)
             for index,entry in ipairs(heroes) do
                 local hero=self:addActor(entry.raw,x+math.floor((index-1)/5)*300,
-                    self.practiceArena.centerY-250+((index-1)%5)*300,1,entry.color,PLAYER,true)
+                    self.practiceArena.centerY-250+((index-1)%5)*300,1,entry.color,CONTROL,true)
                 SuspendHeroXP(hero,true)
                 self.levelActors[#self.levelActors+1]={unit=hero,raw=entry.raw,color=entry.color,
                     scope=T.SceneScope(self,'heroes-active')}
@@ -251,7 +253,7 @@ function JTG.InstallHeroesScenes(activity,session)
                 local row=math.floor((level-1)/5)
                 local x=a.centerX+((level-1)%5-2)*300
                 local y=a.centerY+350-row*700
-                local hero=self:addActor('Hpal',x,y,level,PLAYER_COLOR_BLUE,Player(PLAYER_NEUTRAL_PASSIVE))
+                local hero=self:addActor('Hpal',x,y,level,PLAYER_COLOR_BLUE,CONTROL)
                 if level==1 or level==10 then BlzSetUnitSkin(hero,FourCC(level==1 and 'Hart' or 'Harf')) end
                 PauseUnit(hero,true);SuspendHeroXP(hero,true)
                 self:worldText('Level '..level..'\n'..D.heroXP[level]..' XP',x-85,y-250)
@@ -361,8 +363,8 @@ function JTG.InstallHeroesScenes(activity,session)
             if kind=='showcase' then for _,group in ipairs(self.groups) do self:addDummy(group.x,group.y-500) end end
         elseif kind=='archmages' or kind=='archmages-target' then
             local a=self.practiceArena
-            local one=self:addActor('Hamg',a.centerX-300,a.centerY,1)
-            local ten=self:addActor('Hamg',a.centerX+300,a.centerY,10)
+            local one=self:addActor('Hamg',a.centerX-300,a.centerY,1,nil,CONTROL)
+            local ten=self:addActor('Hamg',a.centerX+300,a.centerY,10,nil,CONTROL)
             self:teachAllSkills(ten,'Hamg')
             if kind=='archmages-target' then
                 self:addDummy(a.centerX,a.centerY-300,false,{one,ten})
@@ -388,7 +390,7 @@ function JTG.InstallHeroesScenes(activity,session)
                 local level=GetHeroLevel(unit);local wanted=math.max(1,math.min(10,level+delta))
                 if wanted==level then return end
                 if delta>0 then
-                    -- Demo Mode's selected-hero level-up operation; temporarily
+                    -- Temporarily
                     -- release this tutorial's XP lock while applying it.
                     SuspendHeroXP(unit,false);SetHeroLevel(unit,wanted,true);SuspendHeroXP(unit,true)
                 else
@@ -437,7 +439,7 @@ function JTG.InstallHeroesScenes(activity,session)
         if self.worldScene=='archmages' or self.worldScene=='archmages-target' then
             local a=self.practiceArena
             for _,unit in ipairs(self.actors) do
-                if GetUnitTypeId(unit)~=0 and GetOwningPlayer(unit)==PLAYER and not IsUnitType(unit,UNIT_TYPE_STRUCTURE) then
+                if GetUnitTypeId(unit)~=0 and (GetOwningPlayer(unit)==PLAYER or GetOwningPlayer(unit)==CONTROL) and not IsUnitType(unit,UNIT_TYPE_STRUCTURE) then
                     local x,y=GetUnitX(unit),GetUnitY(unit)
                     if x<a.minX+64 or x>a.maxX-64 or y<a.minY+64 or y>a.maxY-64 then
                         SetUnitPosition(unit,math.max(a.minX+64,math.min(a.maxX-64,x)),math.max(a.minY+64,math.min(a.maxY-64,y)))

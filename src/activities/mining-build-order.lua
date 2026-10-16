@@ -19,7 +19,7 @@ function JTG.InstallMiningBuildOrder(self,session,race)
     pair(playerLane.hall,reference.hall)
     for index,worker in ipairs(playerLane.workers) do
         pair(worker,reference.workers[index])
-        mirror.roles[worker]={kind=index==1 and 'lumber' or 'gold'}
+        mirror.roles[worker]={kind='idle'}
     end
     for _,entry in ipairs(JTG.HotkeyCatalog) do
         if entry.race==self.race and (entry.kind=='build' or entry.kind=='train' or

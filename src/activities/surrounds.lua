@@ -586,22 +586,27 @@ local function TrainAbilities(unit, abilities)
     if abilities == nil then return end
     if type(abilities) == "string" then abilities = {abilities} end
     if IsUnitType(unit, UNIT_TYPE_HERO) then
-        SetHeroLevel(unit, math.max(1, #abilities), false)
         local selectedLevels = {}
         for _, rawcode in ipairs(abilities) do
-            SelectHeroSkill(unit, FourCC(rawcode))
             selectedLevels[rawcode] = (selectedLevels[rawcode] or 0) + 1
         end
-        -- Custom selections may deliberately choose an ultimate below its
-        -- normal hero-level requirement. Preserve that exact requested build.
-        for rawcode, level in pairs(selectedLevels) do
-            local abilityId = FourCC(rawcode)
-            if GetUnitAbilityLevel(unit, abilityId) < level then
-                UnitAddAbility(unit, abilityId)
-                SetUnitAbilityLevel(unit, abilityId, level)
+        local wanted=math.max(1,#abilities)
+        for raw,specs in pairs(CUSTOM_HERO_ABILITIES) do
+            if FourCC(raw)==GetUnitTypeId(unit) then
+                for _,spec in ipairs(specs) do
+                    local ranks=selectedLevels[spec.rawcode]
+                    if ranks then wanted=math.max(wanted,spec.ultimate and 6 or (2*ranks-1)) end
+                end
             end
         end
-        UnitModifySkillPoints(unit, -GetHeroSkillPoints(unit))
+        if wanted>GetHeroLevel(unit) then SetHeroLevel(unit,wanted,false) end
+        for _,rawcode in ipairs(abilities) do SelectHeroSkill(unit,FourCC(rawcode)) end
+        -- Do not silently substitute an illegal ability build or spend the
+        -- unused points: the player's chosen skills obey normal hero levels.
+        for rawcode, level in pairs(selectedLevels) do
+            local abilityId = FourCC(rawcode)
+            assert(GetUnitAbilityLevel(unit,abilityId)>=level,'Hero could not learn selected skill '..rawcode)
+        end
         SetUnitState(unit, UNIT_STATE_MANA, BlzGetUnitMaxMana(unit))
     else
         for _, rawcode in ipairs(abilities) do
@@ -872,8 +877,7 @@ function JTG.OpenSurroundsMenu(originCategory, pauseGame, restorePage,
                 "Left-click units and abilities to remove them." or
                 "Left-click units and abilities to add them.",
             icon = selection.customRemoveMode and
-                "ReplaceableTextures\\CommandButtons\\BTNCancel.blp" or
-                "ReplaceableTextures\\CommandButtons\\BTNSkillz.blp",
+                "JTGMenu\\ArmorMinus.dds" or "JTGMenu\\ArmorPlus.dds",
             column = 0, row = 0,
             action = function()
                 selection.customRemoveMode = not selection.customRemoveMode
@@ -1221,7 +1225,10 @@ local function CreateSurroundsActivity(session, gargoyleMode)
     activity.resultActions = {
         next = function(self)
             if self.resultAction == "finish" then
-                JTG.ExitActivity()
+                if self.gargoyleMode then JTG.ExitActivity();return end
+                local category=JTG.Controller.lastCategory or 'skills'
+                JTG.StopActivity('surround-finish')
+                JTG.OpenSurroundsMenu(category,false)
                 return
             end
             if self.resultAction == "next_round" then
@@ -1428,6 +1435,7 @@ local function CreateSurroundsActivity(session, gargoyleMode)
     function activity:beginRun()
         self.running = true
         self.countdownActive = false
+        if JTG.Training and JTG.Training.EndSetupLabel then JTG.Training.EndSetupLabel(self) end
         self.runnerWaiting = true
         PauseUnit(self.runner, true)
         for _, unit in ipairs(self.army) do PauseUnit(unit, false) end
@@ -1683,8 +1691,9 @@ local function CreateSurroundsActivity(session, gargoyleMode)
     function activity:start(current)
         if JTG.Training and JTG.Training.ShowSetupLabel then
             local _,list=self:currentSetup()
-            JTG.Training.ShowSetupLabel(self,session,'Setup',self.setupIndex,#list,
-                self.race..':'..self.setupIndex)
+            JTG.Training.ShowSetupLabel(self,session,'Stage',self.setupIndex,#list,
+                self.race..':'..self.setupIndex,{repeatOnRedo=true,color='|cffffff00',countdown=true,
+                    round=not self.gargoyleMode and self.runnerIndex or nil,rounds=2})
         end
         if GetLocalPlayer() == Player(0) then
             SetCameraPosition(current.scene.centerX, current.scene.centerY)

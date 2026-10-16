@@ -107,6 +107,8 @@ end
 function GetUnitRallyUnit(u) return u.rallyUnit end
 function GetUnitRallyDestructable(u) return u.rallyTree end
 function ClearSelection() end
+local userControl=true
+function EnableUserControl(value) userControl=value end
 function SetCameraPosition() end
 function JTG.UI.ShowToolbar() end
 function JTG.UI.HideToolbar() end
@@ -126,10 +128,29 @@ for _,spec in ipairs({{'human','hpea','htow','hhou'},{'orc','opeo','ogre','otrb'
  end
 end
 dofile('src/activities/mining-build-order.lua')
+dofile('src/infrastructure/training.lua')
 dofile('src/activities/mining-micro.lua')
 local function fire(kind)
  event=kind
  for _,t in ipairs(triggers) do if t.events[kind] then t.callback() end end
+end
+local function finishCountdown(run)
+ assert(run.countdownRemaining==3 and not run.running and not userControl and run.elapsed==0)
+ for _,l in ipairs(run.lanes) do
+  assert(l.hall.paused);for _,u in ipairs(l.workers) do assert(u.paused and u.order==nil) end
+ end
+ run:updateCounters();assert(run.elapsed==0)
+ run:setPaused(true);run.countdownTimer.callback();assert(run.countdownRemaining==3)
+ run:setPaused(false)
+ run:hidePresentationForMenu();assert(not run.countdownFrame.visible)
+ run:restorePresentation();assert(run.countdownFrame.visible)
+ run.countdownTimer.callback();run.countdownTimer.callback()
+ assert(run.countdownRemaining==1 and not run.running)
+ run.countdownTimer.callback()
+ assert(run.running and run.countdownRemaining==nil and not run.countdownFrame.visible and userControl)
+ for _,l in ipairs(run.lanes) do
+  assert(not l.hall.paused);for _,u in ipairs(l.workers) do assert(not u.paused and u.order==nil) end
+ end
 end
 for _,race in ipairs({'human','orc'}) do
  for orientation=0,3 do
@@ -139,6 +160,7 @@ for _,race in ipairs({'human','orc'}) do
     descriptor={capabilities={}},scene={},restartData={race=race,orientation=orientation,baseBuild=base}}
    JTG.Controller.session=session;JTG.Controller.generation=1
    local run=JTG.CreateMiningMicroActivity(session);run:setup(session);run:start(session)
+   if base then finishCountdown(run) else assert(run.running and not run.countdownFrame and userControl) end
    local lane=run.lanes[2]
    assert(resources[0].gold==(base and 500 or 0) and resources[0].lumber==(base and 150 or 0))
    assert(limits[0]==(base and -1 or 5) and limits[1]==(base and -1 or 5) and limits[2]==(base and -1 or 5))
@@ -146,6 +168,9 @@ for _,race in ipairs({'human','orc'}) do
    assert(run.playerHeading.text=='|cffff0000YOU|r' and run.playerHeading.scale==run.lanes[2].counterFrame.scale)
    assert(#trees==(base and 6 or 9))
    assert(#run.lanes==(base and 2 or 3))
+   for _,l in ipairs(run.lanes) do for _,u in ipairs(l.workers) do
+    assert(base and u.order==nil or not base and u.order=='harvest','Wrong opening worker order')
+   end end
    for _,l in ipairs(run.lanes) do
     local first=(l.tree.x-l.hall.x)^2+(l.tree.y-l.hall.y)^2
     for _,tree in ipairs(l.trees) do
@@ -165,7 +190,10 @@ for _,race in ipairs({'human','orc'}) do
    if base then
     created=CreateUnit(0,'hhou',lane.hall.x+400,lane.hall.y)
     fire('construct');local newBuilding=created
-    for index=2,5 do local u=lane.workers[index];u.hidden=true;u.x=lane.mineX;u.y=lane.mineY end
+    for index=2,5 do
+     local u=lane.workers[index];worker=u;target=lane.mine;order='harvest';fire('target')
+     u.hidden=true;u.x=lane.mineX;u.y=lane.mineY
+    end
     run:checkFifthGoldWorker();assert(not run.finished)
     created=CreateUnit(0,race=='human' and 'hpea' or 'opeo',lane.hall.x,lane.hall.y)
     fire('train');worker=created;target=lane.mine;order='harvest';fire('target')
@@ -205,13 +233,15 @@ local session={active=true,generation=1,scope=JTG.CreateScope('mirror'),presenta
  descriptor={capabilities={}},scene={},restartData={race='human',baseBuild=true}}
 JTG.Controller.session=session
 local run=JTG.CreateMiningMicroActivity(session);run:setup(session);run:start(session)
+finishCountdown(run)
 local lane,reference=run.lanes[2],run.lanes[1]
 local mirror=run.buildMirror
 worker=lane.workers[2];target=lane.mine;order='smart'
 for i=1,10 do fire('target') end
-assert(#mirror.jobs==0,'Repeated gold micro leaked into reference orders')
+assert(#mirror.jobs==1,'First gold assignment must be copied once; repeated micro must not be copied')
+run:updateBuildMirror();assert(mirror.pairs[worker].target==reference.mine)
 worker=lane.workers[1];fire('target');run:updateBuildMirror()
-assert(#mirror.jobs==1 and mirror.pairs[worker].target==reference.mine)
+assert(#mirror.jobs==2 and mirror.pairs[worker].target==reference.mine)
 target=nil;targetTree=lane.tree;order='harvest';fire('target');run:updateBuildMirror()
 local before=#mirror.jobs
 for i=1,10 do fire('target') end
@@ -294,4 +324,16 @@ assert(cancelled.done and mirror.pairs[worker].order=='stop','Cancelled construc
 run:cleanup();JTG.DisposeScope(session.presentationScope);JTG.DisposeScope(session.scope)
 assert(playerWorker.removed and referenceBuilding.removed,'Mirrored actors leaked')
 print('Passed: two-base decisions, no gather micro, unaffordable retries, translated construction, generated actor pairing, research/upgrades and pause/cleanup.')
+local early={active=true,generation=1,scope=JTG.CreateScope('countdown-exit'),presentationScope=JTG.CreateScope('countdown-exit-ui'),
+ descriptor={capabilities={}},scene={},restartData={race='orc',baseBuild=true}}
+JTG.Controller.session=early
+local waiting=JTG.CreateMiningMicroActivity(early);waiting:setup(early);waiting:start(early)
+waiting.countdownTimer.callback();assert(waiting.countdownRemaining==2 and not userControl)
+local actorCount=#units
+waiting:discardPresentationForLoad();waiting:rebuildPresentation();waiting:restorePresentation()
+assert(waiting.countdownRemaining==2 and waiting.countdownFrame.text=='|cffffcc002|r' and #units==actorCount)
+early.active=false;waiting:cleanup();JTG.DisposeScope(early.presentationScope);JTG.DisposeScope(early.scope)
+assert(userControl,'Leaving during countdown left gameplay input disabled')
+waiting.countdownTimer.callback();assert(not waiting.running,'Disposed countdown started a run')
+print('Passed: Build Order 3-2-1, pause/resume, presentation-only reload, idle GO and early-exit control restoration.')
 print('Passed: Mining modes, spending-independent income, rotated three-tree layouts, mine overlay and fifth-worker entry completion.')

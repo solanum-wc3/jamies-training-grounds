@@ -104,9 +104,28 @@ for index,button in ipairs(UI.activityBriefingButtons) do
     assert(button.tooltip.text:find('practice',1,true))
 end
 UI.ShowActivityBriefing({choices={{label='Human'},{label='Orc'}}})
-for _,button in ipairs(UI.activityBriefingButtons) do assert(button.tooltip.alpha==0) end
+for _,button in ipairs(UI.activityBriefingButtons) do assert(button.tooltip.alpha==0 and button.tooltip.text=='') end
 UI.ShowActivityBriefing({choices={{label='One Minute',tooltip='Timed practice'},
     {label='Unlimited',tooltip='Unlimited practice'},{label='Build Order',tooltip='Build practice'}}})
 for _,button in ipairs(UI.activityBriefingButtons) do assert(button.tooltip.alpha==255) end
 print('Passed: rectangular choice tooltips retain native attachments through repeated race/mode page transitions.')
+-- Test the real tooltip builder too: native hover may force its root visible,
+-- but cannot resurrect the empty text/background child after slot reuse.
+local tooltipFrames={}
+function BlzCreateFrameByType(_,name,parent)
+ local frame={name=name,parent=parent};tooltipFrames[#tooltipFrames+1]=frame;return frame
+end
+function BlzFrameGetHeight() return 0 end
+local button={}
+local tip,text,update=UI.AttachActivityTooltip(nil,button,'Description')
+local contents
+for _,frame in ipairs(tooltipFrames) do
+ if frame.parent==tip and frame.name:find('JTGTooltipContent',1,true) then contents=frame end
+end
+assert(contents and contents.visible)
+update('');BlzFrameSetVisible(tip,true);BlzFrameSetAlpha(tip,255)
+assert(not contents.visible and text.text=='','Native hover resurrected an empty tooltip')
+update(' |cffffcc00|r|n ');assert(not contents.visible)
+update('Useful description');assert(contents.visible and text.text:find('Useful description',1,true))
+print('Passed: empty tooltip visuals stay hidden under native hover without rebinding attachments.')
 print('Passed: category headings, shared briefing/catalogue navigation, GO/status/result hiding and resume with an independent exercise pause.')
