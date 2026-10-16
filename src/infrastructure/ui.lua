@@ -2531,7 +2531,7 @@ function UI.Initialize(restoring)
         end
     end
     CreateInfoPanel("patch", "Patch Notes",
-        "|cffffcc00v0.3.1|r  |cffb0b0b016 October 2026|r\n" ..
+        "|cffffcc00v0.2.1|r  |cffb0b0b016 October 2026|r\n" ..
         "- Improved Heroes tutorial cleanup, hero presentation and level controls.\n" ..
         "- Custom Surrounds heroes follow ability level requirements and retain unused points.\n" ..
         "- Added stage and round countdown labels, plus player movement data in Body Blocking.\n" ..
