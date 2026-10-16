@@ -20,7 +20,7 @@ The release includes shared menus, toolbars, result cards, scoped cleanup and sa
 
 Source and public map are at **v0.2.1**. This fixes-only release improves Heroes cleanup and controls, Surrounds hero setup and navigation, countdown feedback, briefing tooltips and Mining Build Order. Demo Mode remains planned for v0.3.0. See [release validation and limitations](docs/RELEASE-STATUS.md) and [development status](docs/DEVELOPMENT-STATUS.md).
 
-Development workflow is defined in [AGENTS.md](AGENTS.md) and [CONTRIBUTING.md](CONTRIBUTING.md). The [generic latest-map download](https://github.com/solanum-wc3/jamies-training-grounds/releases/latest/download/Jamies-Training-Grounds.w3x) always points to the newest non-alpha release.
+Development workflow is defined in [AGENTS.md](AGENTS.md) and [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Repository guide
 

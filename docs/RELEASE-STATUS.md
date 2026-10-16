@@ -27,8 +27,6 @@ Five tutorials and ten exercises/demonstrations remain available, as listed in [
 All three attachments contain identical release bytes, without development tools:
 
 - [Versioned v0.2.1 map](https://github.com/solanum-wc3/jamies-training-grounds/releases/download/v0.2.1/Jamies-Training-Grounds-v0.2.1.w3x)
-- [Warcraft3Gym generic map](https://github.com/solanum-wc3/jamies-training-grounds/releases/latest/download/Jamies-Training-Grounds.w3x)
-- [Hive generic map](https://github.com/solanum-wc3/jamies-training-grounds/releases/latest/download/Jamies-Training-Grounds-Hive.w3x)
 - [Release page](https://github.com/solanum-wc3/jamies-training-grounds/releases/tag/v0.2.1)
 
 Publication verified 16 October 2026: release ID `415015638` is GitHub's latest non-prerelease. Public downloads through all three routes match the release SHA256 above. Asset IDs are `647481658` (versioned), `647481779` (Warcraft3Gym) and `647481873` (Hive). Main and the release tag were pushed; the previous release/assets and the deferred Demo branch remain intact.
@@ -36,6 +34,8 @@ Publication verified 16 October 2026: release ID `415015638` is GitHub's latest 
 ## Public download convention
 
 Each non-alpha release attaches `Jamies-Training-Grounds.w3x` for Warcraft3Gym, `Jamies-Training-Grounds-Hive.w3x` for Hive, and the versioned filename. All three contain identical map bytes. Separate asset counters distinguish downloads through the two generic routes; totals across releases require summing each filename's counters. Alpha builds never replace these routes. Release-mode packaging alone does not publish anything.
+
+Only the versioned map link is promoted in GitHub's README, current download list and release description. Generic links are for their external sites. GitHub still automatically displays all uploaded assets on a release; this cannot be hidden per asset while retaining the existing generic download routes.
 
 ## Completing an alpha cycle
 
