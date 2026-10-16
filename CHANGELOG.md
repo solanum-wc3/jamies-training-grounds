@@ -2,7 +2,7 @@
 
 This file records player-visible changes in tested project versions. Development reasoning belongs in commit messages and `docs/decisions/`.
 
-## v0.2.1 candidate (2026-10-16)
+## v0.2.1 (2026-10-16)
 
 - Improved Heroes tutorial cleanup, presentation-hero ownership and level controls.
 - Custom Surrounds heroes follow ability level requirements and keep unused skill points; Finish returns to its briefing.

@@ -2,7 +2,7 @@
 
 ## Project state
 
-`v0.2.0` is the current tested release. It is assembled reproducibly from the accepted `v0.0.1-alpha.5` foundation, maintained Lua modules and packaged assets. The foundation remains immutable and is verified by hash during every build.
+`v0.2.1` is the current release. It is assembled reproducibly from the accepted `v0.0.1-alpha.5` foundation, maintained Lua modules and packaged assets. The foundation remains immutable and is verified by hash during every build.
 
 The release has five tutorials and ten exercises/demonstrations, listed in the [activity catalogue](ACTIVITIES.md), including the authored Heroes tutorial, Reflex Training (WIP) and Hotkey Trainer. Economy, Bat Splitting and Dodging use shared tutorial/training procedures. [Release status](RELEASE-STATUS.md) records validation and limitations. Earlier migration specifications and candidate checklists remain under [`archive/`](archive/README.md) as historical context.
 

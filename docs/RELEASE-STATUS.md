@@ -1,61 +1,45 @@
-# Release status: v0.2.0
+# Release status: v0.2.1
 
-Released 16 October 2026 after the user accepted alpha60 and authorized release and merge into main. The approved in-map patch note and CHANGELOG carry the same date. Gameplay matches the accepted alpha60 source; release packaging changes the version/date and excludes development tools.
+Released 16 October 2026 on the user's explicit publication instruction. This is a fixes-only release; Demo Mode is reserved for v0.3.0. The previous release record is preserved in [the v0.2.0 archive](archive/v0.2.0/RELEASE-STATUS.md).
 
 ## Release artifact
 
-- Map: `outputs/Jamies-Training-Grounds-v0.2.0.w3x`
-- Size: 4,427,781 bytes
-- SHA256: `24c6f9ef71d6983b15ec6626e9e945d41d9649032b7c274827f8cfc38f2617ef`
-- Accepted source checkpoint before version/date changes: `73fcbcd` (alpha60)
-- Source milestone/tag: `v0.2.0` on `main`
+- Map: `outputs/Jamies-Training-Grounds-v0.2.1.w3x`
+- Size: 4,431,795 bytes
+- SHA256: `a7feab8a9613c82df79fbd3851990bd9f11a1d3f5e895edd0345cce81f6118a3`
+- Gameplay/source checkpoint before publication documentation: `6e92091`
+- Source tag: `v0.2.1`, published from main; Demo's feature commits are not ancestors.
 
-## Validation and acceptance
+## Changes and validation
 
-Preview correction, 16 October 2026: the user explicitly requested overwriting both published 0.2.0 map attachments rather than creating 0.2.1. Only `war3mapMap.blp` and `war3mapPreview.tga` differ from the original release; gameplay, metadata and the in-game terrain minimap are byte-identical. The authored PNG and generated assets are maintained separately from the immutable foundation. BLP mip/decode, TGA roundtrip and map packaging checks passed. The original release artifact was 4,207,717 bytes, SHA256 `c1b9fea3590313e707bd401d2b3d7c577a2ea469011175eb540b8fe2cffb3aca`; its original tag/source history is retained, with the artwork correction following on main.
+Heroes uses directly created presentation heroes with preconfigured shared control and removes its scenes before borrowed-state restoration. Grey level controls consume clicks; custom Surrounds heroes follow legal skill requirements and keep spare points. Surrounds Finish returns to its briefing. Body Blocking adds pawn movement data. Yellow stage/round labels accompany countdowns and repeat on Redo. Build Order starts with a three-second countdown and idle workers on both sides. Empty tooltip visuals are suppressed without detaching native frames; terrain cleanup tolerates removed-unit owners.
 
-- All 45 Lua regression fixtures passed, including late native blight writes, overlapping source/non-source scenes and replacement guards.
-- Release/development Lua source assemblies passed syntax checks (32 and 49 modules).
-- Maintained briefing, Heroes data and clean-checkout build-input checks passed.
-- Release packaging passed all nine archive, foundation, syntax, lifecycle, result/menu and development-boundary checks.
-- Native acceptance: the user confirmed alpha59's sound/control and presentation-building changes, then confirmed alpha60's blight correction works. The user authorized this release after those checks. Earlier native tests and limitations are retained in [development history](archive/v0.2.0/DEVELOPMENT-HISTORY.md).
+Source assembly (32 release/49 development modules), authored/generated data, clean build inputs, 45 non-Demo Lua fixture files and both packaging modes pass. A fresh isolated release build exactly matches the installed candidate. Both archives exclude Demo's factory, catalogue, brush and briefing asset. All three public downloads are verified against the release SHA256 before handoff.
 
-Mock checks establish orchestration, not exhaustive Warcraft rendering, pathing or save/load coverage. The release does not claim every possible interaction was manually retested.
+Publication is authorized; it is not a claim that the assistant manually retested every engine behavior. Native hero initialization, input routing, cleanup/crash reproduction and countdown/menu/save-load interactions remain covered by [the regression checklist](0.2.1-TESTING.md).
 
 ## Content and boundaries
 
-- Five tutorials and ten playable exercises/demonstrations; other cards remain placeholders. See [activity catalogue](ACTIVITIES.md).
-- Reflex Training remains explicitly WIP.
-- Mining Build Order mirrors economic commands and worker job changes; faithful replay of arbitrary Shift-queued worker sequences remains a known limitation.
-- Player-facing text-file exports remain disabled; development preload exports are diagnostic text, never executable scripts.
-- Save/load restores presentation without replaying world actions. Long-term player statistics and observers/hotseat are not part of this release.
+Five tutorials and ten exercises/demonstrations remain available, as listed in [the activity catalogue](ACTIVITIES.md). Demo remains a placeholder. Reflex Training remains WIP. Arbitrary Shift-queued Build Order sequences, persistent statistics and observers/hotseat remain outside this release. Development preload exports are diagnostic text, never executable scripts.
 
 ## Downloads
 
-All three release attachments contain the identical public map, without development tools:
+All three attachments contain identical release bytes, without development tools:
 
-- [Versioned v0.2.0 map](https://github.com/solanum-wc3/jamies-training-grounds/releases/download/v0.2.0/Jamies-Training-Grounds-v0.2.0.w3x)
-- [Latest non-alpha map](https://github.com/solanum-wc3/jamies-training-grounds/releases/latest/download/Jamies-Training-Grounds.w3x)
-- [Hive-specific latest map](https://github.com/solanum-wc3/jamies-training-grounds/releases/latest/download/Jamies-Training-Grounds-Hive.w3x)
-- [Release page](https://github.com/solanum-wc3/jamies-training-grounds/releases/tag/v0.2.0)
-
-Published and verified 16 October 2026: both public downloads match the SHA256 above, GitHub's latest release is `v0.2.0`, and the release tag points to `5a78bc5b026286f0ac54e89f165fd44e362a92cb`. The source branch was fast-forwarded into `main` and pushed. Previous versioned assets remain available; the generic latest route advances with this release. Generated maps and reports remain ignored by Git. The immutable foundation is not modified.
-
-The previous beta1 validation record is preserved in [the archive](archive/v0.1.2/RELEASE-STATUS.md).
+- [Versioned v0.2.1 map](https://github.com/solanum-wc3/jamies-training-grounds/releases/download/v0.2.1/Jamies-Training-Grounds-v0.2.1.w3x)
+- [Warcraft3Gym generic map](https://github.com/solanum-wc3/jamies-training-grounds/releases/latest/download/Jamies-Training-Grounds.w3x)
+- [Hive generic map](https://github.com/solanum-wc3/jamies-training-grounds/releases/latest/download/Jamies-Training-Grounds-Hive.w3x)
+- [Release page](https://github.com/solanum-wc3/jamies-training-grounds/releases/tag/v0.2.1)
 
 ## Public download convention
 
-Each non-alpha release attaches `Jamies-Training-Grounds.w3x` for Warcraft3Gym, `Jamies-Training-Grounds-Hive.w3x` for Hive, and the versioned filename. All three contain identical map bytes. Separate asset counters distinguish downloads through the two generic routes; totals across releases require summing each filename's counters. The release becomes GitHub's latest and the README's precise versioned link advances. Alpha builds never replace these routes. Release-mode packaging alone does not publish anything.
-
-The user requested the separate Hive route on 16 October 2026. It was added to the existing v0.2.0 release as asset 647421103, checksum-identical to the public map; the original attachments were preserved. Future public releases must carry this filename too.
+Each non-alpha release attaches `Jamies-Training-Grounds.w3x` for Warcraft3Gym, `Jamies-Training-Grounds-Hive.w3x` for Hive, and the versioned filename. All three contain identical map bytes. Separate asset counters distinguish downloads through the two generic routes; totals across releases require summing each filename's counters. Alpha builds never replace these routes. Release-mode packaging alone does not publish anything.
 
 ## Completing an alpha cycle
 
-Standing user instruction, confirmed 11 October 2026: when an alpha cycle finishes and a new non-alpha version is released, update both download routes as part of that release.
+1. Attach the validated release map under all three filenames. Never substitute a development build.
+2. Publish the release as GitHub's latest non-alpha release. Both generic links then advance without changing their URLs.
+3. Update the README's versioned map and release-note links and current-release description; commit and push the release source/documentation.
+4. Download all three public routes and verify their hashes against the validated release artifact. Provide all links to the user.
 
-1. Attach the validated public release map three times to the new GitHub Release: `Jamies-Training-Grounds.w3x`, `Jamies-Training-Grounds-Hive.w3x` and `Jamies-Training-Grounds-<version>.w3x`. All attachments must contain identical bytes. Do not substitute a development build.
-2. Publish that release as GitHub's latest non-alpha release. The fixed `/releases/latest/download/Jamies-Training-Grounds.w3x` URL then resolves to the new map without changing the URL.
-3. Update the download link at the top of the project README to `/releases/download/<version>/Jamies-Training-Grounds-<version>.w3x`, with the precise version in its visible label. Update the current-release description accordingly and push the documentation change.
-4. Verify all three public downloads against the validated release artifact and provide the versioned and both generic links to the user.
-
-Ordinary alpha outputs do not replace either public download route. Keep previous versioned releases available. This procedure does not independently authorize starting a new release; apply it when the user asks to finish the alpha cycle and release the next version.
+Preserve previous versioned releases and source history. This procedure requires the user's release authorization; it does not independently authorize publishing a new version.

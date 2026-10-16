@@ -1,10 +1,10 @@
 # Documentation guide
 
-Published baseline and current source: **v0.2.0** (16 October 2026). See [release status](RELEASE-STATUS.md) for validation and [development status](DEVELOPMENT-STATUS.md) for the accepted checkpoint. Archived reports describe earlier builds and are not current specifications.
+Published baseline and current source: **v0.2.1** (16 October 2026). See [release status](RELEASE-STATUS.md) for validation and [development status](DEVELOPMENT-STATUS.md) for the accepted checkpoint. Archived reports describe earlier builds and are not current specifications.
 
 ## Current guidance
 
-- [0.2.1 fixes-only testing](0.2.1-TESTING.md) — candidate without Demo; native acceptance outstanding
+- [0.2.1 fixes-only testing](0.2.1-TESTING.md) — release regression checklist; Demo excluded
 
 - [Development workflow](../AGENTS.md) and [contribution rules](../CONTRIBUTING.md)
 - [Development status](DEVELOPMENT-STATUS.md) — current checkpoint, build and outstanding tests

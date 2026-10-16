@@ -1,16 +1,16 @@
-# Current checkpoint: v0.2.0
+# Current checkpoint: v0.2.1
 
-Updated 16 October 2026. Public release remains v0.2.0. The user requested a separate fixes-only v0.2.1 package, with Demo deferred to v0.3.0. The single working folder is on `codex/0.2.1-fixes`, based on `main`; complete Demo work remains recoverable on `codex/demo-mode` at `1f2997f`. No merge into main or publication of v0.2.1 has occurred.
+Updated 16 October 2026. The user explicitly authorized publishing the fixes-only v0.2.1 as the latest release. Source is promoted from `codex/0.2.1-fixes` into main; Demo is reserved for v0.3.0 and remains recoverable on `codex/demo-mode` at `1f2997f`.
 
-The candidate contains Heroes scene ownership/early cleanup and level controls, legal custom Surrounds skills/free points and Finish navigation, Body Blocking movement data, countdown-bound stage/round labels, stable empty-tooltip suppression, Build Order's idle start/three-second countdown, and the nil-owner terrain cleanup guard. Its native-test checklist is [0.2.1 testing](0.2.1-TESTING.md). Demo runtime/catalogue/brush/menu changes are excluded. The Heroes shared-control initialization is self-contained in its existing presentation configuration helper.
+The release contains Heroes scene ownership/early cleanup and level controls, legal custom Surrounds skills/free points and Finish navigation, Body Blocking movement data, countdown-bound stage/round labels, stable empty-tooltip suppression, Build Order's idle start/three-second countdown, and the nil-owner terrain cleanup guard. Demo runtime/catalogue/brush/menu changes are excluded; Heroes shared control is self-contained.
 
-The release candidate is installed as `Maps/Onboarding Project/Jamies-Training-Grounds-v0.2.1.w3x`, 4,431,795 bytes, SHA256 `a7feab8a9613c82df79fbd3851990bd9f11a1d3f5e895edd0345cce81f6118a3`. Lua assembly (32 release/49 development modules), data/build checks, 45 non-Demo fixtures and both packaging modes pass. Both archives were inspected for absence of Demo factory, catalogue, brush and briefing assets. Native acceptance remains pending. The separate Hive generic link is live on the existing public v0.2.0; future releases must include its dedicated attachment.
+Installed/public map: `Jamies-Training-Grounds-v0.2.1.w3x`, 4,431,795 bytes, SHA256 `a7feab8a9613c82df79fbd3851990bd9f11a1d3f5e895edd0345cce81f6118a3`. Source/data checks, 45 non-Demo fixtures and packaging pass; an isolated rebuild matches exactly. User publication authorization does not imply every [native regression check](0.2.1-TESTING.md) was re-run. The two generic download routes use separate identical attachments for Hive and Warcraft3Gym.
 
 ## Source and distribution
 
 - Original release commit/tag: `5a78bc5` / `v0.2.0`.
 - Corrected preview source: `7fe7e30`, following the original tag on main. The user explicitly authorized replacing both 0.2.0 downloads without creating 0.2.1; Git history and the original tag were preserved.
-- Current public map: `outputs/Jamies-Training-Grounds-v0.2.0.w3x`, SHA256 `24c6f9ef71d6983b15ec6626e9e945d41d9649032b7c274827f8cfc38f2617ef`.
+- Current public map: `outputs/Jamies-Training-Grounds-v0.2.1.w3x`, SHA256 `a7feab8a9613c82df79fbd3851990bd9f11a1d3f5e895edd0345cce81f6118a3`.
 - Generic/latest and versioned downloads were verified against that map. The installed public map matches it. See [release record](RELEASE-STATUS.md) for links, sizes and the original artifact hash.
 - Development builds can include local audit bindings from ignored `work/`; clean checkouts use empty defaults. Their hashes need not match another developer's diagnostic build. Ordinary Hotkey practice uses the player's native bindings.
 
@@ -26,7 +26,7 @@ Maintenance, 16 October 2026: completed alpha records were archived and current 
 
 ## Next work
 
-The user's [roadmap](ARCHITECTURE-TODO.md#next-version-content-direction), [Demo Mode assessment](DEMO-MODE-PORT-REVIEW.md), [Unit Comparison assessment](UNIT-COMPARISON-PORT-REVIEW.md) and [observer/handoff plan](OBSERVER-HOTSEAT-PLAN.md) are preparation, not activated features. Agree on an approach before implementation; keep the single working folder and at most three user-chosen topics.
+Demo implementation is paused on its preserved branch for v0.3.0. The user's [roadmap](ARCHITECTURE-TODO.md#next-version-content-direction), [Demo Mode assessment](DEMO-MODE-PORT-REVIEW.md), [Unit Comparison assessment](UNIT-COMPARISON-PORT-REVIEW.md) and [observer/handoff plan](OBSERVER-HOTSEAT-PLAN.md) remain the preparation references for future work. Agree on an approach before implementation; keep the single working folder and at most three user-chosen topics.
 
 ## Historical investigations
 

@@ -4,6 +4,8 @@ Archived 16 October 2026 after release acceptance. These records preserve findin
 
 ## Release-cycle records
 
+- [Published v0.2.0 release record](RELEASE-STATUS.md)
+
 - [ALPHA51-TESTING](ALPHA51-TESTING.md)
 - [ALPHA52-TESTING](ALPHA52-TESTING.md)
 - [ALPHA54-TESTING](ALPHA54-TESTING.md)
