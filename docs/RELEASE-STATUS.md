@@ -1,6 +1,6 @@
 # Release status: v0.2.2
 
-Publication and a fixes-only merge into main were explicitly authorized on 17 October 2026. The preceding [0.2.1 record](archive/v0.2.1/RELEASE-STATUS.md) is preserved. Demo remains on `codex/demo-mode` for 0.3.0 and is excluded from this release.
+Released 17 October 2026 after the user explicitly authorized publication and a fixes-only merge into main. The preceding [0.2.1 record](archive/v0.2.1/RELEASE-STATUS.md) is preserved. Demo remains on `codex/demo-mode` for 0.3.0 and is excluded from this release.
 
 ## Release artifact
 
@@ -8,7 +8,7 @@ Publication and a fixes-only merge into main were explicitly authorized on 17 Oc
 - Size: 4,443,665 bytes
 - SHA256: `0689d72bd6c8daa906445ce4cf4254d6d474c04e7db5e02e389b67c5bdd971fb`
 - Maintenance candidate: `work/maintenance/022/Jamies-Training-Grounds-v0.2.2.w3x`; independent final build matches exactly.
-- Source: fixes selected onto the stable 0.2.1 baseline on `codex/0.2.2-fixes`; the full Demo branch is preserved.
+- Source tag: `v0.2.2` at `5779a44c9c5d48d72685e40477bccb2762227911`, fast-forwarded into main from `codex/0.2.2-fixes`; the full Demo branch remains at `e39b95a`.
 
 ## Changes and validation
 
@@ -22,13 +22,13 @@ A brief cursor flash on button release and remembered blight under fog remain pa
 
 ## Downloads
 
-Only the versioned map is promoted on GitHub. The generic Warcraft3Gym and Hive routes will advance through identical attachments when this release is published as latest.
+Only the versioned map is promoted on GitHub. The generic Warcraft3Gym and Hive routes now serve identical 0.2.2 attachments through GitHub's latest release.
 
 - [Versioned v0.2.2 map](https://github.com/solanum-wc3/jamies-training-grounds/releases/download/v0.2.2/Jamies-Training-Grounds-v0.2.2.w3x)
 - [Release page](https://github.com/solanum-wc3/jamies-training-grounds/releases/tag/v0.2.2)
 - [Download timeline](DOWNLOAD-COUNTS.md): timestamped cumulative route totals and exact per-version asset counts; [JSON evidence](DOWNLOAD-COUNTS.json) retains every observation.
 
-Publication and public-link hash verification are pending; record their result after upload.
+Publication verified: release ID `415533448` is GitHub's latest non-prerelease. All three public routes download bytes matching the SHA256 above. Asset IDs: `649276533` (versioned), `649276592` (generic/Warcraft3Gym), `649276643` (Hive). Main, the fixes-only branch and the source tag were pushed; older releases/assets and Demo history remain intact. Pre-publication and post-verification download snapshots are recorded, including exact per-version counts. Verification downloads contribute to the counters.
 
 ## Public download convention
 

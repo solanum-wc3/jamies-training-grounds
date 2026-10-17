@@ -80,6 +80,109 @@
       "phase": "before-publication",
       "capturedUtc": "2026-10-17T02:11:16+00:00",
       "completedUtc": "2026-10-17T02:11:16+00:00"
+    },
+    {
+      "totals": {
+        "Hive": 43,
+        "Generic / Warcraft3Gym": 246,
+        "Versioned": 216,
+        "Other": 0
+      },
+      "total": 505,
+      "assets": [
+        {
+          "release": "v0.2.2",
+          "id": 649276643,
+          "name": "Jamies-Training-Grounds-Hive.w3x",
+          "source": "Hive",
+          "downloads": 0,
+          "url": "https://github.com/solanum-wc3/jamies-training-grounds/releases/download/v0.2.2/Jamies-Training-Grounds-Hive.w3x"
+        },
+        {
+          "release": "v0.2.2",
+          "id": 649276533,
+          "name": "Jamies-Training-Grounds-v0.2.2.w3x",
+          "source": "Versioned",
+          "downloads": 0,
+          "url": "https://github.com/solanum-wc3/jamies-training-grounds/releases/download/v0.2.2/Jamies-Training-Grounds-v0.2.2.w3x"
+        },
+        {
+          "release": "v0.2.2",
+          "id": 649276592,
+          "name": "Jamies-Training-Grounds.w3x",
+          "source": "Generic / Warcraft3Gym",
+          "downloads": 0,
+          "url": "https://github.com/solanum-wc3/jamies-training-grounds/releases/download/v0.2.2/Jamies-Training-Grounds.w3x"
+        },
+        {
+          "release": "v0.2.1",
+          "id": 647481873,
+          "name": "Jamies-Training-Grounds-Hive.w3x",
+          "source": "Hive",
+          "downloads": 37,
+          "url": "https://github.com/solanum-wc3/jamies-training-grounds/releases/download/v0.2.1/Jamies-Training-Grounds-Hive.w3x"
+        },
+        {
+          "release": "v0.2.1",
+          "id": 647481658,
+          "name": "Jamies-Training-Grounds-v0.2.1.w3x",
+          "source": "Versioned",
+          "downloads": 1,
+          "url": "https://github.com/solanum-wc3/jamies-training-grounds/releases/download/v0.2.1/Jamies-Training-Grounds-v0.2.1.w3x"
+        },
+        {
+          "release": "v0.2.1",
+          "id": 647481779,
+          "name": "Jamies-Training-Grounds.w3x",
+          "source": "Generic / Warcraft3Gym",
+          "downloads": 7,
+          "url": "https://github.com/solanum-wc3/jamies-training-grounds/releases/download/v0.2.1/Jamies-Training-Grounds.w3x"
+        },
+        {
+          "release": "v0.2.0",
+          "id": 647421103,
+          "name": "Jamies-Training-Grounds-Hive.w3x",
+          "source": "Hive",
+          "downloads": 6,
+          "url": "https://github.com/solanum-wc3/jamies-training-grounds/releases/download/v0.2.0/Jamies-Training-Grounds-Hive.w3x"
+        },
+        {
+          "release": "v0.2.0",
+          "id": 645419694,
+          "name": "Jamies-Training-Grounds-v0.2.0.w3x",
+          "source": "Versioned",
+          "downloads": 32,
+          "url": "https://github.com/solanum-wc3/jamies-training-grounds/releases/download/v0.2.0/Jamies-Training-Grounds-v0.2.0.w3x"
+        },
+        {
+          "release": "v0.2.0",
+          "id": 645419512,
+          "name": "Jamies-Training-Grounds.w3x",
+          "source": "Generic / Warcraft3Gym",
+          "downloads": 26,
+          "url": "https://github.com/solanum-wc3/jamies-training-grounds/releases/download/v0.2.0/Jamies-Training-Grounds.w3x"
+        },
+        {
+          "release": "v0.1.2-beta1",
+          "id": 629046400,
+          "name": "Jamies-Training-Grounds-v0.1.2-beta1.w3x",
+          "source": "Versioned",
+          "downloads": 183,
+          "url": "https://github.com/solanum-wc3/jamies-training-grounds/releases/download/v0.1.2-beta1/Jamies-Training-Grounds-v0.1.2-beta1.w3x"
+        },
+        {
+          "release": "v0.1.2-beta1",
+          "id": 629037034,
+          "name": "Jamies-Training-Grounds.w3x",
+          "source": "Generic / Warcraft3Gym",
+          "downloads": 213,
+          "url": "https://github.com/solanum-wc3/jamies-training-grounds/releases/download/v0.1.2-beta1/Jamies-Training-Grounds.w3x"
+        }
+      ],
+      "release": "v0.2.2",
+      "phase": "after-verification",
+      "capturedUtc": "2026-10-17T02:20:29+00:00",
+      "completedUtc": "2026-10-17T02:20:29+00:00"
     }
   ]
 }

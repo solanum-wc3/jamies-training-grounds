@@ -9,6 +9,7 @@ No earlier release-time totals have been reconstructed. The JSON retains every a
 | Release checkpoint | Captured UTC | Hive | Generic / Warcraft3Gym | Versioned | Other | Total |
 | --- | --- | ---: | ---: | ---: | ---: | ---: |
 | v0.2.2 (before-publication) | 2026-10-17T02:11:16+00:00 | 43 | 246 | 216 | 0 | 505 |
+| v0.2.2 (after-verification) | 2026-10-17T02:20:29+00:00 | 43 | 246 | 216 | 0 | 505 |
 
 ## Counts for each version at every snapshot
 
@@ -19,6 +20,10 @@ The Versioned column counts only the explicitly versioned file. Total includes t
 | 2026-10-17T02:11:16+00:00 | v0.2.1 | 37 | 7 | 1 | 0 | 45 |
 | 2026-10-17T02:11:16+00:00 | v0.2.0 | 6 | 26 | 32 | 0 | 64 |
 | 2026-10-17T02:11:16+00:00 | v0.1.2-beta1 | 0 | 213 | 183 | 0 | 396 |
+| 2026-10-17T02:20:29+00:00 | v0.2.2 | 0 | 0 | 0 | 0 | 0 |
+| 2026-10-17T02:20:29+00:00 | v0.2.1 | 37 | 7 | 1 | 0 | 45 |
+| 2026-10-17T02:20:29+00:00 | v0.2.0 | 6 | 26 | 32 | 0 | 64 |
+| 2026-10-17T02:20:29+00:00 | v0.1.2-beta1 | 0 | 213 | 183 | 0 | 396 |
 
 Detailed source: [DOWNLOAD-COUNTS.json](DOWNLOAD-COUNTS.json).
 

@@ -1,6 +1,6 @@
 # Release status: v0.2.1
 
-Released 16 October 2026 on the user's explicit publication instruction. This is a fixes-only release; Demo Mode is reserved for v0.3.0. The previous release record is preserved in [the v0.2.0 archive](archive/v0.2.0/RELEASE-STATUS.md).
+Released 16 October 2026 on the user's explicit publication instruction. This is a fixes-only release; Demo Mode is reserved for v0.3.0. The previous release record is preserved in [the v0.2.0 archive](../v0.2.0/RELEASE-STATUS.md).
 
 ## Release artifact
 
@@ -16,7 +16,7 @@ Heroes uses directly created presentation heroes with preconfigured shared contr
 
 Source assembly (32 release/49 development modules), authored/generated data, clean build inputs, 45 non-Demo Lua fixture files and both packaging modes pass. A fresh isolated release build exactly matches the installed candidate. Both archives exclude Demo's factory, catalogue, brush and briefing asset. All three public downloads are verified against the release SHA256 before handoff.
 
-Publication is authorized; it is not a claim that the assistant manually retested every engine behavior. Native hero initialization, input routing, cleanup/crash reproduction and countdown/menu/save-load interactions remain covered by [the regression checklist](0.2.1-TESTING.md).
+Publication is authorized; it is not a claim that the assistant manually retested every engine behavior. Native hero initialization, input routing, cleanup/crash reproduction and countdown/menu/save-load interactions remain covered by [the regression checklist](../../0.2.1-TESTING.md).
 
 ## Content and boundaries
 
