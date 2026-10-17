@@ -77,3 +77,58 @@ local unrelated=unit(0)
 triggers[1].action()
 assert(not unrelated.removed,'Stale session action remains active')
 print('Passed: summon inheritance, split products, late products, original preservation and exit orphan sweep.')
+
+-- Engine-created purchases must follow scene ownership even after dropping.
+EVENT_PLAYER_UNIT_PICKUP_ITEM='pickup';EVENT_PLAYER_UNIT_SELL_ITEM='sell'
+local items,enumItem,manipulated,sold,buyer,seller={}
+local function item(raw) local value={raw=raw};items[#items+1]=value;return value end
+function EnumItemsInRect(_,_,callback)
+ for _,value in ipairs(items) do if not value.removed and not value.held then enumItem=value;callback() end end
+end
+function GetEnumItem() return enumItem end
+function UnitItemInSlot(u,slot) return u.inventory and u.inventory[slot] end
+function GetItemTypeId(value) return value.removed and 0 or value.raw end
+function RemoveItem(value) assert(not value.removed,'Item removed twice');value.removed=true end
+function GetManipulatedItem() return manipulated end
+function GetSoldItem() return sold end
+function GetBuyingUnit() return buyer end
+function GetSellingUnit() return seller end
+local originalItem=item('original')
+local originalHeld=item('held-original');original.inventory={[0]=originalHeld};originalHeld.held=original
+local itemSession={active=true,scope=JTG.CreateScope('items'),generation=2}
+JTG.Controller.session=itemSession;JTG.Controller.generation=2
+JTG.TrackSessionGeneratedUnits(itemSession)
+local events=triggers[#triggers]
+local scene=JTG.CreateScope('shop-scene')
+caster=JTG.ScopeTrackUnit(scene,unit(0));buyer=caster;seller=caster
+manipulated=item('picked-dropped');manipulated.held=caster
+event='pickup';events.action();manipulated.held=nil
+local dropped=manipulated
+sold=item('purchase');event='sell';events.action()
+manipulated=sold;event='pickup';events.action() -- same item: no duplicate disposer
+manipulated=originalItem;events.action()
+manipulated=originalHeld;events.action()
+JTG.DisposeScope(scene)
+assert(dropped.removed and sold.removed and not originalItem.removed and not originalHeld.removed)
+local orphanItem=item('unreported-drop')
+JTG.CleanupSessionGeneratedUnits(itemSession)
+assert(orphanItem.removed and not originalItem.removed and not originalHeld.removed)
+JTG.DisposeScope(itemSession.scope)
+print('Passed: purchased/picked-up/dropped item scene ownership, duplicate-event protection, original ground/inventory preservation and orphan-item exit sweep.')
+
+local removeNative=RemoveUnit
+local removals=0
+function GetUnitTypeId(value) return value.removed and 0 or 'test' end
+RemoveUnit=function(value)
+ assert(not value.removed,'Unit removed twice')
+ removals=removals+1;removeNative(value)
+end
+local primary,secondary=JTG.CreateScope('primary-owner'),JTG.CreateScope('duplicate-observer')
+local repeated=unit(0)
+JTG.ScopeTrackUnit(primary,repeated);JTG.ScopeTrackUnit(primary,repeated);JTG.ScopeTrackUnit(secondary,repeated)
+assert(#primary.disposers==1 and #secondary.disposers==0,'Repeated observer added another unit disposer')
+JTG.DisposeScope(secondary);assert(not repeated.removed,'Later observer stole ownership')
+JTG.DisposeScope(primary);assert(repeated.removed and removals==1)
+local replacedScope=JTG.CreateScope('already-replaced');local replaced=JTG.ScopeTrackUnit(replacedScope,unit(0))
+RemoveUnit(replaced);JTG.DisposeScope(replacedScope);assert(removals==2,'Replacement was removed again during cleanup')
+print('Passed: repeated same/cross-scope unit observations retain one owner/remover and already-removed replacements are skipped.')

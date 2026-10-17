@@ -21,6 +21,30 @@ function JTG.CreateHeroesTutorialActivity(session)
         presentationVisible=true,step=T.ResolveStep(STEPS,session.restartData),
         xpNumberChoice='hero'}
     JTG.InstallHeroesScenes(activity,session)
+    function activity:queueNavigation(action)
+        if self.navigationPending or not self.presentationVisible then return false end
+        local ticket={presentation=session.presentationScope}
+        self.navigationPending=ticket
+        -- Reuse one owned timer rather than retaining a timer per click. Like
+        -- StartActivityAfterCleanup, leave the native frame event before any
+        -- scene disposal/recreation. Direct runner calls remain synchronous.
+        self.navigationTimer=self.navigationTimer or JTG.ScopeTrackTimer(session.scope,CreateTimer())
+        TimerStart(self.navigationTimer,0,false,JTG.GuardSession(session,function()
+            if self.navigationPending~=ticket then return end
+            if ticket.presentation~=session.presentationScope or not self.presentationVisible then
+                self.navigationPending=nil;return
+            end
+            local diagnostic=JTG.Dev and JTG.Dev.HeroesXPIsolation
+            if diagnostic and diagnostic.NavigationPhase then diagnostic.NavigationPhase('deferred-scene-before') end
+            local ok,message=pcall(action)
+            if diagnostic and diagnostic.NavigationPhase then
+                diagnostic.NavigationPhase(ok and 'deferred-scene-after' or 'deferred-scene-lua-error')
+            end
+            self.navigationPending=nil
+            if not ok then error(message,0) end
+        end))
+        return true
+    end
     function activity:clearArrow() JTG.UI.ClearWelcomeArrow(self) end
     function activity:refreshControls()
         local available=self.xpQuestDiscovered==true
@@ -145,6 +169,7 @@ function JTG.CreateHeroesTutorialActivity(session)
         self:renderNarration();self:refreshControls()
     end
     function activity:createPresentation()
+        self.navigationPending=nil
         local scope=session.presentationScope;local root=BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI,0)
         local suffix=tostring(session.generation or 0)..'x'..tostring(JTG.UI.epoch or 0)
         self.frames={};self.actions={};self.buttonEnabled={};self.questAccessApplied=nil
@@ -153,9 +178,12 @@ function JTG.CreateHeroesTutorialActivity(session)
         for _,key in ipairs({'continue','menu','pause'}) do T.CreateHighlight(self,scope,'JTGHeroes',suffix,key) end
         self.frames.welcomeArrow=JTG.UI.CreateWelcomeArrow(scope,root,self.frames.continue,'JTGHeroesWelcome'..suffix)
         T.BindClicks(self,scope)
+        local function navigate(button,action,sound)
+            self:registerClick(button,function() self:queueNavigation(action) end,sound)
+        end
         self:registerClick(self.frames.menu,function() T.OpenMenu(self,'learn') end,'menu-open')
-        self:registerClick(self.frames.back,function() self:goBack() end,'return')
-        self:registerClick(self.frames.continue,function() self:continueTutorial() end)
+        navigate(self.frames.back,function() self:goBack() end,'return')
+        navigate(self.frames.continue,function() self:continueTutorial() end)
         self:registerClick(self.frames.pause,function() T.TogglePause(self) end)
         self:registerClick(self.frames.topics,function() self.topicsOpen=not self.topicsOpen;self.optionalOpen=false;self:refreshMenuVisibility() end,'menu-open')
         self:registerClick(self.frames.optional,function() self.optionalOpen=not self.optionalOpen;self.topicsOpen=false;self:refreshMenuVisibility() end,'menu-open')
@@ -169,7 +197,8 @@ function JTG.CreateHeroesTutorialActivity(session)
                 local width=close and .10 or .115
                 local button=JTG.ScopeTrackFrame(scope,T.CreateButton('JTGHeroes'..key..index..suffix,frame,choice.label,width))
                 if close then closeButton=button else buttons[#buttons+1]=button end
-                self:registerClick(button,choice.action)
+                if close then self:registerClick(button,choice.action)
+                else navigate(button,choice.action) end
             end
             JTG.LayoutChoicePopup(frame,buttons,closeButton)
             self.frames[key..'Menu']=frame
@@ -185,19 +214,20 @@ function JTG.CreateHeroesTutorialActivity(session)
             local button=JTG.ScopeTrackFrame(scope,T.CreateButton('JTGHeroes'..key..suffix,root,key=='plus' and '+' or '-',.055))
             BlzFrameSetAbsPoint(button,FRAMEPOINT_TOPRIGHT,.785,.435-(index-1)*.032)
             self.frames[key]=button
-            self:registerClick(button,function() self:changeHeroLevel(key=='plus' and 1 or -1) end)
+            navigate(button,function() self:changeHeroLevel(key=='plus' and 1 or -1) end)
         end
         self.frames.xpChoices={}
         for index,choice in ipairs({{'Hero','hero'},{'Human','human'},{'Orc','orc'},{'Night Elf','nightelf'},{'Undead','undead'},{'Neutral','neutral'}}) do
             local button=JTG.ScopeTrackFrame(scope,T.CreateButton('JTGHeroesXP'..index..suffix,root,choice[1],.10))
             BlzFrameSetAbsPoint(button,FRAMEPOINT_TOPRIGHT,.785,.435-(index-1)*.031)
             self.frames.xpChoices[index]=button
-            self:registerClick(button,function() self:selectXPDisplay(choice[2]) end)
+            navigate(button,function() self:selectXPDisplay(choice[2]) end)
         end
         self:refreshMenuVisibility()
     end
     function activity:setPresentationVisible(visible)
         self.presentationVisible=visible==true
+        if not self.presentationVisible then self.navigationPending=nil end
         if self.frames.bar then BlzFrameSetVisible(self.frames.bar,self.presentationVisible) end
         self:refreshMenuVisibility()
     end
@@ -305,7 +335,8 @@ function JTG.CreateHeroesTutorialActivity(session)
             local scope=self.ownerScopes[GetSummoningUnit()];local unit=GetSummonedUnit()
             if scope then
                 SetUnitUseFood(unit,false)
-                if scope.disposed then RemoveUnit(unit) else JTG.ScopeTrackUnit(scope,unit);self.ownerScopes[unit]=scope end
+                if scope.disposed then RemoveUnit(unit)
+                else JTG.ScopeTrackUnit(scope,unit);self:rememberActorScope(unit,scope) end
             end
         end))
         self:makeRoster('overview');self.worldScene='overview';self.actors={};self.dummies={}
@@ -325,6 +356,8 @@ function JTG.CreateHeroesTutorialActivity(session)
     end
     function activity:cleanup()
         trace(self,'cleanup-entry')
+        self.navigationPending=nil
+        if self.navigationTimer then PauseTimer(self.navigationTimer) end
         self.presentationVisible=false;self.complete=true;ClearTextMessages()
         JTG.UI.SetQuestAvailable(false)
         if GetLocalPlayer()==PLAYER then ClearSelection() end

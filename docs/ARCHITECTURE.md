@@ -34,7 +34,13 @@ Only one activity session may be active:
 
 Shared ownership helpers cover units, timers, triggers, frames, images, lightning markers, quests, destructables, fog modifiers and borrowed state. Activities own their rules; the menu and controller only dispatch lifecycle and shared actions.
 
+Both fixed arenas and their 1024-unit building margins have one immutable starting terrain/blight/variation baseline captured before menus. Overlaps are sampled once; later building setup reuses those values. Per-scene leases, source counts and generation guards protect active replacement buildings. Outside the cached area, scoped live snapshots remain. Heroes Items is synchronous and retains native standard-shop stock; only the Marketplace gets examples. The user accepted the remaining Items delay in alpha31.
+
+Unit ownership is deduplicated before registering removal, and already-removed handles are skipped. Scene lookup maps release retired references. Shared item ownership tracks explicit, purchased and picked-up items independently of ground/inventory location; the final sweep covers dropped items and inventories. Terrain writes restore bounded saved cells rather than overlapping point patches. Remembered blight under fog remains a known visual limitation.
+
 ## Shared presentation
+
+Custom buttons share `JTG.Tutorial.DispatchClick` / `UI.DispatchButtonClick` for sound, focus release and keyboard recovery. Native menu buttons retain their own handlers. Quest reference pages collapse the empty objective container and prepare description geometry before the native paused dialog opens. The brief cursor flash on release remains parked.
 
 The root menu, category catalogues, race submenus and activity briefing pages share layout primitives. Activities may override artwork dimensions or choice layout when their content requires it.
 

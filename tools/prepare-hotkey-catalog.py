@@ -84,7 +84,18 @@ def description(value):
     return text
 def name(fields, fallback):
     value = fields.get('name', fields.get('tip', fallback))
+    # Native Gather uses shared command-card text rather than an Ahrl string
+    # section. Do not leak its ability ID into an English prompt.
+    if value == fallback and fallback == 'Ahrl': value = 'Gather'
     return re.sub(r'\|c[0-9a-fA-F]{8}|\|r|\|n', '', first(value))
+
+def engineering_variants(raw):
+    result=[raw]
+    for level in range(1,4):
+        for field in ('C','D','E','F'):
+            pair=abilities['ANeg'].get('Data'+field+str(level),'').split(',')
+            if len(pair)==2 and pair[0] in result and pair[1] not in result: result.append(pair[1])
+    return result
 def add(race, source, raw, kind, fields, order=None, ability=None, **extra):
     icon = first(fields.get('art:sd', fields.get('art', '')))
     source_icon = first(unit_skin[source].get('art:sd', unit_skin[source].get('art', '')))
@@ -214,6 +225,7 @@ for race, sources in SOURCES.items():
             pos=fields.get('researchbuttonpos','').split(',')
             assert len(pos)==2, (source,raw,'Missing learn position')
             add(race,source,raw,'learn',fields,ability=raw,order=raw,
+                **({'learnAbilities':engineering_variants(raw)} if len(engineering_variants(raw))>1 else {}),
                 buildIcon='ReplaceableTextures\\CommandButtons\\BTNSkillz.blp',
                 openSlot=11,buildOrder='skillmenu',learnSlot=int(pos[0])+4*int(pos[1]),
                 description=description(fields.get('researchubertip',fields.get('ubertip',''))))
@@ -301,6 +313,11 @@ for raw, reversible in MORPHS.items():
             entry['nativeSlot']=int(pos[0])+4*int(pos[1])
             entry['prepareOrder']=fields['order']
             entry['prepareDuration']=duration
+            if raw=='ANrg':
+                # Focused native candidate: spawn Robo-Goblin directly and
+                # verify its return command without a preparatory morph.
+                entry['spawnSource']=start
+                entry.pop('prepareOrder');entry.pop('prepareDuration')
         catalog.append(entry)
 
 # Universal prompts omit the source icon, but retain a hidden native context.
@@ -334,6 +351,7 @@ if args.verified:
         if isinstance(value,bool): return 'true' if value else 'false'
         if isinstance(value,(int,float)): return str(value)
         if isinstance(value,dict): return '{'+', '.join('['+lua(key)+'] = '+lua(item) for key,item in value.items())+'}'
+        if isinstance(value,list): return '{'+', '.join(lua(item) for item in value)+'}'
         return json.dumps(value,ensure_ascii=False)
     rows=['-- Generated from src/data/hotkey-catalog.json; native texture audit passed.', 'JTG = JTG or {}', 'JTG.HotkeyCatalog = {']
     rows += ['    {'+', '.join(key+' = '+lua(value) for key,value in entry.items())+'},' for entry in catalog]

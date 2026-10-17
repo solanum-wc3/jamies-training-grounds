@@ -168,6 +168,11 @@ for _,race in ipairs({'human','orc'}) do
    assert(run.playerHeading.text=='|cffff0000YOU|r' and run.playerHeading.scale==run.lanes[2].counterFrame.scale)
    assert(#trees==(base and 6 or 9))
    assert(#run.lanes==(base and 2 or 3))
+   for _,l in ipairs(run.lanes) do
+    local second,third=l.workers[2],l.workers[3]
+    local gap=(second.x-third.x)^2+(second.y-third.y)^2
+    assert(math.abs(gap-128^2)<.001,'Mining Micro lost the native five-worker ring')
+   end
    for _,l in ipairs(run.lanes) do for _,u in ipairs(l.workers) do
     assert(base and u.order==nil or not base and u.order=='harvest','Wrong opening worker order')
    end end

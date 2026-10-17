@@ -52,6 +52,8 @@ local function InstallLoadObserver()
 end
 
 function JTG.Initialize()
+    -- Preserve the fixed arenas before menus can start any temporary scene.
+    JTG.InitializeTerrainBaseline()
     -- Capture the player's configured starting distance before an exercise
     -- moves the camera. Later zooming must not change this default.
     if GetLocalPlayer() == Player(0) then

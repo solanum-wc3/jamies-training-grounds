@@ -15,7 +15,7 @@
     "prepare:briefings": "node tools/prepare-exercise-briefings.cjs",
     "check:briefings": "node tools/prepare-exercise-briefings.cjs --check",
     "check:lua": "node tools/check-lua-sources.cjs",
-    "test:reliability": "node tools/test-exercise-briefings.cjs && node tools/test-heroes-data.cjs && node tools/test-build-inputs.cjs && python tools/check-reliability.py"
+    "test:reliability": "node tools/test-exercise-briefings.cjs && node tools/test-heroes-data.cjs && node tools/test-build-inputs.cjs && python tools/check-reliability.py && python tools/test-download-snapshots.py"
   },
   "dependencies": {
     "@jamiephan/stormlib": "0.2.1",

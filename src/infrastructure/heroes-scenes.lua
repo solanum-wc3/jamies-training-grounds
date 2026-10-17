@@ -3,6 +3,9 @@ JTG=JTG or {}
 local T,D=JTG.Tutorial,JTG.HeroesData
 local PLAYER=Player(0)
 local CONTROL=Player(8)
+-- Keep hidden shop prerequisites inside the arena's walkable interior;
+-- its bounding-rectangle corners include impassable terrain.
+local ITEM_HALL_POSITIONS={{-1500,700},{1500,700},{-1500,-300},{1500,-300}}
 local RACES={'human','orc','nightelf','undead'}
 local COLORS={human=PLAYER_COLOR_BLUE,orc=PLAYER_COLOR_RED,nightelf=PLAYER_COLOR_CYAN,
     undead=PLAYER_COLOR_PURPLE,neutral=PLAYER_COLOR_LIGHT_GRAY}
@@ -22,6 +25,13 @@ function JTG.InstallHeroesScenes(activity,session)
     local function arena(id) return assert(JTG.Scenes[id],'Missing Heroes arena '..id) end
     activity.rosterArena=arena('arena.south');activity.practiceArena=arena('arena.north')
     activity.ownerScopes={};activity.levelActors={}
+    function activity:rememberActorScope(unit,scope)
+        if self.ownerScopes[unit] then return end
+        self.ownerScopes[unit]=scope
+        JTG.ScopeAdd(scope,function()
+            if self.ownerScopes[unit]==scope then self.ownerScopes[unit]=nil end
+        end)
+    end
     function activity:sceneUnit(scope,raw,x,y,owner,color,level,hiddenIcons)
         -- Create for the intended owner directly. Neutral heroes can
         -- receive engine initialization before a later ownership transfer.
@@ -31,13 +41,15 @@ function JTG.InstallHeroesScenes(activity,session)
         -- Instructional actors retain their native stats but do not form an
         -- economy army or trigger upkeep while spawning/changing ownership.
         SetUnitUseFood(unit,false)
-        self.ownerScopes[unit]=scope
+        self:rememberActorScope(unit,scope)
         SetUnitColor(unit,color or PLAYER_COLOR_BLUE)
         SetUnitAcquireRange(unit,0);SetUnitCreepGuard(unit,false)
         if level then
             if level>GetHeroLevel(unit) then SetHeroLevel(unit,level,false) end
             SetUnitState(unit,UNIT_STATE_MANA,GetUnitState(unit,UNIT_STATE_MAX_MANA))
-            BlzSetUnitBooleanField(unit,UNIT_BF_HERO_HIDE_HERO_INTERFACE_ICON,hiddenIcons==true)
+            -- Shared-control ownership already keeps these heroes out of the
+            -- local player's portrait list, as in Demo. Do not mutate the
+            -- native hero-interface flag during creation/removal cycles.
         end
         if JTG.Dev and JTG.Dev.HeroesAudioUnit then JTG.Dev.HeroesAudioUnit(self,raw,unit,x,y) end
         -- Passive scene actors use zero acquisition and Stop.
@@ -96,88 +108,7 @@ function JTG.InstallHeroesScenes(activity,session)
         self.actors[#self.actors+1]=unit
         return unit
     end
-    function activity:setDummyHostile(dummy,hostile)
-        for _,record in ipairs(self.dummies) do
-            if record.unit==dummy then
-                record.hostile=hostile==true
-                UnitRemoveAbility(dummy,FourCC('JHdN'));UnitRemoveAbility(dummy,FourCC('JHdH'))
-                UnitAddAbility(dummy,FourCC(record.hostile and 'JHdH' or 'JHdN'))
-                SetUnitOwner(dummy,record.hostile and Player(6) or PLAYER,false)
-                IssueImmediateOrder(dummy,'stop')
-                for _,attacker in ipairs(record.autoAttackers or {}) do
-                    if GetUnitTypeId(attacker)~=0 and GetWidgetLife(attacker)>.405 then
-                        if record.hostile then IssueTargetOrder(attacker,'attack',dummy)
-                        else IssueImmediateOrder(attacker,'stop') end
-                    end
-                end
-                return true
-            end
-        end
-        return false
-    end
-    function activity:addDummy(x,y,hostile,autoAttackers)
-        local dummy=self:addActor('jHdm',x,y,nil,PLAYER_COLOR_LIGHT_GRAY,hostile and Player(6) or PLAYER)
-        BlzSetUnitStringField(dummy,UNIT_SF_NAME,'Target Dummie')
-        BlzSetUnitMaxHP(dummy,1000000);SetWidgetLife(dummy,1000000)
-        local record={unit=dummy,x=x,y=y,hostile=hostile==true,autoAttackers=autoAttackers,armor=0,armorType=4}
-        self.dummies[#self.dummies+1]=record
-        self:applyDummyArmor(record)
-        self:setDummyHostile(dummy,hostile)
-        return dummy
-    end
-    function activity:applyDummyArmor(record)
-        local types=D.dummyArmorTypes
-        BlzSetUnitIntegerField(record.unit,UNIT_IF_DEFENSE_TYPE,types[record.armorType].defense)
-        BlzSetUnitArmor(record.unit,record.armor)
-        -- Hero armor supplies its native spell-damage multiplier. Resistant
-        -- Skin supplies hero-duration debuffs without making this a hero unit.
-        if types[record.armorType].defense==5 then
-            UnitAddAbility(record.unit,FourCC('ACsk'))
-            -- Its native passive icon otherwise occupies Raise Armor's cell.
-            -- Hide this passive only; do not disable its effect or the grid.
-            BlzUnitHideAbility(record.unit,FourCC('ACsk'),true)
-        else UnitRemoveAbility(record.unit,FourCC('ACsk')) end
-        -- Separate native buttons keep the current icon local to this dummy;
-        -- changing a global ability icon would repaint every other dummy too.
-        for _,kind in ipairs(types) do UnitRemoveAbility(record.unit,FourCC(kind.raw)) end
-        UnitAddAbility(record.unit,FourCC(types[record.armorType].raw))
-        for _,raw in ipairs({'JHdP','JHdM'}) do
-            local ability=BlzGetUnitAbility(record.unit,FourCC(raw))
-            if ability then
-                BlzSetAbilityStringLevelField(ability,ABILITY_SLF_TOOLTIP_NORMAL_EXTENDED,0,
-                    'Current: '..tostring(record.armor))
-            end
-        end
-    end
-    function activity:adjustDummyArmor(unit,delta)
-        for _,record in ipairs(self.dummies) do
-            if record.unit==unit then
-                if delta then record.armor=record.armor+delta
-                else record.armorType=record.armorType%#D.dummyArmorTypes+1 end
-                self:applyDummyArmor(record)
-                return true
-            end
-        end
-        return false
-    end
-    function activity:showDummyDamage(unit,damage)
-        if damage<=0 then return end
-        local found=false
-        for _,record in ipairs(self.dummies) do if record.unit==unit then found=true;break end end
-        if not found then return end
-        self.damagePopups=self.damagePopups or {}
-        self.damagePopupIndex=(self.damagePopupIndex or 0)%16+1
-        local popup=self.damagePopups[self.damagePopupIndex]
-        if not popup then
-            popup={tag=JTG.ScopeTrackTextTag(T.SceneScope(self,'heroes-active'),CreateTextTag())}
-            self.damagePopups[self.damagePopupIndex]=popup
-            SetTextTagPermanent(popup.tag,true)
-        end
-        popup.x,popup.y,popup.age=GetUnitX(unit),GetUnitY(unit),0
-        SetTextTagText(popup.tag,string.format('%.1f',damage),.024)
-        SetTextTagColor(popup.tag,255,220,80,255)
-        SetTextTagPos(popup.tag,popup.x,popup.y,90);SetTextTagVisibility(popup.tag,true)
-    end
+    JTG.InstallTargetDummies(activity,function() return T.SceneScope(activity,'heroes-active') end)
     function activity:worldText(text,x,y)
         local tag=JTG.ScopeTrackTextTag(T.SceneScope(self,'heroes-active'),CreateTextTag())
         SetTextTagText(tag,text,0.027);SetTextTagPos(tag,x,y,32)
@@ -317,44 +248,74 @@ function JTG.InstallHeroesScenes(activity,session)
             end
         end
     end
-    function activity:showItems()
+    function activity:showItemPrerequisite(index)
         local a=self.practiceArena
         local halls={{'hcas',COLORS.human},{'ofrt',COLORS.orc},{'etoe',COLORS.nightelf},{'unp2',COLORS.undead}}
-        for index,entry in ipairs(halls) do
-            local hall=self:addActor(entry[1],index%2==1 and a.minX+300 or a.maxX-300,
-                index<=2 and a.maxY-300 or a.minY+300,nil,entry[2])
-            SetUnitInvulnerable(hall,true)
-        end
-        for index,raw in ipairs({'hvlt','ovln','eden','utom','ngme','nmrk'}) do
-            local angle=(index-1)*math.pi/3
-            local owner=index<=4 and PLAYER or Player(PLAYER_NEUTRAL_PASSIVE)
-            local shop=self:addActor(raw,a.centerX+500*math.cos(angle),a.centerY+500*math.sin(angle),nil,
-                index<=4 and COLORS[RACES[index]] or COLORS.neutral,owner)
-            SetUnitInvulnerable(shop,true)
-            local stock=D.shops[raw]
-            if raw=='nmrk' then
-                stock={};for _,group in ipairs(D.itemGroups) do
-                    if #stock<6 then stock[#stock+1]=group.items[1] end
-                end
+        local entry=assert(halls[index])
+        local position=assert(ITEM_HALL_POSITIONS[index])
+        local hall=self:addActor(entry[1],a.centerX+position[1],a.centerY+position[2],nil,entry[2])
+        -- Retain the owned tier-three prerequisite for racial shop stock,
+        -- but keep these support buildings out of the item presentation.
+        ShowUnit(hall,false)
+    end
+    function activity:showItemPrerequisites()
+        for index=1,4 do self:showItemPrerequisite(index) end
+    end
+    function activity:showItemShop(index)
+        local a=self.practiceArena
+        local raw=assert(({'hvlt','ovln','eden','utom','ngme','nmrk'})[index])
+        local angle=(index-1)*math.pi/3
+        local owner=index<=4 and PLAYER or Player(PLAYER_NEUTRAL_PASSIVE)
+        local shop=self:addActor(raw,a.centerX+500*math.cos(angle),a.centerY+500*math.sin(angle),nil,
+            index<=4 and COLORS[RACES[index]] or COLORS.neutral,owner)
+        -- Standard shops already declare their native stock. Only the
+        -- Marketplace needs explicit examples for this demonstration.
+        if raw=='nmrk' then
+            local stock={};for _,group in ipairs(D.itemGroups) do
+                if #stock<6 then stock[#stock+1]=group.items[1] end
             end
-            for _,item in ipairs(stock or {}) do RemoveItemFromStock(shop,FourCC(item));AddItemToStock(shop,FourCC(item),1,1) end
+            for _,item in ipairs(stock) do RemoveItemFromStock(shop,FourCC(item));AddItemToStock(shop,FourCC(item),1,1) end
         end
-        for index,raw in ipairs({'Hpal','Hamg','Hmkg'}) do self:addActor(raw,a.centerX+(index-2)*180,a.centerY,1) end
+    end
+    function activity:showItemShops()
+        for index=1,6 do self:showItemShop(index) end
+    end
+    function activity:showItemHero(index)
+        local a=self.practiceArena
+        self:addActor(assert(({'Hpal','Hamg','Hmkg'})[index]),a.centerX+(index-2)*180,a.centerY,1)
+    end
+    function activity:showItemDummy()
+        local a=self.practiceArena
         self:addDummy(a.centerX-1100,a.centerY)
+    end
+    function activity:showItemActors()
+        for index=1,3 do self:showItemHero(index) end
+        self:showItemDummy()
+    end
+    function activity:showGroundItems()
+        local a=self.practiceArena
         local column=0
         for _,group in ipairs(D.itemGroups) do
             local x=a.minX+250+column*480
             for index,raw in ipairs(group.items) do
                 local item=CreateItem(FourCC(raw),x+((index-1)%3)*100,a.centerY-850-math.floor((index-1)/3)*110)
                 assert(item,'Missing TM item '..raw)
-                JTG.ScopeAdd(T.SceneScope(self,'heroes-active'),function() RemoveItem(item) end)
+                JTG.ScopeTrackItem(T.SceneScope(self,'heroes-active'),item)
             end
             column=column+1
         end
+    end
+    function activity:showItems()
+        self:showItemPrerequisites()
+        self:showItemShops()
+        self:showItemActors()
+        self:showGroundItems()
         for _,state in ipairs({PLAYER_STATE_RESOURCE_GOLD,PLAYER_STATE_RESOURCE_LUMBER}) do SetPlayerState(PLAYER,state,10000) end
     end
     function activity:ensureWorld(kind,force)
         if self.worldScene==kind and not force then return false end
+        -- Detach native selection/portrait references before removing actors.
+        if GetLocalPlayer()==PLAYER then ClearSelection() end
         T.ClearScene(self,'heroes-active')
         self:hideRoster();self.actors={};self.dummies={};self.damagePopups={};self.damagePopupIndex=0;self.levelActors={};self.selectedHero=nil
         self.gnoll=nil;self.paladin=nil;self.mountainKing=nil;self.worldScene=kind
@@ -400,6 +361,7 @@ function JTG.InstallHeroesScenes(activity,session)
                         local item=UnitItemInSlot(unit,slot)
                         if item then UnitRemoveItem(unit,item);inventory[#inventory+1]=item end
                     end
+                    if GetLocalPlayer()==PLAYER then ClearSelection() end
                     RemoveUnit(unit)
                     local hero=self:sceneUnit(record.scope,record.raw,x,y,owner,record.color,wanted,true)
                     for _,item in ipairs(inventory) do UnitAddItem(hero,item) end

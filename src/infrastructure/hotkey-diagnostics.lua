@@ -66,8 +66,9 @@ function JTG.CreateHotkeyTrainingActivity(session)
                         GetUnitX(self.source)..'|'..GetUnitY(self.source)..'|buyer|'..GetUnitX(self.buyer)..'|'..GetUnitY(self.buyer))
                 end
                 if self.prompt.ability then
-                    local raw=FourCC(self.prompt.ability)
-                    Preload('//JTG_HOTKEY|ability|'..self.prompt.ability..'|level|'..GetUnitAbilityLevel(self.source,raw)..
+                    local active=self.prompt.activeAbility or self.prompt.ability
+                    local raw=FourCC(active)
+                    Preload('//JTG_HOTKEY|ability|'..active..'|level|'..GetUnitAbilityLevel(self.source,raw)..
                         '|x|'..BlzGetAbilityPosX(raw)..'|y|'..BlzGetAbilityPosY(raw))
                 end
                 for _,raw in ipairs(self.promptPrerequisites or {}) do

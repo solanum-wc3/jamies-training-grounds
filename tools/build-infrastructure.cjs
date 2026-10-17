@@ -22,7 +22,7 @@ const luaParser = req('luaparse');
 require('./prepare-exercise-briefings.cjs').prepare();
 require('./prepare-heroes-tutorial.cjs').prepare();
 
-const version = 'v0.2.1';
+const version = 'v0.2.2';
 const modeArgument = process.argv.find(argument => argument.startsWith('--mode='));
 const buildMode = modeArgument ? modeArgument.slice('--mode='.length) : 'release';
 assert(['release', 'development'].includes(buildMode),
@@ -58,6 +58,7 @@ const sharedModulePaths = [
     'src/activities/unit-controls-tutorial.lua',
     'src/activities/hotkey-setup-tutorial.lua',
     'src/generated/heroes-tutorial.lua',
+    'src/infrastructure/target-dummies.lua',
     'src/infrastructure/heroes-scenes.lua',
     'src/activities/heroes-tutorial.lua',
     'src/activities/mining-build-order.lua',

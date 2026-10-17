@@ -298,6 +298,29 @@ function T.ClearNarration(activity,preserveArrow)
     activity.narrationBlocks={}
 end
 
+-- One dispatch path for custom buttons, including the permanent exercise UI.
+-- Follow the tutorial/Workbench order: sound, release clicked-frame focus,
+-- action, then keyboard recovery. No extra action timer or second enable cycle.
+function T.DispatchClick(clicked,action,sound,enabled,soundAfterAction)
+    local ui=JTG.UI or {}
+    if enabled==false then
+        if ui.ReleaseFrameFocus then ui.ReleaseFrameFocus(clicked) end
+        if ui.ReleaseKeyboardFocusAfterClick then ui.ReleaseKeyboardFocusAfterClick() end
+        return
+    end
+    local function playSound()
+        local kind=sound
+        if type(kind)=='function' then kind=kind() end
+        if kind==nil then kind='normal' end
+        if ui.PlayButtonSound then ui.PlayButtonSound(kind) end
+    end
+    if not soundAfterAction then playSound() end
+    if ui.ReleaseFrameFocus then ui.ReleaseFrameFocus(clicked) end
+    action()
+    if soundAfterAction then playSound() end
+    if ui.ReleaseKeyboardFocusAfterClick then ui.ReleaseKeyboardFocusAfterClick() end
+end
+
 function T.BindClicks(activity,scope)
     activity.clickTrigger=JTG.ScopeTrackTrigger(scope,CreateTrigger())
     TriggerAddAction(activity.clickTrigger,function()
@@ -305,24 +328,9 @@ function T.BindClicks(activity,scope)
         local clicked=BlzGetTriggerFrame()
         local entry=activity.actions[GetHandleId(clicked)]
         if not entry then return end
-        if activity.buttonEnabled[GetHandleId(clicked)]==false then
-            -- Disabled-looking hit targets still receive native focus. Consume
-            -- the click silently and hand keyboard control back to gameplay.
-            if JTG.UI and JTG.UI.ReleaseFrameFocus then JTG.UI.ReleaseFrameFocus(clicked) end
-            if JTG.UI and JTG.UI.ReleaseKeyboardFocusAfterClick then JTG.UI.ReleaseKeyboardFocusAfterClick() end
-            return
-        end
         local toolbarKind=(activity.toolbarSoundKinds or {})[GetHandleId(clicked)]
-        if JTG.UI then
-            local sound=entry.sound
-            if type(sound)=='function' then sound=sound() end
-            if JTG.UI.PlayButtonSound then JTG.UI.PlayButtonSound(toolbarKind or sound or 'normal') end
-            if JTG.UI.ReleaseFrameFocus then JTG.UI.ReleaseFrameFocus(clicked) end
-        end
-        entry.action()
-        if JTG.UI and JTG.UI.ReleaseKeyboardFocusAfterClick then
-            JTG.UI.ReleaseKeyboardFocusAfterClick()
-        end
+        T.DispatchClick(clicked,entry.action,toolbarKind or entry.sound,
+            activity.buttonEnabled[GetHandleId(clicked)])
     end)
 end
 

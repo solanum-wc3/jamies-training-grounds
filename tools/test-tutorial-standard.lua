@@ -78,6 +78,29 @@ runner.buttonEnabled[clicked]=false;runner.clickTrigger.action()
 assert(sounds==0 and clicks==0)
 runner.buttonEnabled[clicked]=true;runner.clickTrigger.action()
 assert(sounds==1 and clicks==1)
+-- The shared exercise dispatcher uses the same order as the tutorial path,
+-- including paused play and controls whose action disposes their own frames.
+local events={}
+local oldSound=JTG.UI.PlayButtonSound
+JTG.UI.PlayButtonSound=function(kind) if kind~=false then events[#events+1]='sound:'..kind end end
+JTG.UI.ReleaseFrameFocus=function(frame) assert(not frame.destroyed);events[#events+1]='focus' end
+JTG.UI.ReleaseKeyboardFocusAfterClick=function() events[#events+1]='keyboard' end
+for _,paused in ipairs({false,true}) do
+    JTG.UI.exercisePaused=paused
+    local frame={}
+    events={}
+    T.DispatchClick(frame,function() events[#events+1]='action';frame.destroyed=true end,'normal')
+    assert(table.concat(events,',')=='sound:normal,focus,action,keyboard')
+    events={}
+    T.DispatchClick({},function() error('disabled action') end,'normal',false)
+    assert(table.concat(events,',')=='focus,keyboard')
+    events={}
+    T.DispatchClick({},function() events[#events+1]='action' end,function() return false end)
+    assert(table.concat(events,',')=='focus,action,keyboard','Dynamic silent cue became audible')
+end
+JTG.UI.PlayButtonSound=oldSound
+JTG.UI.ReleaseFrameFocus=nil;JTG.UI.ReleaseKeyboardFocusAfterClick=nil
+JTG.UI.exercisePaused=false
 scope.disposed=true;runner.clickTrigger.action()
 assert(sounds==1 and clicks==1)
 for _,name in ipairs({'camera','unit-controls','hotkey-setup','economy'}) do

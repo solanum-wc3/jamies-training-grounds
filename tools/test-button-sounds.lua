@@ -1,5 +1,7 @@
--- Test the two native button cues and real paused/deferred UI dispatch.
+-- Test the native cues through the shared immediate custom-button dispatch.
 JTG={UI={}};UI=JTG.UI
+dofile('src/infrastructure/tutorial.lua')
+UI.DispatchButtonClick=JTG.Tutorial.DispatchClick
 local file=assert(io.open('src/infrastructure/ui.lua'));local source=file:read('*a');file:close()
 local code=assert(source:match('local BUTTON_SOUND_FILES=(.-)\nUI.PlayButtonSound = PlayButtonSound'))
 local played,created={},{}
@@ -21,11 +23,14 @@ function CreateTrigger() return {} end
 function TriggerAddAction(trigger,fn) trigger.action=fn end
 local clicked
 function BlzGetTriggerFrame() return clicked end
-function CreateTimer() return {} end
+function CreateTimer() error('Button action unexpectedly deferred through a timer') end
 function TimerStart(_,_,_,fn) fn() end
 function DestroyTimer() end
 function ReleaseFrameFocus() end
 function ReleaseKeyboardFocusAfterClick() end
+local focusReleases,keyboardReleases=0,0
+UI.ReleaseFrameFocus=function() focusReleases=focusReleases+1 end
+UI.ReleaseKeyboardFocusAfterClick=function() keyboardReleases=keyboardReleases+1 end
 UI.epoch=1;UI.clickActions={};UI.clickSounds={}
 local start=assert(source:find('    UI.clickTrigger = CreateTrigger()',1,true))
 local finish=assert(source:find('    UI.hoverTrigger = CreateTrigger()',start,true))
@@ -40,10 +45,29 @@ for _,paused in ipairs({false,true}) do
     count=#played;UI.clickTrigger.action()
     assert(#played==count+1 and played[#played]=='GlueScreenClick','Start uses an opening cue')
 end
+assert(focusReleases==4 and keyboardReleases==4,'UI dispatch releases button focus more than once')
+-- Right-click alternatives use the same helper, preserving their return cue
+-- and explicitly silent actions without touching a frame after its action.
+UI.rightClickActions={};UI.clickSounds={}
+function TriggerRegisterPlayerEvent() end
+function BlzGetTriggerPlayerMouseButton() return MOUSE_BUTTON_TYPE_RIGHT end
+MOUSE_BUTTON_TYPE_RIGHT=1;EVENT_PLAYER_MOUSE_DOWN=2
+start=assert(source:find('    UI.rightClickTrigger = CreateTrigger()',1,true))
+finish=assert(source:find('    UI.escapeTrigger = CreateTrigger()',start,true))
+assert(load(source:sub(start,finish-1)))()
+clicked={};UI.hoveredRightClickFrame=clicked
+local rightClicks=0
+UI.rightClickActions[clicked]=function() rightClicks=rightClicks+1 end
+UI.clickSounds[clicked]='normal'
+count=#played;UI.rightClickTrigger.action()
+assert(rightClicks==1 and #played==count+1 and played[#played]=='GlueScreenClick')
+UI.clickSounds[clicked]=function() return false end
+count=#played;UI.rightClickTrigger.action()
+assert(rightClicks==2 and #played==count,'Silent right-click played a cue')
 assert(source:find('RegisterClick(menu, JTG.OpenTrainingMenu, "menu-open")',1,true))
 assert(source:find('RegisterClick(setups, JTG.ToggleActivitySetups, "menu-open")',1,true))
 assert(source:find('RegisterClick(button, function() UI.ShowCategory(category.id) end, "menu-open")',1,true))
-print('Passed: two native button cues, cached sound handles, opening versus ordinary action, and exactly one cue in paused/deferred dispatch.')
+print('Passed: shared immediate dispatch, one focus release, left/right actions, silent cues and menu-opening audio in paused/running play.')
 
 -- Limit extraction to the next public helper.
 local first=assert(source:find('local FEEDBACK_LABELS=',1,true))

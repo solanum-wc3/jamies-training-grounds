@@ -391,7 +391,7 @@ Generated from installed Warcraft III 3.0.0.24268 native data. An empty requirem
 | ability | Frost Attack (`Afrc`) | None |
 | ability | Freezing Breath (`Afrz`) | requires: Freezing Breath (`Rufb`) |
 | ability | Create Corpse (`Agyd`) | None |
-| ability | Ahrl (`Ahrl`) | None |
+| ability | Gather (`Ahrl`) | None |
 | ability | Unit Inventory (`Aiun`) | requires: Backpack (`Rupm`) |
 | ability | Sacrifice (`Alam`) | requires: Sacrificial Pit (`usap`) |
 | ability | Drop Corpse (`Amed`) | None |

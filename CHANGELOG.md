@@ -2,6 +2,16 @@
 
 This file records player-visible changes in tested project versions. Development reasoning belongs in commit messages and `docs/decisions/`.
 
+## v0.2.2 (2026-10-17)
+
+- Fixed Heroes tutorial crashes when revisiting sections and reduced Items loading delays.
+- Improved cleanup of purchased and dropped items, summons and temporary terrain; fixed arenas reuse their starting terrain.
+- Fixed Hotkey Trainer's neutral hiring, failed-attempt recovery, command recognition and transformed-unit preparation; expanded its lower-interface cover.
+- Restored normal starting worker formations in Mining Micro, preserving idle Build Order starts and automatic gathering in regular modes.
+- Fixed Quest description spacing and clarified that Human Farms provide 6 Food.
+
+Demo Mode remains planned for 0.3.0 and is not included. A brief cursor flash on button release and remembered blight under fog remain known visual limitations.
+
 ## v0.2.1 (2026-10-16)
 
 - Improved Heroes tutorial cleanup, presentation-hero ownership and level controls.

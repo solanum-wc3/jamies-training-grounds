@@ -9775,7 +9775,7 @@
       "race": "undead",
       "source": "ugho",
       "sourceName": "Ghoul",
-      "name": "Ahrl",
+      "name": "Gather",
       "raw": "Ahrl",
       "kind": "ability",
       "icon": "ReplaceableTextures\\CommandButtons\\BTNGatherGold.blp",
@@ -12179,6 +12179,12 @@
       },
       "order": "ANsy",
       "ability": "ANsy",
+      "learnAbilities": [
+        "ANsy",
+        "ANs1",
+        "ANs2",
+        "ANs3"
+      ],
       "buildIcon": "ReplaceableTextures\\CommandButtons\\BTNSkillz.blp",
       "openSlot": 11,
       "buildOrder": "skillmenu",
@@ -12206,6 +12212,12 @@
       },
       "order": "ANcs",
       "ability": "ANcs",
+      "learnAbilities": [
+        "ANcs",
+        "ANc1",
+        "ANc2",
+        "ANc3"
+      ],
       "buildIcon": "ReplaceableTextures\\CommandButtons\\BTNSkillz.blp",
       "openSlot": 11,
       "buildOrder": "skillmenu",
@@ -12260,6 +12272,12 @@
       },
       "order": "ANrg",
       "ability": "ANrg",
+      "learnAbilities": [
+        "ANrg",
+        "ANg1",
+        "ANg2",
+        "ANg3"
+      ],
       "buildIcon": "ReplaceableTextures\\CommandButtons\\BTNSkillz.blp",
       "openSlot": 11,
       "buildOrder": "skillmenu",
@@ -14342,12 +14360,10 @@
       "night": false,
       "requiredUnits": {},
       "requiredResearch": {},
-      "spawnSource": "Ntin",
+      "spawnSource": "Nrob",
       "startForm": "Nrob",
       "targetForm": "Ntin",
-      "transformation": true,
-      "prepareOrder": "robogoblin",
-      "prepareDuration": 1.5
+      "transformation": true
     },
     {
       "id": "undead.uobs.ability.Aave",

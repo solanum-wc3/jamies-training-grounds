@@ -559,6 +559,16 @@ local function ApplyFullQuestTextLayout()
     -- Exercise quests are reference pages rather than campaign objective
     -- checklists. Expand Warcraft's native description area through the
     -- otherwise empty QuestItem region so their text begins below the title.
+    local items = BlzGetFrameByName("QuestItemListContainer", 0)
+    if items ~= nil then
+        -- Native quest selection can restore QuestDisplay's anchor to this
+        -- container. Collapse the source of that gap as well as moving text.
+        BlzFrameClearAllPoints(items)
+        BlzFrameSetPoint(items, FRAMEPOINT_TOPLEFT,
+            detailsTitle, FRAMEPOINT_BOTTOMLEFT, 0, 0)
+        BlzFrameSetSize(items, 0.39, 0.0001)
+        BlzFrameSetVisible(items, false)
+    end
     BlzFrameClearAllPoints(display)
     BlzFrameSetPoint(display, FRAMEPOINT_TOPLEFT,
         detailsTitle, FRAMEPOINT_BOTTOMLEFT, 0.003, -0.003)
@@ -787,6 +797,9 @@ local function ReleaseFrameFocus(frame)
 end
 
 UI.ReleaseFrameFocus = ReleaseFrameFocus
+function UI.DispatchButtonClick(...)
+    return JTG.Tutorial.DispatchClick(...)
+end
 
 local BUTTON_SOUND_FILES={
     ["menu-open"]={file="Sound\\Interface\\GamePause.flac",label="PauseGame"},
@@ -2390,26 +2403,12 @@ function UI.Initialize(restoring)
         if action ~= nil then
             local soundKind = UI.clickSounds[GetHandleId(clickedFrame)]
             local previousView=UI.currentView
-            local function dispatch()
-                action()
-                local kind=type(soundKind)=='function' and soundKind() or soundKind
+            UI.DispatchButtonClick(clickedFrame,action,function()
+                local kind=soundKind
+                if type(kind)=='function' then kind=kind() end
                 if kind=='normal' and UI.menuVisible and UI.currentView~=previousView then kind='menu-open' end
-                PlayButtonSound(kind)
-                ReleaseFrameFocus(clickedFrame)
-                ReleaseKeyboardFocusAfterClick()
-            end
-            ReleaseFrameFocus(clickedFrame)
-            if UI.gameplayMenuPaused or UI.exercisePaused then
-                dispatch()
-                return
-            end
-            local epoch = UI.epoch
-            local releaseTimer = CreateTimer()
-            TimerStart(releaseTimer, 0.00, false, function()
-                DestroyTimer(releaseTimer)
-                if UI.epoch ~= epoch then return end
-                dispatch()
-            end)
+                return kind
+            end,true,true)
         end
     end)
     UI.hoverTrigger = CreateTrigger()
@@ -2434,11 +2433,7 @@ function UI.Initialize(restoring)
         if action == nil then return end
         local soundKind = UI.clickSounds[GetHandleId(clickedFrame)]
         if type(soundKind) == "function" then soundKind = soundKind() end
-        if soundKind ~= false then PlayButtonSound("return") end
-        ReleaseFrameFocus(clickedFrame)
-        action()
-        ReleaseFrameFocus(clickedFrame)
-        ReleaseKeyboardFocusAfterClick()
+        UI.DispatchButtonClick(clickedFrame,action,soundKind~=false and "return" or false)
     end)
     UI.escapeTrigger = CreateTrigger()
     BlzTriggerRegisterPlayerKeyEvent(UI.escapeTrigger, Player(0), OSKEY_ESCAPE, 0, true)
@@ -2508,6 +2503,9 @@ function UI.Initialize(restoring)
     end)
     HookNativeCloseButtons()
     HookNativeLoadButtons()
+    -- Prepare reference-page geometry even before opening a native dialog:
+    -- its game pause can suspend the periodic layout monitor.
+    ApplyFullQuestTextLayout()
     -- Never register frame events on Warcraft's upper-bar buttons. Those
     -- registrations can replace the native button behavior, including sound
     -- and dialog activation. Observe native dialogs and hotkeys instead.
@@ -2531,6 +2529,12 @@ function UI.Initialize(restoring)
         end
     end
     CreateInfoPanel("patch", "Patch Notes",
+        "|cffffcc00v0.2.2|r  |cffb0b0b017 October 2026|r\n" ..
+        "- Fixed Heroes tutorial crashes when revisiting sections and improved Items loading.\n" ..
+        "- Improved cleanup of purchased and dropped items, summons and temporary terrain.\n" ..
+        "- Fixed Hotkey Trainer commands, neutral hiring and retries.\n" ..
+        "- Restored the normal starting worker formation in Mining Micro.\n" ..
+        "- Fixed Quest text spacing and clarified that Farms provide 6 Food.\n\n" ..
         "|cffffcc00v0.2.1|r  |cffb0b0b016 October 2026|r\n" ..
         "- Improved Heroes tutorial cleanup, hero presentation and level controls.\n" ..
         "- Custom Surrounds heroes follow ability level requirements and retain unused points.\n" ..

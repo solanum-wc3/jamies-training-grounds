@@ -21,6 +21,7 @@ missing_ui = set(re.findall(r'JTG\.UI\.(\w+)\s*\(', hotkeys)) - ui_exports
 assert not missing_ui, f'Hotkey Trainer calls nonexistent shared UI APIs: {missing_ui}'
 
 GROUPS = [
+    ['quest-text-layout'],
     ['heroes-audio'],
     ['popup-layout'],
     ['terrain-cleanup'],

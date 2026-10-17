@@ -322,7 +322,7 @@ function JTG.CreateHotkeyTrainingActivity(session)
             BlzTriggerRegisterFrameEvent(trigger,button,FRAMEEVENT_CONTROL_CLICK)
             local action=item[2]
             TriggerAddAction(trigger,JTG.GuardSession(session,function()
-                BlzFrameSetEnable(button,false);BlzFrameSetEnable(button,true);action()
+                JTG.UI.DispatchButtonClick(button,action,false)
             end))
         end
         self:comparisonPrompt()

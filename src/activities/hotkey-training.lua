@@ -118,8 +118,8 @@ function JTG.CreateHotkeyTrainingActivity(session)
     end
     function self:refreshCovers()
         local visible=self.presentationVisible and not self:diagnosticsActive()
-        -- The camera looks at masked terrain away from the units. Only the
-        -- lower interface needs a visual cover; never cover the prompt area.
+        -- The camera looks at masked terrain away from the units. Cover the
+        -- lower half behind the prompt, never above its frame level.
         if self.lowerCover then
             BlzFrameSetVisible(self.lowerCover,visible and not self.finished and (self.promptMistakes or 0)<3)
         end
@@ -135,8 +135,8 @@ function JTG.CreateHotkeyTrainingActivity(session)
     end
     function self:promptIsReady()
         return self.source and self.elapsed>=(self.armedAt or math.huge) and self:sourcePreparationReady() and
-            IsUnitSelected(self.source,Player(0)) and (not self.buyer or self.prompt.kind=='common' or self.patronAccepted and
-                self.elapsed>=(self.patronAssignedAt or self.promptAt or math.huge)+TICK)
+            IsUnitSelected(self.source,Player(0)) and (not self.buyer or self.prompt.kind=='common' or
+                (GetUnitX(self.buyer)-GetUnitX(self.source))^2+(GetUnitY(self.buyer)-GetUnitY(self.source))^2<=450^2)
     end
     function self:updatePromptReadiness()
         if self.waitingPrompt or not self.prompt then return end
@@ -147,8 +147,9 @@ function JTG.CreateHotkeyTrainingActivity(session)
             self:restoreSource()
             self.armedAt=self.elapsed+SELECTION_ARM
         end
-        if self.buyer and self.prompt.kind~='common' and not self.patronAccepted and
-            IsUnitSelected(self.source,Player(0)) then self:assignPatron() end
+        -- Readiness follows the settled selected context, not the boolean
+        -- return of select-patron or visibility of engine-owned simple frames.
+        -- Some hires have no recorded slot; native execution still scores input.
         local ready=self:promptIsReady()==true
         if ready~=self.promptReady then
             self.promptReady=ready
@@ -164,7 +165,7 @@ function JTG.CreateHotkeyTrainingActivity(session)
     end
     function self:sourcePreparationReady()
         if self.morphPreparation then
-            if not self.morphPreparation.accepted or self.elapsed<self.morphPreparation.readyAt or
+            if self.elapsed<self.morphPreparation.readyAt or
                     GetUnitTypeId(self.source)~=FourCC(self.prompt.startForm) then return false end
             -- The setup cast shares its cooldown with the return button.
             UnitResetCooldown(self.source)
@@ -210,7 +211,8 @@ function JTG.CreateHotkeyTrainingActivity(session)
     function self:assignPatron()
         if not self.buyer or self.prompt.kind=='common' then return end
         self.patronAccepted=IssueNeutralTargetOrderById(Player(0),self.source,852566,self.buyer)==true
-        self.patronAssignedAt=self.patronAccepted and self.elapsed or nil
+        if self.patronAccepted then self.patronAssignedAt=self.elapsed
+        elseif not self.patronObserved then self.patronAssignedAt=nil end
     end
     function self:preparedAncientReady(prepared)
         return prepared and prepared.accepted and self.elapsed>=prepared.readyAt and
@@ -307,8 +309,12 @@ function JTG.CreateHotkeyTrainingActivity(session)
         -- command-card hierarchy also disables the user's real hotkeys.
         if JTG.UI.toolbar then BlzFrameSetLevel(JTG.UI.toolbar,40) end
         self.lowerCover=frame('BACKDROP','LowerUI',root)
-        BlzFrameSetAbsPoint(self.lowerCover,FRAMEPOINT_CENTER,0.4,0.08)
-        BlzFrameSetSize(self.lowerCover,1.2,0.16)
+        BlzFrameSetAbsPoint(self.lowerCover,FRAMEPOINT_CENTER,0.4,0.15)
+        -- Overscan horizontally: native UI layouts/scales can reach beyond
+        -- the standard central frame coordinates, including on ultrawide.
+        -- Cover the lower half (0 through 0.30); the prompt is above this
+        -- backdrop in frame level, so it stays visible over the black area.
+        BlzFrameSetSize(self.lowerCover,10.0,0.30)
         BlzFrameSetTexture(self.lowerCover,'JTGMenu\\OpaqueBlack.dds',0,true)
         BlzFrameSetVertexColor(self.lowerCover,BlzConvertColor(255,0,0,0))
         BlzFrameSetEnable(self.lowerCover,false)
@@ -382,8 +388,29 @@ function JTG.CreateHotkeyTrainingActivity(session)
             self.submenuOpen=false
             ForceUICancel()
             ClearSelection(); SelectUnit(self.source,true)
-            if self.buyer and not self.patronAccepted then self:assignPatron() end
+            if self.buyer then self:assignPatron() end
         end
+    end
+    function self:resetShopAttempt()
+        if not self.buyer or (self.prompt.kind~='buy' and self.prompt.kind~='hire') then return end
+        if GetLocalPlayer()==Player(0) then ForceUICancel();ClearSelection() end
+        SetPlayerState(Player(0),PLAYER_STATE_RESOURCE_GOLD,1000)
+        SetPlayerState(Player(0),PLAYER_STATE_RESOURCE_LUMBER,1000)
+        for _,unit in ipairs(self.promptHires or {}) do
+            local raw=GetUnitTypeId(unit)
+            if raw~=0 then
+                RemoveUnit(unit)
+                RemoveUnitFromStock(self.source,raw);AddUnitToStock(self.source,raw,1,1)
+            end
+        end
+        for _,item in ipairs(self.promptItems or {}) do
+            local raw=GetItemTypeId(item)
+            if raw~=0 then
+                RemoveItem(item)
+                RemoveItemFromStock(self.source,raw);AddItemToStock(self.source,raw,1,1)
+            end
+        end
+        self.promptHires={};self.promptItems={}
     end
     function self:nativeMatched(origin)
         -- Warcraft may change selection while executing an instant spell.
@@ -393,6 +420,12 @@ function JTG.CreateHotkeyTrainingActivity(session)
         if GetLocalPlayer()~=Player(0) then return end
         self.matchedAt,self.matchOrigin=self.elapsed,origin
         self:recordInputEvent('correct',origin)
+    end
+    function self:matchesLearnedSkill(skill)
+        for _,raw in ipairs(self.prompt.learnAbilities or {self.prompt.raw}) do
+            if skill==FourCC(raw) then return true end
+        end
+        return false
     end
     function self:recordInputEvent(kind,origin)
         if self.diagnostics then self.diagnostics.trace(self,kind,origin) end
@@ -420,6 +453,7 @@ function JTG.CreateHotkeyTrainingActivity(session)
         self.pending,self.matchedAt,self.matchOrigin,self.prefixAt=nil,nil,nil,nil
         self.inputQueue,self.inputEvents,self.preparationKeys={},{},{}
         self.buyer,self.patronAccepted,self.patronAssignedAt,self.garrisonPeon=nil,nil,nil,nil
+        self.promptHires={};self.promptItems={}
         self.promptReady=false
         self.promptShown=false
         self.armedAt=math.huge
@@ -476,13 +510,22 @@ function JTG.CreateHotkeyTrainingActivity(session)
             -- The map can cap all heroes separately from each individual type.
             local heroLimit=GetPlayerTechMaxAllowed(Player(0),FourCC('HERO'))
             JTG.ScopeAdd(context,function() SetPlayerTechMaxAllowed(Player(0),FourCC('HERO'),heroLimit) end)
-            SetPlayerTechMaxAllowed(Player(0),FourCC('HERO'),-1)
+            SetPlayerTechMaxAllowed(Player(0),FourCC('HERO'),1000)
+            -- Wrong Tavern keys may recruit any of its heroes, not just the
+            -- requested type. Borrow every sold hero's individual limit too.
+            for _,entry in ipairs((JTG.HotkeyCommandsBySource or {})[prompt.source] or {}) do
+                if entry.kind=='hire' and entry.heroRecruitment then
+                    local raw=FourCC(entry.raw);local old=GetPlayerTechMaxAllowed(Player(0),raw)
+                    JTG.ScopeAdd(context,function() SetPlayerTechMaxAllowed(Player(0),raw,old) end)
+                    SetPlayerTechMaxAllowed(Player(0),raw,1000)
+                end
+            end
         end
         if prompt.kind=='train' or prompt.kind=='research' or prompt.kind=='build' or prompt.kind=='upgrade' or prompt.kind=='hire' then
             local raw=FourCC(prompt.raw)
             local limit=GetPlayerTechMaxAllowed(Player(0),raw)
             JTG.ScopeAdd(context,function() SetPlayerTechMaxAllowed(Player(0),raw,limit) end)
-            SetPlayerTechMaxAllowed(Player(0),raw,prompt.kind=='research' and (prompt.researchLevel or 1) or -1)
+            SetPlayerTechMaxAllowed(Player(0),raw,prompt.kind=='research' and (prompt.researchLevel or 1) or prompt.heroRecruitment and 1000 or -1)
         end
         local function research(raw,level)
             local id=FourCC(raw)
@@ -566,11 +609,12 @@ function JTG.CreateHotkeyTrainingActivity(session)
             self.preparationChecks[#self.preparationChecks+1]={kind='starting-form:'..prompt.prepareOrder,accepted=accepted}
         end
         if prompt.kind=='buy' or prompt.kind=='hire' or prompt.raw=='select' then
-            local buyer=self:createUnit(Player(0),FourCC('Hpal'),session.scene.centerX+100,self.spawnY,0,context)
-            SetUnitPathing(buyer,false); SetUnitInvulnerable(buyer,true)
-            -- Native creation can push a nearby hero outside a shop footprint.
-            -- Place after disabling pathing, using the shop's actual position.
-            SetUnitX(buyer,GetUnitX(self.source)+100); SetUnitY(buyer,GetUnitY(self.source))
+            -- The native neutral shops use a 12x12 (384-unit) footprint.
+            -- Stand outside it, toward the arena, within Aneu's 450-unit
+            -- activation radius. Keep the native walkable placement rather
+            -- than forcing a non-pathing patron inside the building.
+            local buyer=self:createUnit(Player(0),FourCC('Hpal'),GetUnitX(self.source),GetUnitY(self.source)-320,0,context)
+            SetUnitPathing(buyer,true); SetUnitInvulnerable(buyer,true)
             UnitAddAbility(buyer,FourCC('AInv'))
             SetUnitVertexColor(buyer,255,255,255,255)
             self.buyer=buyer
@@ -632,11 +676,22 @@ function JTG.CreateHotkeyTrainingActivity(session)
         elseif prompt.kind=='build' then
             TriggerRegisterCommandEvent(command,FourCC(prompt.ability),UnitId2String(FourCC(prompt.raw)))
         elseif prompt.kind=='learn' then
-            TriggerRegisterCommandEvent(command,FourCC('AHer'),prompt.raw)
-            TriggerRegisterCommandEvent(command,0,prompt.raw)
+            for _,raw in ipairs(prompt.learnAbilities or {prompt.raw}) do
+                TriggerRegisterCommandEvent(command,FourCC('AHer'),raw)
+                TriggerRegisterCommandEvent(command,0,raw)
+            end
         elseif prompt.kind=='buy' or prompt.kind=='hire' then
             local ability=prompt.kind=='buy' and 'Asid' or 'Asud'
             TriggerRegisterCommandEvent(command,FourCC(ability),prompt.raw)
+            if prompt.kind=='hire' then
+                local nativeOrder=UnitId2String(FourCC(prompt.raw))
+                if nativeOrder and nativeOrder~='' and nativeOrder~=prompt.raw then
+                    -- Match ordinary training's native command name as well
+                    -- as the raw-ID fallback; do not wait for sale completion.
+                    TriggerRegisterCommandEvent(command,FourCC(ability),nativeOrder)
+                    TriggerRegisterCommandEvent(command,0,nativeOrder)
+                end
+            end
             if prompt.kind=='buy' then TriggerRegisterCommandEvent(command,FourCC('Apit'),prompt.raw) end
             TriggerRegisterCommandEvent(command,0,prompt.raw)
         else
@@ -671,7 +726,7 @@ function JTG.CreateHotkeyTrainingActivity(session)
             if same and self.diagnostics then self.diagnostics.observe(self,event) end
             local correct=same and (
                 (event==EVENT_PLAYER_UNIT_SPELL_CHANNEL or event==EVENT_PLAYER_UNIT_SPELL_CAST or event==EVENT_PLAYER_UNIT_SPELL_EFFECT) and prompt.kind=='ability' and GetSpellAbilityId()==FourCC(prompt.activeAbility or prompt.raw) or
-                event==EVENT_PLAYER_HERO_SKILL and prompt.kind=='learn' and GetLearnedSkill()==FourCC(prompt.raw) or
+                event==EVENT_PLAYER_HERO_SKILL and prompt.kind=='learn' and self:matchesLearnedSkill(GetLearnedSkill()) or
                 event==EVENT_PLAYER_UNIT_TRAIN_START and prompt.kind=='train' and GetTrainedUnitType()==FourCC(prompt.raw) or
                 event==EVENT_PLAYER_UNIT_RESEARCH_START and prompt.kind=='research' and GetResearched()==FourCC(prompt.raw) or
                 event==EVENT_PLAYER_UNIT_UPGRADE_START and prompt.kind=='upgrade' or
@@ -682,12 +737,15 @@ function JTG.CreateHotkeyTrainingActivity(session)
                 correct=GetSellingUnit()==self.source and GetItemTypeId(GetSoldItem())==FourCC(prompt.raw)
                 if GetSellingUnit()==self.source then
                     local item=GetSoldItem()
-                    JTG.ScopeAdd(context,function() RemoveItem(item) end)
+                    JTG.ScopeTrackItem(context,item)
+                    self.promptItems[#self.promptItems+1]=item
                 end
             elseif event==EVENT_PLAYER_UNIT_SELL and prompt.kind=='hire' then
                 correct=GetSellingUnit()==self.source and GetUnitTypeId(GetSoldUnit())==FourCC(prompt.raw)
                 if GetSellingUnit()==self.source then
                     local unit=JTG.ScopeTrackUnit(context,GetSoldUnit())
+                    self:concealUnit(unit)
+                    self.promptHires[#self.promptHires+1]=unit
                 end
             end
             if correct then self:nativeMatched('native-action') end
@@ -717,6 +775,10 @@ function JTG.CreateHotkeyTrainingActivity(session)
         -- ForceUICancel can itself produce Escape notifications. Escape is
         -- menu/cursor control and is never a scored command in this trainer.
         if key==GetHandleId(OSKEY_ESCAPE) then return end
+        if self.diagnostics then
+            self.diagnostics.trace(self,'key-down',tostring(key)..'|ready|'..tostring(self:inputActive()==true)..
+                '|shown|'..tostring(self.promptShown==true)..'|selected|'..tostring(self.source and IsUnitSelected(self.source,Player(0))))
+        end
         if not self:inputActive() then return end
         self.inputQueue[#self.inputQueue+1]={key=key,at=self.elapsed,prompt=self.prompt}
         self.pending=self.inputQueue[1]
@@ -776,7 +838,7 @@ function JTG.CreateHotkeyTrainingActivity(session)
                     if not self:diagnosticsActive() and JTG.UI.PlayFeedbackSound then JTG.UI.PlayFeedbackSound("incorrect") end
                     -- A wrong submenu choice restarts the whole sequence:
                     -- worker -> Build -> building, or hero -> Abilities -> skill.
-                    self:restoreSource()
+                    self:resetShopAttempt();self:restoreSource()
                 end
             end
         end
@@ -853,7 +915,10 @@ function JTG.CreateHotkeyTrainingActivity(session)
         local world=GetWorldBounds()
         self.cameraX=(GetRectMinX(world)+GetRectMaxX(world))/2
         self.cameraY=(GetRectMinY(world)+GetRectMaxY(world))/2
-        self.spawnY=GetRectMaxY(world)-1800
+        -- Map bounds include impassable terrain beyond the training arenas.
+        -- Keep even the prepared units at spawnY+1000 inside clear ground.
+        local promptArena=assert(JTG.Scenes['arena.north'],'Missing Hotkey preparation arena')
+        self.spawnY=promptArena.centerY-256
         RemoveRect(world)
         if GetLocalPlayer()==Player(0) then SetCameraPosition(self.cameraX,self.cameraY) end
         local fogEnabled,maskEnabled=IsFogEnabled(),IsFogMaskEnabled()

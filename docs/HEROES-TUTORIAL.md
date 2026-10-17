@@ -54,3 +54,11 @@ The tutorial is included in the accepted v0.2.0 release. Fixtures cover authored
 When modifying the tutorial, check rapid Continue/Back/Topics around encounters, both optional branches and all XP selectors; native XP awards and damage/armor behavior; dummy controls in both modes; shop access; Menu/Resume; save/load; and exit/re-entry cleanup. Preserve the authored progression and current accepted behavior.
 
 Earlier findings, attempts and checklists remain in [implementation history](archive/v0.2.0/HEROES-IMPLEMENTATION-HISTORY.md) and [the archived alpha handoffs](archive/v0.2.0/README.md).
+
+## Accepted 0.2.2 repairs
+
+Presentation heroes use preconfigured shared-control ownership without runtime hero-portrait flag writes. Navigation leaves the native frame event before scene replacement, and scoped ownership deduplicates removal and releases retired references. The user reports the reproduced section-transition crash resolved.
+
+Items keeps four owned tier-three prerequisites hidden at verified clear interior locations. It creates shops, heroes, dummy and ground items synchronously; standard shops retain native stock and the Marketplace receives six examples. Packaged initial item stock delays are zero, rather than reset during entry. Items buildings are no longer made invulnerable. Both arenas reuse their starting terrain captured once before menus; scene/source bookkeeping still protects active replacements. The user accepted the remaining Items delay in alpha31 and declared the investigation complete.
+
+Bought and dropped items stay scene-owned and are included in exit cleanup. Live terrain cleanup is accepted; old blight can remain in fog memory after changing activity. That visual issue and the brief cursor flash on button release are parked, not claimed fixed.

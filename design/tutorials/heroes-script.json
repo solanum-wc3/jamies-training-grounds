@@ -209,7 +209,7 @@
       "checkpoint": "levels",
       "wait": true,
       "lines": [
-        "On every level-up, a hero gains attribute points. Most heroes gain six points in total.",
+        "On every level-up, a hero gains attribute points. Most heroes gain six points in total, on average.",
         "These are divided across the three attributes in a way unique to that hero.",
         "This means that heroes can gain attributes at very different rates."
       ],

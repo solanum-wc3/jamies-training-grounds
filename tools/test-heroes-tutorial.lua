@@ -38,7 +38,7 @@ function SetUnitUseFood(u,value) u.useFood=value end
 function SetUnitColor(u,v) u.color=v end
 function SetUnitAcquireRange(u,v) u.acquire=v end
 function SetUnitCreepGuard() end
-function RemoveUnit(u) u.removed=true end
+function RemoveUnit(u) assert(selected~=u,'Selected actor removed before detaching native selection');u.removed=true end
 function ShowUnit(u,v) u.hidden=not v end
 function IsUnitHidden(u) return u.hidden==true end
 function PauseUnit(u,v) u.paused=v end
@@ -91,11 +91,19 @@ function IssueImmediateOrder(u,order) u.order=order;return true end
 function IssueTargetOrder(u,order,target) u.order=order;u.target=target;return true end
 function CreateItem(raw,x,y) local i={raw=raw,x=x,y=y};items[#items+1]=i;return i end
 function RemoveItem(i) i.removed=true end
+function GetItemTypeId(i) return i.removed and 0 or i.raw end
 function UnitItemInSlot(u,slot) return u.inventory[slot] end
 function UnitRemoveItem(u,item) for slot,i in pairs(u.inventory) do if i==item then u.inventory[slot]=nil end end end
 function UnitAddItem(u,item) for slot=0,5 do if not u.inventory[slot] then u.inventory[slot]=item;return true end end end
-function RemoveItemFromStock() end
-function AddItemToStock(shop,raw) shop.stock=shop.stock or {};shop.stock[raw]=true end
+function RemoveItemFromStock(shop,raw)
+ assert(shop.raw=='nmrk','Standard shop native stock must not be removed')
+ shop.stockRemovals=shop.stockRemovals or {};shop.stockRemovals[raw]=true
+end
+function AddItemToStock(shop,raw,current,maximum)
+ assert(shop.raw=='nmrk','Standard shop must use its native stock')
+ assert(current==1 and maximum==1)
+ shop.stock=shop.stock or {};shop.stock[raw]=true
+end
 function CreateImage(texture,w,h,_,x,y) local i={texture=texture,w=w,h=h,x=x,y=y};images[#images+1]=i;return i end
 function SetImageRenderAlways() end
 function SetImageAboveWater() end
@@ -210,6 +218,7 @@ JTG.Scenes={['arena.south']={centerX=4864,centerY=3456,minX=2048,minY=2048,maxX=
 dofile('src/infrastructure/tutorial.lua')
 dofile('src/generated/hotkey-catalog.lua')
 dofile('src/generated/heroes-tutorial.lua')
+dofile('src/infrastructure/target-dummies.lua')
 dofile('src/infrastructure/heroes-scenes.lua')
 dofile('src/activities/heroes-tutorial.lua')
 local session={active=true,scope=JTG.CreateScope('heroes-test'),presentationScope=JTG.CreateScope('heroes-presentation'),generation=1}
@@ -297,7 +306,7 @@ for _,u in ipairs(attackers) do assert(u.removed) end
 assert(activity.worldScene=='showcase' and #activity.levelActors==25 and #activity.dummies==5)
 for _,record in ipairs(activity.dummies) do assert(not record.hostile and record.unit.owner==0) end
 local record=activity.levelActors[1];activity.selectedHero=record.unit;activity:refreshControls()
-assert(not record.unit.invulnerable and record.unit.level==1 and record.unit.owner==8 and record.unit.hiddenHeroIcon and activity.frames.plus.visible)
+assert(not record.unit.invulnerable and record.unit.level==1 and record.unit.owner==8 and record.unit.hiddenHeroIcon==nil and activity.frames.plus.visible)
 assert(activity.frames.minus.enabled and not activity.buttonEnabled[GetHandleId(activity.frames.minus)],'Grey level button must block clicks without enabling its action')
 activity:changeHeroLevel(1);assert(record.unit.level==2)
 record.unit.abilities.AHbz=1;local old=record.unit
@@ -305,7 +314,10 @@ local carried=CreateItem('ratf',0,0);old.inventory[0]=carried
 activity:changeHeroLevel(-1)
 assert(old.removed and record.unit.x==old.x and record.unit.y==old.y and record.unit.level==1 and not record.unit.abilities.AHbz and record.unit.inventory[0]==carried)
 assert(record.unit.order=='stop' and record.unit.acquire==0 and not record.unit.invulnerable)
+local retiredRoster={}
+for unit in pairs(activity.ownerScopes) do retiredRoster[#retiredRoster+1]=unit end
 activity:restoreCheckpoint(step(25));assert(activity.xpQuest.discovered and JTG.UI.questAvailable and #sounds==1 and sounds[1]=='quest')
+for _,unit in ipairs(retiredRoster) do assert(activity.ownerScopes[unit]==nil,'Retired Showcase ownership reference survived') end
 assert(questFlashes==1,'Quest unlock must use exactly one native flash')
 assert(images[#images].w==2400 and images[#images].h==2400 and images[#images].visible)
 for _,group in ipairs(activity.groups) do for _,hero in ipairs(group.heroes) do assert(hero.owner==15 and hero.suspended and hero.hidden) end end
@@ -337,6 +349,8 @@ for _,u in ipairs(activity.actors) do assert(not u.level,'Racial XP display cont
 assert(#activity.frames.xpChoices==6,'Neutral XP selector is missing')
 local orcActors=activity.actors
 activity.actions[GetHandleId(activity.frames.xpChoices[6])].action()
+assert(activity.xpNumberChoice=='orc','XP selector changed inside the frame event')
+activity.navigationTimer.fn()
 assert(activity.xpNumberChoice=='neutral' and #activity.actors==25)
 for _,u in ipairs(orcActors) do assert(u.removed,'Previous racial display leaked into Neutral') end
 for _,u in ipairs(activity.actors) do assert(u.color==8 and u.paused and not u.level,'Neutral display is not grey, paused summons only') end
@@ -381,9 +395,43 @@ for index=1,3 do
  assert(pans[#pans].x==expected and pans[#pans].y==activity.diceTexts[1].y)
 end
 activity:restoreCheckpoint(step(43));diceTour.fn()
+assert(activity.frames.continue.enabled)
+local expectedActors={'hcas','ofrt','etoe','unp2','hvlt','ovln','eden','utom','ngme','nmrk','Hpal','Hamg','Hmkg','jHdm'}
+assert(#activity.actors==#expectedActors,'Items setup did not finish synchronously')
+for index,raw in ipairs(expectedActors) do
+ assert(activity.actors[index].raw==raw,'Items setup changed actor order')
+ if index<=10 then assert(not activity.actors[index].invulnerable,'Items building made invulnerable') end
+end
 assert(activity.worldScene=='items' and #items==50 and resources.gold==10000 and resources.lumber==10000)
+local supportHalls={hcas={-1500,700},ofrt={1500,700},etoe={-1500,-300},unp2={1500,-300}}
+local hiddenHalls=0
+for _,unit in ipairs(activity.actors) do
+ if supportHalls[unit.raw] then
+  assert(unit.hidden and not unit.removed and unit.owner==0,'Shop prerequisite hall must remain owned and alive, but hidden')
+  local offset=supportHalls[unit.raw]
+  assert(unit.x==activity.practiceArena.centerX+offset[1] and unit.y==activity.practiceArena.centerY+offset[2],
+   'Hidden shop prerequisite moved away from its checked interior position')
+  hiddenHalls=hiddenHalls+1
+ end
+end
+assert(hiddenHalls==4)
+local marketplace=activity.actors[10]
+assert(marketplace.raw=='nmrk')
+local marketplaceCount=0
+for _ in pairs(marketplace.stock or {}) do marketplaceCount=marketplaceCount+1 end
+assert(marketplaceCount==6,'Marketplace example stock changed')
+for index=1,6 do
+ local raw=JTG.HeroesData.itemGroups[index].items[1]
+ assert(marketplace.stock[raw] and marketplace.stockRemovals[raw],'Marketplace example missing')
+end
 local itemIds={}
 for _,item in ipairs(items) do if item~=carried then assert(not itemIds[item.raw]);itemIds[item.raw]=true end end
+-- Synchronous scenes still clean up on Back and rebuild without leftovers.
+local previousActors={table.unpack(activity.actors)}
+activity:goBack();assert(activity.worldScene=='empty')
+for _,actor in ipairs(previousActors) do assert(actor.removed,'Items actor leaked on Back') end
+activity:restoreCheckpoint(step(43))
+assert(#activity.actors==14 and activity.frames.continue.enabled)
 local count,actorCount,savedStep=#units,#activity.actors,activity.step
 activity:hidePresentationForMenu();assert(not activity.frames.bar.visible and not activity.frames.xpChoices[1].visible)
 activity:restorePresentation();activity:discardPresentationForLoad();activity:rebuildPresentation()
@@ -391,7 +439,29 @@ assert(#units==count and #activity.actors==actorCount and activity.step==savedSt
 activity:restoreCheckpoint(step(50));assert(activity.complete and activity.frames.menuHighlight.visible and not activity.frames.continue.enabled)
 activity:goBack();assert(activity.step==step(49) and not activity.complete)
 for _,pan in ipairs(pans) do assert(pan.duration==1.5,'Camera move did not use the fixed duration') end
+activity:restoreCheckpoint(step(26))
+local click=activity.actions[GetHandleId(activity.frames.continue)].action
+click();local navigation=activity.navigationTimer;local timerCount=#timers
+assert(navigation.delay==0 and not navigation.repeating and activity.step==step(26))
+click();assert(#timers==timerCount and activity.step==step(26),'Repeated click queued another transition')
+navigation.fn();assert(activity.step==step(28) and not activity.navigationPending)
+selected=activity.actors[1]
+activity.actions[GetHandleId(activity.frames.back)].action();navigation.fn()
+assert(activity.step==step(26) and not selected,'Back retained selection across scene removal')
+activity:queueNavigation(function() error('navigation fixture failure') end)
+assert(not pcall(navigation.fn) and not activity.navigationPending,'Navigation error left input locked')
+local staleRan=false
+activity:queueNavigation(function() staleRan=true end);local stale=navigation.fn
+activity:rebuildPresentation();stale();assert(not staleRan,'Pre-load/presentation callback changed the rebuilt scene')
+activity:queueNavigation(function() staleRan=true end)
+activity.presentationVisible=false;navigation.fn();assert(not staleRan and not activity.navigationPending)
+activity.presentationVisible=true
+activity:queueNavigation(function() staleRan=true end);local replaced=navigation.fn
+JTG.Controller.session=nil;replaced();assert(not staleRan,'Replaced session accepted queued navigation')
+JTG.Controller.session=session;activity.navigationPending=nil
+activity:queueNavigation(function() staleRan=true end);local exitCallback=navigation.fn
 activity:cleanup();JTG.DisposeScope(session.presentationScope);JTG.DisposeScope(session.scope)
+exitCallback();assert(not staleRan,'Exit accepted queued navigation')
 for _,u in ipairs(units) do assert(u.removed,'Hero scene unit leaked') end
 for _,t in ipairs(timers) do assert(t.disposed,'Hero scene timer leaked') end
 for _,i in ipairs(images) do assert(i.removed,'XP circle leaked') end

@@ -39,3 +39,7 @@ User roadmap, recorded 15 October 2026, for work after the accepted v0.2.0 relea
 - Combat, Creeping and The Base tutorials and other placeholder activities, subject to the user's scripts and priorities. Heroes is implemented and included in the accepted v0.2.0 release.
 
 Earlier content directions are preserved in [roadmap history](archive/v0.2.0/ROADMAP-HISTORY.md).
+
+## 0.2.2 accepted repair checkpoint
+
+Heroes transition/cleanup repairs, Hotkey command/recruitment corrections, Mining worker positioning, Quest layout and Items performance work are accepted. Items uses verified clear hidden prerequisites, native stock and a starting arena terrain baseline captured once; its remaining delay is acceptable to the user. Remembered blight under fog and the brief cursor flash on release stay parked. Reflex is off the active implementation plan until the user provides a new design direction. Demo remains isolated for 0.3.0; no new content is introduced in this patch.

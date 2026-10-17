@@ -14,6 +14,10 @@ Narration uses the existing Heading, Button, Input, Menu and Term colors. Gold/Y
 
 ## Progression and world actions
 
+Use native shops, requirements and stock definitions unless a specific demonstration needs an override. Include packaging-time object-data changes in setup descriptions: the current item initial-stock delay correction is packaged data, not a timer reset on each scene entry. Inspect actual terrain/pathing before creating actors; arena bounding rectangles include blocked edge terrain.
+
+Both fixed arenas and their building margins have one immutable starting-terrain baseline captured before menus open. Building setup reuses it; scene leases and blight-source tracking still protect active replacements. Keep ordinary setup synchronous unless a measured requirement justifies staging. Cleanup must own purchased/dropped items and engine-generated units as well as explicitly created actors. Do not mutate native hero-portrait flags during creation/removal; use the established shared-control presentation ownership where applicable.
+
 A narration step contains player-facing text, its explicit Continue/Next boundary, checkpoint and optional world action. Preserve the author's progression; additions do not create new checkpoints unless requested.
 
 Continue advances the script. Back and Topics restore the scene to the selected checkpoint. Reconstruction may recreate the activity or use a tutorial's existing semantic checkpoint restoration. It must restore that checkpoint's actual demonstrations and permissions, not merely change the displayed text.

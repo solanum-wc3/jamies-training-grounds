@@ -1,12 +1,12 @@
 # Jamie's Training Grounds
 
-[Download v0.2.1](https://github.com/solanum-wc3/jamies-training-grounds/releases/download/v0.2.1/Jamies-Training-Grounds-v0.2.1.w3x) · [Release notes](https://github.com/solanum-wc3/jamies-training-grounds/releases/tag/v0.2.1)
+[Download v0.2.2](https://github.com/solanum-wc3/jamies-training-grounds/releases/download/v0.2.2/Jamies-Training-Grounds-v0.2.2.w3x) · [Release notes](https://github.com/solanum-wc3/jamies-training-grounds/releases/tag/v0.2.2)
 
 Jamie’s Training Grounds is a Warcraft III teaching and practice map. Guided tutorials introduce the essentials, while focused exercises let players repeat and explore mechanical skills.
 
 ## Current release
 
-**v0.2.1**, released 16 October 2026, contains five tutorials and ten playable exercises/demonstrations:
+**v0.2.2**, released 17 October 2026, contains five tutorials and ten playable exercises/demonstrations:
 
 - Camera, Unit Controls, Hotkey Setup, Economy & Workers, and Heroes;
 - Body Blocking, Surrounds, Gargoyle Surrounds, Windwalk Pop, Mining Micro, Bat Splitting, and Dodging;
@@ -18,12 +18,13 @@ The release includes shared menus, toolbars, result cards, scoped cleanup and sa
 
 ## Current development
 
-Source and public map are at **v0.2.1**. This fixes-only release improves Heroes cleanup and controls, Surrounds hero setup and navigation, countdown feedback, briefing tooltips and Mining Build Order. Demo Mode remains planned for v0.3.0. See [release validation and limitations](docs/RELEASE-STATUS.md) and [development status](docs/DEVELOPMENT-STATUS.md).
+Source and public map are at **v0.2.2**. This fixes-only release repairs Heroes section transitions and item cleanup, reduces Items loading delays, fixes Hotkey Trainer neutral commands and hiring, and restores normal Mining worker formations. Demo Mode remains planned for v0.3.0. See [release validation and limitations](docs/RELEASE-STATUS.md) and [development status](docs/DEVELOPMENT-STATUS.md).
 
 Development workflow is defined in [AGENTS.md](AGENTS.md) and [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Repository guide
 
+- [Download timeline](docs/DOWNLOAD-COUNTS.md) — dated route totals and exact per-version file counts
 - [docs](docs/README.md) — current implementation guidance, release status and historical reports
 - [design](design/README.md) — editable artwork, tutorial scripts/layouts and measurement inputs
 - [src](docs/PROJECT-FILES.md) — maintained Lua modules, generated data and packaged assets

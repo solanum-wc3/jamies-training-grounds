@@ -1,35 +1,34 @@
-# Release status: v0.2.1
+# Release status: v0.2.2
 
-Released 16 October 2026 on the user's explicit publication instruction. This is a fixes-only release; Demo Mode is reserved for v0.3.0. The previous release record is preserved in [the v0.2.0 archive](archive/v0.2.0/RELEASE-STATUS.md).
+Publication and a fixes-only merge into main were explicitly authorized on 17 October 2026. The preceding [0.2.1 record](archive/v0.2.1/RELEASE-STATUS.md) is preserved. Demo remains on `codex/demo-mode` for 0.3.0 and is excluded from this release.
 
 ## Release artifact
 
-- Map: `outputs/Jamies-Training-Grounds-v0.2.1.w3x`
-- Size: 4,431,795 bytes
-- SHA256: `a7feab8a9613c82df79fbd3851990bd9f11a1d3f5e895edd0345cce81f6118a3`
-- Gameplay/source checkpoint before publication documentation: `6e92091`
-- Source tag: `v0.2.1` at `188658b295606722cab3e130fd19bab87abf9bc7`, published from main; Demo's feature commits are not ancestors.
+- Map: `outputs/Jamies-Training-Grounds-v0.2.2.w3x`
+- Size: 4,443,665 bytes
+- SHA256: `0689d72bd6c8daa906445ce4cf4254d6d474c04e7db5e02e389b67c5bdd971fb`
+- Maintenance candidate: `work/maintenance/022/Jamies-Training-Grounds-v0.2.2.w3x`; independent final build matches exactly.
+- Source: fixes selected onto the stable 0.2.1 baseline on `codex/0.2.2-fixes`; the full Demo branch is preserved.
 
 ## Changes and validation
 
-Heroes uses directly created presentation heroes with preconfigured shared control and removes its scenes before borrowed-state restoration. Grey level controls consume clicks; custom Surrounds heroes follow legal skill requirements and keep spare points. Surrounds Finish returns to its briefing. Body Blocking adds pawn movement data. Yellow stage/round labels accompany countdowns and repeat on Redo. Build Order starts with a three-second countdown and idle workers on both sides. Empty tooltip visuals are suppressed without detaching native frames; terrain cleanup tolerates removed-unit owners.
+Repairs Heroes section-transition crashes and scope ownership, bought/dropped item cleanup, Items prerequisite placement and loading, Quest description layout, Hotkey neutral hiring/readiness/retry recovery and command labels/aliases, and Mining starting worker formation. Fixed arenas capture starting terrain once before menus; scene leases and blight-source guards remain. Items returns to synchronous native setup, with no standard-shop stock override or building invulnerability. Economy clarifies Human Farms provide 6 Food. The in-map patch note is dated 17 October 2026.
 
-Source assembly (32 release/49 development modules), authored/generated data, clean build inputs, 45 non-Demo Lua fixture files and both packaging modes pass. A fresh isolated release build exactly matches the installed candidate. Both archives exclude Demo's factory, catalogue, brush and briefing asset. All three public downloads are verified against the release SHA256 before handoff.
+Passed: 46 non-Demo Lua fixture files, 33 release/50 development module assemblies, maintained/generated data, briefing/data/build-input checks, actual foundation pathing, download-history tests and release/development packaging. Both archives exclude Demo; final release bytes match the isolated candidate. The user accepted alpha31's remaining Items delay and declared the repair work complete. Existing native observations and reusable checks are recorded in [0.2.2 testing](0.2.2-TESTING.md); extraction is not a claim that every native combination was rerun.
 
-Publication is authorized; it is not a claim that the assistant manually retested every engine behavior. Native hero initialization, input routing, cleanup/crash reproduction and countdown/menu/save-load interactions remain covered by [the regression checklist](0.2.1-TESTING.md).
+## Known limits
 
-## Content and boundaries
-
-Five tutorials and ten exercises/demonstrations remain available, as listed in [the activity catalogue](ACTIVITIES.md). Demo remains a placeholder. Reflex Training remains WIP. Arbitrary Shift-queued Build Order sequences, persistent statistics and observers/hotseat remain outside this release. Development preload exports are diagnostic text, never executable scripts.
+A brief cursor flash on button release and remembered blight under fog remain parked visual issues. An accepted small Items stutter may remain. Reflex is WIP with further design parked. Five tutorials and ten exercises/demonstrations remain available; Demo is a placeholder in this release. Arbitrary queued Build Order sequences, observers/hotseating and Unit Comparison remain outside it.
 
 ## Downloads
 
-All three attachments contain identical release bytes, without development tools:
+Only the versioned map is promoted on GitHub. The generic Warcraft3Gym and Hive routes will advance through identical attachments when this release is published as latest.
 
-- [Versioned v0.2.1 map](https://github.com/solanum-wc3/jamies-training-grounds/releases/download/v0.2.1/Jamies-Training-Grounds-v0.2.1.w3x)
-- [Release page](https://github.com/solanum-wc3/jamies-training-grounds/releases/tag/v0.2.1)
+- [Versioned v0.2.2 map](https://github.com/solanum-wc3/jamies-training-grounds/releases/download/v0.2.2/Jamies-Training-Grounds-v0.2.2.w3x)
+- [Release page](https://github.com/solanum-wc3/jamies-training-grounds/releases/tag/v0.2.2)
+- [Download timeline](DOWNLOAD-COUNTS.md): timestamped cumulative route totals and exact per-version asset counts; [JSON evidence](DOWNLOAD-COUNTS.json) retains every observation.
 
-Publication verified 16 October 2026: release ID `415015638` is GitHub's latest non-prerelease. Public downloads through all three routes match the release SHA256 above. Asset IDs are `647481658` (versioned), `647481779` (Warcraft3Gym) and `647481873` (Hive). Main and the release tag were pushed; the previous release/assets and the deferred Demo branch remain intact.
+Publication and public-link hash verification are pending; record their result after upload.
 
 ## Public download convention
 
@@ -43,5 +42,7 @@ Only the versioned map link is promoted in GitHub's README, current download lis
 2. Publish the release as GitHub's latest non-alpha release. Both generic links then advance without changing their URLs.
 3. Update the README's versioned map and release-note links and current-release description; commit and push the release source/documentation.
 4. Download all three public routes and verify their hashes against the validated release artifact. Provide all links to the user.
+
+5. Append download snapshots with `python tools/snapshot-downloads.py --release vX.Y.Z --phase before-publication` before publishing and `--phase after-verification` after checking the links. Commit both `docs/DOWNLOAD-COUNTS.json` and `docs/DOWNLOAD-COUNTS.md`. Totals sum asset counters across all public releases; they describe routes, not unique people or confirmed referrers. Never overwrite historical snapshots or fabricate past release-time totals.
 
 Preserve previous versioned releases and source history. This procedure requires the user's release authorization; it does not independently authorize publishing a new version.

@@ -1,33 +1,11 @@
-# Current checkpoint: v0.2.1
+# Current checkpoint: v0.2.2
 
-Updated 16 October 2026. The user explicitly authorized publishing the fixes-only v0.2.1 as the latest release. Source is promoted from `codex/0.2.1-fixes` into main; Demo is reserved for v0.3.0 and remains recoverable on `codex/demo-mode` at `1f2997f`.
+17 October 2026. The user accepted the remaining Heroes Items delay in alpha31, closed the investigation, and authorized packaging/publication and merging fixes only into main. The release is extracted from `codex/demo-mode` onto main's 0.2.1 baseline without activating Demo or packaging its runtime/catalogue/brush/artwork. The full accepted alpha31 source remains recoverable at `e39b95a` on the Demo branch.
 
-The release contains Heroes scene ownership/early cleanup and level controls, legal custom Surrounds skills/free points and Finish navigation, Body Blocking movement data, countdown-bound stage/round labels, stable empty-tooltip suppression, Build Order's idle start/three-second countdown, and the nil-owner terrain cleanup guard. Demo runtime/catalogue/brush/menu changes are excluded; Heroes shared control is self-contained.
+The candidate repairs Heroes transitions/ownership and item cleanup, fixed-arena terrain capture, hidden prerequisite placement and native Items setup, Hotkey neutral recruitment/readiness/retries and command recognition, Mining worker circles, Quest description layout and Farm text. The in-map patch note is dated 17 October. Accepted native evidence and limits are in [0.2.2 testing](0.2.2-TESTING.md). A small Items stutter, remembered blight under fog and the brief release-click cursor flash are not claimed eliminated; the latter two investigations stay parked. Reflex design remains off the active plan.
 
-Installed/public map: `Jamies-Training-Grounds-v0.2.1.w3x`, 4,431,795 bytes, SHA256 `a7feab8a9613c82df79fbd3851990bd9f11a1d3f5e895edd0345cce81f6118a3`. Source/data checks, 45 non-Demo fixtures and packaging pass; an isolated rebuild matches exactly. User publication authorization does not imply every [native regression check](0.2.1-TESTING.md) was re-run. The two generic download routes use separate identical attachments for Hive and Warcraft3Gym.
+All 46 non-Demo Lua fixtures, 33/50 module release/development assembly, briefing/Heroes/build-input checks and both packaging modes pass. The final release matches the isolated candidate: 4,443,665 bytes, SHA256 `0689d72bd6c8daa906445ce4cf4254d6d474c04e7db5e02e389b67c5bdd971fb`. Main/tag/published-link verification is pending until the authorized release operation finishes. See [release status](RELEASE-STATUS.md).
 
-## Source and distribution
+The [download timeline](DOWNLOAD-COUNTS.md) records each release-time update without replacing earlier snapshots; per-version route counts and raw asset IDs are retained in JSON. Future download updates append observations. These are attachment counters, not unique users or proven referring websites.
 
-- Original release commit/tag: `5a78bc5` / `v0.2.0`.
-- Corrected preview source: `7fe7e30`, following the original tag on main. The user explicitly authorized replacing both 0.2.0 downloads without creating 0.2.1; Git history and the original tag were preserved.
-- Current public map: `outputs/Jamies-Training-Grounds-v0.2.1.w3x`, SHA256 `a7feab8a9613c82df79fbd3851990bd9f11a1d3f5e895edd0345cce81f6118a3`.
-- Generic/latest and versioned downloads were verified against that map. The installed public map matches it. See [release record](RELEASE-STATUS.md) for links, sizes and the original artifact hash.
-- Development builds can include local audit bindings from ignored `work/`; clean checkouts use empty defaults. Their hashes need not match another developer's diagnostic build. Ordinary Hotkey practice uses the player's native bindings.
-
-## Accepted implementation and remaining boundaries
-
-Five tutorials and ten exercises/demonstrations are included. Shared tutorial transitions, scoped cleanup, popup layout and result presentation are documented in the [tutorial standard](TUTORIAL-STANDARD.md) and [activity catalogue](ACTIVITIES.md). The Heroes shared-control sound cause and replacement-scene blight cleanup were verified through focused native tests.
-
-Reflex Training remains WIP. Arbitrary Shift-queued worker sequences are not faithfully replayed by Mining Build Order. Native-menu and save/load interactions remain engine-sensitive; release acceptance is not exhaustive proof of every combination. Player-facing clean text export, persistent statistics and multiplayer support remain deferred. See [release boundaries](RELEASE-STATUS.md#content-and-boundaries).
-
-The release passed 45 Lua fixtures, generated-data/build-input checks and release/development packaging validation. The preview correction passed image conversion, archive validation and a direct comparison showing only the two browser preview members changed. Documentation maintenance checks are distinct from new in-game acceptance.
-
-Maintenance, 16 October 2026: completed alpha records were archived and current guides refreshed. Local document links and historical-content preservation checks pass; isolated release/development packaging passes, and the rebuilt release is byte-identical to the published map. No gameplay or authoring inputs changed, so this cleanup needs no additional Warcraft test pass.
-
-## Next work
-
-Demo implementation is paused on its preserved branch for v0.3.0. The user's [roadmap](ARCHITECTURE-TODO.md#next-version-content-direction), [Demo Mode assessment](DEMO-MODE-PORT-REVIEW.md), [Unit Comparison assessment](UNIT-COMPARISON-PORT-REVIEW.md) and [observer/handoff plan](OBSERVER-HOTSEAT-PLAN.md) remain the preparation references for future work. Agree on an approach before implementation; keep the single working folder and at most three user-chosen topics.
-
-## Historical investigations
-
-[0.2.0 archive](archive/v0.2.0/README.md) retains alpha test lists, dated reviews and [the complete pre-cleanup status record](archive/v0.2.0/DEVELOPMENT-HISTORY.md). Their unresolved findings describe their original dates; current conclusions live in the release and activity guides.
+Future setup work must inspect native definitions and actual placement/pathing before adding overrides or delays. Both arenas reuse a single starting-terrain baseline; scope and source guards still protect active replacement scenes. These findings are recorded in AGENTS.md and the shared tutorial standard. Demo continues separately for 0.3.0; Unit Comparison, Power Building's income extension and observer/hotseat work remain planning-only until activated by the user.

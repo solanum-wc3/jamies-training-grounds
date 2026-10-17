@@ -1,6 +1,6 @@
 -- Native key resolution cannot be proven by mocks. This fixture checks event
 -- registration, scoring/races, early/paused inputs, and prompt resource cleanup.
-JTG={UI={},MeleeTech={'Rhde'}}
+JTG={UI={},MeleeTech={'Rhde'},Scenes={['arena.north']={centerX=4864,centerY=6016}}}
 local menu,registered,timers,units,stocks={}, {}, {}, {}, {}
 function Player(id) return id end
 PLAYER_NEUTRAL_PASSIVE=15
@@ -39,10 +39,10 @@ function FogMaskEnable() end
 local camera={}
 function SetCameraPosition(x,y) camera.x,camera.y=x,y end
 function GetWorldBounds() return {} end
-function GetRectMinX() return -8192 end
-function GetRectMaxX() return 8192 end
-function GetRectMinY() return -8192 end
-function GetRectMaxY() return 8192 end
+function GetRectMinX() return -10240 end
+function GetRectMaxX() return 10240 end
+function GetRectMinY() return -10240 end
+function GetRectMaxY() return 10240 end
 function RemoveRect() end
 function BlzFrameClick() end
 local nativeFrames={}
@@ -95,7 +95,18 @@ function BlzGetAbilityExtendedTooltip() return 'Native ability description' end
 function BlzGetAbilityResearchExtendedTooltip() return 'Native skill description' end
 function BlzConvertColor() return 0 end
 function CreateUnit(owner,raw,x,y)
-    local unit={owner=owner,raw=raw,x=x+(raw=='Hpal' and 1000 or 0),y=y}
+    -- Model native displacement only for a patron overlapping a live shop;
+    -- a legitimately clear placement must not be pushed arbitrarily.
+    local shops={ntav=true,ngad=true,ngme=true,nmer=true,nmr2=true,nmr3=true,nmrk=true,
+        hvlt=true,ovln=true,eden=true,utom=true}
+    if raw=='Hpal' then
+        for _,other in ipairs(units) do
+            if not other.removed and shops[other.raw] and math.abs(x-other.x)<224 and math.abs(y-other.y)<224 then
+                x=x+1000;break
+            end
+        end
+    end
+    local unit={owner=owner,raw=raw,x=x,y=y}
     units[#units+1]=unit;return unit
 end
 function GetUnitX(unit) return unit.x end
@@ -104,11 +115,14 @@ function SetUnitX(unit,value) unit.x=value end
 function SetUnitY(unit,value) unit.y=value end
 function IssueNeutralTargetOrderById(player,shop,order,buyer)
     assert(player==0 and order==852566 and buyer.inventory,'Invalid patron order or inventory')
-    assert(buyer.x-shop.x==100 and buyer.y==shop.y,'Patron pushed out of range by building placement')
+    local dx,dy=buyer.x-shop.x,buyer.y-shop.y
+    assert(math.max(math.abs(dx),math.abs(dy))>=256,'Patron overlaps shop footprint or leaves no hiring clearance')
+    assert(dx*dx+dy*dy<=450*450,'Patron outside native activation radius')
+    assert(buyer.pathing==true,'Shop patron ignores native walkable placement')
     return true
 end
 function GetUnitTypeId(unit) return unit.raw end
-function SetUnitPathing() end
+function SetUnitPathing(unit,value) unit.pathing=value end
 function SetUnitInvulnerable() end
 function SetUnitAcquireRange() end
 UNIT_BF_IS_A_BUILDING='building'
@@ -210,6 +224,7 @@ function JTG.DisposeScope(scope)
 end
 JTG.ScopeBorrow=JTG.ScopeAdd
 function JTG.ScopeTrackUnit(scope,unit) JTG.ScopeAdd(scope,function() unit.removed=true end);return unit end
+function JTG.ScopeTrackItem(scope,item) JTG.ScopeAdd(scope,function() item.removed=true end);return item end
 function JTG.CreateScopedUnit(scope,...) return JTG.ScopeTrackUnit(scope,CreateUnit(...)) end
 function JTG.ScopeTrackTrigger(scope,trigger) JTG.ScopeAdd(scope,function() trigger.disabled=true end);return trigger end
 function JTG.ScopeTrackFrame(_,frame) return frame end
@@ -491,7 +506,7 @@ for _,entry in ipairs(catalog) do
         end
     end
     if entry.heroRecruitment then
-        assert(limits.HERO==-1,'Hero group limit blocks altar: '..entry.id)
+        assert(limits.HERO>3,'Hero group limit blocks repeated recruitment: '..entry.id)
         if entry.kind=='train' then
             local mains={human={'htow','hkee','hcas'},orc={'ogre','ostr','ofrt'},
                 nightelf={'etol','etoa','etoe'},undead={'unpl','unp1','unp2'}}
@@ -574,6 +589,7 @@ for _,case in ipairs(morphCases) do
         trial.elapsed=trial.morphPreparation.readyAt
         assert(not trial:sourcePreparationReady(),'Elapsed animation time accepted without native form change')
         trial.source.raw=start
+        trial.morphPreparation.accepted=false -- Observed form outranks an unreliable setup-order return.
     else
         assert(not trial.morphPreparation,'Forward prompt unnecessarily transforms its source')
         trial.elapsed=1
@@ -839,7 +855,8 @@ for _,entry in ipairs(JTG.HotkeyCatalog) do
     if entry.kind=='hire' then neutralSources[entry.raw]=true end
 end
 for _,entry in ipairs(JTG.HotkeyCatalog) do
-    assert(entry.race~='neutral' or neutralSources[entry.spawnSource or entry.source],
+    assert(entry.race~='neutral' or neutralSources[entry.spawnSource or entry.source] or
+        entry.transformation and neutralSources[entry.targetForm],
         'Neutral trainer contains an unpurchasable creep source: '..entry.id)
 end
 assert(JTG.Registry.byId['tools.hotkeys'].factory==JTG.CreateHotkeyTrainingActivity)
@@ -1084,8 +1101,9 @@ local function answerLesson(correct)
 end
 armLesson();assert(lesson.prompt==holy)
 assert(not lesson.cover and lesson.lowerCover.visible)
-assert(lesson.lowerCover.texture=='JTGMenu\\OpaqueBlack.dds' and lesson.lowerCover.h==0.16)
-assert(camera.x==0 and camera.y==0 and lesson.source.y==6392,
+assert(lesson.lowerCover.texture=='JTGMenu\\OpaqueBlack.dds' and lesson.lowerCover.h==0.30)
+assert(lesson.lowerCover.w>=4,'Lower UI cover does not overscan wide/scaled native interfaces')
+assert(camera.x==0 and camera.y==0 and lesson.source.y==5760,
     'Hotkey camera follows the northern spawn zone')
 answerLesson(false);answerLesson(false)
 assert(lesson.lowerCover.visible,'Lower UI revealed before three wrong attempts')
@@ -1138,3 +1156,99 @@ print('Passed: unique-command stages, fresh-before-review priority, first-try re
 for _,case in ipairs({{249,'|cffff4040',1.25},{250,'|cffffff00',1.45},{350,'|cff40dd60',1.65},{450,'|cffffcc00',1.85}}) do
  local color,scale=JTG.Training.ScoreStyle(case[1]);assert(color==case[2] and scale==case[3])
 end
+
+local factoryLearn
+local gatherNames={}
+for _,entry in ipairs(catalog) do
+ assert(entry.name~=entry.raw,'Raw command ID remains in prompt: '..entry.id)
+ if entry.id=='neutral.Ntin.learn.ANsy' then factoryLearn=entry end
+ if entry.raw=='Ahrl' or entry.raw=='Awha' or entry.raw=='gather' then gatherNames[#gatherNames+1]=entry.name end
+end
+assert(#gatherNames>=3)
+for _,name in ipairs(gatherNames) do assert(name=='Gather','Worker gather labels differ') end
+assert(factoryLearn and #factoryLearn.learnAbilities==4)
+local neutralSession={active=true,scope={},presentationScope={},restartData={race='neutral'},
+ descriptor={capabilities={menu=true}},scene={centerX=4864,centerY=3456}}
+local neutral=JTG.CreateHotkeyTrainingActivity(neutralSession);neutral:setup()
+neutral:start(nil,factoryLearn);neutral.elapsed=1;neutral:updatePromptReadiness()
+for _,raw in ipairs({'ANsy','ANs1','ANs2','ANs3'}) do assert(neutral:matchesLearnedSkill(raw)) end
+assert(not neutral:matchesLearnedSkill('ANcs'))
+local foundAlias=false
+for _,row in ipairs(registered) do if row.ability=='AHer' and row.order=='ANs1' then foundAlias=true end end
+assert(foundAlias,'Engineering-upgraded skill command is not registered')
+local checked=0
+for _,entry in ipairs(JTG.HotkeyPools.neutral) do
+ if not JTG.HotkeyPromptConflict(entry) then
+  neutral:nextPrompt(entry)
+  -- Model the native morph completion explicitly; mocks do not animate it.
+  if neutral.morphPreparation then neutral.source.raw=entry.startForm end
+  neutral.elapsed=neutral.elapsed+4;neutral:updatePromptReadiness()
+  assert(neutral.panel.visible and neutral:promptIsReady(),'Neutral context never shows prompt: '..entry.id)
+  checked=checked+1
+ end
+end
+assert(checked>80)
+local savedPatronOrder=IssueNeutralTargetOrderById
+IssueNeutralTargetOrderById=function() return false end
+function BlzFrameGetEnable() return true end
+function BlzFrameIsVisible() return true end
+local tavernHire
+for _,entry in ipairs(JTG.HotkeyPools.neutral) do if entry.kind=='hire' and entry.nativeSlot then tavernHire=entry;break end end
+neutral:nextPrompt(tavernHire);neutral.elapsed=neutral.elapsed+1;neutral:updatePromptReadiness()
+neutral.elapsed=neutral.elapsed+.1;neutral:updatePromptReadiness()
+assert(not neutral.patronAccepted and neutral.panel.visible and neutral:promptIsReady(),
+ 'Settled shop remains hidden solely on a false patron-order result')
+local priest,robo
+for _,entry in ipairs(catalog) do
+ if entry.id=='neutral.nmr3.hire.nitp' then priest=entry end
+ if entry.id=='neutral.Nrob.ability.ANrg' then robo=entry end
+end
+assert(priest and not priest.nativeSlot)
+BlzFrameIsVisible=function() return false end
+neutral:nextPrompt(priest);neutral.elapsed=neutral.elapsed+1;neutral:updatePromptReadiness()
+neutral.elapsed=neutral.elapsed+.1;neutral:updatePromptReadiness()
+assert(neutral.panel.visible and neutral:promptIsReady(),'Slotless Ice Troll Priest prompt stays hidden')
+assert(robo.spawnSource=='Nrob' and not robo.prepareOrder)
+neutral:nextPrompt(robo);neutral.elapsed=neutral.elapsed+1;neutral:updatePromptReadiness()
+assert(neutral.source.raw=='Nrob' and not neutral.morphPreparation and neutral.panel.visible,
+ 'Direct Robo-Goblin still requires a setup transformation')
+neutral:nextPrompt(tavernHire);neutral.elapsed=neutral.elapsed+1;neutral:updatePromptReadiness()
+neutral.elapsed=neutral.elapsed+.1;neutral:updatePromptReadiness()
+local selling,sold
+function GetSellingUnit() return selling end
+function GetSoldUnit() return sold end
+function RemoveUnitFromStock() end
+function RemoveItemFromStock() end
+function RemoveUnit(unit) unit.removed=true end
+local sale
+for i=#nativeRegistrations,1,-1 do
+ if nativeRegistrations[i].event==EVENT_PLAYER_UNIT_SELL then sale=nativeRegistrations[i].trigger.action;break end
+end
+assert(sale)
+for attempt=1,5 do
+ selling=neutral.source;sold=CreateUnit(0,tavernHire.raw=='Ntin' and 'Npbm' or 'Ntin',5000,5500)
+ nativeEvent=EVENT_PLAYER_UNIT_SELL;sale()
+ SetPlayerState(0,PLAYER_STATE_RESOURCE_GOLD,0);SetPlayerState(0,PLAYER_STATE_RESOURCE_LUMBER,0)
+ neutral:onKey(81);neutral:resolveInput(true)
+ assert(sold.removed and #neutral.promptHires==0,'Wrong hire survived retry')
+ assert(GetPlayerState(0,PLAYER_STATE_RESOURCE_GOLD)==1000 and GetPlayerState(0,PLAYER_STATE_RESOURCE_LUMBER)==1000)
+ assert(limits.HERO>3 and neutral:promptIsReady(),'Repeated wrong hires soft-locked Tavern')
+end
+nativeEvent=nil
+local nativeUnitName=UnitId2String
+UnitId2String=function(raw) return raw=='nitp' and 'icetrollshadowpriest' or nativeUnitName(raw) end
+neutral:nextPrompt(priest);neutral.elapsed=neutral.elapsed+1;neutral:updatePromptReadiness()
+neutral.elapsed=neutral.elapsed+.1;neutral:updatePromptReadiness()
+local hireCommand
+for i=#registered,1,-1 do
+ local row=registered[i]
+ if row.ability=='Asud' and row.order=='icetrollshadowpriest' then hireCommand=row.trigger.action;break end
+end
+assert(hireCommand,'Hire command lacks the native order-name registration used by training')
+local correctBefore=neutral.correct
+neutral:onKey(81);hireCommand();neutral:resolveInput()
+assert(neutral.correct==correctBefore+1,'First ready hire key requires another press or a delayed sale event')
+UnitId2String=nativeUnitName
+IssueNeutralTargetOrderById=savedPatronOrder
+neutral:cleanup();JTG.DisposeScope(neutralSession.scope)
+print('Passed: no raw command names, Engineering Upgrade learn aliases and all eligible Neutral prompt contexts under native mocks.')

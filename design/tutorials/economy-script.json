@@ -1031,7 +1031,7 @@
       "Aside from their main building, each race has a Food building.",
       "For Humans it is {Term: Farms}, for Orcs it is {Term: Orc Burrows}, for Night Elves it is {Term: Moon Wells}, and for Undead it is {Term: Ziggurats}.",
       "",
-      "Each of these produces 10 Food."
+      "Each of these produces 10 Food, except for Farms, which produce 6."
     ],
     "wait": true,
     "checkpoint": "food",

@@ -104,15 +104,12 @@ local MINE_ANCHORS = {
 local HALL_OFFSET = {x = 512.0, y = -576.0}
 local TREE_OFFSET = {x = 704.0, y = 128.0}
 local TREE_OFFSETS = {TREE_OFFSET,{x=832.0,y=128.0},{x=704.0,y=256.0}}
--- Five evenly spaced workers sit on the mine-to-hall line used by a normal
--- melee opening. Their order is stable; worker 1 becomes the lumber worker in
--- the two four-worker comparison lanes.
+-- Native MeleeStartingUnitsHuman/Orc use this five-worker ring around a
+-- point 320 units from the mine towards the hall (unitSpacing = 64).
+-- Keep worker indices paired across lanes for reference job mirroring.
 local WORKER_OFFSETS = {
-    {x = 117.0, y = -324.0},
-    {x = 165.0, y = -282.0},
-    {x = 213.0, y = -239.0},
-    {x = 261.0, y = -197.0},
-    {x = 309.0, y = -154.0},
+    {x=0,y=64},{x=64,y=9.6},{x=-64,y=9.6},
+    {x=38.4,y=-64},{x=-38.4,y=-64},
 }
 
 local function RotateOffset(x, y, orientation)
@@ -137,9 +134,11 @@ local function ResolveLaneLayout(anchor, orientation)
         local x,y=RotateOffset(offset.x,offset.y,orientation)
         layout.trees[#layout.trees+1]={x=anchor.x+x,y=anchor.y+y}
     end
+    local distance=math.sqrt(HALL_OFFSET.x^2+HALL_OFFSET.y^2)
+    local centerX,centerY=HALL_OFFSET.x/distance*320,HALL_OFFSET.y/distance*320
     for index, offset in ipairs(WORKER_OFFSETS) do
         local workerOffsetX, workerOffsetY = RotateOffset(
-            offset.x, offset.y, orientation)
+            offset.x+centerX,offset.y+centerY,orientation)
         layout.workers[index] = {
             x = anchor.x + workerOffsetX,
             y = anchor.y + workerOffsetY,

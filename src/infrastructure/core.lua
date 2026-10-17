@@ -183,12 +183,26 @@ local function ScopeTrack(scope, resource, disposer, disposeOnLoad)
     return resource
 end
 
-local unitScopes = {}
+local unitScopes,itemScopes = {},{}
+function JTG.ScopeTrackItem(scope,item)
+    if item==nil or itemScopes[item] then return item end
+    itemScopes[item]=scope
+    JTG.ScopeAdd(scope,function()
+        if itemScopes[item]==scope then itemScopes[item]=nil end
+        if GetItemTypeId(item)~=0 then RemoveItem(item) end
+    end)
+    return item
+end
 function JTG.ScopeTrackUnit(scope, unit)
-    if unit~=nil and not unitScopes[unit] then unitScopes[unit]=scope end
+    -- Summon events can reach both activity and session observers. The first
+    -- owner keeps the unit; subsequent observations must not add removers.
+    if unit==nil or unitScopes[unit] then return unit end
+    unitScopes[unit]=scope
     return ScopeTrack(scope, unit, function(value)
-        if JTG.RememberTerrainOwner then JTG.RememberTerrainOwner(scope,GetOwningPlayer(value)) end
         if unitScopes[value]==scope then unitScopes[value]=nil end
+        -- Level-down replacement and dummy recreation may already remove it.
+        if type(GetUnitTypeId)=='function' and GetUnitTypeId(value)==0 then return end
+        if JTG.RememberTerrainOwner then JTG.RememberTerrainOwner(scope,GetOwningPlayer(value)) end
         RemoveUnit(value)
     end, false)
 end
@@ -220,6 +234,18 @@ local function SnapshotWorldUnits()
     return result
 end
 
+local function SnapshotWorldItems(units)
+    if type(EnumItemsInRect)~='function' or type(GetEnumItem)~='function' then return nil end
+    local result={};local area=GetWorldBounds()
+    EnumItemsInRect(area,nil,function() result[GetEnumItem()]=true end);RemoveRect(area)
+    if type(UnitItemInSlot)=='function' then
+        for unit in pairs(units or {}) do
+            for slot=0,5 do local item=UnitItemInSlot(unit,slot);if item then result[item]=true end end
+        end
+    end
+    return result
+end
+
 -- Summons have their own native event. Only engine replacement abilities
 -- need a deferred scan; ordinary casts must not enumerate the entire map.
 local replacementAbilities = {}
@@ -232,13 +258,31 @@ end
 -- code never receives. Keep them under the same ownership rules as their caster.
 function JTG.TrackSessionGeneratedUnits(session)
     session.existingUnits=SnapshotWorldUnits()
+    session.existingItems=SnapshotWorldItems(session.existingUnits)
     local trigger=JTG.ScopeTrackTrigger(session.scope,CreateTrigger())
     local slots=type(bj_MAX_PLAYER_SLOTS)=='number' and bj_MAX_PLAYER_SLOTS or 28
     for index=0,slots-1 do
         TriggerRegisterPlayerUnitEvent(trigger,Player(index),EVENT_PLAYER_UNIT_SUMMON,nil)
         TriggerRegisterPlayerUnitEvent(trigger,Player(index),EVENT_PLAYER_UNIT_SPELL_EFFECT,nil)
+        if session.existingItems then
+            TriggerRegisterPlayerUnitEvent(trigger,Player(index),EVENT_PLAYER_UNIT_PICKUP_ITEM,nil)
+            TriggerRegisterPlayerUnitEvent(trigger,Player(index),EVENT_PLAYER_UNIT_SELL_ITEM,nil)
+        end
     end
     TriggerAddAction(trigger,JTG.GuardSession(session,function()
+        local event=GetTriggerEventId()
+        if session.existingItems and (event==EVENT_PLAYER_UNIT_PICKUP_ITEM or event==EVENT_PLAYER_UNIT_SELL_ITEM) then
+            local item,scope
+            if event==EVENT_PLAYER_UNIT_PICKUP_ITEM then
+                item=GetManipulatedItem();scope=unitScopes[GetTriggerUnit()]
+            else
+                item=GetSoldItem();scope=unitScopes[GetBuyingUnit()] or unitScopes[GetSellingUnit()]
+            end
+            if item and scope and not session.existingItems[item] then
+                if scope.disposed then RemoveItem(item) else JTG.ScopeTrackItem(scope,item) end
+            end
+            return
+        end
         if GetTriggerEventId()==EVENT_PLAYER_UNIT_SUMMON then
             local parent,child=GetSummoningUnit(),GetSummonedUnit()
             local scope=parent and unitScopes[parent]
@@ -270,7 +314,11 @@ end
 
 function JTG.CleanupSessionGeneratedUnits(session)
     if not session.existingUnits then return end
-    for unit in pairs(SnapshotWorldUnits() or {}) do
+    local units=SnapshotWorldUnits() or {}
+    for item in pairs(SnapshotWorldItems(units) or {}) do
+        if session.existingItems and not session.existingItems[item] then RemoveItem(item) end
+    end
+    for unit in pairs(units) do
         if not session.existingUnits[unit] and not unitScopes[unit] then RemoveUnit(unit) end
     end
 end
@@ -446,6 +494,7 @@ function JTG.MaskScene(scene, player)
 end
 
 function JTG.ResetWorldFog(player)
+    if JTG.CancelTerrainViewRefresh then JTG.CancelTerrainViewRefresh() end
     FogEnable(true)
     FogMaskEnable(true)
     SetFogStateRect(player, FOG_OF_WAR_MASKED, bj_mapInitialPlayableArea, true)
@@ -455,10 +504,12 @@ end
 -- ordinary unit sight still determines what is currently visible. Activities
 -- with a different teaching requirement can explicitly choose another state.
 function JTG.UseExploredWorldFog(player)
+    if JTG.CancelTerrainViewRefresh then JTG.CancelTerrainViewRefresh() end
     FogEnable(true)
     FogMaskEnable(true)
     SetFogStateRect(player, FOG_OF_WAR_FOGGED,
         bj_mapInitialPlayableArea, true)
+    if JTG.RefreshTerrainView then JTG.RefreshTerrainView() end
 end
 
 function JTG.DisposeScope(scope)

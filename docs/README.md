@@ -1,6 +1,6 @@
 # Documentation guide
 
-Published baseline and current source: **v0.2.1** (16 October 2026). See [release status](RELEASE-STATUS.md) for validation and [development status](DEVELOPMENT-STATUS.md) for the accepted checkpoint. Archived reports describe earlier builds and are not current specifications.
+Published baseline and current source: **v0.2.2** (17 October 2026). See [release status](RELEASE-STATUS.md) for validation and [development status](DEVELOPMENT-STATUS.md) for the accepted checkpoint. Archived reports describe earlier builds and are not current specifications.
 
 ## Current guidance
 
@@ -9,6 +9,8 @@ Published baseline and current source: **v0.2.1** (16 October 2026). See [releas
 - [Development workflow](../AGENTS.md) and [contribution rules](../CONTRIBUTING.md)
 - [Development status](DEVELOPMENT-STATUS.md) — current checkpoint, build and outstanding tests
 - [Release status](RELEASE-STATUS.md) — validation, limitations and distribution
+- [Download timeline](DOWNLOAD-COUNTS.md) — cumulative route totals and exact per-version counts at each snapshot
+- [0.2.2 fixes-only checks](0.2.2-TESTING.md) — accepted repairs and remaining limits
 - [Activity catalogue](ACTIVITIES.md) — playable content and placeholders
 - [Build and test](BUILD-AND-TEST.md) — dependencies, packaging and native acceptance
 - [Architecture](ARCHITECTURE.md) and [backlog](ARCHITECTURE-TODO.md)
@@ -23,7 +25,7 @@ Published baseline and current source: **v0.2.1** (16 October 2026). See [releas
 
 ## Current development
 
-The [next-version roadmap](ARCHITECTURE-TODO.md#next-version-content-direction) records the user's deferred content plans. [Unit Comparison review](UNIT-COMPARISON-PORT-REVIEW.md) and [Demo Mode review](DEMO-MODE-PORT-REVIEW.md) assess the legacy modules; neither port is underway.
+The [next-version roadmap](ARCHITECTURE-TODO.md#next-version-content-direction) records the user's deferred content plans. [Unit Comparison review](UNIT-COMPARISON-PORT-REVIEW.md) and [Demo Mode review](DEMO-MODE-PORT-REVIEW.md) assess the legacy modules. Demo development is preserved separately on `codex/demo-mode` for 0.3.0; Unit Comparison remains planned.
 
 [Observer/control-handoff plan](OBSERVER-HOTSEAT-PLAN.md) records the proposed future multiplayer proof and rollout. It is deferred, not implemented.
 
